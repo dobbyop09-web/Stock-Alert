@@ -1,0 +1,33 @@
+name: Stock Alert
+
+on:
+  workflow_dispatch:
+
+jobs:
+  stock-alert:
+    runs-on: ubuntu-latest
+
+    env:
+      DB_URL: ${{ secrets.DB_URL }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      CHAT_IDS: ${{ secrets.CHAT_IDS }}
+
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Build
+        run: mvn clean package -DskipTests
+
+      - name: Run Application
+        run: java -jar target/*.jar
