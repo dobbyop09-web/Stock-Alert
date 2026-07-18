@@ -1,20 +1,18 @@
 package com.dobby.price_alert.service;
 
-import com.dobby.price_alert.dto.MessageFormat;
-import com.dobby.price_alert.dto.StockMessageDto;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class TelegramService {
 
-    private static final String BOT_TOKEN =
-            "8007362878:AAGkSnRgJm8lezZ-rDeKPsmaIjbk1aDeAqE";
+    @Value("${telegram.bot.token}")
+    private  String BOT_TOKEN;
     private final RestTemplate restTemplate =
             new RestTemplate();
     String[] chatId = new String[]{"5625154206","5706533722"};
