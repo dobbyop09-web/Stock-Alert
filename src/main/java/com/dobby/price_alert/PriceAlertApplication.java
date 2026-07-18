@@ -15,7 +15,7 @@ public class PriceAlertApplication {
 	public static void main(String[] args) {
 
 
-		SpringApplication.run(PriceAlertApplication.class, args);
+		SpringApplication.exit(SpringApplication.run(PriceAlertApplication.class, args));
 
 	}
 
