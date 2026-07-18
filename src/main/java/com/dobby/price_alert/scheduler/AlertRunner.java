@@ -1,29 +1,29 @@
 package com.dobby.price_alert.scheduler;
 
 import com.dobby.price_alert.constants.SheetType;
+import com.dobby.price_alert.dto.SheetConfig;
 import com.dobby.price_alert.service.CsvReaderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
+import java.util.List;
 @Component
-public class PriceScheduler {
-    @Autowired
-    private CsvReaderService csvReaderService;
+public class AlertRunner implements CommandLineRunner {
+    private final CsvReaderService csvReaderService;
     private static final Logger log =
             LoggerFactory.getLogger(CsvReaderService.class);
-
-    public void checkPrices() throws IOException {
+    public AlertRunner(CsvReaderService csvReaderService,
+                       List<SheetConfig> sheetConfigs) {
+        this.csvReaderService = csvReaderService;
+    }
+    @Override
+    public void run(String... args) throws Exception {
         log.info("Scheduler started");
         for(SheetType sheet: SheetType.values()){
             csvReaderService.readCsvAndCheckAlerts(sheet.getSheetConfig());
         }
         log.info("Scheduler finished");
-
-
     }
 }
