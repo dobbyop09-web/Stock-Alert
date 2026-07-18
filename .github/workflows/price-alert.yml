@@ -3,6 +3,16 @@ name: Stock Alert
 on:
   workflow_dispatch:
 
+  schedule:
+    # 09:20 IST
+    - cron: '50 3 * * 1-5'
+
+    # 10:00–14:40 IST every 20 minutes
+    - cron: '0,20,40 4-8 * * 1-5'
+
+    # 15:00, 15:20 IST
+    - cron: '0,20 9 * * 1-5'
+
 jobs:
   stock-alert:
     runs-on: ubuntu-latest

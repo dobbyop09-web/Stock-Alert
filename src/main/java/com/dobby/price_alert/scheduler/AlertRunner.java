@@ -20,10 +20,10 @@ public class AlertRunner implements CommandLineRunner {
     }
     @Override
     public void run(String... args) throws Exception {
-        log.info("Scheduler started");
+        log.info("========== STOCK ALERT JOB STARTED ==========");
         for(SheetType sheet: SheetType.values()){
             csvReaderService.readCsvAndCheckAlerts(sheet.getSheetConfig());
         }
-        log.info("Scheduler finished");
+        log.info("========== STOCK ALERT JOB COMPLETED ==========");
     }
 }
