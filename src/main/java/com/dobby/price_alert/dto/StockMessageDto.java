@@ -2,6 +2,7 @@ package com.dobby.price_alert.dto;
 
 public class StockMessageDto {
     private String stockName;
+    private String sheetName;
     private double currentPrice;
     private double targetPrice;
     private String screenerUrl;
@@ -9,6 +10,14 @@ public class StockMessageDto {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public String getSheetName() {
+        return sheetName;
+    }
+
+    public void setSheetName(String sheetName) {
+        this.sheetName = sheetName;
     }
 
     public String getUpdateAlert() {
@@ -21,6 +30,7 @@ public class StockMessageDto {
 
     private StockMessageDto(Builder builder) {
         this.stockName = builder.stockName;
+        this.sheetName = builder.sheetName;
         this.currentPrice = builder.currentPrice;
         this.targetPrice = builder.targetPrice;
         this.screenerUrl = builder.screenerUrl;
@@ -29,6 +39,7 @@ public class StockMessageDto {
     public static class Builder {
 
         private String stockName;
+        private String sheetName;
         private double currentPrice;
         private double targetPrice;
         private String screenerUrl;
@@ -36,6 +47,11 @@ public class StockMessageDto {
 
         public Builder stockName(String stockName) {
             this.stockName = stockName;
+            return this;
+        }
+
+        public Builder sheetName(String sheetName) {
+            this.sheetName = sheetName;
             return this;
         }
 

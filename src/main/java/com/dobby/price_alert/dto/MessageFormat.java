@@ -7,26 +7,16 @@ public class MessageFormat {
                 📈 STOCK ALERT
 
                 🏢 Stock : %s
+                📂 Sheet : %s
                 💰 Price : ₹%s
                 🎯 Alert Price : ₹%s
                 🔗 Screener
                 %s
                 """,
                 dto.getStockName(),
+                dto.getSheetName(),
                 dto.getCurrentPrice(),
                 dto.getTargetPrice(),
                 dto.getScreenerUrl());
-    }
-    public static String format2(StockMessageDto dto){
-        return String.format(
-                """
-                📈 STOCK ALERT
-                🏢 Stock : %s
-                ⚠️ UpdateAlert : %s
-
-                """,
-                dto.getStockName(),
-                dto.getUpdateAlert()
-        );
     }
 }

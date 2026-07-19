@@ -30,7 +30,7 @@ public class StockAlertService {
         if (LocalDate.now().equals(stockAlert.getLastAlertDate())) {
             return false;
         }
-
+        stockAlert.setAlertPrice(alertPrice);
         stockAlert.setLastAlertDate(LocalDate.now());
         repository.save(stockAlert);
 
