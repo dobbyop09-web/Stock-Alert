@@ -35,6 +35,9 @@ public class AlertRunner implements CommandLineRunner {
                     )
             );
         }
+        log.info("Preparing to write dashboard JSON...");
+        log.info("Total dashboard records: {}", dashboard.size());
+
         dashboardJsonService.write(dashboard);
         log.info("========== STOCK ALERT JOB COMPLETED ==========");
     }
