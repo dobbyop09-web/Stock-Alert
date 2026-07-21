@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Alert dashboard</title>
+<style>
+  :root{
+    --bg:#0A0D12; --panel:#12161D; --panel2:#171C24;
+    --line:#232A35; --text:#E6EAF0; --muted:#7A8494;
+    --mono: 'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+    --sans: -apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+    --triggered:#FF5C6C; --near:#F5A623; --watch:#2DD4BF; --far:#5B6472;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
+  .wrap{max-width:920px;margin:0 auto;padding:20px 16px 40px;}
+  h1{font-size:15px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 4px;}
+  .sub{font-size:12px;color:var(--muted);margin:0 0 20px;}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px;}
+  .stat .n{font-family:var(--mono);font-size:22px;font-weight:600;}
+  .stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+  .toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+  button{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:5px;padding:7px 12px;font-size:12px;cursor:pointer;font-family:var(--sans);}
+  button:hover{background:#1D2430;border-color:#2E3745;}
+  button.primary{background:#1B2A2E;border-color:#2DD4BF;color:#2DD4BF;}
+  button.danger{background:transparent;border-color:transparent;color:var(--muted);padding:4px 6px;}
+  button.danger:hover{color:var(--triggered);}
+  table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px;}
+  thead th{text-align:left;font-family:var(--sans);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line);}
+  tbody td{padding:7px 10px;border-bottom:1px solid var(--line);}
+  tbody tr:hover{background:var(--panel);}
+  input.cell{background:transparent;border:none;color:var(--text);font-family:var(--mono);font-size:13px;width:100%;padding:3px 4px;border-radius:4px;}
+  input.cell:focus{outline:1px solid #2E3745;background:var(--panel2);}
+  .num{text-align:right;}
+  .badge{display:inline-block;font-size:11px;font-family:var(--sans);font-weight:500;padding:2px 8px;border-radius:20px;}
+  .b-triggered{background:#3A1518;color:var(--triggered);}
+  .b-near{background:#332310;color:var(--near);}
+  .b-watch{background:#0F2B27;color:var(--watch);}
+  .b-far{background:#1A1E26;color:var(--far);}
+  .dist{font-weight:600;}
+  textarea{width:100%;min-height:80px;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:6px;font-family:var(--mono);font-size:12px;padding:10px;resize:vertical;}
+  .paste{display:none;margin-bottom:14px;}
+  .paste.show{display:block;}
+  .paste .row{display:flex;gap:8px;margin-top:8px;}
+  .hint{font-size:11px;color:var(--muted);margin-top:6px;}
+  .empty{color:var(--muted);font-size:12px;padding:24px 10px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Alert dashboard</h1>
+  <p class="sub" id="subline">Loading…</p>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="toolbar">
+    <button id="sortBtn">Sort by closest to alert</button>
+  </div>
+
+  <div class="paste" id="pasteBox">
+    <textarea id="pasteArea" placeholder="Paste rows copied from Google Sheets (Symbol, Current price, Alert price) — tab or comma separated, one row per line"></textarea>
+    <div class="row">
+      <button class="primary" id="importBtn">Import</button>
+      <button id="cancelPasteBtn">Cancel</button>
+    </div>
+    <p class="hint">Select your Symbol / Current Price / Alert Price columns in Sheets, copy, then paste here.</p>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:22%">Symbol</th>
+        <th class="num" style="width:18%">Current</th>
+        <th class="num" style="width:18%">Alert</th>
+        <th class="num" style="width:16%">Distance</th>
+        <th style="width:18%">Status</th>
+        <th style="width:8%"></th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="empty" id="emptyMsg" style="display:none;">No stocks yet. Add a row or paste from your sheet.</div>
+</div>
+
+<script>
+
+  let rows = [];
+
+  function fmtPct(n) {
+      return (n > 0 ? "+" : "") + Number(n).toFixed(1) + "%";
+  }
+
+  function render() {
+
+      const tbody = document.getElementById("tbody");
+      tbody.innerHTML = "";
+
+      let triggered = 0;
+      let near = 0;
+      let watch = 0;
+      let far = 0;
+
+      rows.forEach(r => {
+
+          switch (r.status) {
+              case "Triggered": triggered++; break;
+              case "Near": near++; break;
+              case "Watch": watch++; break;
+              default: far++;
+          }
+
+          let color = "var(--far)";
+          let badge = "b-far";
+
+          if (r.status === "Triggered") {
+              color = "var(--triggered)";
+              badge = "b-triggered";
+          }
+          else if (r.status === "Near") {
+              color = "var(--near)";
+              badge = "b-near";
+          }
+          else if (r.status === "Watch") {
+              color = "var(--watch)";
+              badge = "b-watch";
+          }
+
+          tbody.innerHTML += `
+          <tr>
+              <td>${r.symbol}</td>
+              <td class="num">${r.currentPrice}</td>
+              <td class="num">${r.alertPrice}</td>
+              <td class="num" style="color:${color};font-weight:bold">
+                  ${fmtPct(r.distance)}
+              </td>
+              <td>
+                  <span class="badge ${badge}">
+                      ${r.status}
+                  </span>
+              </td>
+              <td>${r.sheet}</td>
+          </tr>
+          `;
+      });
+
+      document.getElementById("stats").innerHTML = `
+          <div class="stat">
+              <div class="n" style="color:var(--triggered)">
+                  ${triggered}
+              </div>
+              <div class="l">Triggered</div>
+          </div>
+
+          <div class="stat">
+              <div class="n" style="color:var(--near)">
+                  ${near}
+              </div>
+              <div class="l">Near</div>
+          </div>
+
+          <div class="stat">
+              <div class="n" style="color:var(--watch)">
+                  ${watch}
+              </div>
+              <div class="l">Watch</div>
+          </div>
+
+          <div class="stat">
+              <div class="n">${rows.length}</div>
+              <div class="l">Total</div>
+          </div>
+      `;
+  }
+
+  async function loadDashboard() {
+
+      try {
+
+          const response = await fetch("dashboard-data.json?t=" + Date.now());
+
+          rows = await response.json();
+
+          document.getElementById("subline").innerText =
+              "Last updated : " + new Date().toLocaleString();
+
+          render();
+
+      } catch (e) {
+
+          document.getElementById("subline").innerText =
+              "Unable to load dashboard data.";
+
+          console.error(e);
+      }
+  }
+
+  loadDashboard();
+
+  document.getElementById("sortBtn").addEventListener("click", () => {
+
+    rows.sort((a, b) => {
+
+        // Triggered stocks (negative distance) should appear first
+        return a.distance - b.distance;
+
+    });
+
+    render();
+});
+  // refresh every minute
+  setInterval(loadDashboard, 60000);
+
+</script>
+</body>
+</html>

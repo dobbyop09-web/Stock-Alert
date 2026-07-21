@@ -1,5 +1,6 @@
 package com.dobby.price_alert.service;
 
+import com.dobby.price_alert.dto.DashboardStock;
 import com.dobby.price_alert.dto.MessageFormat;
 import com.dobby.price_alert.dto.SheetConfig;
 import com.dobby.price_alert.dto.StockMessageDto;
@@ -13,7 +14,10 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class CsvReaderService {
@@ -27,9 +31,10 @@ public class CsvReaderService {
             LoggerFactory.getLogger(CsvReaderService.class);
 
 
-    public void readCsvAndCheckAlerts(SheetConfig sheetConfig) throws IOException {
+    public List<DashboardStock> readCsvAndCheckAlerts(SheetConfig sheetConfig) throws IOException {
 
         log.info("Reading {}", sheetConfig.getName());
+        List<DashboardStock> dashboardStocks = new ArrayList<>();
 
         Reader reader = new InputStreamReader(
                 new URL(sheetConfig.getUrl()).openStream());
@@ -39,14 +44,12 @@ public class CsvReaderService {
                 .parse(reader);
 
         for (CSVRecord record : records) {
-            double current =
-                    Double.parseDouble(record.get("Current Price"));
-
-            double alert =
-                    Double.parseDouble(record.get("Alert Price"));
-
+            double current =Double.parseDouble(record.get("Current Price"));
+            double alert = Double.parseDouble(record.get("Alert Price"));
             double fib = Double.parseDouble(record.get("FIB"));
+
             String symbol = record.get("Symbol");
+
 
             if (stockAlertService.shouldSendAlert(sheetConfig.getName(), symbol, current, alert)) {
                 log.info("Telegram sent for {}", symbol);
@@ -56,6 +59,31 @@ public class CsvReaderService {
                 telegramService.sendMessage(message);
 
             }
+            double distance = ((current - alert) / current) * 100;
+
+            String status;
+
+            if (distance <= 0) {
+                status = "Triggered";
+            } else if (distance <= 5) {
+                status = "Near";
+            } else if (distance <= 15) {
+                status = "Watch";
+            } else {
+                status = "Far";
+            }
+
+            dashboardStocks.add(
+                    DashboardStock.builder()
+                            .symbol(symbol)
+                            .currentPrice(BigDecimal.valueOf(current))
+                            .alertPrice(BigDecimal.valueOf(alert))
+                            .distance(BigDecimal.valueOf(distance))
+                            .status(status)
+                            .sheet(sheetConfig.getName())
+                            .build()
+            );
         }
+        return dashboardStocks;
     }
 }
