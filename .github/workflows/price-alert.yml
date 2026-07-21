@@ -44,41 +44,12 @@ jobs:
       - name: Run Application
         run: java -jar target/*.jar
 
-      - name: Verify dashboard JSON
-        run: |
-          echo "========== CURRENT DIRECTORY =========="
-          pwd
-
-          echo ""
-          echo "========== DASHBOARD FOLDER =========="
-          ls -la dashboard || true
-
-          echo ""
-          echo "========== JSON CONTENT =========="
-          cat dashboard/dashboard-data.json || true
-
-      - name: Check Git Status
-        run: |
-          echo "========== GIT STATUS =========="
-          git status
-
-          echo ""
-          echo "========== GIT DIFF =========="
-          git diff dashboard/dashboard-data.json || true
-
       - name: Commit dashboard data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add dashboard/dashboard-data.json
-
-          echo "========== AFTER GIT ADD =========="
-          git status
-
-          echo ""
-          echo "========== STAGED DIFF =========="
-          git diff --cached
 
           if git diff --cached --quiet; then
             echo "No dashboard changes detected."
