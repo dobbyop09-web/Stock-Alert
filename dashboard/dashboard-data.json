@@ -1,0 +1,66 @@
+[
+  {
+    "symbol": "SBIN",
+    "currentPrice": 1044.30,
+    "alertPrice": 999.00,
+    "distance": 4.34,
+    "status": "Near",
+    "sheet": "Swing"
+  },
+  {
+    "symbol": "ICICIBANK",
+    "currentPrice": 1463.10,
+    "alertPrice": 1260.00,
+    "distance": 13.88,
+    "status": "Watch",
+    "sheet": "Positional"
+  },
+  {
+    "symbol": "HDFCBANK",
+    "currentPrice": 761.50,
+    "alertPrice": 780.00,
+    "distance": -2.43,
+    "status": "Triggered",
+    "sheet": "Swing"
+  },
+  {
+    "symbol": "RELIANCE",
+    "currentPrice": 1525.00,
+    "alertPrice": 1400.00,
+    "distance": 8.20,
+    "status": "Watch",
+    "sheet": "Investment"
+  },
+  {
+    "symbol": "TCS",
+    "currentPrice": 4280.00,
+    "alertPrice": 3800.00,
+    "distance": 11.21,
+    "status": "Watch",
+    "sheet": "Large Cap"
+  },
+  {
+    "symbol": "INFY",
+    "currentPrice": 1720.00,
+    "alertPrice": 1700.00,
+    "distance": 1.16,
+    "status": "Near",
+    "sheet": "Swing"
+  },
+  {
+    "symbol": "BAJFINANCE",
+    "currentPrice": 1071.00,
+    "alertPrice": 944.00,
+    "distance": 11.86,
+    "status": "Watch",
+    "sheet": "Positional"
+  },
+  {
+    "symbol": "MUTHOOTFIN",
+    "currentPrice": 3080.20,
+    "alertPrice": 2915.00,
+    "distance": 5.36,
+    "status": "Watch",
+    "sheet": "Investment"
+  }
+]
