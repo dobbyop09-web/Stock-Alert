@@ -1,66 +1,1996 @@
-[
-  {
-    "symbol": "SBIN",
-    "currentPrice": 1044.30,
-    "alertPrice": 999.00,
-    "distance": 4.34,
-    "status": "Near",
-    "sheet": "Swing"
-  },
-  {
-    "symbol": "ICICIBANK",
-    "currentPrice": 1463.10,
-    "alertPrice": 1260.00,
-    "distance": 13.88,
-    "status": "Watch",
-    "sheet": "Positional"
-  },
-  {
-    "symbol": "HDFCBANK",
-    "currentPrice": 761.50,
-    "alertPrice": 780.00,
-    "distance": -2.43,
-    "status": "Triggered",
-    "sheet": "Swing"
-  },
-  {
-    "symbol": "RELIANCE",
-    "currentPrice": 1525.00,
-    "alertPrice": 1400.00,
-    "distance": 8.20,
-    "status": "Watch",
-    "sheet": "Investment"
-  },
-  {
-    "symbol": "TCS",
-    "currentPrice": 4280.00,
-    "alertPrice": 3800.00,
-    "distance": 11.21,
-    "status": "Watch",
-    "sheet": "Large Cap"
-  },
-  {
-    "symbol": "INFY",
-    "currentPrice": 1720.00,
-    "alertPrice": 1700.00,
-    "distance": 1.16,
-    "status": "Near",
-    "sheet": "Swing"
-  },
-  {
-    "symbol": "BAJFINANCE",
-    "currentPrice": 1071.00,
-    "alertPrice": 944.00,
-    "distance": 11.86,
-    "status": "Watch",
-    "sheet": "Positional"
-  },
-  {
-    "symbol": "MUTHOOTFIN",
-    "currentPrice": 3080.20,
-    "alertPrice": 2915.00,
-    "distance": 5.36,
-    "status": "Watch",
-    "sheet": "Investment"
-  }
-]
+[ {
+  "symbol" : "BEL",
+  "currentPrice" : 410.1,
+  "alertPrice" : 404.0,
+  "distance" : 1.487442087295787,
+  "status" : "Near",
+  "sheet" : "Defence"
+}, {
+  "symbol" : "HAL",
+  "currentPrice" : 4585.0,
+  "alertPrice" : 4100.0,
+  "distance" : 10.577971646673937,
+  "status" : "Watch",
+  "sheet" : "Defence"
+}, {
+  "symbol" : "SOLARINDS",
+  "currentPrice" : 19100.0,
+  "alertPrice" : 16300.0,
+  "distance" : 14.659685863874344,
+  "status" : "Watch",
+  "sheet" : "Defence"
+}, {
+  "symbol" : "MAZDOCK",
+  "currentPrice" : 2359.0,
+  "alertPrice" : 2010.0,
+  "distance" : 14.794404408647733,
+  "status" : "Watch",
+  "sheet" : "Defence"
+}, {
+  "symbol" : "GRSE",
+  "currentPrice" : 2628.3,
+  "alertPrice" : 2500.0,
+  "distance" : 4.881482326979423,
+  "status" : "Near",
+  "sheet" : "Defence"
+}, {
+  "symbol" : "PARAS",
+  "currentPrice" : 1222.0,
+  "alertPrice" : 1113.0,
+  "distance" : 8.919803600654665,
+  "status" : "Watch",
+  "sheet" : "Defence"
+}, {
+  "symbol" : "DATAPATTNS",
+  "currentPrice" : 4260.0,
+  "alertPrice" : 3900.0,
+  "distance" : 8.450704225352112,
+  "status" : "Watch",
+  "sheet" : "Defence"
+}, {
+  "symbol" : "ASTRAMICRO",
+  "currentPrice" : 1749.0,
+  "alertPrice" : 1432.0,
+  "distance" : 18.12464265294454,
+  "status" : "Far",
+  "sheet" : "Defence"
+}, {
+  "symbol" : "APOLLO",
+  "currentPrice" : 392.35,
+  "alertPrice" : 360.0,
+  "distance" : 8.245189244297189,
+  "status" : "Watch",
+  "sheet" : "Defence"
+}, {
+  "symbol" : "MTARTECH",
+  "currentPrice" : 5849.5,
+  "alertPrice" : 4927.0,
+  "distance" : 15.770578681938627,
+  "status" : "Far",
+  "sheet" : "Defence"
+}, {
+  "symbol" : "HDFCBANK",
+  "currentPrice" : 761.5,
+  "alertPrice" : 750.0,
+  "distance" : 1.510177281680893,
+  "status" : "Near",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "ICICIBANK",
+  "currentPrice" : 1463.1,
+  "alertPrice" : 1260.0,
+  "distance" : 13.881484519171616,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "SBIN",
+  "currentPrice" : 1044.3,
+  "alertPrice" : 999.0,
+  "distance" : 4.3378339557598355,
+  "status" : "Near",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "BAJFINANCE",
+  "currentPrice" : 1071.0,
+  "alertPrice" : 944.0,
+  "distance" : 11.858076563958916,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "LICI",
+  "currentPrice" : 431.0,
+  "alertPrice" : 407.0,
+  "distance" : 5.56844547563805,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "M&MFIN",
+  "currentPrice" : 347.65,
+  "alertPrice" : 300.0,
+  "distance" : 13.706313821372065,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "HDFCLIFE",
+  "currentPrice" : 561.5,
+  "alertPrice" : 504.0,
+  "distance" : 10.240427426536064,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "MUTHOOTFIN",
+  "currentPrice" : 3080.2,
+  "alertPrice" : 2915.0,
+  "distance" : 5.363288098175437,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "CHOLAFIN",
+  "currentPrice" : 1758.8,
+  "alertPrice" : 1663.0,
+  "distance" : 5.446895610643619,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "BAJAJHLDNG",
+  "currentPrice" : 10440.0,
+  "alertPrice" : 9561.0,
+  "distance" : 8.419540229885056,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "ANANDRATHI",
+  "currentPrice" : 2092.0,
+  "alertPrice" : 1807.0,
+  "distance" : 13.623326959847038,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "BAJAJFINSV",
+  "currentPrice" : 1900.7,
+  "alertPrice" : 1710.0,
+  "distance" : 10.03314568316936,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "AUBANK",
+  "currentPrice" : 1000.0,
+  "alertPrice" : 940.0,
+  "distance" : 6.0,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "BAJAJHFL",
+  "currentPrice" : 86.0,
+  "alertPrice" : 83.0,
+  "distance" : 3.488372093023256,
+  "status" : "Near",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "MAHABANK",
+  "currentPrice" : 81.75,
+  "alertPrice" : 75.0,
+  "distance" : 8.256880733944955,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "IOB",
+  "currentPrice" : 35.2,
+  "alertPrice" : 30.0,
+  "distance" : 14.772727272727279,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "SUNDARMFIN",
+  "currentPrice" : 4452.0,
+  "alertPrice" : 4200.0,
+  "distance" : 5.660377358490567,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "360ONE",
+  "currentPrice" : 1115.4,
+  "alertPrice" : 965.0,
+  "distance" : 13.483951945490414,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "HUDCO",
+  "currentPrice" : 200.89,
+  "alertPrice" : 192.0,
+  "distance" : 4.425307382149429,
+  "status" : "Near",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "TATAINVEST",
+  "currentPrice" : 657.5,
+  "alertPrice" : 625.0,
+  "distance" : 4.942965779467681,
+  "status" : "Near",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "CHOLAHLDNG",
+  "currentPrice" : 1550.0,
+  "alertPrice" : 1375.0,
+  "distance" : 11.29032258064516,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "TVSHLTD",
+  "currentPrice" : 14279.0,
+  "alertPrice" : 13060.0,
+  "distance" : 8.537012395826038,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "KARURVYSYA",
+  "currentPrice" : 340.45,
+  "alertPrice" : 271.0,
+  "distance" : 20.399471288001173,
+  "status" : "Far",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "AADHARHFC",
+  "currentPrice" : 511.1,
+  "alertPrice" : 509.0,
+  "distance" : 0.4108784973586427,
+  "status" : "Near",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "CGCL",
+  "currentPrice" : 248.88,
+  "alertPrice" : 220.0,
+  "distance" : 11.603985856637737,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "CUB",
+  "currentPrice" : 228.9,
+  "alertPrice" : 195.0,
+  "distance" : 14.809960681520318,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "CHOICEIN",
+  "currentPrice" : 814.5,
+  "alertPrice" : 740.0,
+  "distance" : 9.146715776550032,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "MAHSCOOTER",
+  "currentPrice" : 12896.0,
+  "alertPrice" : 11251.0,
+  "distance" : 12.75589330024814,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "HOMEFIRST",
+  "currentPrice" : 1280.0,
+  "alertPrice" : 1131.0,
+  "distance" : 11.640625,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "AAVAS",
+  "currentPrice" : 1523.9,
+  "alertPrice" : 1346.0,
+  "distance" : 11.673994356585084,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "TSFINV",
+  "currentPrice" : 467.65,
+  "alertPrice" : 430.0,
+  "distance" : 8.050892761680739,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "SBFC",
+  "currentPrice" : 94.0,
+  "alertPrice" : 88.0,
+  "distance" : 6.382978723404255,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "IDFCFIRSTB",
+  "currentPrice" : 81.56,
+  "alertPrice" : 73.0,
+  "distance" : 10.495340853359494,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "CREDITACC",
+  "currentPrice" : 1534.0,
+  "alertPrice" : 1307.0,
+  "distance" : 14.797913950456323,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "POONAWALLA",
+  "currentPrice" : 462.7,
+  "alertPrice" : 383.0,
+  "distance" : 17.224983790793168,
+  "status" : "Far",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "AXISBANK",
+  "currentPrice" : 1256.5,
+  "alertPrice" : 1176.0,
+  "distance" : 6.406685236768802,
+  "status" : "Watch",
+  "sheet" : "Bank"
+}, {
+  "symbol" : "MARUTI",
+  "currentPrice" : 13640.0,
+  "alertPrice" : 13259.0,
+  "distance" : 2.793255131964809,
+  "status" : "Near",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "M&M",
+  "currentPrice" : 3210.0,
+  "alertPrice" : 2967.0,
+  "distance" : 7.570093457943925,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "BAJAJ-AUTO",
+  "currentPrice" : 10426.0,
+  "alertPrice" : 9800.0,
+  "distance" : 6.0042202186840585,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "HYUNDAI",
+  "currentPrice" : 1965.1,
+  "alertPrice" : 1901.0,
+  "distance" : 3.26192051295099,
+  "status" : "Near",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "EICHERMOT",
+  "currentPrice" : 7694.0,
+  "alertPrice" : 6861.0,
+  "distance" : 10.826618144008318,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "HEROMOTOCO",
+  "currentPrice" : 5032.1,
+  "alertPrice" : 4725.0,
+  "distance" : 6.102819896265979,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "FORCEMOT",
+  "currentPrice" : 17720.0,
+  "alertPrice" : 16800.0,
+  "distance" : 5.191873589164786,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "ASHOKLEY",
+  "currentPrice" : 153.83,
+  "alertPrice" : 144.0,
+  "distance" : 6.390170967951643,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "TVSMOTOR",
+  "currentPrice" : 3793.9,
+  "alertPrice" : 3288.0,
+  "distance" : 13.334563378054249,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "UNOMINDA",
+  "currentPrice" : 1151.0,
+  "alertPrice" : 1074.0,
+  "distance" : 6.689834926151173,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "BHARATFORG",
+  "currentPrice" : 2199.4,
+  "alertPrice" : 1736.0,
+  "distance" : 21.0693825588797,
+  "status" : "Far",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "MOTHERSON",
+  "currentPrice" : 145.5,
+  "alertPrice" : 135.0,
+  "distance" : 7.216494845360824,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "BOSCHLTD",
+  "currentPrice" : 40880.0,
+  "alertPrice" : 37264.0,
+  "distance" : 8.845401174168298,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "SCHAEFFLER",
+  "currentPrice" : 4181.0,
+  "alertPrice" : 3800.0,
+  "distance" : 9.112652475484333,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "ATHERENERG",
+  "currentPrice" : 1289.7,
+  "alertPrice" : 975.0,
+  "distance" : 24.401023493835776,
+  "status" : "Far",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "SONACOMS",
+  "currentPrice" : 733.35,
+  "alertPrice" : 568.0,
+  "distance" : 22.547214836026455,
+  "status" : "Far",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "ENDURANCE",
+  "currentPrice" : 2750.0,
+  "alertPrice" : 2349.0,
+  "distance" : 14.581818181818182,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "CRAFTSMAN",
+  "currentPrice" : 9399.0,
+  "alertPrice" : 8700.0,
+  "distance" : 7.436961378870093,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "SANSERA",
+  "currentPrice" : 3292.5,
+  "alertPrice" : 2680.0,
+  "distance" : 18.602885345482157,
+  "status" : "Far",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "SHRIPISTON",
+  "currentPrice" : 4520.0,
+  "alertPrice" : 3744.0,
+  "distance" : 17.168141592920357,
+  "status" : "Far",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "GABRIEL",
+  "currentPrice" : 1510.1,
+  "alertPrice" : 1127.0,
+  "distance" : 25.369180848950396,
+  "status" : "Far",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "JBMA",
+  "currentPrice" : 667.5,
+  "alertPrice" : 576.0,
+  "distance" : 13.707865168539326,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "OLECTRA",
+  "currentPrice" : 1357.1,
+  "alertPrice" : 1300.0,
+  "distance" : 4.2075012895144,
+  "status" : "Near",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "LUMAXTECH",
+  "currentPrice" : 1451.5,
+  "alertPrice" : 1351.0,
+  "distance" : 6.923871856699966,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "LUMAXIND",
+  "currentPrice" : 5165.0,
+  "alertPrice" : 4374.0,
+  "distance" : 15.31461761858664,
+  "status" : "Far",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "SHARDAMOTR",
+  "currentPrice" : 845.0,
+  "alertPrice" : 775.0,
+  "distance" : 8.284023668639055,
+  "status" : "Watch",
+  "sheet" : "Auto"
+}, {
+  "symbol" : "WAAREEENER",
+  "currentPrice" : 2723.0,
+  "alertPrice" : 2631.0,
+  "distance" : 3.3786265148733015,
+  "status" : "Near",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "POLYCAB",
+  "currentPrice" : 8908.0,
+  "alertPrice" : 8615.0,
+  "distance" : 3.2891782667265375,
+  "status" : "Near",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "DIXON",
+  "currentPrice" : 14126.0,
+  "alertPrice" : 10900.0,
+  "distance" : 22.837321251592808,
+  "status" : "Far",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "PREMIERENE",
+  "currentPrice" : 1045.0,
+  "alertPrice" : 937.0,
+  "distance" : 10.334928229665072,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "APARINDS",
+  "currentPrice" : 13869.0,
+  "alertPrice" : 13200.0,
+  "distance" : 4.82370754921047,
+  "status" : "Near",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "POWERINDIA",
+  "currentPrice" : 32245.0,
+  "alertPrice" : 27500.0,
+  "distance" : 14.715459761203286,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "BHEL",
+  "currentPrice" : 415.0,
+  "alertPrice" : 353.0,
+  "distance" : 14.93975903614458,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "SIEMENS",
+  "currentPrice" : 3670.0,
+  "alertPrice" : 3213.0,
+  "distance" : 12.452316076294279,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "GVT&D",
+  "currentPrice" : 4496.3,
+  "alertPrice" : 3971.0,
+  "distance" : 11.682939305651317,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "KEI",
+  "currentPrice" : 4965.0,
+  "alertPrice" : 4441.0,
+  "distance" : 10.553877139979859,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "APLAPOLLO",
+  "currentPrice" : 1816.5,
+  "alertPrice" : 1667.0,
+  "distance" : 8.23011285439031,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "NAVINFLUOR",
+  "currentPrice" : 7843.0,
+  "alertPrice" : 6054.0,
+  "distance" : 22.810149177610608,
+  "status" : "Far",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "WELCORP",
+  "currentPrice" : 1634.0,
+  "alertPrice" : 1224.0,
+  "distance" : 25.091799265605875,
+  "status" : "Far",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "ESCORTS",
+  "currentPrice" : 2956.0,
+  "alertPrice" : 2766.0,
+  "distance" : 6.427604871447902,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "PTCIL",
+  "currentPrice" : 17810.0,
+  "alertPrice" : 16295.0,
+  "distance" : 8.506457046603032,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "EMMVEE",
+  "currentPrice" : 328.65,
+  "alertPrice" : 297.0,
+  "distance" : 9.630305796439975,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "KPIL",
+  "currentPrice" : 1344.0,
+  "alertPrice" : 1250.0,
+  "distance" : 6.9940476190476195,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "HBLENGINE",
+  "currentPrice" : 729.1,
+  "alertPrice" : 710.0,
+  "distance" : 2.619668083939106,
+  "status" : "Near",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "KAYNES",
+  "currentPrice" : 3270.2,
+  "alertPrice" : 2800.0,
+  "distance" : 14.378325484679833,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "SARDAEN",
+  "currentPrice" : 509.25,
+  "alertPrice" : 420.0,
+  "distance" : 17.525773195876287,
+  "status" : "Far",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "JYOTICNC",
+  "currentPrice" : 800.0,
+  "alertPrice" : 655.0,
+  "distance" : 18.125,
+  "status" : "Far",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "TDPOWERSYS",
+  "currentPrice" : 1130.0,
+  "alertPrice" : 1000.0,
+  "distance" : 11.504424778761061,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "TECHNOE",
+  "currentPrice" : 1025.0,
+  "alertPrice" : 876.0,
+  "distance" : 14.536585365853657,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "WAAREERTL",
+  "currentPrice" : 1012.9,
+  "alertPrice" : 980.0,
+  "distance" : 3.2480995162404955,
+  "status" : "Near",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "TARIL",
+  "currentPrice" : 317.55,
+  "alertPrice" : 290.0,
+  "distance" : 8.675799086757994,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "CIEINDIA",
+  "currentPrice" : 472.0,
+  "alertPrice" : 446.0,
+  "distance" : 5.508474576271186,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "GRINDWELL",
+  "currentPrice" : 2088.0,
+  "alertPrice" : 1990.0,
+  "distance" : 4.693486590038314,
+  "status" : "Near",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "BHEL",
+  "currentPrice" : 415.0,
+  "alertPrice" : 329.0,
+  "distance" : 20.722891566265062,
+  "status" : "Far",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "ABB",
+  "currentPrice" : 7511.0,
+  "alertPrice" : 6758.0,
+  "distance" : 10.025296232192783,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "ULTRACEMCO",
+  "currentPrice" : 12075.0,
+  "alertPrice" : 11575.0,
+  "distance" : 4.140786749482402,
+  "status" : "Near",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "GRASIM",
+  "currentPrice" : 3170.0,
+  "alertPrice" : 2874.0,
+  "distance" : 9.337539432176655,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "AMBUJACEM",
+  "currentPrice" : 439.15,
+  "alertPrice" : 422.0,
+  "distance" : 3.9052715473072928,
+  "status" : "Near",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "SHREECEM",
+  "currentPrice" : 27280.0,
+  "alertPrice" : 25680.0,
+  "distance" : 5.865102639296188,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "JKCEMENT",
+  "currentPrice" : 5669.0,
+  "alertPrice" : 5263.0,
+  "distance" : 7.161756923619686,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "DALBHARAT",
+  "currentPrice" : 1867.0,
+  "alertPrice" : 1728.0,
+  "distance" : 7.445099089448312,
+  "status" : "Watch",
+  "sheet" : "Manufacturing"
+}, {
+  "symbol" : "PERSISTENT",
+  "currentPrice" : 5206.3,
+  "alertPrice" : 4400.0,
+  "distance" : 15.48700612719206,
+  "status" : "Far",
+  "sheet" : "It"
+}, {
+  "symbol" : "POLICYBZR",
+  "currentPrice" : 1564.7,
+  "alertPrice" : 1360.0,
+  "distance" : 13.082380008947405,
+  "status" : "Watch",
+  "sheet" : "It"
+}, {
+  "symbol" : "NAUKRI",
+  "currentPrice" : 1207.0,
+  "alertPrice" : 970.0,
+  "distance" : 19.63545981772991,
+  "status" : "Far",
+  "sheet" : "It"
+}, {
+  "symbol" : "COFORGE",
+  "currentPrice" : 1494.0,
+  "alertPrice" : 1370.0,
+  "distance" : 8.299866131191433,
+  "status" : "Watch",
+  "sheet" : "It"
+}, {
+  "symbol" : "NETWEB",
+  "currentPrice" : 4256.3,
+  "alertPrice" : 3740.0,
+  "distance" : 12.13025397645843,
+  "status" : "Watch",
+  "sheet" : "It"
+}, {
+  "symbol" : "AFFLE",
+  "currentPrice" : 1533.0,
+  "alertPrice" : 1367.0,
+  "distance" : 10.828440965427266,
+  "status" : "Watch",
+  "sheet" : "It"
+}, {
+  "symbol" : "PINELABS",
+  "currentPrice" : 150.8,
+  "alertPrice" : 0.0,
+  "distance" : 100.0,
+  "status" : "Far",
+  "sheet" : "It"
+}, {
+  "symbol" : "FSL",
+  "currentPrice" : 266.5,
+  "alertPrice" : 0.0,
+  "distance" : 100.0,
+  "status" : "Far",
+  "sheet" : "It"
+}, {
+  "symbol" : "KPITTECH",
+  "currentPrice" : 564.85,
+  "alertPrice" : 400.0,
+  "distance" : 29.184739311321593,
+  "status" : "Far",
+  "sheet" : "It"
+}, {
+  "symbol" : "ECLERX",
+  "currentPrice" : 1940.0,
+  "alertPrice" : 1400.0,
+  "distance" : 27.835051546391753,
+  "status" : "Far",
+  "sheet" : "It"
+}, {
+  "symbol" : "RATEGAIN",
+  "currentPrice" : 921.9,
+  "alertPrice" : 761.0,
+  "distance" : 17.45308601800629,
+  "status" : "Far",
+  "sheet" : "It"
+}, {
+  "symbol" : "MCX",
+  "currentPrice" : 2800.0,
+  "alertPrice" : 2620.0,
+  "distance" : 6.428571428571428,
+  "status" : "Watch",
+  "sheet" : "CapitalMarket"
+}, {
+  "symbol" : "KFINTECH",
+  "currentPrice" : 892.5,
+  "alertPrice" : 840.0,
+  "distance" : 5.88235294117647,
+  "status" : "Watch",
+  "sheet" : "CapitalMarket"
+}, {
+  "symbol" : "CAMS",
+  "currentPrice" : 769.1,
+  "alertPrice" : 690.0,
+  "distance" : 10.284748407229232,
+  "status" : "Watch",
+  "sheet" : "CapitalMarket"
+}, {
+  "symbol" : "CDSL",
+  "currentPrice" : 1363.7,
+  "alertPrice" : 1260.0,
+  "distance" : 7.604311798782727,
+  "status" : "Watch",
+  "sheet" : "CapitalMarket"
+}, {
+  "symbol" : "BSE",
+  "currentPrice" : 3664.0,
+  "alertPrice" : 3568.0,
+  "distance" : 2.6200873362445414,
+  "status" : "Near",
+  "sheet" : "CapitalMarket"
+}, {
+  "symbol" : "ANGELONE",
+  "currentPrice" : 322.15,
+  "alertPrice" : 300.0,
+  "distance" : 6.8756790315070555,
+  "status" : "Watch",
+  "sheet" : "CapitalMarket"
+}, {
+  "symbol" : "HDFCAMC",
+  "currentPrice" : 2585.7,
+  "alertPrice" : 2510.0,
+  "distance" : 2.9276404842015635,
+  "status" : "Near",
+  "sheet" : "CapitalMarket"
+}, {
+  "symbol" : "ICICIAMC",
+  "currentPrice" : 3154.0,
+  "alertPrice" : 3016.0,
+  "distance" : 4.375396322130628,
+  "status" : "Near",
+  "sheet" : "CapitalMarket"
+}, {
+  "symbol" : "GROWW",
+  "currentPrice" : 206.0,
+  "alertPrice" : 190.0,
+  "distance" : 7.766990291262135,
+  "status" : "Watch",
+  "sheet" : "CapitalMarket"
+}, {
+  "symbol" : "NAM-INDIA",
+  "currentPrice" : 1162.8,
+  "alertPrice" : 1045.0,
+  "distance" : 10.130718954248362,
+  "status" : "Watch",
+  "sheet" : "CapitalMarket"
+}, {
+  "symbol" : "IEX",
+  "currentPrice" : 124.69,
+  "alertPrice" : 102.0,
+  "distance" : 18.19712887962146,
+  "status" : "Far",
+  "sheet" : "CapitalMarket"
+}, {
+  "symbol" : "NESTLEIND",
+  "currentPrice" : 1456.0,
+  "alertPrice" : 1329.0,
+  "distance" : 8.722527472527473,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "ETERNAL",
+  "currentPrice" : 287.6,
+  "alertPrice" : 261.0,
+  "distance" : 9.248956884561899,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "TATACONSUM",
+  "currentPrice" : 1080.1,
+  "alertPrice" : 1035.0,
+  "distance" : 4.175539301916481,
+  "status" : "Near",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "VMM",
+  "currentPrice" : 113.6,
+  "alertPrice" : 100.0,
+  "distance" : 11.971830985915489,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "RADICO",
+  "currentPrice" : 4082.4,
+  "alertPrice" : 3420.0,
+  "distance" : 16.225749559082896,
+  "status" : "Far",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "GODFRYPHLP",
+  "currentPrice" : 2125.5,
+  "alertPrice" : 1920.0,
+  "distance" : 9.668313338038109,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "GILLETTE",
+  "currentPrice" : 7900.0,
+  "alertPrice" : 7422.0,
+  "distance" : 6.0506329113924044,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "CCL",
+  "currentPrice" : 1209.9,
+  "alertPrice" : 1070.0,
+  "distance" : 11.562939085874872,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "HONASA",
+  "currentPrice" : 456.0,
+  "alertPrice" : 402.0,
+  "distance" : 11.842105263157894,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "SHAILY",
+  "currentPrice" : 2843.0,
+  "alertPrice" : 2505.0,
+  "distance" : 11.888849806542384,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "LTFOODS",
+  "currentPrice" : 378.65,
+  "alertPrice" : 342.0,
+  "distance" : 9.679123200845103,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "TI",
+  "currentPrice" : 443.75,
+  "alertPrice" : 420.0,
+  "distance" : 5.352112676056338,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "CARTRADE",
+  "currentPrice" : 2735.9,
+  "alertPrice" : 2483.0,
+  "distance" : 9.243758909316863,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "HINDUNILVR",
+  "currentPrice" : 2141.0,
+  "alertPrice" : 2033.0,
+  "distance" : 5.044371788883699,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "HNDFDS",
+  "currentPrice" : 571.0,
+  "alertPrice" : 540.0,
+  "distance" : 5.42907180385289,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "VBL",
+  "currentPrice" : 463.85,
+  "alertPrice" : 419.0,
+  "distance" : 9.669074054112325,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "BRITANNIA",
+  "currentPrice" : 5485.0,
+  "alertPrice" : 5162.0,
+  "distance" : 5.888787602552416,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "MARICO",
+  "currentPrice" : 856.0,
+  "alertPrice" : 760.0,
+  "distance" : 11.214953271028037,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "GODREJCP",
+  "currentPrice" : 1055.0,
+  "alertPrice" : 997.0,
+  "distance" : 5.497630331753554,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "TATACONSUM",
+  "currentPrice" : 1080.1,
+  "alertPrice" : 968.0,
+  "distance" : 10.378668641792418,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "UNITDSPR",
+  "currentPrice" : 1390.1,
+  "alertPrice" : 1214.0,
+  "distance" : 12.668153370261127,
+  "status" : "Watch",
+  "sheet" : "Fmcg"
+}, {
+  "symbol" : "SUNPHARMA",
+  "currentPrice" : 1960.0,
+  "alertPrice" : 1738.0,
+  "distance" : 11.326530612244898,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "TORNTPHARM",
+  "currentPrice" : 5044.0,
+  "alertPrice" : 4450.0,
+  "distance" : 11.776367961934971,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "APOLLOHOSP",
+  "currentPrice" : 8925.0,
+  "alertPrice" : 7974.0,
+  "distance" : 10.655462184873949,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "ZYDUSWELL",
+  "currentPrice" : 592.5,
+  "alertPrice" : 509.0,
+  "distance" : 14.09282700421941,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "LUPIN",
+  "currentPrice" : 2516.0,
+  "alertPrice" : 2246.0,
+  "distance" : 10.731319554848968,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "MAXHEALTH",
+  "currentPrice" : 1097.0,
+  "alertPrice" : 986.0,
+  "distance" : 10.118505013673655,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "FORTIS",
+  "currentPrice" : 969.95,
+  "alertPrice" : 850.0,
+  "distance" : 12.366616835919382,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "AJANTPHARM",
+  "currentPrice" : 3572.0,
+  "alertPrice" : 3096.0,
+  "distance" : 13.325867861142218,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "NH",
+  "currentPrice" : 1995.5,
+  "alertPrice" : 1730.0,
+  "distance" : 13.304936106239037,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "MEDANTA",
+  "currentPrice" : 1342.0,
+  "alertPrice" : 1206.0,
+  "distance" : 10.134128166915051,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "EMCURE",
+  "currentPrice" : 1939.8,
+  "alertPrice" : 1680.0,
+  "distance" : 13.39313331271265,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "ACUTAAS",
+  "currentPrice" : 3672.3,
+  "alertPrice" : 3300.0,
+  "distance" : 10.138060615962754,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "LALPATHLAB",
+  "currentPrice" : 1703.0,
+  "alertPrice" : 1507.0,
+  "distance" : 11.509101585437463,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "CUPID",
+  "currentPrice" : 211.5,
+  "alertPrice" : 152.0,
+  "distance" : 28.132387706855795,
+  "status" : "Far",
+  "sheet" : "Health"
+}, {
+  "symbol" : "NEULANDLAB",
+  "currentPrice" : 18880.0,
+  "alertPrice" : 16125.0,
+  "distance" : 14.592161016949154,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "ASTRAZEN",
+  "currentPrice" : 8080.0,
+  "alertPrice" : 7777.0,
+  "distance" : 3.75,
+  "status" : "Near",
+  "sheet" : "Health"
+}, {
+  "symbol" : "CAPLIPOINT",
+  "currentPrice" : 2606.0,
+  "alertPrice" : 2226.0,
+  "distance" : 14.581734458940906,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "POLYMED",
+  "currentPrice" : 1698.0,
+  "alertPrice" : 1503.0,
+  "distance" : 11.484098939929329,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "SHILPAMED",
+  "currentPrice" : 640.0,
+  "alertPrice" : 493.0,
+  "distance" : 22.96875,
+  "status" : "Far",
+  "sheet" : "Health"
+}, {
+  "symbol" : "ASTERDM",
+  "currentPrice" : 816.55,
+  "alertPrice" : 723.0,
+  "distance" : 11.456738717776004,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "DIVISLAB",
+  "currentPrice" : 7330.0,
+  "alertPrice" : 6200.0,
+  "distance" : 15.416098226466577,
+  "status" : "Far",
+  "sheet" : "Health"
+}, {
+  "symbol" : "CIPLA",
+  "currentPrice" : 1433.0,
+  "alertPrice" : 1377.0,
+  "distance" : 3.907885554780181,
+  "status" : "Near",
+  "sheet" : "Health"
+}, {
+  "symbol" : "MANKIND",
+  "currentPrice" : 2579.0,
+  "alertPrice" : 2364.0,
+  "distance" : 8.336564559906941,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "ZYDUSLIFE",
+  "currentPrice" : 1143.7,
+  "alertPrice" : 1019.0,
+  "distance" : 10.90320888344846,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "DRREDDY",
+  "currentPrice" : 1206.9,
+  "alertPrice" : 1158.0,
+  "distance" : 4.051702709420837,
+  "status" : "Near",
+  "sheet" : "Health"
+}, {
+  "symbol" : "LAURUSLABS",
+  "currentPrice" : 1593.0,
+  "alertPrice" : 1096.0,
+  "distance" : 31.198995605775266,
+  "status" : "Far",
+  "sheet" : "Health"
+}, {
+  "symbol" : "ALKEM",
+  "currentPrice" : 5689.0,
+  "alertPrice" : 5269.0,
+  "distance" : 7.382668307259624,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "GLENMARK",
+  "currentPrice" : 2242.1,
+  "alertPrice" : 2016.0,
+  "distance" : 10.084295972525753,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "ABBOTINDIA",
+  "currentPrice" : 28775.0,
+  "alertPrice" : 26264.0,
+  "distance" : 8.72632493483927,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "IPCALAB",
+  "currentPrice" : 1794.3,
+  "alertPrice" : 1599.0,
+  "distance" : 10.884467480354454,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "JBCHEPHARM",
+  "currentPrice" : 2416.1,
+  "alertPrice" : 2091.0,
+  "distance" : 13.455568892016057,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "WOCKPHARMA",
+  "currentPrice" : 1891.9,
+  "alertPrice" : 1598.0,
+  "distance" : 15.534647708652683,
+  "status" : "Far",
+  "sheet" : "Health"
+}, {
+  "symbol" : "SAILIFE",
+  "currentPrice" : 1291.7,
+  "alertPrice" : 1102.0,
+  "distance" : 14.686072617480841,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "RUBICON",
+  "currentPrice" : 1519.5,
+  "alertPrice" : 1169.0,
+  "distance" : 23.066798288910825,
+  "status" : "Far",
+  "sheet" : "Health"
+}, {
+  "symbol" : "ERIS",
+  "currentPrice" : 1470.0,
+  "alertPrice" : 1411.0,
+  "distance" : 4.013605442176871,
+  "status" : "Near",
+  "sheet" : "Health"
+}, {
+  "symbol" : "PFIZER",
+  "currentPrice" : 4592.0,
+  "alertPrice" : 3911.0,
+  "distance" : 14.830139372822298,
+  "status" : "Watch",
+  "sheet" : "Health"
+}, {
+  "symbol" : "GRANULES",
+  "currentPrice" : 876.0,
+  "alertPrice" : 724.0,
+  "distance" : 17.35159817351598,
+  "status" : "Far",
+  "sheet" : "Health"
+}, {
+  "symbol" : "NATIONALUM",
+  "currentPrice" : 342.7,
+  "alertPrice" : 291.0,
+  "distance" : 15.086081120513567,
+  "status" : "Far",
+  "sheet" : "Metal"
+}, {
+  "symbol" : "VEDL",
+  "currentPrice" : 264.95,
+  "alertPrice" : 249.0,
+  "distance" : 6.020003774297033,
+  "status" : "Watch",
+  "sheet" : "Metal"
+}, {
+  "symbol" : "HINDZINC",
+  "currentPrice" : 535.0,
+  "alertPrice" : 483.0,
+  "distance" : 9.719626168224298,
+  "status" : "Watch",
+  "sheet" : "Metal"
+}, {
+  "symbol" : "HINDALCO",
+  "currentPrice" : 955.0,
+  "alertPrice" : 862.0,
+  "distance" : 9.738219895287958,
+  "status" : "Watch",
+  "sheet" : "Metal"
+}, {
+  "symbol" : "JINDALSTEL",
+  "currentPrice" : 1048.0,
+  "alertPrice" : 947.0,
+  "distance" : 9.63740458015267,
+  "status" : "Watch",
+  "sheet" : "Metal"
+}, {
+  "symbol" : "TATASTEEL",
+  "currentPrice" : 187.3,
+  "alertPrice" : 175.0,
+  "distance" : 6.567004805125473,
+  "status" : "Watch",
+  "sheet" : "Metal"
+}, {
+  "symbol" : "SAIL",
+  "currentPrice" : 163.89,
+  "alertPrice" : 154.0,
+  "distance" : 6.034535359082303,
+  "status" : "Watch",
+  "sheet" : "Metal"
+}, {
+  "symbol" : "JSWSTEEL",
+  "currentPrice" : 1268.8,
+  "alertPrice" : 1040.0,
+  "distance" : 18.032786885245898,
+  "status" : "Far",
+  "sheet" : "Metal"
+}, {
+  "symbol" : "HINDCOPPER",
+  "currentPrice" : 493.1,
+  "alertPrice" : 470.0,
+  "distance" : 4.6846481443926224,
+  "status" : "Near",
+  "sheet" : "Metal"
+}, {
+  "symbol" : "JSL",
+  "currentPrice" : 740.0,
+  "alertPrice" : 691.0,
+  "distance" : 6.621621621621622,
+  "status" : "Watch",
+  "sheet" : "Metal"
+}, {
+  "symbol" : "LLOYDSME",
+  "currentPrice" : 1933.0,
+  "alertPrice" : 1565.0,
+  "distance" : 19.037765131919297,
+  "status" : "Far",
+  "sheet" : "Metal"
+}, {
+  "symbol" : "APLAPOLLO",
+  "currentPrice" : 1816.5,
+  "alertPrice" : 1603.0,
+  "distance" : 11.753371868978805,
+  "status" : "Watch",
+  "sheet" : "Metal"
+}, {
+  "symbol" : "GRAVITA",
+  "currentPrice" : 1802.0,
+  "alertPrice" : 1465.0,
+  "distance" : 18.70144284128746,
+  "status" : "Far",
+  "sheet" : "Metal"
+}, {
+  "symbol" : "JSWENERGY",
+  "currentPrice" : 565.0,
+  "alertPrice" : 506.0,
+  "distance" : 10.442477876106194,
+  "status" : "Watch",
+  "sheet" : "Energy"
+}, {
+  "symbol" : "SUZLON",
+  "currentPrice" : 53.17,
+  "alertPrice" : 51.0,
+  "distance" : 4.081248824525111,
+  "status" : "Near",
+  "sheet" : "Energy"
+}, {
+  "symbol" : "KIRLOSENG",
+  "currentPrice" : 2222.0,
+  "alertPrice" : 2047.0,
+  "distance" : 7.875787578757876,
+  "status" : "Watch",
+  "sheet" : "Energy"
+}, {
+  "symbol" : "INOXWIND",
+  "currentPrice" : 79.0,
+  "alertPrice" : 55.0,
+  "distance" : 30.37974683544304,
+  "status" : "Far",
+  "sheet" : "Energy"
+}, {
+  "symbol" : "RELIANCE",
+  "currentPrice" : 1304.6,
+  "alertPrice" : 1256.0,
+  "distance" : 3.725279779242673,
+  "status" : "Near",
+  "sheet" : "Energy"
+}, {
+  "symbol" : "ONGC",
+  "currentPrice" : 249.75,
+  "alertPrice" : 232.0,
+  "distance" : 7.107107107107106,
+  "status" : "Watch",
+  "sheet" : "Energy"
+}, {
+  "symbol" : "RPEL",
+  "currentPrice" : 1264.3,
+  "alertPrice" : 1060.0,
+  "distance" : 16.159139444752032,
+  "status" : "Far",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "KPIGREEN",
+  "currentPrice" : 406.6,
+  "alertPrice" : 345.0,
+  "distance" : 15.150024594195774,
+  "status" : "Far",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "PAISALO",
+  "currentPrice" : 72.0,
+  "alertPrice" : 55.0,
+  "distance" : 23.61111111111111,
+  "status" : "Far",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "BLS",
+  "currentPrice" : 235.25,
+  "alertPrice" : 221.0,
+  "distance" : 6.057385759829968,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "MANORAMA",
+  "currentPrice" : 1607.1,
+  "alertPrice" : 1496.0,
+  "distance" : 6.91307323750855,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "544224",
+  "currentPrice" : 1390.05,
+  "alertPrice" : 1234.0,
+  "distance" : 11.226214884356676,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "SEAMECLTD",
+  "currentPrice" : 1385.0,
+  "alertPrice" : 1246.0,
+  "distance" : 10.036101083032491,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "KERNEX",
+  "currentPrice" : 2138.0,
+  "alertPrice" : 1652.0,
+  "distance" : 22.73152478952292,
+  "status" : "Far",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "NPST",
+  "currentPrice" : 1560.0,
+  "alertPrice" : 1507.0,
+  "distance" : 3.3974358974358974,
+  "status" : "Near",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "DEEPINDS",
+  "currentPrice" : 469.75,
+  "alertPrice" : 426.0,
+  "distance" : 9.313464608834487,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "MONARCH",
+  "currentPrice" : 356.85,
+  "alertPrice" : 344.0,
+  "distance" : 3.6009527812806565,
+  "status" : "Near",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "GENUSPOWER",
+  "currentPrice" : 314.8,
+  "alertPrice" : 285.0,
+  "distance" : 9.466327827191872,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "TIPSMUSIC",
+  "currentPrice" : 713.0,
+  "alertPrice" : 642.0,
+  "distance" : 9.957924263674615,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "IXIGO",
+  "currentPrice" : 195.5,
+  "alertPrice" : 185.0,
+  "distance" : 5.3708439897698215,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "SPARC",
+  "currentPrice" : 224.61,
+  "alertPrice" : 212.0,
+  "distance" : 5.61417568229376,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "INDIASHLTR",
+  "currentPrice" : 811.0,
+  "alertPrice" : 800.0,
+  "distance" : 1.3563501849568433,
+  "status" : "Near",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "V2RETAIL",
+  "currentPrice" : 224.15,
+  "alertPrice" : 207.0,
+  "distance" : 7.651126477805044,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "YATHARTH",
+  "currentPrice" : 858.0,
+  "alertPrice" : 686.0,
+  "distance" : 20.04662004662005,
+  "status" : "Far",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "PNGJL",
+  "currentPrice" : 602.9,
+  "alertPrice" : 510.0,
+  "distance" : 15.408857190247135,
+  "status" : "Far",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "MAHLIFE",
+  "currentPrice" : 370.0,
+  "alertPrice" : 363.0,
+  "distance" : 1.891891891891892,
+  "status" : "Near",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "PRICOLLTD",
+  "currentPrice" : 611.0,
+  "alertPrice" : 530.0,
+  "distance" : 13.2569558101473,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "JSLL",
+  "currentPrice" : 575.15,
+  "alertPrice" : 472.0,
+  "distance" : 17.934451882117706,
+  "status" : "Far",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "EBGNG",
+  "currentPrice" : 542.0,
+  "alertPrice" : 517.0,
+  "distance" : 4.612546125461255,
+  "status" : "Near",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "PRECWIRE",
+  "currentPrice" : 363.0,
+  "alertPrice" : 344.0,
+  "distance" : 5.234159779614325,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "VIKRAMSOLR",
+  "currentPrice" : 187.25,
+  "alertPrice" : 170.0,
+  "distance" : 9.212283044058744,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "GOKULAGRO",
+  "currentPrice" : 213.2,
+  "alertPrice" : 190.0,
+  "distance" : 10.881801125703559,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "SKIPPER",
+  "currentPrice" : 545.95,
+  "alertPrice" : 457.0,
+  "distance" : 16.29270079677627,
+  "status" : "Far",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "ASHAPURMIN",
+  "currentPrice" : 688.0,
+  "alertPrice" : 652.0,
+  "distance" : 5.232558139534884,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "526433",
+  "currentPrice" : 4148.25,
+  "alertPrice" : 3200.0,
+  "distance" : 22.859036943289336,
+  "status" : "Far",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "CCAVENUE",
+  "currentPrice" : 17.07,
+  "alertPrice" : 13.73,
+  "distance" : 19.566490919742236,
+  "status" : "Far",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "FEDFINA",
+  "currentPrice" : 158.52,
+  "alertPrice" : 135.77,
+  "distance" : 14.351501387837494,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "MASFIN",
+  "currentPrice" : 321.0,
+  "alertPrice" : 287.0,
+  "distance" : 10.59190031152648,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "KSHINTL",
+  "currentPrice" : 905.5,
+  "alertPrice" : 685.0,
+  "distance" : 24.35118718939812,
+  "status" : "Far",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "KRISHANA",
+  "currentPrice" : 143.0,
+  "alertPrice" : 106.0,
+  "distance" : 25.874125874125873,
+  "status" : "Far",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "WABAG",
+  "currentPrice" : 2099.0,
+  "alertPrice" : 1875.0,
+  "distance" : 10.671748451643639,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "GRAVITA",
+  "currentPrice" : 1802.0,
+  "alertPrice" : 1678.0,
+  "distance" : 6.8812430632630415,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "KRN",
+  "currentPrice" : 1253.0,
+  "alertPrice" : 1020.0,
+  "distance" : 18.595371109337588,
+  "status" : "Far",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "VINATIORGA",
+  "currentPrice" : 1330.0,
+  "alertPrice" : 1239.0,
+  "distance" : 6.842105263157896,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "MOLDTKPAC",
+  "currentPrice" : 697.0,
+  "alertPrice" : 531.0,
+  "distance" : 23.81635581061693,
+  "status" : "Far",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "PCJEWELLER",
+  "currentPrice" : 10.05,
+  "alertPrice" : 8.69,
+  "distance" : 13.532338308457723,
+  "status" : "Watch",
+  "sheet" : "SmallCap"
+}, {
+  "symbol" : "LODHA",
+  "currentPrice" : 1200.0,
+  "alertPrice" : 1040.0,
+  "distance" : 13.333333333333334,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "TRENT",
+  "currentPrice" : 2895.2,
+  "alertPrice" : 2711.0,
+  "distance" : 6.3622547665100795,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "CUMMINSIND",
+  "currentPrice" : 5586.0,
+  "alertPrice" : 5000.0,
+  "distance" : 10.490511994271392,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "BHARTIARTL",
+  "currentPrice" : 1949.0,
+  "alertPrice" : 1792.0,
+  "distance" : 8.05541303232427,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "ADANIPORTS",
+  "currentPrice" : 1845.6,
+  "alertPrice" : 1552.0,
+  "distance" : 15.90810576506285,
+  "status" : "Far",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "TITAN",
+  "currentPrice" : 4687.1,
+  "alertPrice" : 3963.0,
+  "distance" : 15.448784962983513,
+  "status" : "Far",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "INDHOTEL",
+  "currentPrice" : 731.75,
+  "alertPrice" : 655.0,
+  "distance" : 10.488554834301333,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "PHOENIXLTD",
+  "currentPrice" : 2080.0,
+  "alertPrice" : 1643.0,
+  "distance" : 21.009615384615383,
+  "status" : "Far",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "PRESTIGE",
+  "currentPrice" : 1710.9,
+  "alertPrice" : 1460.0,
+  "distance" : 14.664796306037761,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "IRCTC",
+  "currentPrice" : 499.65,
+  "alertPrice" : 484.0,
+  "distance" : 3.1321925347743376,
+  "status" : "Near",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "KALYANKJIL",
+  "currentPrice" : 578.5,
+  "alertPrice" : 460.0,
+  "distance" : 20.48401037165082,
+  "status" : "Far",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "DELHIVERY",
+  "currentPrice" : 485.05,
+  "alertPrice" : 462.0,
+  "distance" : 4.752087413668696,
+  "status" : "Near",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "URBANCO",
+  "currentPrice" : 132.8,
+  "alertPrice" : 121.0,
+  "distance" : 8.885542168674707,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "ANANTRAJ",
+  "currentPrice" : 607.9,
+  "alertPrice" : 511.0,
+  "distance" : 15.940121730547785,
+  "status" : "Far",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "THANGAMAYL",
+  "currentPrice" : 6455.0,
+  "alertPrice" : 5750.0,
+  "distance" : 10.921766072811774,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "CHALET",
+  "currentPrice" : 840.0,
+  "alertPrice" : 781.0,
+  "distance" : 7.023809523809524,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "BRIGADE",
+  "currentPrice" : 568.55,
+  "alertPrice" : 478.0,
+  "distance" : 15.9264796411925,
+  "status" : "Far",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "TBOTEK",
+  "currentPrice" : 1469.0,
+  "alertPrice" : 1380.0,
+  "distance" : 6.05854322668482,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "SOBHA",
+  "currentPrice" : 1453.5,
+  "alertPrice" : 1280.0,
+  "distance" : 11.936704506363949,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "PRIVISCL",
+  "currentPrice" : 3699.9,
+  "alertPrice" : 2688.0,
+  "distance" : 27.34938782129247,
+  "status" : "Far",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "SHADOWFAX",
+  "currentPrice" : 220.44,
+  "alertPrice" : 185.0,
+  "distance" : 16.076937035020865,
+  "status" : "Far",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "NAZARA",
+  "currentPrice" : 310.0,
+  "alertPrice" : 291.0,
+  "distance" : 6.129032258064516,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "INDIAMART",
+  "currentPrice" : 1908.0,
+  "alertPrice" : 1330.0,
+  "distance" : 30.29350104821803,
+  "status" : "Far",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "BLS",
+  "currentPrice" : 235.25,
+  "alertPrice" : 212.0,
+  "distance" : 9.883103081827842,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "WEWORK",
+  "currentPrice" : 725.1,
+  "alertPrice" : 631.0,
+  "distance" : 12.977520342021792,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "RAILTEL",
+  "currentPrice" : 294.75,
+  "alertPrice" : 292.0,
+  "distance" : 0.9329940627650551,
+  "status" : "Near",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "ADANIPOWER",
+  "currentPrice" : 220.33,
+  "alertPrice" : 190.0,
+  "distance" : 13.765715063767988,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "JSWINFRA",
+  "currentPrice" : 345.5,
+  "alertPrice" : 295.0,
+  "distance" : 14.616497829232996,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "DLF",
+  "currentPrice" : 672.0,
+  "alertPrice" : 638.0,
+  "distance" : 5.059523809523809,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "LT",
+  "currentPrice" : 3852.0,
+  "alertPrice" : 3738.0,
+  "distance" : 2.959501557632399,
+  "status" : "Near",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "POWERGRID",
+  "currentPrice" : 286.35,
+  "alertPrice" : 252.0,
+  "distance" : 11.995809324253543,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "OBEROIRLTY",
+  "currentPrice" : 1884.9,
+  "alertPrice" : 1726.0,
+  "distance" : 8.430155445912254,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "TATAPOWER",
+  "currentPrice" : 381.35,
+  "alertPrice" : 340.0,
+  "distance" : 10.84305755867314,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "TMCV",
+  "currentPrice" : 412.95,
+  "alertPrice" : 408.0,
+  "distance" : 1.1986923356338512,
+  "status" : "Near",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "AEGISLOG",
+  "currentPrice" : 1320.7,
+  "alertPrice" : 1101.0,
+  "distance" : 16.63511774059211,
+  "status" : "Far",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "AEGISVOPAK",
+  "currentPrice" : 286.84,
+  "alertPrice" : 252.0,
+  "distance" : 12.14614419188397,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "GESHIP",
+  "currentPrice" : 1411.9,
+  "alertPrice" : 1178.0,
+  "distance" : 16.566329060131743,
+  "status" : "Far",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "COALINDIA",
+  "currentPrice" : 431.0,
+  "alertPrice" : 409.0,
+  "distance" : 5.104408352668213,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+}, {
+  "symbol" : "PIDILITIND",
+  "currentPrice" : 1597.0,
+  "alertPrice" : 1375.0,
+  "distance" : 13.901064495929868,
+  "status" : "Watch",
+  "sheet" : "Miscellaneous"
+} ]
