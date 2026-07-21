@@ -10,7 +10,9 @@ on:
     # 10:00–14:40 IST every 20 minutes
     - cron: '0,20,40 4-8 * * 1-5'
 
+    # 17:00 IST
     - cron: '30 11 * * 1-5'
+
 permissions:
   contents: write
 
@@ -26,14 +28,13 @@ jobs:
       CHAT_IDS: ${{ secrets.CHAT_IDS }}
 
     steps:
-
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
-          distribution: temurinz
+          distribution: temurin
           java-version: '17'
           cache: maven
 
@@ -42,14 +43,48 @@ jobs:
 
       - name: Run Application
         run: java -jar target/*.jar
-               - name: Commit dashboard data
-               run: |
-                 git config user.name "github-actions[bot]"
-                 git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-                 
-                 git add dashboard/dashboard-data.json
-                 
-                 git diff --cached --quiet && exit 0
-                 
-                 git commit -m "Update dashboard data"
-                 git push
+
+      - name: Verify dashboard JSON
+        run: |
+          echo "========== CURRENT DIRECTORY =========="
+          pwd
+
+          echo ""
+          echo "========== DASHBOARD FOLDER =========="
+          ls -la dashboard || true
+
+          echo ""
+          echo "========== JSON CONTENT =========="
+          cat dashboard/dashboard-data.json || true
+
+      - name: Check Git Status
+        run: |
+          echo "========== GIT STATUS =========="
+          git status
+
+          echo ""
+          echo "========== GIT DIFF =========="
+          git diff dashboard/dashboard-data.json || true
+
+      - name: Commit dashboard data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add dashboard/dashboard-data.json
+
+          echo "========== AFTER GIT ADD =========="
+          git status
+
+          echo ""
+          echo "========== STAGED DIFF =========="
+          git diff --cached
+
+          if git diff --cached --quiet; then
+            echo "No dashboard changes detected."
+            exit 0
+          fi
+
+          git commit -m "Update dashboard data"
+
+          git push
