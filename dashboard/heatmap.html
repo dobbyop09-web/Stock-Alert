@@ -439,12 +439,15 @@
             .on("mousemove", (e, d) => {
                 const c = d.data.changePercent;
                 const cls = c >= 0 ? "t-pos" : "t-neg";
+                const ca = d.data.distance;
+                const clss = ca >= 0 ? "t-pos" : "t-neg";
                 tooltip.innerHTML = `
                     <div class="t-symbol">${d.data.symbol}</div>
                     <div class="t-row"><span>Sector</span><span>${d.data.sheet || "-"}</span></div>
-                    <div class="t-row"><span>Price</span><span>${d.data.price !== undefined ? "₹"+fmtNum(d.data.price) : "-"}</span></div>
+                    <div class="t-row"><span>Price</span><span>${d.data.currentPrice !== undefined ? "₹"+fmtNum(d.data.currentPrice) : "-"}</span></div>
+                     <div class="t-row"><span>AlertPrice</span><span>${d.data.alertPrice !== undefined ? "₹"+fmtNum(d.data.alertPrice) : "-"}</span></div>
                     <div class="t-row"><span>Change</span><span class="${cls}">${Number(c).toFixed(2)}%</span></div>
-                    <div class="t-row"><span>Market Cap</span><span>${d.data.marketCap ? "₹"+fmtNum(d.data.marketCap) : "-"}</span></div>
+                    <div class="t-row"><span>ChangeAlert</span><span class="${clss}">${Number(ca).toFixed(2)}%</span></div>
                 `;
                 tooltip.style.opacity = 1;
                 tooltip.style.left = (e.clientX + 16) + "px";
