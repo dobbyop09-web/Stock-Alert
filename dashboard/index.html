@@ -134,14 +134,15 @@
     </select>
 
     <button id="sortBtn">Sort by closest to alert</button>
-
+    <button id="sortMcBtn">
+      Market Cap ↓
+    </button>
   </div>
 
   <div class="paste" id="pasteBox">
     <textarea id="pasteArea" placeholder="Paste rows copied from Google Sheets (Symbol, Current price, Alert price) — tab or comma separated, one row per line"></textarea>
     <div class="row">
       <button class="primary" id="importBtn">Import</button>
-
     </div>
 
     <p class="hint">Select your Symbol / Current Price / Alert Price columns in Sheets, copy, then paste here.</p>
@@ -352,6 +353,25 @@ document.getElementById("searchBox")
 
 document.getElementById("sheetFilter")
     .addEventListener("change", applyFilters);
+let marketCapAscending = false;
+const mcBtn = document.getElementById("sortMcBtn");
+
+mcBtn.addEventListener("click", () => {
+
+    rows.sort((a, b) =>
+        marketCapAscending
+            ? Number(a.marketCap || 0) - Number(b.marketCap || 0)   // Ascending
+            : Number(b.marketCap || 0) - Number(a.marketCap || 0)   // Descending
+    );
+
+    marketCapAscending = !marketCapAscending;
+
+    mcBtn.textContent = marketCapAscending
+        ? "Market Cap ↑"
+        : "Market Cap ↓";
+
+    render();
+});
 
 </script>
 </body>
