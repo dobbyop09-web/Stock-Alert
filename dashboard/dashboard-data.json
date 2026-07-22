@@ -2181,12 +2181,12 @@
 }, {
   "symbol" : "TIPSMUSIC",
   "currentPrice" : 625.7,
-  "alertPrice" : 642.0,
+  "alertPrice" : 548.0,
   "previousClose" : 712.2,
   "marketCap" : 7.998417111E+10,
   "changePercent" : -13.82451654147355,
-  "distance" : -2.6050823078152394,
-  "status" : "Triggered",
+  "distance" : 12.418091737254281,
+  "status" : "Watch",
   "sheet" : "SmallCap"
 }, {
   "symbol" : "IXIGO",
@@ -2211,12 +2211,12 @@
 }, {
   "symbol" : "INDIASHLTR",
   "currentPrice" : 770.0,
-  "alertPrice" : 800.0,
+  "alertPrice" : 760.0,
   "previousClose" : 815.15,
   "marketCap" : 84127669725,
   "changePercent" : -5.863636363636361,
-  "distance" : -3.896103896103896,
-  "status" : "Triggered",
+  "distance" : 1.2987012987012987,
+  "status" : "Near",
   "sheet" : "SmallCap"
 }, {
   "symbol" : "V2RETAIL",
@@ -2711,12 +2711,12 @@
 }, {
   "symbol" : "RAILTEL",
   "currentPrice" : 290.0,
-  "alertPrice" : 292.0,
+  "alertPrice" : 248.0,
   "previousClose" : 294.15,
   "marketCap" : 9.309638E+10,
   "changePercent" : -1.431034482758613,
-  "distance" : -0.6896551724137931,
-  "status" : "Triggered",
+  "distance" : 14.482758620689657,
+  "status" : "Watch",
   "sheet" : "Miscellaneous"
 }, {
   "symbol" : "ADANIPOWER",
@@ -2791,12 +2791,12 @@
 }, {
   "symbol" : "TMCV",
   "currentPrice" : 405.5,
-  "alertPrice" : 408.0,
+  "alertPrice" : 384.0,
   "previousClose" : 411.75,
   "marketCap" : 1492599654624,
   "changePercent" : -1.5413070283600494,
-  "distance" : -0.6165228113440198,
-  "status" : "Triggered",
+  "distance" : 5.30209617755857,
+  "status" : "Watch",
   "sheet" : "Miscellaneous"
 }, {
   "symbol" : "AEGISLOG",
