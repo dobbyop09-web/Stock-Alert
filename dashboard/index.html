@@ -104,22 +104,37 @@
   <div class="stats" id="stats"></div>
 
   <div class="toolbar">
+
     <input
             type="text"
             id="searchBox"
-            placeholder="Search symbol..."
+            placeholder="Search symbol or sector..."
             style="
-      flex:1;
-      max-width:250px;
-      background:var(--panel);
-      color:var(--text);
-      border:1px solid var(--line);
-      border-radius:5px;
-      padding:7px 10px;
-      font-size:12px;
-    "
+            flex:1;
+            max-width:250px;
+            background:var(--panel);
+            color:var(--text);
+            border:1px solid var(--line);
+            border-radius:5px;
+            padding:7px 10px;
+            font-size:12px;
+        "
     >
+
+    <select id="sheetFilter"
+            style="
+            background:var(--panel);
+            color:var(--text);
+            border:1px solid var(--line);
+            border-radius:5px;
+            padding:7px 10px;
+            font-size:12px;
+        ">
+      <option value="">All Sectors</option>
+    </select>
+
     <button id="sortBtn">Sort by closest to alert</button>
+
   </div>
 
   <div class="paste" id="pasteBox">
@@ -154,59 +169,6 @@
   function fmtPct(n) {
       return (n > 0 ? "+" : "") + Number(n).toFixed(1) + "%";
   }
-  function heatColor(distance){
-
-    if(distance <= 0)
-        return "#8B0000";
-
-    if(distance <= 5)
-        return "#c0392b";
-
-    if(distance <= 10)
-        return "#d35400";
-
-    if(distance <= 15)
-        return "#7f8c8d";
-
-    if(distance <= 20)
-        return "#2ecc71";
-
-    return "#1e8449";
-}
-function renderHeatmap(){
-
-    const heatmap = document.getElementById("heatmap");
-
-    heatmap.innerHTML = "";
-
-    rows.forEach(stock=>{
-
-        const tile=document.createElement("div");
-
-        tile.className="tile";
-
-        tile.style.background=heatColor(stock.distance);
-
-        tile.innerHTML=`
-            <div class="symbol">${stock.symbol}</div>
-
-            <div class="price">₹${stock.currentPrice}</div>
-
-            <div class="distance">${stock.distance.toFixed(2)}%</div>
-        `;
-
-        tile.onclick=()=>{
-            window.open(
-                `https://www.screener.in/company/${stock.symbol}/consolidated/`,
-                "_blank"
-            );
-        };
-
-        heatmap.appendChild(tile);
-
-    });
-
-}
 
   function render() {
 
@@ -289,7 +251,66 @@ function renderHeatmap(){
           </div>
       `;
   }
+  function populateSheetFilter() {
 
+    const select = document.getElementById("sheetFilter");
+
+    const sectors = [...new Set(
+        allRows
+            .map(stock => stock.sheet)
+            .filter(Boolean)
+    )].sort();
+
+    select.innerHTML =
+        '<option value="">All Sectors</option>';
+
+    sectors.forEach(sector => {
+
+        const option = document.createElement("option");
+
+        option.value = sector;
+
+        option.textContent = sector;
+
+        select.appendChild(option);
+
+    });
+
+}
+function applyFilters() {
+
+    const text =
+        document.getElementById("searchBox")
+            .value
+            .trim()
+            .toUpperCase();
+
+    const sheet =
+        document.getElementById("sheetFilter").value;
+
+    rows = allRows.filter(stock => {
+
+        const matchesSearch =
+            text === "" ||
+
+            stock.symbol.toUpperCase().includes(text) ||
+
+            (stock.sheet ?? "")
+                .toUpperCase()
+                .includes(text);
+
+        const matchesSheet =
+            sheet === "" ||
+
+            stock.sheet === sheet;
+
+        return matchesSearch && matchesSheet;
+
+    });
+
+    render();
+
+}
   async function loadDashboard() {
 
       try {
@@ -298,6 +319,7 @@ function renderHeatmap(){
 
         allRows = await response.json();
         rows = [...allRows];
+        populateSheetFilter();
           document.getElementById("subline").innerText =
               "Last updated : " + new Date().toLocaleString();
 
@@ -325,20 +347,11 @@ function renderHeatmap(){
 
     render();
 });
-  document.getElementById("searchBox").addEventListener("input", function () {
+document.getElementById("searchBox")
+    .addEventListener("input", applyFilters);
 
-    const text = this.value.trim().toUpperCase();
-    if (text === "") {
-        rows = [...allRows];
-    } else {
-        rows = allRows.filter(stock =>
-              stock.symbol.toUpperCase().includes(text) ||
-        (stock.sheet ?? "").toUpperCase().includes(text)
-        );
-    }
-
-    render();
-});
+document.getElementById("sheetFilter")
+    .addEventListener("change", applyFilters);
 
 </script>
 </body>

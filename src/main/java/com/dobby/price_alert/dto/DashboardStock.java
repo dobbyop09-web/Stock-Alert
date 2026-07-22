@@ -15,6 +15,9 @@ public class DashboardStock {
     private String symbol;
     private BigDecimal currentPrice;
     private BigDecimal alertPrice;
+    private BigDecimal previousClose;
+    private BigDecimal marketCap;
+    private BigDecimal changePercent;
     private BigDecimal distance;
     private String status;
     private String sheet;

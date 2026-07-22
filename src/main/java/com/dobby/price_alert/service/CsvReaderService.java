@@ -47,7 +47,8 @@ public class CsvReaderService {
             double current =Double.parseDouble(record.get("Current Price"));
             double alert = Double.parseDouble(record.get("Alert Price"));
             double fib = Double.parseDouble(record.get("FIB"));
-
+            double prevClose = Double.parseDouble(record.get("PrevClose"));
+            double marketCap = Double.parseDouble(record.get("MarketCap"));
             String symbol = record.get("Symbol");
 
 
@@ -60,7 +61,7 @@ public class CsvReaderService {
 
             }
             double distance = ((current - alert) / current) * 100;
-
+            double changePerc = (current - prevClose) / current * 100;
             String status;
 
             if (distance <= 0) {
@@ -81,6 +82,9 @@ public class CsvReaderService {
                             .distance(BigDecimal.valueOf(distance))
                             .status(status)
                             .sheet(sheetConfig.getName())
+                            .previousClose(BigDecimal.valueOf(prevClose))
+                            .marketCap(BigDecimal.valueOf(marketCap))
+                            .changePercent(BigDecimal.valueOf(changePerc))
                             .build()
             );
         }
