@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Market Heatmap</title>
+
+    <style>
+        :root{
+            --bg:#0A0D12;
+            --panel:#12161D;
+            --panel2:#171C24;
+            --line:#232A35;
+            --text:#E6EAF0;
+            --muted:#7A8494;
+            --sans:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+        }
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            background:var(--bg);
+            color:var(--text);
+            font-family:var(--sans);
+        }
+
+        .wrap{
+            max-width:1500px;
+            margin:auto;
+            padding:22px;
+        }
+
+        .topbar{
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            border-bottom:1px solid var(--line);
+            padding-bottom:16px;
+            margin-bottom:20px;
+        }
+
+        h1{
+            font-size:16px;
+            color:var(--text);
+        }
+
+        .sub{
+            margin-top:6px;
+            color:var(--muted);
+            font-size:12px;
+        }
+
+        .navbar{
+            display:flex;
+            gap:8px;
+        }
+
+        .navbar a{
+            text-decoration:none;
+            color:var(--muted);
+            background:var(--panel);
+            border:1px solid var(--line);
+            padding:8px 14px;
+            border-radius:6px;
+            font-size:12px;
+        }
+
+        .navbar a.active{
+            background:#1B2A2E;
+            border-color:#2DD4BF;
+            color:#2DD4BF;
+        }
+
+        .toolbar{
+            margin:18px 0 22px;
+        }
+
+        .toolbar input{
+            width:280px;
+            padding:10px;
+            border-radius:6px;
+            border:1px solid var(--line);
+            background:var(--panel);
+            color:white;
+        }
+
+        .heatmap{
+
+            display:grid;
+
+            grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+
+            gap:8px;
+
+        }
+
+        .tile{
+
+            aspect-ratio:1;
+
+            border-radius:6px;
+
+            padding:10px;
+
+            display:flex;
+
+            flex-direction:column;
+
+            justify-content:space-between;
+
+            cursor:pointer;
+
+            transition:.2s;
+
+            border:1px solid rgba(255,255,255,.08);
+
+        }
+
+        .tile:hover{
+
+            transform:scale(1.03);
+
+            z-index:2;
+
+        }
+
+        .symbol{
+
+            font-weight:bold;
+
+            font-size:18px;
+
+        }
+
+        .price{
+
+            font-size:24px;
+
+            font-weight:600;
+
+        }
+
+        .distance{
+
+            font-size:15px;
+
+        }
+
+        .sheet{
+
+            font-size:11px;
+
+            opacity:.8;
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="wrap">
+
+    <div class="topbar">
+
+        <div>
+
+            <h1>Market Heatmap</h1>
+
+            <p class="sub" id="updated">
+                Loading...
+            </p>
+
+        </div>
+
+        <nav class="navbar">
+
+            <a href="index.html">Dashboard</a>
+
+            <a href="heatmap.html" class="active">Heat Map</a>
+
+        </nav>
+
+    </div>
+
+    <div class="toolbar">
+
+        <input
+                id="search"
+                placeholder="Search symbol or sheet..."
+        >
+
+    </div>
+
+    <div id="heatmap" class="heatmap"></div>
+
+</div>
+
+<script>
+
+    let rows=[];
+    let allRows=[];
+
+    function color(distance){
+
+        if(distance<=0)
+            return "#991B1B";
+
+        if(distance<=5)
+            return "#DC2626";
+
+        if(distance<=10)
+            return "#EA580C";
+
+        if(distance<=15)
+            return "#6B7280";
+
+        if(distance<=20)
+            return "#22C55E";
+
+        return "#15803D";
+
+    }
+
+    function render(){
+
+        const map=document.getElementById("heatmap");
+
+        map.innerHTML="";
+
+        rows.forEach(stock=>{
+
+            const tile=document.createElement("div");
+
+            tile.className="tile";
+
+            tile.style.background=color(stock.distance);
+
+            tile.innerHTML=`
+
+                <div>
+
+                    <div class="symbol">${stock.symbol}</div>
+
+                    <div class="sheet">${stock.sheet}</div>
+
+                </div>
+
+                <div>
+
+                    <div class="price">₹${stock.currentPrice}</div>
+
+                    <div class="distance">${stock.distance.toFixed(2)}%</div>
+
+                </div>
+
+            `;
+
+            tile.onclick=()=>{
+
+                window.open(
+                    `https://www.screener.in/company/${stock.symbol}/consolidated/`,
+                    "_blank"
+                );
+
+            };
+
+            map.appendChild(tile);
+
+        });
+
+    }
+
+    async function load(){
+
+        const res=await fetch("dashboard-data.json?t="+Date.now());
+
+        allRows=await res.json();
+
+        rows=[...allRows];
+
+        document.getElementById("updated").innerHTML=
+            "Last Updated : "+new Date().toLocaleString();
+
+        render();
+
+    }
+
+    document.getElementById("search").addEventListener("input",function(){
+
+        const q=this.value.toUpperCase();
+
+        if(q===""){
+
+            rows=[...allRows];
+
+        }else{
+
+            rows=allRows.filter(s=>
+
+                s.symbol.toUpperCase().includes(q) ||
+
+                s.sheet.toUpperCase().includes(q)
+
+            );
+
+        }
+
+        render();
+
+    });
+
+    load();
+
+</script>
+
+</body>
+</html>
