@@ -21,4 +21,5 @@ public class DashboardStock {
     private BigDecimal distance;
     private String status;
     private String sheet;
+    private Integer sheetRow;
 }
