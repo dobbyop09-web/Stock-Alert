@@ -44,6 +44,8 @@ public class CsvReaderService {
                 .parse(reader);
 
         for (CSVRecord record : records) {
+//            System.out.println(record);
+            int rowNumber = (int)record.getRecordNumber()+1;
             double current =Double.parseDouble(record.get("Current Price"));
             double alert = Double.parseDouble(record.get("Alert Price"));
             double fib = Double.parseDouble(record.get("FIB"));
@@ -85,6 +87,7 @@ public class CsvReaderService {
                             .previousClose(BigDecimal.valueOf(prevClose))
                             .marketCap(BigDecimal.valueOf(marketCap))
                             .changePercent(BigDecimal.valueOf(changePerc))
+                            .sheetRow(rowNumber)
                             .build()
             );
         }

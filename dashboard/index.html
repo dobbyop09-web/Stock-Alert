@@ -25,12 +25,13 @@
     .showing{font-size:12px;color:var(--muted);margin-bottom:14px;}
     .showing b{color:var(--text);font-weight:600;}
     .showing .clear{color:var(--watch);cursor:pointer;margin-left:8px;text-decoration:underline;}
-    .toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+    .toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
     button{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:5px;padding:7px 12px;font-size:12px;cursor:pointer;font-family:var(--sans);}
     button:hover{background:#1D2430;border-color:#2E3745;}
     button.primary{background:#1B2A2E;border-color:#2DD4BF;color:#2DD4BF;}
     button.danger{background:transparent;border-color:transparent;color:var(--muted);padding:4px 6px;}
     button.danger:hover{color:var(--triggered);}
+    button:disabled{opacity:.5;cursor:not-allowed;}
     table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px;}
     thead th{text-align:left;font-family:var(--sans);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line);}
     tbody td{padding:7px 10px;border-bottom:1px solid var(--line);}
@@ -88,6 +89,11 @@
       border-color:#2DD4BF;
       color:#2DD4BF;
   }
+  #authStatus{
+      font-size:11px;
+      color:var(--muted);
+      align-self:center;
+  }
   </style>
 </head>
 <body>
@@ -109,7 +115,8 @@
   <div class="stats" id="stats"></div>
 
   <div class="toolbar">
-
+    <button id="loginBtn" disabled>Loading Google Sign-In…</button>
+    <span id="authStatus"></span>
     <input
             type="text"
             id="searchBox"
@@ -171,269 +178,436 @@
 </div>
 
 <script>
+  const CLIENT_ID = "105417196420-ln76t9mgghpdpa1d9sfrash34gdoarde.apps.googleusercontent.com";
+    let rows = [];
+    let allRows = [];
+    let contextRows = []; // allRows filtered by search + sector, but NOT by status
+    let statusFilter = ""; // "" | "Triggered" | "Near" | "Watch"
+const SPREADSHEET_ID ="1AQ93bxs1qthy6WSqtkV-DhMYjAMaZrsQLLabk_KGgyQ"
+let accessToken = sessionStorage.getItem("accessToken");;
+let tokenClient = null;
+const loginBtn = document.getElementById("loginBtn");
+const authStatus = document.getElementById("authStatus");
 
-  let rows = [];
-  let allRows = [];
-  let contextRows = []; // allRows filtered by search + sector, but NOT by status
-  let statusFilter = ""; // "" | "Triggered" | "Near" | "Watch"
+// Initialize the token client only once the GIS library has actually
+// finished loading. It's fetched with async/defer, so we can't assume
+// it's ready just because this inline script has started running —
+// that race condition was the original bug: google.accounts was
+// sometimes still undefined when initTokenClient() was called.
+function initGoogleAuth() {
+    try {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+            client_id: CLIENT_ID,
+            scope: "https://www.googleapis.com/auth/spreadsheets",
+            callback: (response) => {
+                if (response.error) {
+                    console.error("Google auth error:", response);
+                    authStatus.textContent = "Sign-in failed: " + response.error;
+                    return;
+                }
+                accessToken = response.access_token;
+                sessionStorage.setItem("accessToken", accessToken);
+                loginBtn.textContent = "✅ Connected";
+                authStatus.textContent = "";
+            },
+            error_callback: (err) => {
+                console.error("Google auth error_callback:", err);
+                authStatus.textContent = "Sign-in error: " + (err && err.type ? err.type : "unknown");
+            }
+        });
 
-  function fmtPct(n) {
-      return (n > 0 ? "+" : "") + Number(n).toFixed(1) + "%";
-  }
-
-  function render() {
-
-      const tbody = document.getElementById("tbody");
-      tbody.innerHTML = "";
-
-      // Stat counts reflect the search/sector context, not the status filter,
-      // so clicking between cards lets you jump directly between categories.
-      let triggered = 0;
-      let near = 0;
-      let watch = 0;
-      let far = 0;
-
-      contextRows.forEach(r => {
-          switch (r.status) {
-              case "Triggered": triggered++; break;
-              case "Near": near++; break;
-              case "Watch": watch++; break;
-              default: far++;
-          }
-      });
-
-      rows.forEach(r => {
-
-          let color = "var(--far)";
-          let badge = "b-far";
-
-          if (r.status === "Triggered") {
-              color = "var(--triggered)";
-              badge = "b-triggered";
-          }
-          else if (r.status === "Near") {
-              color = "var(--near)";
-              badge = "b-near";
-          }
-          else if (r.status === "Watch") {
-              color = "var(--watch)";
-              badge = "b-watch";
-          }
-
-          tbody.innerHTML += `
-          <tr>
-              <td>${r.symbol}</td>
-              <td class="num">${r.currentPrice}</td>
-              <td class="num">${r.alertPrice}</td>
-              <td class="num" style="color:${color};font-weight:bold">
-                  ${fmtPct(r.distance)}
-              </td>
-              <td>
-                  <span class="badge ${badge}">
-                      ${r.status}
-                  </span>
-              </td>
-              <td>${r.sheet}</td>
-          </tr>
-          `;
-      });
-
-      document.getElementById("stats").innerHTML = `
-          <div class="stat ${statusFilter === "Triggered" ? "active" : ""}" data-status="Triggered" style="color:var(--triggered)">
-              <div class="n" style="color:var(--triggered)">
-                  ${triggered}
-              </div>
-              <div class="l">Triggered</div>
-          </div>
-
-          <div class="stat ${statusFilter === "Near" ? "active" : ""}" data-status="Near" style="color:var(--near)">
-              <div class="n" style="color:var(--near)">
-                  ${near}
-              </div>
-              <div class="l">Near</div>
-          </div>
-
-          <div class="stat ${statusFilter === "Watch" ? "active" : ""}" data-status="Watch" style="color:var(--watch)">
-              <div class="n" style="color:var(--watch)">
-                  ${watch}
-              </div>
-              <div class="l">Watch</div>
-          </div>
-
-          <div class="stat ${statusFilter === "" ? "active" : ""}" data-status="" style="color:var(--text)">
-              <div class="n">${contextRows.length}</div>
-              <div class="l">Total</div>
-          </div>
-      `;
-
-      renderShowingLine();
-  }
-
-  function renderShowingLine(){
-
-      const el = document.getElementById("showingLine");
-      const sheet = document.getElementById("sheetFilter").value;
-      const search = document.getElementById("searchBox").value.trim();
-
-      const parts = [];
-      if(statusFilter) parts.push(statusFilter);
-      if(sheet) parts.push(sheet);
-      if(search) parts.push(`"${search}"`);
-
-      const label = parts.length ? parts.join(" • ") : "All";
-
-      el.innerHTML = `Showing: <b>${label}</b> • <b>${rows.length}</b> Stocks` +
-          (parts.length ? `<span class="clear" id="clearFilters">Clear</span>` : "");
-
-      const clearBtn = document.getElementById("clearFilters");
-      if(clearBtn){
-          clearBtn.addEventListener("click", () => {
-              statusFilter = "";
-              document.getElementById("searchBox").value = "";
-              document.getElementById("sheetFilter").value = "";
-              applyFilters();
-          });
-      }
-  }
-  function populateSheetFilter() {
-
-    const select = document.getElementById("sheetFilter");
-
-    const sectors = [...new Set(
-        allRows
-            .map(stock => stock.sheet)
-            .filter(Boolean)
-    )].sort();
-
-    select.innerHTML =
-        '<option value="">All Sectors</option>';
-
-    sectors.forEach(sector => {
-
-        const option = document.createElement("option");
-
-        option.value = sector;
-
-        option.textContent = sector;
-
-        select.appendChild(option);
-
-    });
-
+        loginBtn.disabled = false;
+        if (accessToken) {
+    loginBtn.textContent = "✅ Connected";
+} else {
+    loginBtn.textContent = "Sign in with Google";
 }
-function applyFilters() {
-
-    const text =
-        document.getElementById("searchBox")
-            .value
-            .trim()
-            .toUpperCase();
-
-    const sheet =
-        document.getElementById("sheetFilter").value;
-
-    contextRows = allRows.filter(stock => {
-
-        const matchesSearch =
-            text === "" ||
-
-            stock.symbol.toUpperCase().includes(text) ||
-
-            (stock.sheet ?? "")
-                .toUpperCase()
-                .includes(text);
-
-        const matchesSheet =
-            sheet === "" ||
-
-            stock.sheet === sheet;
-
-        return matchesSearch && matchesSheet;
-
-    });
-
-    rows = statusFilter === ""
-        ? contextRows
-        : contextRows.filter(stock => (stock.status || "Far") === statusFilter);
-
-    render();
-
+        authStatus.textContent = "";
+    } catch (e) {
+        console.error("Failed to initialize Google Identity Services:", e);
+        loginBtn.disabled = true;
+        loginBtn.textContent = "Sign-in unavailable";
+        authStatus.textContent = "Google script failed to load — check network/adblock.";
+    }
 }
 
-document.getElementById("stats").addEventListener("click", (e) => {
-
-    const card = e.target.closest(".stat");
-    if(!card) return;
-
-    const clicked = card.dataset.status;
-
-    // Clicking the active card again clears the filter
-    statusFilter = (statusFilter === clicked) ? "" : clicked;
-
-    applyFilters();
+loginBtn.addEventListener("click", () => {
+    if (!tokenClient) {
+        authStatus.textContent = "Still loading, try again in a moment.";
+        return;
+    }
+    tokenClient.requestAccessToken({
+    prompt: accessToken ? "" : "consent"
+     });
 });
-  async function loadDashboard() {
 
-      try {
+// Poll for the GIS library instead of assuming it's ready by the time
+// this script runs.
+(function waitForGoogleIdentity(attemptsLeft) {
+    if (window.google && window.google.accounts && window.google.accounts.oauth2) {
+        initGoogleAuth();
+        return;
+    }
+    if (attemptsLeft <= 0) {
+        loginBtn.disabled = true;
+        loginBtn.textContent = "Sign-in unavailable";
+        authStatus.textContent = "Could not load Google Identity Services. Check your connection or ad blocker.";
+        return;
+    }
+    setTimeout(() => waitForGoogleIdentity(attemptsLeft - 1), 200);
+})(50); // retries for up to ~10 seconds
 
-          const response = await fetch("dashboard-data.json?t=" + Date.now());
+    function fmtPct(n) {
+        return (n > 0 ? "+" : "") + Number(n).toFixed(1) + "%";
+    }
 
-        allRows = await response.json();
-        rows = [...allRows];
-        contextRows = [...allRows];
-        populateSheetFilter();
-          document.getElementById("subline").innerText =
-              "Last updated : " + new Date().toLocaleString();
+    function render() {
 
-          render();
+        const tbody = document.getElementById("tbody");
+        tbody.innerHTML = "";
 
-      } catch (e) {
+        // Stat counts reflect the search/sector context, not the status filter,
+        // so clicking between cards lets you jump directly between categories.
+        let triggered = 0;
+        let near = 0;
+        let watch = 0;
+        let far = 0;
 
-          document.getElementById("subline").innerText =
-              "Unable to load dashboard data.";
+        contextRows.forEach(r => {
+            switch (r.status) {
+                case "Triggered": triggered++; break;
+                case "Near": near++; break;
+                case "Watch": watch++; break;
+                default: far++;
+            }
+        });
 
-          console.error(e);
-      }
+        rows.forEach(r => {
+
+            let color = "var(--far)";
+            let badge = "b-far";
+
+            if (r.status === "Triggered") {
+                color = "var(--triggered)";
+                badge = "b-triggered";
+            }
+            else if (r.status === "Near") {
+                color = "var(--near)";
+                badge = "b-near";
+            }
+            else if (r.status === "Watch") {
+                color = "var(--watch)";
+                badge = "b-watch";
+            }
+
+            tbody.innerHTML += `
+            <tr>
+                <td>${r.symbol}</td>
+                <td class="num">${r.currentPrice}</td>
+                <td class="num alertCell">${r.alertPrice}</td>
+                <td class="num" style="color:${color};font-weight:bold">
+                    ${fmtPct(r.distance)}
+                </td>
+                <td>
+                    <span class="badge ${badge}">
+                        ${r.status}
+                    </span>
+                </td>
+                <td>${r.sheet}</td>
+                <td>
+    <button onclick="editAlert('${r.symbol}',this)">
+        ✏️
+    </button>
+</td>
+            </tr>
+            `;
+        });
+
+        document.getElementById("stats").innerHTML = `
+            <div class="stat ${statusFilter === "Triggered" ? "active" : ""}" data-status="Triggered" style="color:var(--triggered)">
+                <div class="n" style="color:var(--triggered)">
+                    ${triggered}
+                </div>
+                <div class="l">Triggered</div>
+            </div>
+
+            <div class="stat ${statusFilter === "Near" ? "active" : ""}" data-status="Near" style="color:var(--near)">
+                <div class="n" style="color:var(--near)">
+                    ${near}
+                </div>
+                <div class="l">Near</div>
+            </div>
+
+            <div class="stat ${statusFilter === "Watch" ? "active" : ""}" data-status="Watch" style="color:var(--watch)">
+                <div class="n" style="color:var(--watch)">
+                    ${watch}
+                </div>
+                <div class="l">Watch</div>
+            </div>
+
+            <div class="stat ${statusFilter === "" ? "active" : ""}" data-status="" style="color:var(--text)">
+                <div class="n">${contextRows.length}</div>
+                <div class="l">Total</div>
+            </div>
+        `;
+
+        renderShowingLine();
+    }
+
+    function renderShowingLine(){
+
+        const el = document.getElementById("showingLine");
+        const sheet = document.getElementById("sheetFilter").value;
+        const search = document.getElementById("searchBox").value.trim();
+
+        const parts = [];
+        if(statusFilter) parts.push(statusFilter);
+        if(sheet) parts.push(sheet);
+        if(search) parts.push(`"${search}"`);
+
+        const label = parts.length ? parts.join(" • ") : "All";
+
+        el.innerHTML = `Showing: <b>${label}</b> • <b>${rows.length}</b> Stocks` +
+            (parts.length ? `<span class="clear" id="clearFilters">Clear</span>` : "");
+
+        const clearBtn = document.getElementById("clearFilters");
+        if(clearBtn){
+            clearBtn.addEventListener("click", () => {
+                statusFilter = "";
+                document.getElementById("searchBox").value = "";
+                document.getElementById("sheetFilter").value = "";
+                applyFilters();
+            });
+        }
+    }
+    function populateSheetFilter() {
+
+      const select = document.getElementById("sheetFilter");
+
+      const sectors = [...new Set(
+          allRows
+              .map(stock => stock.sheet)
+              .filter(Boolean)
+      )].sort();
+
+      select.innerHTML =
+          '<option value="">All Sectors</option>';
+
+      sectors.forEach(sector => {
+
+          const option = document.createElement("option");
+
+          option.value = sector;
+
+          option.textContent = sector;
+
+          select.appendChild(option);
+
+      });
+
+  }
+  function applyFilters() {
+
+      const text =
+          document.getElementById("searchBox")
+              .value
+              .trim()
+              .toUpperCase();
+
+      const sheet =
+          document.getElementById("sheetFilter").value;
+
+      contextRows = allRows.filter(stock => {
+
+          const matchesSearch =
+              text === "" ||
+
+              stock.symbol.toUpperCase().includes(text) ||
+
+              (stock.sheet ?? "")
+                  .toUpperCase()
+                  .includes(text);
+
+          const matchesSheet =
+              sheet === "" ||
+
+              stock.sheet === sheet;
+
+          return matchesSearch && matchesSheet;
+
+      });
+
+      rows = statusFilter === ""
+          ? contextRows
+          : contextRows.filter(stock => (stock.status || "Far") === statusFilter);
+
+      render();
+
   }
 
-  loadDashboard();
+  document.getElementById("stats").addEventListener("click", (e) => {
 
-  document.getElementById("sortBtn").addEventListener("click", () => {
+      const card = e.target.closest(".stat");
+      if(!card) return;
 
-    rows.sort((a, b) => {
+      const clicked = card.dataset.status;
 
-        // Triggered stocks (negative distance) should appear first
-        return a.distance - b.distance;
+      // Clicking the active card again clears the filter
+      statusFilter = (statusFilter === clicked) ? "" : clicked;
+
+      applyFilters();
+  });
+    async function loadDashboard() {
+
+        try {
+
+            const response = await fetch("dashboard-data.json?t=" + Date.now());
+
+          allRows = await response.json();
+          rows = [...allRows];
+          contextRows = [...allRows];
+          populateSheetFilter();
+            document.getElementById("subline").innerText =
+                "Last updated : " + new Date().toLocaleString();
+
+            render();
+
+        } catch (e) {
+
+            document.getElementById("subline").innerText =
+                "Unable to load dashboard data.";
+
+            console.error(e);
+        }
+    }
+
+    loadDashboard();
+
+    document.getElementById("sortBtn").addEventListener("click", () => {
+
+      rows.sort((a, b) => {
+
+          // Triggered stocks (negative distance) should appear first
+          return a.distance - b.distance;
+
+      });
+
+      render();
+  });
+  document.getElementById("searchBox")
+      .addEventListener("input", applyFilters);
+
+  document.getElementById("sheetFilter")
+      .addEventListener("change", applyFilters);
+  let marketCapAscending = false;
+  const mcBtn = document.getElementById("sortMcBtn");
+
+  mcBtn.addEventListener("click", () => {
+
+      rows.sort((a, b) =>
+          marketCapAscending
+              ? Number(a.marketCap || 0) - Number(b.marketCap || 0)   // Ascending
+              : Number(b.marketCap || 0) - Number(a.marketCap || 0)   // Descending
+      );
+
+      marketCapAscending = !marketCapAscending;
+
+      mcBtn.textContent = marketCapAscending
+          ? "Market Cap ↑"
+          : "Market Cap ↓";
+
+      render();
+  });
+function editAlert(symbol, btn) {
+
+    const row = btn.closest("tr");
+
+    const stock = allRows.find(s => s.symbol === symbol);
+
+    row.cells[2].innerHTML =
+        `<input id="edit-${symbol}" value="${stock.alertPrice}" style="width:80px">`;
+
+    row.cells[6].innerHTML =
+        `<button onclick="saveAlert('${symbol}')">💾</button>`;
+}
+  async function findRow(sheetName, symbol) {
+
+    const url =
+        `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(sheetName)}!A:A`;
+
+    const res = await fetch(url, {
+        headers: {
+            Authorization: "Bearer " + accessToken
+        }
+    });
+
+    const data = await res.json();
+
+    const rows = data.values || [];
+
+    for (let i = 0; i < rows.length; i++) {
+
+        if (rows[i][0] === symbol) {
+
+            return i + 1; // Sheet rows start at 1
+
+        }
+    }
+
+    return -1;
+}
+  async function saveAlert(symbol) {
+
+    const input = document.getElementById("edit-" + symbol);
+
+    const newAlert = input.value;
+
+    const stock = allRows.find(s => s.symbol === symbol);
+
+    const row = await findRow(stock.sheet, symbol);
+
+    if (row === -1) {
+        alert("Stock not found.");
+        return;
+    }
+
+    const range = `${stock.sheet}!C${row}`;
+
+    const url =
+        `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
+
+    const body = {
+        values: [[newAlert]]
+    };
+
+    const res = await fetch(url, {
+
+        method: "PUT",
+
+        headers: {
+            Authorization: "Bearer " + accessToken,
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(body)
 
     });
 
-    render();
-});
-document.getElementById("searchBox")
-    .addEventListener("input", applyFilters);
+    if (!res.ok) {
 
-document.getElementById("sheetFilter")
-    .addEventListener("change", applyFilters);
-let marketCapAscending = false;
-const mcBtn = document.getElementById("sortMcBtn");
+        alert("Failed to save");
+        return;
 
-mcBtn.addEventListener("click", () => {
+    }
 
-    rows.sort((a, b) =>
-        marketCapAscending
-            ? Number(a.marketCap || 0) - Number(b.marketCap || 0)   // Ascending
-            : Number(b.marketCap || 0) - Number(a.marketCap || 0)   // Descending
-    );
-
-    marketCapAscending = !marketCapAscending;
-
-    mcBtn.textContent = marketCapAscending
-        ? "Market Cap ↑"
-        : "Market Cap ↓";
+    stock.alertPrice = Number(newAlert);
 
     render();
-});
 
+    alert("Saved!");
+}
 </script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
 </body>
 </html>
