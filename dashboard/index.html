@@ -1,89 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Alert dashboard</title>
-<style>
-  :root{
-    --bg:#0A0D12; --panel:#12161D; --panel2:#171C24;
-    --line:#232A35; --text:#E6EAF0; --muted:#7A8494;
-    --mono: 'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
-    --sans: -apple-system,'Segoe UI',Roboto,Arial,sans-serif;
-    --triggered:#FF5C6C; --near:#F5A623; --watch:#2DD4BF; --far:#5B6472;
+  <meta charset="UTF-8">
+  <title>Alert dashboard</title>
+  <style>
+    :root{
+      --bg:#0A0D12; --panel:#12161D; --panel2:#171C24;
+      --line:#232A35; --text:#E6EAF0; --muted:#7A8494;
+      --mono: 'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+      --sans: -apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+      --triggered:#FF5C6C; --near:#F5A623; --watch:#2DD4BF; --far:#5B6472;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
+    .wrap{max-width:920px;margin:0 auto;padding:20px 16px 40px;}
+    h1{font-size:15px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 4px;}
+    .sub{font-size:12px;color:var(--muted);margin:0 0 20px;}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+    .stat{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px;cursor:pointer;transition:.15s;}
+    .stat:hover{border-color:#2E3745;background:var(--panel2);}
+    .stat.active{background:var(--panel2);border-color:currentColor;}
+    .stat .n{font-family:var(--mono);font-size:22px;font-weight:600;}
+    .stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+    .showing{font-size:12px;color:var(--muted);margin-bottom:14px;}
+    .showing b{color:var(--text);font-weight:600;}
+    .showing .clear{color:var(--watch);cursor:pointer;margin-left:8px;text-decoration:underline;}
+    .toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+    button{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:5px;padding:7px 12px;font-size:12px;cursor:pointer;font-family:var(--sans);}
+    button:hover{background:#1D2430;border-color:#2E3745;}
+    button.primary{background:#1B2A2E;border-color:#2DD4BF;color:#2DD4BF;}
+    button.danger{background:transparent;border-color:transparent;color:var(--muted);padding:4px 6px;}
+    button.danger:hover{color:var(--triggered);}
+    table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px;}
+    thead th{text-align:left;font-family:var(--sans);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line);}
+    tbody td{padding:7px 10px;border-bottom:1px solid var(--line);}
+    tbody tr:hover{background:var(--panel);}
+    input.cell{background:transparent;border:none;color:var(--text);font-family:var(--mono);font-size:13px;width:100%;padding:3px 4px;border-radius:4px;}
+    input.cell:focus{outline:1px solid #2E3745;background:var(--panel2);}
+    .num{text-align:right;}
+    .badge{display:inline-block;font-size:11px;font-family:var(--sans);font-weight:500;padding:2px 8px;border-radius:20px;}
+    .b-triggered{background:#3A1518;color:var(--triggered);}
+    .b-near{background:#332310;color:var(--near);}
+    .b-watch{background:#0F2B27;color:var(--watch);}
+    .b-far{background:#1A1E26;color:var(--far);}
+    .dist{font-weight:600;}
+    textarea{width:100%;min-height:80px;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:6px;font-family:var(--mono);font-size:12px;padding:10px;resize:vertical;}
+    .paste{display:none;margin-bottom:14px;}
+    .paste.show{display:block;}
+    .paste .row{display:flex;gap:8px;margin-top:8px;}
+    .hint{font-size:11px;color:var(--muted);margin-top:6px;}
+    .empty{color:var(--muted);font-size:12px;padding:24px 10px;text-align:center;}
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+      margin-bottom:22px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:16px;
   }
-  *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
-  .wrap{max-width:920px;margin:0 auto;padding:20px 16px 40px;}
-  h1{font-size:15px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 4px;}
-  .sub{font-size:12px;color:var(--muted);margin:0 0 20px;}
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
-  .stat{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px;}
-  .stat .n{font-family:var(--mono);font-size:22px;font-weight:600;}
-  .stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
-  .toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
-  button{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:5px;padding:7px 12px;font-size:12px;cursor:pointer;font-family:var(--sans);}
-  button:hover{background:#1D2430;border-color:#2E3745;}
-  button.primary{background:#1B2A2E;border-color:#2DD4BF;color:#2DD4BF;}
-  button.danger{background:transparent;border-color:transparent;color:var(--muted);padding:4px 6px;}
-  button.danger:hover{color:var(--triggered);}
-  table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px;}
-  thead th{text-align:left;font-family:var(--sans);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line);}
-  tbody td{padding:7px 10px;border-bottom:1px solid var(--line);}
-  tbody tr:hover{background:var(--panel);}
-  input.cell{background:transparent;border:none;color:var(--text);font-family:var(--mono);font-size:13px;width:100%;padding:3px 4px;border-radius:4px;}
-  input.cell:focus{outline:1px solid #2E3745;background:var(--panel2);}
-  .num{text-align:right;}
-  .badge{display:inline-block;font-size:11px;font-family:var(--sans);font-weight:500;padding:2px 8px;border-radius:20px;}
-  .b-triggered{background:#3A1518;color:var(--triggered);}
-  .b-near{background:#332310;color:var(--near);}
-  .b-watch{background:#0F2B27;color:var(--watch);}
-  .b-far{background:#1A1E26;color:var(--far);}
-  .dist{font-weight:600;}
-  textarea{width:100%;min-height:80px;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:6px;font-family:var(--mono);font-size:12px;padding:10px;resize:vertical;}
-  .paste{display:none;margin-bottom:14px;}
-  .paste.show{display:block;}
-  .paste .row{display:flex;gap:8px;margin-top:8px;}
-  .hint{font-size:11px;color:var(--muted);margin-top:6px;}
-  .empty{color:var(--muted);font-size:12px;padding:24px 10px;text-align:center;}
-  .topbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:20px;
-    margin-bottom:22px;
-    border-bottom:1px solid var(--line);
-    padding-bottom:16px;
-}
 
-.navbar{
-    display:flex;
-    gap:8px;
-}
+  .navbar{
+      display:flex;
+      gap:8px;
+  }
 
-.navbar a{
-    text-decoration:none;
-    color:var(--muted);
-    background:var(--panel);
-    border:1px solid var(--line);
-    padding:8px 14px;
-    border-radius:6px;
-    font-size:12px;
-    font-weight:500;
-    transition:.2s;
-}
+  .navbar a{
+      text-decoration:none;
+      color:var(--muted);
+      background:var(--panel);
+      border:1px solid var(--line);
+      padding:8px 14px;
+      border-radius:6px;
+      font-size:12px;
+      font-weight:500;
+      transition:.2s;
+  }
 
-.navbar a:hover{
-    background:var(--panel2);
-    border-color:#2E3745;
-    color:var(--text);
-}
+  .navbar a:hover{
+      background:var(--panel2);
+      border-color:#2E3745;
+      color:var(--text);
+  }
 
-.navbar a.active{
-    background:#1B2A2E;
-    border-color:#2DD4BF;
-    color:#2DD4BF;
-}
-</style>
+  .navbar a.active{
+      background:#1B2A2E;
+      border-color:#2DD4BF;
+      color:#2DD4BF;
+  }
+  </style>
 </head>
 <body>
 <div class="wrap">
@@ -139,6 +144,8 @@
     </button>
   </div>
 
+  <div class="showing" id="showingLine"></div>
+
   <div class="paste" id="pasteBox">
     <textarea id="pasteArea" placeholder="Paste rows copied from Google Sheets (Symbol, Current price, Alert price) — tab or comma separated, one row per line"></textarea>
     <div class="row">
@@ -149,14 +156,14 @@
   </div>
   <table>
     <thead>
-      <tr>
-        <th style="width:22%">Symbol</th>
-        <th class="num" style="width:18%">Current</th>
-        <th class="num" style="width:18%">Alert</th>
-        <th class="num" style="width:16%">Distance</th>
-        <th style="width:18%">Status</th>
-        <th style="width:8%"></th>
-      </tr>
+    <tr>
+      <th style="width:22%">Symbol</th>
+      <th class="num" style="width:18%">Current</th>
+      <th class="num" style="width:18%">Alert</th>
+      <th class="num" style="width:16%">Distance</th>
+      <th style="width:18%">Status</th>
+      <th style="width:8%">Sector</th>
+    </tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
@@ -167,6 +174,9 @@
 
   let rows = [];
   let allRows = [];
+  let contextRows = []; // allRows filtered by search + sector, but NOT by status
+  let statusFilter = ""; // "" | "Triggered" | "Near" | "Watch"
+
   function fmtPct(n) {
       return (n > 0 ? "+" : "") + Number(n).toFixed(1) + "%";
   }
@@ -176,19 +186,23 @@
       const tbody = document.getElementById("tbody");
       tbody.innerHTML = "";
 
+      // Stat counts reflect the search/sector context, not the status filter,
+      // so clicking between cards lets you jump directly between categories.
       let triggered = 0;
       let near = 0;
       let watch = 0;
       let far = 0;
 
-      rows.forEach(r => {
-
+      contextRows.forEach(r => {
           switch (r.status) {
               case "Triggered": triggered++; break;
               case "Near": near++; break;
               case "Watch": watch++; break;
               default: far++;
           }
+      });
+
+      rows.forEach(r => {
 
           let color = "var(--far)";
           let badge = "b-far";
@@ -225,32 +239,61 @@
       });
 
       document.getElementById("stats").innerHTML = `
-          <div class="stat">
+          <div class="stat ${statusFilter === "Triggered" ? "active" : ""}" data-status="Triggered" style="color:var(--triggered)">
               <div class="n" style="color:var(--triggered)">
                   ${triggered}
               </div>
               <div class="l">Triggered</div>
           </div>
 
-          <div class="stat">
+          <div class="stat ${statusFilter === "Near" ? "active" : ""}" data-status="Near" style="color:var(--near)">
               <div class="n" style="color:var(--near)">
                   ${near}
               </div>
               <div class="l">Near</div>
           </div>
 
-          <div class="stat">
+          <div class="stat ${statusFilter === "Watch" ? "active" : ""}" data-status="Watch" style="color:var(--watch)">
               <div class="n" style="color:var(--watch)">
                   ${watch}
               </div>
               <div class="l">Watch</div>
           </div>
 
-          <div class="stat">
-              <div class="n">${rows.length}</div>
+          <div class="stat ${statusFilter === "" ? "active" : ""}" data-status="" style="color:var(--text)">
+              <div class="n">${contextRows.length}</div>
               <div class="l">Total</div>
           </div>
       `;
+
+      renderShowingLine();
+  }
+
+  function renderShowingLine(){
+
+      const el = document.getElementById("showingLine");
+      const sheet = document.getElementById("sheetFilter").value;
+      const search = document.getElementById("searchBox").value.trim();
+
+      const parts = [];
+      if(statusFilter) parts.push(statusFilter);
+      if(sheet) parts.push(sheet);
+      if(search) parts.push(`"${search}"`);
+
+      const label = parts.length ? parts.join(" • ") : "All";
+
+      el.innerHTML = `Showing: <b>${label}</b> • <b>${rows.length}</b> Stocks` +
+          (parts.length ? `<span class="clear" id="clearFilters">Clear</span>` : "");
+
+      const clearBtn = document.getElementById("clearFilters");
+      if(clearBtn){
+          clearBtn.addEventListener("click", () => {
+              statusFilter = "";
+              document.getElementById("searchBox").value = "";
+              document.getElementById("sheetFilter").value = "";
+              applyFilters();
+          });
+      }
   }
   function populateSheetFilter() {
 
@@ -289,7 +332,7 @@ function applyFilters() {
     const sheet =
         document.getElementById("sheetFilter").value;
 
-    rows = allRows.filter(stock => {
+    contextRows = allRows.filter(stock => {
 
         const matchesSearch =
             text === "" ||
@@ -309,9 +352,26 @@ function applyFilters() {
 
     });
 
+    rows = statusFilter === ""
+        ? contextRows
+        : contextRows.filter(stock => (stock.status || "Far") === statusFilter);
+
     render();
 
 }
+
+document.getElementById("stats").addEventListener("click", (e) => {
+
+    const card = e.target.closest(".stat");
+    if(!card) return;
+
+    const clicked = card.dataset.status;
+
+    // Clicking the active card again clears the filter
+    statusFilter = (statusFilter === clicked) ? "" : clicked;
+
+    applyFilters();
+});
   async function loadDashboard() {
 
       try {
@@ -320,6 +380,7 @@ function applyFilters() {
 
         allRows = await response.json();
         rows = [...allRows];
+        contextRows = [...allRows];
         populateSheetFilter();
           document.getElementById("subline").innerText =
               "Last updated : " + new Date().toLocaleString();
