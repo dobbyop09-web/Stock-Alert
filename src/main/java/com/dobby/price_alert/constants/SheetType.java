@@ -24,7 +24,7 @@ public enum SheetType {
 
     SMALLCAP("SmallCap", "2029475330"),
 
-    MISCELLANEOUS("Miscellaneous", "709000981");
+    MISCELLANEOUS("Misc", "709000981");
 
 
 
