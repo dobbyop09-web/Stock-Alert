@@ -1,9 +1,6 @@
 package com.dobby.price_alert.service;
 
-import com.dobby.price_alert.dto.DashboardStock;
-import com.dobby.price_alert.dto.MessageFormat;
-import com.dobby.price_alert.dto.SheetConfig;
-import com.dobby.price_alert.dto.StockMessageDto;
+import com.dobby.price_alert.dto.*;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
@@ -44,7 +41,6 @@ public class CsvReaderService {
                 .parse(reader);
 
         for (CSVRecord record : records) {
-//            System.out.println(record);
             int rowNumber = (int)record.getRecordNumber()+1;
             double current =Double.parseDouble(record.get("Current Price"));
             double alert = Double.parseDouble(record.get("Alert Price"));
@@ -53,8 +49,8 @@ public class CsvReaderService {
             double marketCap = Double.parseDouble(record.get("MarketCap"));
             String symbol = record.get("Symbol");
 
-
-            if (stockAlertService.shouldSendAlert(sheetConfig.getName(), symbol, current, alert)) {
+            AlertStatus  alertStatus = stockAlertService.shouldSendAlert(sheetConfig.getName(), symbol, current, alert);
+            if (alertStatus.isShouldSend()) {
                 log.info("Telegram sent for {}", symbol);
                 String screenerUrl ="https://www.screener.in/company/" + symbol + "/consolidated/";
                 StockMessageDto dto = StockMessageDto.builder().stockName(symbol).currentPrice(current).targetPrice(alert).screenerUrl(screenerUrl).sheetName(sheetConfig.getName()).build();
@@ -62,11 +58,11 @@ public class CsvReaderService {
                 telegramService.sendMessage(message);
 
             }
-            double distance = ((current - alert) / current) * 100;
+            double distance = ((current - alert) / alert) * 100;
             double changePerc = (current - prevClose) / current * 100;
             String status;
 
-            if (distance <= 0) {
+            if (alertStatus.isTriggeredToday()) {
                 status = "Triggered";
             } else if (distance <= 5) {
                 status = "Near";
