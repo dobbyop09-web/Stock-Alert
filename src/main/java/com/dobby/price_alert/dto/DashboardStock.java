@@ -22,4 +22,5 @@ public class DashboardStock {
     private String status;
     private String sheet;
     private Integer sheetRow;
+    private String screenerUrl;
 }

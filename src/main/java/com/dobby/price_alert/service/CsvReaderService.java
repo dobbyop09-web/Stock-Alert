@@ -48,11 +48,11 @@ public class CsvReaderService {
             double prevClose = Double.parseDouble(record.get("PrevClose"));
             double marketCap = Double.parseDouble(record.get("MarketCap"));
             String symbol = record.get("Symbol");
-
+            String screenerUrl ="https://www.screener.in/company/" + symbol + "/consolidated/";
             AlertStatus  alertStatus = stockAlertService.shouldSendAlert(sheetConfig.getName(), symbol, current, alert);
             if (alertStatus.isShouldSend()) {
                 log.info("Telegram sent for {}", symbol);
-                String screenerUrl ="https://www.screener.in/company/" + symbol + "/consolidated/";
+
                 StockMessageDto dto = StockMessageDto.builder().stockName(symbol).currentPrice(current).targetPrice(alert).screenerUrl(screenerUrl).sheetName(sheetConfig.getName()).build();
                 String message = MessageFormat.format(dto);
                 telegramService.sendMessage(message);
@@ -84,6 +84,7 @@ public class CsvReaderService {
                             .marketCap(BigDecimal.valueOf(marketCap))
                             .changePercent(BigDecimal.valueOf(changePerc))
                             .sheetRow(rowNumber)
+                            .screenerUrl(screenerUrl)
                             .build()
             );
         }
