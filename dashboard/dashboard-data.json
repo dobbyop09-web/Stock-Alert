@@ -2397,6 +2397,17 @@
   "sheet" : "Metal",
   "sheetRow" : 14
 }, {
+  "symbol" : "APLAPOLLO",
+  "currentPrice" : 1825.0,
+  "alertPrice" : 1670.0,
+  "previousClose" : 1830.9,
+  "marketCap" : 5.0672658E+11,
+  "changePercent" : -0.3232876712328817,
+  "distance" : 9.281437125748502,
+  "status" : "Watch",
+  "sheet" : "Metal",
+  "sheetRow" : 15
+}, {
   "symbol" : "JSWENERGY",
   "currentPrice" : 550.0,
   "alertPrice" : 506.0,
