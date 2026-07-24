@@ -104,8 +104,9 @@
       <h1>Stock Dashboard</h1>
       <p class="sub" id="subline">Loading...</p>
     </div>
-
+     <span id="refreshMsg" style="font-size:20px;color:var(--triggered);margin-left:6px;"></span>
     <nav class="navbar">
+       
       <a href="index.html" class="active">Dashboard</a>
       <a href="heatmap.html">Heat Map</a>
     </nav>
@@ -633,8 +634,10 @@ function startCooldown(seconds) {
 }
 
 refreshBtn.addEventListener("click", async () => {
+  const msgEl = document.getElementById("refreshMsg");
   refreshBtn.disabled = true;
   refreshBtn.textContent = "Triggering...";
+  msgEl.textContent = "";
 
   try {
     const res = await fetch("https://tiny-art-8473.dobbyop09.workers.dev", {
@@ -645,14 +648,28 @@ refreshBtn.addEventListener("click", async () => {
       }
     });
 
+    let data = {};
+    try { data = await res.json(); } catch {}
+
+    if (res.status === 429) {
+      const wait = data.retryAfter || COOLDOWN_SECONDS;
+      msgEl.textContent = `Rate limited — please wait ${Math.ceil(wait / 60)} min.`;
+      refreshBtn.textContent = "Refresh Now";
+      startCooldown(wait);
+      return;
+    }
+
     if (res.ok) {
+      msgEl.textContent = "";
       startCooldown(COOLDOWN_SECONDS);
     } else {
+      msgEl.textContent = data.error || "Something went wrong.";
       refreshBtn.disabled = false;
       refreshBtn.textContent = "Failed — try again";
       setTimeout(() => { refreshBtn.textContent = "Refresh Now"; }, 3000);
     }
   } catch {
+    msgEl.textContent = "Network error.";
     refreshBtn.disabled = false;
     refreshBtn.textContent = "Failed — try again";
     setTimeout(() => { refreshBtn.textContent = "Refresh Now"; }, 3000);
