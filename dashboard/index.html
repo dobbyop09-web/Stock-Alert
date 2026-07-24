@@ -610,24 +610,52 @@ function editAlert(symbol, btn) {
 
 
 
-document.getElementById("refreshBtn").addEventListener("click", async (e) => {
-  const btn = e.target;
-  btn.disabled = true;
-  btn.textContent = "Triggering...";
+const COOLDOWN_SECONDS = 60;
+const refreshBtn = document.getElementById("refreshBtn");
+let cooldownInterval = null;
+
+function startCooldown(seconds) {
+  let remaining = seconds;
+  refreshBtn.disabled = true;
+  refreshBtn.textContent = `Wait ${remaining}s`;
+
+  clearInterval(cooldownInterval);
+  cooldownInterval = setInterval(() => {
+    remaining--;
+    if (remaining <= 0) {
+      clearInterval(cooldownInterval);
+      refreshBtn.disabled = false;
+      refreshBtn.textContent = "Refresh Now";
+    } else {
+      refreshBtn.textContent = `Wait ${remaining}s`;
+    }
+  }, 1000);
+}
+
+refreshBtn.addEventListener("click", async () => {
+  refreshBtn.disabled = true;
+  refreshBtn.textContent = "Triggering...";
 
   try {
     const res = await fetch("https://tiny-art-8473.dobbyop09.workers.dev", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-trigger-key": "97c15c54-40bf-479a-a4e2-8c470506502c"
+        "x-trigger-key": "PASTE_YOUR_TRIGGER_KEY_HERE"
       }
     });
-    btn.textContent = res.ok ? "Triggered ✓ (check back in ~1 min)" : "Failed — try again";
+
+    if (res.ok) {
+      startCooldown(COOLDOWN_SECONDS);
+    } else {
+      refreshBtn.disabled = false;
+      refreshBtn.textContent = "Failed — try again";
+      setTimeout(() => { refreshBtn.textContent = "Refresh Now"; }, 3000);
+    }
   } catch {
-    btn.textContent = "Failed — try again";
-  } finally {
-    setTimeout(() => { btn.disabled = false; btn.textContent = "Refresh Now"; }, 5000);
+    refreshBtn.disabled = false;
+    refreshBtn.textContent = "Failed — try again";
+    setTimeout(() => { refreshBtn.textContent = "Refresh Now"; }, 3000);
   }
 });
 
