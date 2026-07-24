@@ -113,7 +113,7 @@
   "currentPrice" : 743.5,
   "alertPrice" : 740.0,
   "previousClose" : 747.25,
-  "marketCap" : 119910784774,
+  "marketCap" : 120013869693,
   "changePercent" : -0.5043712172158709,
   "distance" : 0.472972972972973,
   "status" : "Near",
@@ -124,7 +124,7 @@
   "currentPrice" : 1436.0,
   "alertPrice" : 1260.0,
   "previousClose" : 1434.6,
-  "marketCap" : 107431025886,
+  "marketCap" : 107467481091,
   "changePercent" : 0.0974930362117055,
   "distance" : 13.968253968253968,
   "status" : "Watch",
@@ -628,11 +628,11 @@
 }, {
   "symbol" : "MARUTI",
   "currentPrice" : 13450.0,
-  "alertPrice" : 13259.0,
+  "alertPrice" : 12800.0,
   "previousClose" : 13403.0,
   "marketCap" : 4.228713625E+12,
   "changePercent" : 0.34944237918215615,
-  "distance" : 1.4405309601025718,
+  "distance" : 5.078125,
   "status" : "Triggered",
   "sheet" : "Auto",
   "sheetRow" : 2
@@ -1211,11 +1211,11 @@
 }, {
   "symbol" : "TARIL",
   "currentPrice" : 295.4,
-  "alertPrice" : 290.0,
+  "alertPrice" : 256.0,
   "previousClose" : 293.7,
   "marketCap" : 88668975487,
   "changePercent" : 0.5754908598510456,
-  "distance" : 1.8620689655172336,
+  "distance" : 15.390624999999991,
   "status" : "Triggered",
   "sheet" : "Manufacturing",
   "sheetRow" : 26
@@ -1233,11 +1233,11 @@
 }, {
   "symbol" : "GRINDWELL",
   "currentPrice" : 2017.8,
-  "alertPrice" : 1990.0,
+  "alertPrice" : 1892.0,
   "previousClose" : 2004.0,
   "marketCap" : 2.225477786E+11,
   "changePercent" : 0.6839131727624123,
-  "distance" : 1.3969849246231132,
+  "distance" : 6.64904862579281,
   "status" : "Triggered",
   "sheet" : "Manufacturing",
   "sheetRow" : 28
@@ -1288,11 +1288,11 @@
 }, {
   "symbol" : "AMBUJACEM",
   "currentPrice" : 426.0,
-  "alertPrice" : 422.0,
+  "alertPrice" : 405.0,
   "previousClose" : 423.55,
   "marketCap" : 1.058531616E+12,
   "changePercent" : 0.5751173708920161,
-  "distance" : 0.9478672985781991,
+  "distance" : 5.185185185185185,
   "status" : "Triggered",
   "sheet" : "Manufacturing",
   "sheetRow" : 33
@@ -2071,7 +2071,7 @@
   "currentPrice" : 1153.0,
   "alertPrice" : 1077.0,
   "previousClose" : 1166.3,
-  "marketCap" : 10099568407,
+  "marketCap" : 10129410817,
   "changePercent" : -1.1535125758889813,
   "distance" : 7.056638811513463,
   "status" : "Watch",
@@ -2416,7 +2416,7 @@
   "changePercent" : -1.3363636363636406,
   "distance" : 8.695652173913043,
   "status" : "Watch",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 2
 }, {
   "symbol" : "SUZLON",
@@ -2427,7 +2427,7 @@
   "changePercent" : -0.13379204892966415,
   "distance" : 2.5882352941176476,
   "status" : "Near",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 3
 }, {
   "symbol" : "KIRLOSENG",
@@ -2438,7 +2438,7 @@
   "changePercent" : 0.7741347905282332,
   "distance" : 7.278944797264289,
   "status" : "Watch",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 4
 }, {
   "symbol" : "INOXWIND",
@@ -2449,7 +2449,7 @@
   "changePercent" : 1.282383419689131,
   "distance" : 40.36363636363637,
   "status" : "Far",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 5
 }, {
   "symbol" : "RELIANCE",
@@ -2460,7 +2460,7 @@
   "changePercent" : 0.6481843030066344,
   "distance" : 1.950636942675159,
   "status" : "Near",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 6
 }, {
   "symbol" : "ONGC",
@@ -2471,7 +2471,7 @@
   "changePercent" : -1.3941341904379263,
   "distance" : 7.284482758620692,
   "status" : "Watch",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 7
 }, {
   "symbol" : "TATAPOWER",
@@ -2482,7 +2482,7 @@
   "changePercent" : -0.3066666666666606,
   "distance" : 10.294117647058822,
   "status" : "Watch",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 8
 }, {
   "symbol" : "JSWENERGY",
@@ -2493,7 +2493,7 @@
   "changePercent" : -1.3363636363636406,
   "distance" : 8.91089108910891,
   "status" : "Watch",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 9
 }, {
   "symbol" : "NHPC",
@@ -2504,7 +2504,7 @@
   "changePercent" : -1.0832598564050882,
   "distance" : 8.753424657534248,
   "status" : "Watch",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 10
 }, {
   "symbol" : "NTPC",
@@ -2515,7 +2515,7 @@
   "changePercent" : -0.258843830888707,
   "distance" : 13.627450980392153,
   "status" : "Watch",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 11
 }, {
   "symbol" : "ADANIPOWER",
@@ -2526,7 +2526,7 @@
   "changePercent" : 0.6041588609966375,
   "distance" : 12.378947368421057,
   "status" : "Watch",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 12
 }, {
   "symbol" : "POWERGRID",
@@ -2537,7 +2537,7 @@
   "changePercent" : -0.4332004851845434,
   "distance" : 14.503968253968258,
   "status" : "Watch",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 13
 }, {
   "symbol" : "COALINDIA",
@@ -2548,7 +2548,7 @@
   "changePercent" : -0.1406964474147081,
   "distance" : 4.266503667481659,
   "status" : "Near",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 14
 }, {
   "symbol" : "BPCL",
@@ -2559,7 +2559,7 @@
   "changePercent" : 0.04838709677418621,
   "distance" : 8.013937282229964,
   "status" : "Watch",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 15
 }, {
   "symbol" : "NLCINDIA",
@@ -2570,7 +2570,7 @@
   "changePercent" : 0.6153846153846193,
   "distance" : 11.216730038022813,
   "status" : "Watch",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 16
 }, {
   "symbol" : "ACMESOLAR",
@@ -2581,7 +2581,7 @@
   "changePercent" : 0.670314637482897,
   "distance" : 13.862928348909657,
   "status" : "Watch",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 17
 }, {
   "symbol" : "CESC",
@@ -2592,7 +2592,7 @@
   "changePercent" : 0.2758536136823323,
   "distance" : 16.52142857142857,
   "status" : "Far",
-  "sheet" : "Energy",
+  "sheet" : "OilEnergy",
   "sheetRow" : 18
 }, {
   "symbol" : "RPEL",
@@ -2603,7 +2603,7 @@
   "changePercent" : 1.3211149293623485,
   "distance" : 23.537735849056602,
   "status" : "Far",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 2
 }, {
   "symbol" : "KPIGREEN",
@@ -2614,7 +2614,7 @@
   "changePercent" : 0.5605095541401245,
   "distance" : 13.768115942028986,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 3
 }, {
   "symbol" : "BLS",
@@ -2625,7 +2625,7 @@
   "changePercent" : 1.5601624278691932,
   "distance" : 5.8597285067873255,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 4
 }, {
   "symbol" : "MANORAMA",
@@ -2636,7 +2636,7 @@
   "changePercent" : 0.12011632317611984,
   "distance" : 5.735294117647056,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 5
 }, {
   "symbol" : "544224",
@@ -2647,7 +2647,7 @@
   "changePercent" : 0.23647760969932535,
   "distance" : 7.94570502431118,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 6
 }, {
   "symbol" : "SEAMECLTD",
@@ -2658,7 +2658,7 @@
   "changePercent" : -1.5867265613679078,
   "distance" : 10.770465489566616,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 7
 }, {
   "symbol" : "KERNEX",
@@ -2669,7 +2669,7 @@
   "changePercent" : -0.5706780198378508,
   "distance" : 33.65012106537531,
   "status" : "Far",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 8
 }, {
   "symbol" : "NPST",
@@ -2679,8 +2679,8 @@
   "marketCap" : 31409984195,
   "changePercent" : -1.6273663234805713,
   "distance" : 8.700361010830324,
-  "status" : "Triggered",
-  "sheet" : "SmallCap",
+  "status" : "Watch",
+  "sheet" : "Smallcap",
   "sheetRow" : 9
 }, {
   "symbol" : "DEEPINDS",
@@ -2691,7 +2691,7 @@
   "changePercent" : 4.46985446985447,
   "distance" : 12.910798122065728,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 10
 }, {
   "symbol" : "MONARCH",
@@ -2702,7 +2702,7 @@
   "changePercent" : 0.7661234155174816,
   "distance" : 4.345930232558136,
   "status" : "Near",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 11
 }, {
   "symbol" : "GENUSPOWER",
@@ -2713,7 +2713,7 @@
   "changePercent" : 0.8059418457648402,
   "distance" : 11.017543859649114,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 12
 }, {
   "symbol" : "TIPSMUSIC",
@@ -2724,7 +2724,7 @@
   "changePercent" : 3.4807417974322368,
   "distance" : 27.919708029197082,
   "status" : "Far",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 13
 }, {
   "symbol" : "IXIGO",
@@ -2734,8 +2734,8 @@
   "marketCap" : 8.1153765E+10,
   "changePercent" : -0.9783783783783796,
   "distance" : 17.088607594936708,
-  "status" : "Triggered",
-  "sheet" : "SmallCap",
+  "status" : "Far",
+  "sheet" : "Smallcap",
   "sheetRow" : 14
 }, {
   "symbol" : "SPARC",
@@ -2746,7 +2746,7 @@
   "changePercent" : 1.16129032258065,
   "distance" : 2.358490566037736,
   "status" : "Near",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 15
 }, {
   "symbol" : "INDIASHLTR",
@@ -2756,8 +2756,8 @@
   "marketCap" : 78577889028,
   "changePercent" : -3.236066934034017,
   "distance" : 5.562043795620442,
-  "status" : "Triggered",
-  "sheet" : "SmallCap",
+  "status" : "Watch",
+  "sheet" : "Smallcap",
   "sheetRow" : 16
 }, {
   "symbol" : "V2RETAIL",
@@ -2768,7 +2768,7 @@
   "changePercent" : 0.7794899522393394,
   "distance" : 7.217391304347825,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 17
 }, {
   "symbol" : "YATHARTH",
@@ -2779,7 +2779,7 @@
   "changePercent" : -0.7602514217300237,
   "distance" : 21.756559766763846,
   "status" : "Far",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 18
 }, {
   "symbol" : "PNGJL",
@@ -2790,7 +2790,7 @@
   "changePercent" : -0.7120743034055763,
   "distance" : 26.666666666666668,
   "status" : "Far",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 19
 }, {
   "symbol" : "MAHLIFE",
@@ -2801,7 +2801,7 @@
   "changePercent" : -0.6666666666666667,
   "distance" : 3.3057851239669422,
   "status" : "Near",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 20
 }, {
   "symbol" : "PRICOLLTD",
@@ -2812,7 +2812,7 @@
   "changePercent" : 0.5480104836788074,
   "distance" : 18.78301886792452,
   "status" : "Far",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 21
 }, {
   "symbol" : "JSLL",
@@ -2823,7 +2823,7 @@
   "changePercent" : -0.143112701252228,
   "distance" : 18.43220338983051,
   "status" : "Far",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 22
 }, {
   "symbol" : "EBGNG",
@@ -2834,7 +2834,7 @@
   "changePercent" : 4.76107277015812,
   "distance" : 10.70599613152805,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 23
 }, {
   "symbol" : "PRECWIRE",
@@ -2845,7 +2845,7 @@
   "changePercent" : 1.5261044176706797,
   "distance" : 8.575581395348838,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 24
 }, {
   "symbol" : "VIKRAMSOLR",
@@ -2856,7 +2856,7 @@
   "changePercent" : -0.4098360655737705,
   "distance" : 7.647058823529412,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 25
 }, {
   "symbol" : "GOKULAGRO",
@@ -2867,7 +2867,7 @@
   "changePercent" : 1.2700661000944276,
   "distance" : 11.473684210526322,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 26
 }, {
   "symbol" : "SKIPPER",
@@ -2878,7 +2878,7 @@
   "changePercent" : 0.009451795841201234,
   "distance" : 15.75492341356674,
   "status" : "Far",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 27
 }, {
   "symbol" : "ASHAPURMIN",
@@ -2889,7 +2889,7 @@
   "changePercent" : 1.1582733812949575,
   "distance" : 6.595092024539877,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 28
 }, {
   "symbol" : "526433",
@@ -2900,7 +2900,7 @@
   "changePercent" : 2.5644641891733153,
   "distance" : 32.946875000000006,
   "status" : "Far",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 29
 }, {
   "symbol" : "CCAVENUE",
@@ -2911,7 +2911,7 @@
   "changePercent" : 1.102265768524187,
   "distance" : 18.93663510560814,
   "status" : "Far",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 30
 }, {
   "symbol" : "FEDFINA",
@@ -2922,7 +2922,7 @@
   "changePercent" : -0.03994673768309073,
   "distance" : 10.628268395079898,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 31
 }, {
   "symbol" : "MASFIN",
@@ -2933,7 +2933,7 @@
   "changePercent" : -0.4784688995215311,
   "distance" : 9.233449477351916,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 32
 }, {
   "symbol" : "KSHINTL",
@@ -2944,7 +2944,7 @@
   "changePercent" : 2.8275475923852182,
   "distance" : 30.364963503649633,
   "status" : "Far",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 33
 }, {
   "symbol" : "KRISHANA",
@@ -2955,7 +2955,7 @@
   "changePercent" : 3.530504800247748,
   "distance" : 52.311320754716974,
   "status" : "Far",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 34
 }, {
   "symbol" : "WABAG",
@@ -2966,7 +2966,7 @@
   "changePercent" : -0.8282689668692457,
   "distance" : 8.821333333333339,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 35
 }, {
   "symbol" : "GRAVITA",
@@ -2977,7 +2977,7 @@
   "changePercent" : 0.7013177987670304,
   "distance" : 5.369487485101305,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 36
 }, {
   "symbol" : "KRN",
@@ -2988,7 +2988,7 @@
   "changePercent" : 0.08941635506422829,
   "distance" : 20.607843137254907,
   "status" : "Far",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 37
 }, {
   "symbol" : "VINATIORGA",
@@ -2999,7 +2999,7 @@
   "changePercent" : 1.3292589763178069,
   "distance" : 5.649717514124294,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 38
 }, {
   "symbol" : "MOLDTKPAC",
@@ -3010,7 +3010,7 @@
   "changePercent" : 2.359781121751026,
   "distance" : 37.664783427495294,
   "status" : "Far",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 39
 }, {
   "symbol" : "PCJEWELLER",
@@ -3021,7 +3021,7 @@
   "changePercent" : -0.4296455424274881,
   "distance" : 7.134637514384362,
   "status" : "Watch",
-  "sheet" : "SmallCap",
+  "sheet" : "Smallcap",
   "sheetRow" : 40
 }, {
   "symbol" : "LODHA",
@@ -3411,11 +3411,11 @@
 }, {
   "symbol" : "ASIANPAINT",
   "currentPrice" : 2639.5,
-  "alertPrice" : 2577.0,
+  "alertPrice" : 2555.0,
   "previousClose" : 2668.8,
   "marketCap" : 2.53034162985E+12,
   "changePercent" : -1.1100587232430454,
-  "distance" : 2.425300737291424,
+  "distance" : 3.3072407045009786,
   "status" : "Near",
   "sheet" : "Misc",
   "sheetRow" : 37
