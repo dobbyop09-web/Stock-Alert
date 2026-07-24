@@ -115,6 +115,7 @@
   <div class="stats" id="stats"></div>
 
   <div class="toolbar">
+    <button id="refreshBtn">Refresh Now</button>
     <button id="loginBtn" disabled>Loading Google Sign-In…</button>
     <span id="authStatus"></span>
     <input
@@ -606,6 +607,30 @@ function editAlert(symbol, btn) {
 
     alert("Saved!");
 }
+
+
+
+document.getElementById("refreshBtn").addEventListener("click", async (e) => {
+  const btn = e.target;
+  btn.disabled = true;
+  btn.textContent = "Triggering...";
+
+  try {
+    const res = await fetch("https://tiny-art-8473.dobbyop09.workers.dev", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-trigger-key": "97c15c54-40bf-479a-a4e2-8c470506502c"
+      }
+    });
+    btn.textContent = res.ok ? "Triggered ✓ (check back in ~1 min)" : "Failed — try again";
+  } catch {
+    btn.textContent = "Failed — try again";
+  } finally {
+    setTimeout(() => { btn.disabled = false; btn.textContent = "Refresh Now"; }, 5000);
+  }
+});
+
 </script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
