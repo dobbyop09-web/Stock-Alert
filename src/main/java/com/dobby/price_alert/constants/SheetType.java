@@ -20,9 +20,9 @@ public enum SheetType {
 
     METAL("Metal", "679636049"),
 
-    ENERGY("Energy", "1475720491"),
+    ENERGY("OilEnergy", "1475720491"),
 
-    SMALLCAP("SmallCap", "2029475330"),
+    SMALLCAP("Smallcap", "2029475330"),
 
     MISCELLANEOUS("Misc", "709000981");
 
