@@ -113,7 +113,7 @@
   "currentPrice" : 743.5,
   "alertPrice" : 740.0,
   "previousClose" : 747.25,
-  "marketCap" : 120220039532,
+  "marketCap" : 119962327233,
   "changePercent" : -0.5043712172158709,
   "distance" : 0.472972972972973,
   "status" : "Near",
@@ -124,7 +124,7 @@
   "currentPrice" : 1436.0,
   "alertPrice" : 1260.0,
   "previousClose" : 1434.6,
-  "marketCap" : 107777346851,
+  "marketCap" : 107485712169,
   "changePercent" : 0.0974930362117055,
   "distance" : 13.968253968253968,
   "status" : "Watch",
@@ -320,11 +320,11 @@
 }, {
   "symbol" : "TATAINVEST",
   "currentPrice" : 631.5,
-  "alertPrice" : 625.0,
+  "alertPrice" : 575.0,
   "previousClose" : 632.2,
   "marketCap" : 31960686299,
   "changePercent" : -0.11084718923199453,
-  "distance" : 1.04,
+  "distance" : 9.826086956521738,
   "status" : "Triggered",
   "sheet" : "Bank",
   "sheetRow" : 21
@@ -441,11 +441,11 @@
 }, {
   "symbol" : "TSFINV",
   "currentPrice" : 435.3,
-  "alertPrice" : 430.0,
+  "alertPrice" : 394.0,
   "previousClose" : 434.75,
   "marketCap" : 9.655966E+10,
   "changePercent" : 0.12634964392373335,
-  "distance" : 1.2325581395348864,
+  "distance" : 10.482233502538074,
   "status" : "Triggered",
   "sheet" : "Bank",
   "sheetRow" : 32
@@ -2751,11 +2751,11 @@
 }, {
   "symbol" : "INDIASHLTR",
   "currentPrice" : 723.1,
-  "alertPrice" : 731.0,
+  "alertPrice" : 685.0,
   "previousClose" : 746.5,
   "marketCap" : 78577889028,
   "changePercent" : -3.236066934034017,
-  "distance" : -1.0807113543091624,
+  "distance" : 5.562043795620442,
   "status" : "Triggered",
   "sheet" : "SmallCap",
   "sheetRow" : 16
@@ -3147,11 +3147,11 @@
 }, {
   "symbol" : "DELHIVERY",
   "currentPrice" : 462.7,
-  "alertPrice" : 462.0,
+  "alertPrice" : 413.0,
   "previousClose" : 465.45,
   "marketCap" : 346587572563,
   "changePercent" : -0.5943375837475686,
-  "distance" : 0.15151515151514908,
+  "distance" : 12.033898305084744,
   "status" : "Triggered",
   "sheet" : "Miscellaneous",
   "sheetRow" : 13
@@ -3334,11 +3334,11 @@
 }, {
   "symbol" : "LT",
   "currentPrice" : 3787.9,
-  "alertPrice" : 3738.0,
+  "alertPrice" : 3700.0,
   "previousClose" : 3792.4,
   "marketCap" : 5.205157839E+12,
   "changePercent" : -0.11879933472372554,
-  "distance" : 1.334938469769933,
+  "distance" : 2.3756756756756783,
   "status" : "Triggered",
   "sheet" : "Miscellaneous",
   "sheetRow" : 30
