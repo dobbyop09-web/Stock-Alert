@@ -19,6 +19,7 @@ public class DashboardStock {
     private BigDecimal marketCap;
     private BigDecimal changePercent;
     private BigDecimal distance;
+    private BigDecimal fib;
     private String status;
     private String sheet;
     private Integer sheetRow;

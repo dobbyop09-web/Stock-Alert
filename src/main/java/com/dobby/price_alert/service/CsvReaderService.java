@@ -86,6 +86,7 @@ public class CsvReaderService {
                             .changePercent(BigDecimal.valueOf(changePerc))
                             .sheetRow(rowNumber)
                             .screenerUrl(screenerUrl)
+                            .fib(BigDecimal.valueOf(fib))
                             .build()
             );
         }
