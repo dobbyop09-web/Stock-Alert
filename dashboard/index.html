@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- <link rel="icon" type="image/png" href="favicon.png"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="favicon.png">
     <title>Alert dashboard</title>
     <style>
         :root{
@@ -13,8 +14,9 @@
           --triggered:#FF5C6C; --near:#F5A623; --watch:#2DD4BF; --far:#5B6472;
         }
         *{box-sizing:border-box;}
+        html,body{height:100%;}
         body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
-        .wrap{max-width:920px;margin:0 auto;padding:20px 16px 40px;}
+        .wrap{max-width:1400px;width:100%;margin:0 auto;padding:20px clamp(12px, 4vw, 32px) 40px;}
         h1{font-size:15px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 4px;}
         .sub{font-size:12px;color:var(--muted);margin:0 0 20px;}
         .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
@@ -33,12 +35,57 @@
         button.danger{background:transparent;border-color:transparent;color:var(--muted);padding:4px 6px;}
         button.danger:hover{color:var(--triggered);}
         button:disabled{opacity:.5;cursor:not-allowed;}
-        table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px;}
-        thead th{text-align:left;font-family:var(--sans);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line);}
+        .table-scroll{
+            width:100%;
+            overflow-x:auto;
+            -webkit-overflow-scrolling:touch;
+            scrollbar-width:thin;
+            scrollbar-color:#2E3745 transparent;
+        }
+        .table-scroll::-webkit-scrollbar{
+            width:8px;
+            height:8px;
+        }
+        .table-scroll::-webkit-scrollbar-track{
+            background:transparent;
+        }
+        .table-scroll::-webkit-scrollbar-thumb{
+            background:#2E3745;
+            border-radius:8px;
+        }
+        .table-scroll::-webkit-scrollbar-thumb:hover{
+            background:#3A4453;
+        }
+        table{width:100%;min-width:600px;border-collapse:collapse;font-family:var(--mono);font-size:13px;}
+        thead th{text-align:left;font-family:var(--sans);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:2;}
         tbody td{padding:7px 10px;border-bottom:1px solid var(--line);}
         tbody tr:hover{background:var(--panel);}
         input.cell{background:transparent;border:none;color:var(--text);font-family:var(--mono);font-size:13px;width:100%;padding:3px 4px;border-radius:4px;}
         input.cell:focus{outline:1px solid #2E3745;background:var(--panel2);}
+        input.edit-cell{
+            background:var(--panel2);
+            border:1px solid var(--line);
+            color:var(--text);
+            font-family:var(--mono);
+            font-size:13px;
+            padding:5px 8px;
+            border-radius:5px;
+            outline:none;
+        }
+        input.edit-cell::placeholder{color:var(--muted);}
+        input.edit-cell:focus{border-color:#2DD4BF;}
+        input.edit-cell{
+            background:var(--panel2);
+            border:1px solid var(--line);
+            color:var(--text);
+            font-family:var(--mono);
+            font-size:13px;
+            padding:5px 8px;
+            border-radius:5px;
+            outline:none;
+        }
+        input.edit-cell::placeholder{color:var(--muted);}
+        input.edit-cell:focus{border-color:#2DD4BF;}
         .num{text-align:right;}
         .badge{display:inline-block;font-size:11px;font-family:var(--sans);font-weight:500;padding:2px 8px;border-radius:20px;}
         .b-triggered{background:#3A1518;color:var(--triggered);}
@@ -60,11 +107,13 @@
           margin-bottom:22px;
           border-bottom:1px solid var(--line);
           padding-bottom:16px;
+          flex-wrap:wrap;
       }
 
       .navbar{
           display:flex;
           gap:8px;
+          flex-wrap:wrap;
       }
 
       .navbar a{
@@ -122,6 +171,8 @@
     padding:14px;
     position:sticky;
     top:20px;
+    max-height:calc(100vh - 40px);
+    overflow-y:auto;
 }
 
 .sidebar-search{
@@ -210,6 +261,104 @@
     flex:1;
     min-width:0;
 }
+
+/* ---- Responsive breakpoints ---- */
+
+/* Tablet and below: stack sidebar above content, sectors become a scrollable row */
+@media (max-width: 900px){
+    .layout{
+        flex-direction:column;
+    }
+    .sidebar{
+        width:100%;
+        position:static;
+        max-height:none;
+    }
+    .sector-list{
+        position:relative;
+        flex-direction:row;
+        flex-wrap:nowrap;
+        overflow-x:auto;
+        gap:6px;
+        padding-bottom:4px;
+        scrollbar-width:none;       /* Firefox */
+        -ms-overflow-style:none;    /* old Edge/IE */
+    }
+    .sector-list::-webkit-scrollbar{
+        display:none;               /* Chrome/Safari */
+    }
+    .sidebar{
+        position:relative;
+        overflow:hidden;
+    }
+    .sidebar::after{
+        content:"";
+        position:absolute;
+        top:0;
+        right:0;
+        bottom:0;
+        width:24px;
+        pointer-events:none;
+        background:linear-gradient(to right, transparent, var(--panel));
+    }
+    .sector-item{
+        flex-shrink:0;
+        white-space:nowrap;
+    }
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+/* Desktop/tablet: pin everything except the table rows in place.
+   The header, stats, toolbar, sidebar and table header stay fixed;
+   only the table body scrolls inside its own container. */
+@media (min-width: 901px){
+    html, body{ overflow:hidden; }
+    .wrap{
+        height:100vh;
+        display:flex;
+        flex-direction:column;
+        overflow:hidden;
+        padding-bottom:16px;
+    }
+    .topbar{ flex-shrink:0; }
+    .layout{
+        flex:1;
+        min-height:0;
+        overflow:hidden;
+    }
+    .sidebar{
+        height:100%;
+        max-height:100%;
+    }
+    .main{
+        display:flex;
+        flex-direction:column;
+        height:100%;
+        min-height:0;
+    }
+    .stats, .toolbar, .showing, .paste{ flex-shrink:0; }
+    .table-scroll{
+        flex:1;
+        min-height:0;
+        overflow-y:auto;
+    }
+    .empty{ flex-shrink:0; }
+}
+
+/* Phones: tighten spacing and shrink type */
+@media (max-width: 560px){
+    .wrap{ padding:14px 12px 32px; }
+    .stats{ gap:8px; }
+    .stat{ padding:10px; }
+    .stat .n{ font-size:18px; }
+    .toolbar{ gap:6px; }
+    button{ padding:6px 10px; font-size:11px; }
+    table{ font-size:11px; }
+    thead th, tbody td{ padding:6px 6px; }
+    .sidebar{ padding:10px; }
+}
     </style>
 </head>
 <body>
@@ -270,19 +419,21 @@
 
                 <p class="hint">Select your Symbol / Current Price / Alert Price columns in Sheets, copy, then paste here.</p>
             </div>
-            <table>
-                <thead>
-                <tr>
-                    <th style="width:22%">Symbol</th>
-                    <th class="num" style="width:18%">Current</th>
-                    <th class="num" style="width:18%">Alert</th>
-                    <th class="num" style="width:16%">Distance</th>
-                    <th style="width:18%">Status</th>
-                    <th style="width:8%">Sector</th>
-                </tr>
-                </thead>
-                <tbody id="tbody"></tbody>
-            </table>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                    <tr>
+                        <th style="width:22%">Symbol</th>
+                        <th class="num" style="width:18%">Current</th>
+                        <th class="num" style="width:18%">Alert</th>
+                        <th class="num" style="width:16%">Distance</th>
+                        <th style="width:18%">Status</th>
+                        <th style="width:8%">Sector</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
             <div class="empty" id="emptyMsg" style="display:none;">No stocks yet. Add a row or paste from your sheet.</div>
 
         </main>
@@ -645,8 +796,10 @@
 
       const stock = allRows.find(s => s.symbol === symbol);
 
-      row.cells[2].innerHTML =
-          `<input id="edit-${symbol}" value="${stock.alertPrice}" style="width:80px">`;
+      row.cells[2].innerHTML = `
+          <input id="edit-${symbol}" class="edit-cell" value="${stock.alertPrice}" style="width:70px" placeholder="Alert">
+          <input id="edit-fib-${symbol}" class="edit-cell" value="${stock.fib ?? ''}" style="width:70px;margin-left:4px" placeholder="Fib">
+      `;
 
       row.cells[6].innerHTML =
           `<button onclick="saveAlert('${symbol}')">💾</button>`;
@@ -680,8 +833,10 @@
     async function saveAlert(symbol) {
 
       const input = document.getElementById("edit-" + symbol);
+      const fibInput = document.getElementById("edit-fib-" + symbol);
 
       const newAlert = input.value;
+      const newFib = fibInput.value;
 
       const stock = allRows.find(s => s.symbol === symbol);
 
@@ -692,18 +847,20 @@
           return;
       }
 
-      const range = `${stock.sheet}!C${row}`;
-
       const url =
-          `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
+          `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values:batchUpdate`;
 
       const body = {
-          values: [[newAlert]]
+          valueInputOption: "USER_ENTERED",
+          data: [
+              { range: `${stock.sheet}!C${row}`, values: [[newAlert]] },
+              { range: `${stock.sheet}!D${row}`, values: [[newFib]] }
+          ]
       };
 
       const res = await fetch(url, {
 
-          method: "PUT",
+          method: "POST",
 
           headers: {
               Authorization: "Bearer " + accessToken,
@@ -722,6 +879,7 @@
       }
 
       stock.alertPrice = Number(newAlert);
+      stock.fib = newFib;
 
       render();
 
