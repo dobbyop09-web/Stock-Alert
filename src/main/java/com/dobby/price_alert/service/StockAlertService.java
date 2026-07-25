@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class StockAlertService {
@@ -17,29 +18,28 @@ public class StockAlertService {
     public AlertStatus shouldSendAlert(String watchlist,
                                        String symbol,
                                        double currentPrice,
-                                       double alertPrice) {
+                                       double alertPrice,
+                                       Set<String> triggeredAlerts) {
 
 
+
+        if(triggeredAlerts.contains(symbol)){
+            return new AlertStatus(false,true);
+        }
+        if(currentPrice > alertPrice){
+            return new AlertStatus(false,false);
+        }
 
         StockAlert stockAlert = repository
                 .findByWatchlistAndSymbol(watchlist, symbol)
                 .orElseGet(() -> createNew(watchlist, symbol));
 
-        boolean triggeredToday =
-                LocalDate.now().equals(stockAlert.getLastAlertDate());
-
-        if (currentPrice <= alertPrice && !triggeredToday) {
             stockAlert.setAlertPrice(alertPrice);
             stockAlert.setLastAlertDate(LocalDate.now());
             repository.save(stockAlert);
 
             return new AlertStatus(true, true);
-        }
 
-      return new AlertStatus(
-                false,
-                triggeredToday
-        );
     }
 
     private StockAlert createNew(String watchlist,
@@ -51,5 +51,12 @@ public class StockAlertService {
         stockAlert.setSymbol(symbol);
 
         return stockAlert;
+    }
+
+    public Set<String> getAllTriggeredToday() {
+        return repository.findAlertsTriggeredToday(LocalDate.now())
+                .stream()
+                .map(StockAlert::getSymbol)
+                .collect(Collectors.toSet());
     }
 }

@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class CsvReaderService {
@@ -28,7 +29,7 @@ public class CsvReaderService {
             LoggerFactory.getLogger(CsvReaderService.class);
 
 
-    public List<DashboardStock> readCsvAndCheckAlerts(SheetConfig sheetConfig) throws IOException {
+    public List<DashboardStock> readCsvAndCheckAlerts(SheetConfig sheetConfig, Set<String> triggeredToday) throws IOException {
 
         log.info("Reading {}", sheetConfig.getName());
         List<DashboardStock> dashboardStocks = new ArrayList<>();
@@ -49,7 +50,7 @@ public class CsvReaderService {
             double marketCap = Double.parseDouble(record.get("MarketCap"));
             String symbol = record.get("Symbol");
             String screenerUrl ="https://www.screener.in/company/" + symbol + "/consolidated/";
-            AlertStatus  alertStatus = stockAlertService.shouldSendAlert(sheetConfig.getName(), symbol, current, alert);
+            AlertStatus  alertStatus = stockAlertService.shouldSendAlert(sheetConfig.getName(), symbol, current, alert,triggeredToday);
             if (alertStatus.isShouldSend()) {
                 log.info("Telegram sent for {}", symbol);
 
