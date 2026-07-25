@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="favicon.png">
+    <!-- <link rel="icon" type="image/png" href="favicon.png"> -->
     <title>Alert dashboard</title>
     <style>
         :root{
@@ -106,6 +106,110 @@
     color:#2dd4bf;
     text-decoration:underline;
 }
+
+.layout{
+    display:flex;
+    align-items:flex-start;
+    gap:20px;
+}
+
+.sidebar{
+    width:200px;
+    flex-shrink:0;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:14px;
+    position:sticky;
+    top:20px;
+}
+
+.sidebar-search{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:var(--panel2);
+    border:1px solid var(--line);
+    border-radius:5px;
+    padding:7px 10px;
+    margin-bottom:14px;
+}
+
+.sidebar-search svg{
+    flex-shrink:0;
+    opacity:.6;
+}
+
+.sidebar-search input{
+    flex:1;
+    background:transparent;
+    border:none;
+    color:var(--text);
+    font-size:12px;
+    font-family:var(--sans);
+    min-width:0;
+}
+
+.sidebar-search input:focus{
+    outline:none;
+}
+
+.sidebar-title{
+    font-size:11px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    font-weight:500;
+    margin:0 0 8px;
+    padding:0 4px;
+}
+
+.sector-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+}
+
+.sector-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    padding:7px 8px;
+    border-radius:5px;
+    font-size:12.5px;
+    color:var(--muted);
+    cursor:pointer;
+    transition:.15s;
+}
+
+.sector-item:hover{
+    background:var(--panel2);
+    color:var(--text);
+}
+
+.sector-item.active{
+    background:#1B2A2E;
+    color:#2DD4BF;
+}
+
+.sector-item .count{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--far);
+}
+
+.sector-item.active .count{
+    color:#2DD4BF;
+}
+
+.main{
+    flex:1;
+    min-width:0;
+}
     </style>
 </head>
 <body>
@@ -125,71 +229,65 @@
 
     </div>
 
-    <div class="stats" id="stats"></div>
+    <div class="layout">
 
-    <div class="toolbar">
-        <button id="refreshBtn">Refresh Now</button>
-        <button id="loginBtn" disabled>Loading Google Sign-In…</button>
-        <span id="authStatus"></span>
-        <input
-                type="text"
-                id="searchBox"
-                placeholder="Search symbol or sector..."
-                style="
-            flex:1;
-            max-width:250px;
-            background:var(--panel);
-            color:var(--text);
-            border:1px solid var(--line);
-            border-radius:5px;
-            padding:7px 10px;
-            font-size:12px;
-        "
-        >
+        <aside class="sidebar">
+            <div class="sidebar-search">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input
+                        type="text"
+                        id="searchBox"
+                        placeholder="Search symbol or sector..."
+                >
+            </div>
 
-        <select id="sheetFilter"
-                style="
-            background:var(--panel);
-            color:var(--text);
-            border:1px solid var(--line);
-            border-radius:5px;
-            padding:7px 10px;
-            font-size:12px;
-        ">
-            <option value="">All Sectors</option>
-        </select>
+            <p class="sidebar-title">Sectors</p>
+            <ul class="sector-list" id="sectorList"></ul>
+        </aside>
 
-        <button id="sortBtn">Sort by closest to alert</button>
-        <button id="sortMcBtn">
-            Market Cap ↓
-        </button>
+        <main class="main">
+
+            <div class="stats" id="stats"></div>
+
+            <div class="toolbar">
+                <button id="refreshBtn">Refresh Now</button>
+                <button id="loginBtn" disabled>Loading Google Sign-In…</button>
+                <span id="authStatus"></span>
+                <button id="sortBtn">Sort by closest to alert</button>
+                <button id="sortMcBtn">
+                    Market Cap ↓
+                </button>
+            </div>
+
+            <div class="showing" id="showingLine"></div>
+
+            <div class="paste" id="pasteBox">
+                <textarea id="pasteArea"
+                          placeholder="Paste rows copied from Google Sheets (Symbol, Current price, Alert price) — tab or comma separated, one row per line"></textarea>
+                <div class="row">
+                    <button class="primary" id="importBtn">Import</button>
+                </div>
+
+                <p class="hint">Select your Symbol / Current Price / Alert Price columns in Sheets, copy, then paste here.</p>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th style="width:22%">Symbol</th>
+                    <th class="num" style="width:18%">Current</th>
+                    <th class="num" style="width:18%">Alert</th>
+                    <th class="num" style="width:16%">Distance</th>
+                    <th style="width:18%">Status</th>
+                    <th style="width:8%">Sector</th>
+                </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+            </table>
+            <div class="empty" id="emptyMsg" style="display:none;">No stocks yet. Add a row or paste from your sheet.</div>
+
+        </main>
+
     </div>
-
-    <div class="showing" id="showingLine"></div>
-
-    <div class="paste" id="pasteBox">
-        <textarea id="pasteArea"
-                  placeholder="Paste rows copied from Google Sheets (Symbol, Current price, Alert price) — tab or comma separated, one row per line"></textarea>
-        <div class="row">
-            <button class="primary" id="importBtn">Import</button>
-        </div>
-
-        <p class="hint">Select your Symbol / Current Price / Alert Price columns in Sheets, copy, then paste here.</p>
-    </div>
-    <table>
-        <thead>
-        <tr>
-            <th style="width:22%">Symbol</th>
-            <th class="num" style="width:18%">Current</th>
-            <th class="num" style="width:18%">Alert</th>
-            <th class="num" style="width:16%">Distance</th>
-            <th style="width:18%">Status</th>
-            <th style="width:8%">Sector</th>
-        </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-    </table>
-    <div class="empty" id="emptyMsg" style="display:none;">No stocks yet. Add a row or paste from your sheet.</div>
 </div>
 
 <script>
@@ -198,17 +296,13 @@
       let allRows = [];
       let contextRows = []; // allRows filtered by search + sector, but NOT by status
       let statusFilter = ""; // "" | "Triggered" | "Near" | "Watch"
+      let sectorFilter = ""; // "" | sector name, set by clicking a sidebar item
   const SPREADSHEET_ID ="1AQ93bxs1qthy6WSqtkV-DhMYjAMaZrsQLLabk_KGgyQ"
   let accessToken = sessionStorage.getItem("accessToken");;
   let tokenClient = null;
   const loginBtn = document.getElementById("loginBtn");
   const authStatus = document.getElementById("authStatus");
 
-  // Initialize the token client only once the GIS library has actually
-  // finished loading. It's fetched with async/defer, so we can't assume
-  // it's ready just because this inline script has started running —
-  // that race condition was the original bug: google.accounts was
-  // sometimes still undefined when initTokenClient() was called.
   function initGoogleAuth() {
       try {
           tokenClient = google.accounts.oauth2.initTokenClient({
@@ -256,8 +350,6 @@
        });
   });
 
-  // Poll for the GIS library instead of assuming it's ready by the time
-  // this script runs.
   (function waitForGoogleIdentity(attemptsLeft) {
       if (window.google && window.google.accounts && window.google.accounts.oauth2) {
           initGoogleAuth();
@@ -270,7 +362,7 @@
           return;
       }
       setTimeout(() => waitForGoogleIdentity(attemptsLeft - 1), 200);
-  })(50); // retries for up to ~10 seconds
+  })(50);
 
       function fmtPct(n) {
           return (n > 0 ? "+" : "") + Number(n).toFixed(1) + "%";
@@ -281,8 +373,6 @@
           const tbody = document.getElementById("tbody");
           tbody.innerHTML = "";
 
-          // Stat counts reflect the search/sector context, not the status filter,
-          // so clicking between cards lets you jump directly between categories.
           let triggered = 0;
           let near = 0;
           let watch = 0;
@@ -376,12 +466,11 @@
       function renderShowingLine(){
 
           const el = document.getElementById("showingLine");
-          const sheet = document.getElementById("sheetFilter").value;
           const search = document.getElementById("searchBox").value.trim();
 
           const parts = [];
           if(statusFilter) parts.push(statusFilter);
-          if(sheet) parts.push(sheet);
+          if(sectorFilter) parts.push(sectorFilter);
           if(search) parts.push(`"${search}"`);
 
           const label = parts.length ? parts.join(" • ") : "All";
@@ -393,15 +482,15 @@
           if(clearBtn){
               clearBtn.addEventListener("click", () => {
                   statusFilter = "";
+                  sectorFilter = "";
                   document.getElementById("searchBox").value = "";
-                  document.getElementById("sheetFilter").value = "";
                   applyFilters();
               });
           }
       }
-      function populateSheetFilter() {
+      function renderSectorList(searchFilteredRows) {
 
-        const select = document.getElementById("sheetFilter");
+        const list = document.getElementById("sectorList");
 
         const sectors = [...new Set(
             allRows
@@ -409,22 +498,40 @@
                 .filter(Boolean)
         )].sort();
 
-        select.innerHTML =
-            '<option value="">All Sectors</option>';
+        const countFor = sector => searchFilteredRows.filter(s => s.sheet === sector).length;
+
+        let html = `
+            <li class="sector-item ${sectorFilter === "" ? "active" : ""}" data-sector="">
+                <span>All Sectors</span>
+                <span class="count">${searchFilteredRows.length}</span>
+            </li>
+        `;
 
         sectors.forEach(sector => {
-
-            const option = document.createElement("option");
-
-            option.value = sector;
-
-            option.textContent = sector;
-
-            select.appendChild(option);
-
+            html += `
+                <li class="sector-item ${sectorFilter === sector ? "active" : ""}" data-sector="${sector}">
+                    <span>${sector}</span>
+                    <span class="count">${countFor(sector)}</span>
+                </li>
+            `;
         });
 
+        list.innerHTML = html;
+
     }
+
+    document.getElementById("sectorList").addEventListener("click", (e) => {
+
+        const item = e.target.closest(".sector-item");
+        if(!item) return;
+
+        const clicked = item.dataset.sector;
+
+        sectorFilter = (sectorFilter === clicked) ? "" : clicked;
+
+        applyFilters();
+    });
+
     function applyFilters() {
 
         const text =
@@ -433,13 +540,9 @@
                 .trim()
                 .toUpperCase();
 
-        const sheet =
-            document.getElementById("sheetFilter").value;
+        const searchFilteredRows = allRows.filter(stock => {
 
-        contextRows = allRows.filter(stock => {
-
-            const matchesSearch =
-                text === "" ||
+            return text === "" ||
 
                 stock.symbol.toUpperCase().includes(text) ||
 
@@ -447,18 +550,21 @@
                     .toUpperCase()
                     .includes(text);
 
-            const matchesSheet =
-                sheet === "" ||
+        });
 
-                stock.sheet === sheet;
+        contextRows = searchFilteredRows.filter(stock => {
 
-            return matchesSearch && matchesSheet;
+            return sectorFilter === "" ||
+
+                sectorFilter === stock.sheet;
 
         });
 
         rows = statusFilter === ""
             ? contextRows
             : contextRows.filter(stock => (stock.status || "Far") === statusFilter);
+
+        renderSectorList(searchFilteredRows);
 
         render();
 
@@ -471,7 +577,6 @@
 
         const clicked = card.dataset.status;
 
-        // Clicking the active card again clears the filter
         statusFilter = (statusFilter === clicked) ? "" : clicked;
 
         applyFilters();
@@ -485,7 +590,7 @@
             allRows = await response.json();
             rows = [...allRows];
             contextRows = [...allRows];
-            populateSheetFilter();
+            renderSectorList(allRows);
               document.getElementById("subline").innerText =
                   "Last updated : " + new Date().toLocaleString();
 
@@ -506,7 +611,6 @@
 
         rows.sort((a, b) => {
 
-            // Triggered stocks (negative distance) should appear first
             return a.distance - b.distance;
 
         });
@@ -516,8 +620,6 @@
     document.getElementById("searchBox")
         .addEventListener("input", applyFilters);
 
-    document.getElementById("sheetFilter")
-        .addEventListener("change", applyFilters);
     let marketCapAscending = false;
     const mcBtn = document.getElementById("sortMcBtn");
 
@@ -525,8 +627,8 @@
 
         rows.sort((a, b) =>
             marketCapAscending
-                ? Number(a.marketCap || 0) - Number(b.marketCap || 0)   // Ascending
-                : Number(b.marketCap || 0) - Number(a.marketCap || 0)   // Descending
+                ? Number(a.marketCap || 0) - Number(b.marketCap || 0)
+                : Number(b.marketCap || 0) - Number(a.marketCap || 0)
         );
 
         marketCapAscending = !marketCapAscending;
@@ -568,7 +670,7 @@
 
           if (rows[i][0] === symbol) {
 
-              return i + 1; // Sheet rows start at 1
+              return i + 1;
 
           }
       }
