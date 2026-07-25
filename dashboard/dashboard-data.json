@@ -123,7 +123,7 @@
   "currentPrice" : 743.5,
   "alertPrice" : 740.0,
   "previousClose" : 747.25,
-  "marketCap" : 120168497072,
+  "marketCap" : 1.1973039108E+11,
   "changePercent" : -0.5043712172158709,
   "distance" : 0.472972972972973,
   "status" : "Near",
@@ -354,7 +354,7 @@
   "marketCap" : 31960686299,
   "changePercent" : -0.11084718923199453,
   "distance" : 9.826086956521738,
-  "status" : "Triggered",
+  "status" : "Watch",
   "sheet" : "Bank",
   "sheetRow" : 21,
   "screenerUrl" : "https://www.screener.in/company/TATAINVEST/consolidated/"
@@ -486,7 +486,7 @@
   "marketCap" : 9.655966E+10,
   "changePercent" : 0.12634964392373335,
   "distance" : 10.482233502538074,
-  "status" : "Triggered",
+  "status" : "Watch",
   "sheet" : "Bank",
   "sheetRow" : 32,
   "screenerUrl" : "https://www.screener.in/company/TSFINV/consolidated/"
@@ -690,7 +690,7 @@
   "marketCap" : 4.228713625E+12,
   "changePercent" : 0.34944237918215615,
   "distance" : 5.078125,
-  "status" : "Triggered",
+  "status" : "Watch",
   "sheet" : "Auto",
   "sheetRow" : 2,
   "screenerUrl" : "https://www.screener.in/company/MARUTI/consolidated/"
@@ -1326,7 +1326,7 @@
   "marketCap" : 88668975487,
   "changePercent" : 0.5754908598510456,
   "distance" : 15.390624999999991,
-  "status" : "Triggered",
+  "status" : "Far",
   "sheet" : "Manufacturing",
   "sheetRow" : 26,
   "screenerUrl" : "https://www.screener.in/company/TARIL/consolidated/"
@@ -1350,7 +1350,7 @@
   "marketCap" : 2.225477786E+11,
   "changePercent" : 0.6839131727624123,
   "distance" : 6.64904862579281,
-  "status" : "Triggered",
+  "status" : "Watch",
   "sheet" : "Manufacturing",
   "sheetRow" : 28,
   "screenerUrl" : "https://www.screener.in/company/GRINDWELL/consolidated/"
@@ -1410,7 +1410,7 @@
   "marketCap" : 1.058531616E+12,
   "changePercent" : 0.5751173708920161,
   "distance" : 5.185185185185185,
-  "status" : "Triggered",
+  "status" : "Watch",
   "sheet" : "Manufacturing",
   "sheetRow" : 33,
   "screenerUrl" : "https://www.screener.in/company/AMBUJACEM/consolidated/"
@@ -1638,7 +1638,7 @@
   "marketCap" : 1.445911095E+12,
   "changePercent" : -0.8169014084507042,
   "distance" : 3.8315296870429947,
-  "status" : "Triggered",
+  "status" : "Near",
   "sheet" : "CapitalMarket",
   "sheetRow" : 6,
   "screenerUrl" : "https://www.screener.in/company/BSE/consolidated/"
@@ -2106,7 +2106,7 @@
   "marketCap" : 266913435046,
   "changePercent" : -6.371659645130532,
   "distance" : 11.557461406518014,
-  "status" : "Triggered",
+  "status" : "Watch",
   "sheet" : "Health",
   "sheetRow" : 13,
   "screenerUrl" : "https://www.screener.in/company/ACUTAAS/consolidated/"
@@ -2259,7 +2259,7 @@
   "currentPrice" : 1153.0,
   "alertPrice" : 1077.0,
   "previousClose" : 1166.3,
-  "marketCap" : 10129410817,
+  "marketCap" : 10052672727,
   "changePercent" : -1.1535125758889813,
   "distance" : 7.056638811513463,
   "status" : "Watch",
@@ -2454,7 +2454,7 @@
   "marketCap" : 106774267571,
   "changePercent" : 3.315934909425856,
   "distance" : 8.566666666666663,
-  "status" : "Triggered",
+  "status" : "Watch",
   "sheet" : "Health",
   "sheetRow" : 42,
   "screenerUrl" : "https://www.screener.in/company/JLHL/consolidated/"
