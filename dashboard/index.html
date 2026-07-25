@@ -440,7 +440,7 @@
                     <tr>
                         <th style="width:22%">Symbol</th>
                         <th class="num" style="width:18%">Current</th>
-                        <th class="num" style="width:18%">Alert</th>
+                        <th id="alertHeader" class="num" style="width:18%">Alert</th>
                         <th class="num" style="width:16%">Distance</th>
                         <th style="width:18%">Status</th>
                         <th style="width:8%">Sector</th>
@@ -806,13 +806,15 @@
         render();
     });
   function editAlert(symbol, btn) {
-
+  document.getElementById("alertHeader").innerHTML =
+        "✏️ Editing";
       const row = btn.closest("tr");
 
       const stock = allRows.find(s => s.symbol === symbol);
 row.cells[2].style.position = "relative";
       row.cells[2].innerHTML = `
    <div class="alert-edit-row">
+     <span class="fib-label">Alert</span>
     <input id="edit-${symbol}"
            class="edit-cell"
            value="${stock.alertPrice}">
@@ -867,6 +869,8 @@ row.cells[2].style.position = "relative";
       const row = await findRow(stock.sheet, symbol);
 
       if (row === -1) {
+         document.getElementById("alertHeader").textContent = "Alert";
+          loadDashboard();
           alert("Stock not found.");
           return;
       }
@@ -896,7 +900,8 @@ row.cells[2].style.position = "relative";
       });
 
       if (!res.ok) {
-
+         document.getElementById("alertHeader").textContent = "Alert";
+             loadDashboard();
           alert("Failed to save");
           return;
 
@@ -904,7 +909,7 @@ row.cells[2].style.position = "relative";
 
       stock.alertPrice = Number(newAlert);
       stock.fib = newFib;
-
+          document.getElementById("alertHeader").textContent = "Alert";
       render();
 
       alert("Saved!");
