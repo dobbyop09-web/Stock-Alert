@@ -150,6 +150,21 @@
     font-weight:600;
     transition:.2s;
 }
+.alert-edit-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+}
+
+.alert-edit-row input{
+    width:65px;
+}
+
+.fib-label{
+    font-size:11px;
+    color:#8fa2c2;
+}
 
 .stock-link:hover{
     color:#2dd4bf;
@@ -795,10 +810,19 @@
       const row = btn.closest("tr");
 
       const stock = allRows.find(s => s.symbol === symbol);
-
+row.cells[2].style.position = "relative";
       row.cells[2].innerHTML = `
-          <input id="edit-${symbol}" class="edit-cell" value="${stock.alertPrice}" style="width:70px" placeholder="Alert">
-          <input id="edit-fib-${symbol}" class="edit-cell" value="${stock.fib ?? ''}" style="width:70px;margin-left:4px" placeholder="Fib">
+   <div class="alert-edit-row">
+    <input id="edit-${symbol}"
+           class="edit-cell"
+           value="${stock.alertPrice}">
+
+    <span class="fib-label">Fib</span>
+
+    <input id="edit-fib-${symbol}"
+           class="edit-cell"
+           value="${stock.fib ?? ''}">
+</div>
       `;
 
       row.cells[6].innerHTML =
