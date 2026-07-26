@@ -1,12 +1,38 @@
-/* Legend swatches shown in the toolbar */
+/* Legend shown in the toolbar — each range is a toggleable filter chip */
 .legend {
     display: flex;
-    gap: 14px;
+    gap: 8px;
     align-items: center;
     margin-left: auto;
-    font-size: 11px;
-    color: var(--muted);
     flex-wrap: wrap;
+}
+
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--panel2);
+    color: var(--text);
+    font-size: 11px;
+    font-family: var(--sans);
+    cursor: pointer;
+    transition: opacity .15s, border-color .15s, background .15s;
+}
+
+.legend-item:hover {
+    border-color: #3A4453;
+}
+
+.legend-item.inactive {
+    opacity: .35;
+    background: transparent;
+}
+
+.legend-item.inactive:hover {
+    opacity: .6;
 }
 
 .legend .sw {
@@ -14,8 +40,7 @@
     width: 10px;
     height: 10px;
     border-radius: 2px;
-    margin-right: 5px;
-    vertical-align: middle;
+    flex-shrink: 0;
 }
 
 /* Treemap canvas */
