@@ -1,0 +1,118 @@
+/* Legend swatches shown in the toolbar */
+.legend {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--muted);
+    flex-wrap: wrap;
+}
+
+.legend .sw {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* Treemap canvas */
+.heatmap {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Below 901px, .main isn't a flex column (see layout.css), so .heatmap-scroll
+   has no implicit height to fill — give the canvas an explicit one so the
+   treemap has real pixels to size against. */
+@media (max-width: 900px) {
+    .heatmap-scroll {
+        height: 78vh;
+    }
+}
+
+.empty-state {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.sector-label {
+    font-size: 11px;
+    font-weight: 600;
+    fill: var(--muted);
+    letter-spacing: .4px;
+    text-transform: uppercase;
+    pointer-events: none;
+}
+
+.tile-rect {
+    stroke: #0A0D12;
+    stroke-width: 1.5px;
+    cursor: pointer;
+    transition: opacity .15s;
+}
+
+.tile-rect:hover {
+    opacity: .85;
+}
+
+.tile-text {
+    pointer-events: none;
+    font-family: var(--sans);
+}
+
+/* Tooltip */
+.tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: #171C24;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 12px;
+    color: var(--text);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .5);
+    z-index: 50;
+    opacity: 0;
+    transition: opacity .1s;
+    min-width: 160px;
+}
+
+.tooltip .t-symbol {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.tooltip .t-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    color: var(--muted);
+    padding: 2px 0;
+}
+
+.tooltip .t-row span:last-child {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.tooltip .t-pos {
+    color: #22c55e !important;
+}
+
+.tooltip .t-neg {
+    color: #ef4444 !important;
+}
