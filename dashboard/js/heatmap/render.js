@@ -1,4 +1,4 @@
-import { getFilteredRows, renderShowingLine } from "./filters.js";
+import { getFilteredRows } from "./filters.js";
 import { color, fmtNum, truncateToWidth } from "./utils.js";
 
 const tooltip = document.getElementById("tooltip");
@@ -70,7 +70,6 @@ export function render() {
     container.innerHTML = "";
 
     const rows = getFilteredRows();
-    renderShowingLine(rows.length);
 
     if (rows.length === 0) {
         const empty = document.createElement("div");

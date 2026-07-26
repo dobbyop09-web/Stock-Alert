@@ -1,7 +1,6 @@
 import { state } from "./state.js";
 import { render } from "./render.js";
-import { BUCKETS, getBucket } from "./utils.js";
-import { renderLegend } from "./legend.js";
+import { getBucket } from "./utils.js";
 
 function applySort(rows) {
     const sorted = [...rows];
@@ -69,38 +68,6 @@ export function renderSectorList() {
     list.innerHTML = html;
 }
 
-export function renderShowingLine(visibleCount) {
-    const el = document.getElementById("showingLine");
-    const search = document.getElementById("search").value.trim();
-
-    const parts = [];
-    if (state.sectorFilter) parts.push(state.sectorFilter);
-
-    if (state.activeBuckets.size < BUCKETS.length) {
-        const activeLabels = BUCKETS
-            .filter(b => state.activeBuckets.has(b.id))
-            .map(b => b.label);
-        parts.push(activeLabels.length ? activeLabels.join(", ") : "no ranges selected");
-    }
-
-    if (search) parts.push(`"${search}"`);
-
-    const label = parts.length ? parts.join(" • ") : "All";
-
-    el.innerHTML = `Showing: <b>${label}</b> • <b>${visibleCount}</b> Symbols` +
-        (parts.length ? `<span class="clear" id="clearFilters">Clear</span>` : "");
-
-    const clearBtn = document.getElementById("clearFilters");
-    if (clearBtn) {
-        clearBtn.addEventListener("click", () => {
-            state.sectorFilter = "";
-            state.activeBuckets = new Set(BUCKETS.map(b => b.id));
-            document.getElementById("search").value = "";
-            renderLegend();
-            refresh();
-        });
-    }
-}
 
 // Re-run the sidebar + treemap together; call this after any filter change.
 export function refresh() {
