@@ -1,577 +1,897 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="favicon.png">
     <title>Alert dashboard</title>
     <style>
-        :root{
-          --bg:#0A0D12; --panel:#12161D; --panel2:#171C24;
-          --line:#232A35; --text:#E6EAF0; --muted:#7A8494;
-          --mono: 'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
-          --sans: -apple-system,'Segoe UI',Roboto,Arial,sans-serif;
-          --triggered:#FF5C6C; --near:#F5A623; --watch:#2DD4BF; --far:#5B6472;
+        :root {
+            --bg: #0A0D12;
+            --panel: #12161D;
+            --panel2: #171C24;
+            --line: #232A35;
+            --text: #E6EAF0;
+            --muted: #7A8494;
+            --mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+            --sans: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+            --triggered: #FF5C6C;
+            --near: #F5A623;
+            --watch: #2DD4BF;
+            --far: #5B6472;
         }
-        *{box-sizing:border-box;}
-        html,body{height:100%;}
-        body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
-        .wrap{max-width:1400px;width:100%;margin:0 auto;padding:20px clamp(12px, 4vw, 32px) 40px;}
-        h1{font-size:15px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 4px;}
-        .sub{font-size:12px;color:var(--muted);margin:0 0 20px;}
-        .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
-        .stat{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px;cursor:pointer;transition:.15s;}
-        .stat:hover{border-color:#2E3745;background:var(--panel2);}
-        .stat.active{background:var(--panel2);border-color:currentColor;}
-        .stat .n{font-family:var(--mono);font-size:22px;font-weight:600;}
-        .stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
-        .showing{font-size:12px;color:var(--muted);margin-bottom:14px;}
-        .showing b{color:var(--text);font-weight:600;}
-        .showing .clear{color:var(--watch);cursor:pointer;margin-left:8px;text-decoration:underline;}
-        .toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
-        button{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:5px;padding:7px 12px;font-size:12px;cursor:pointer;font-family:var(--sans);}
-        button:hover{background:#1D2430;border-color:#2E3745;}
-        button.primary{background:#1B2A2E;border-color:#2DD4BF;color:#2DD4BF;}
-        button.danger{background:transparent;border-color:transparent;color:var(--muted);padding:4px 6px;}
-        button.danger:hover{color:var(--triggered);}
-        button:disabled{opacity:.5;cursor:not-allowed;}
-        .table-scroll{
-            width:100%;
-            overflow-x:auto;
-            -webkit-overflow-scrolling:touch;
-            scrollbar-width:thin;
-            scrollbar-color:#2E3745 transparent;
+
+        * {
+            box-sizing: border-box;
         }
-        .table-scroll::-webkit-scrollbar{
-            width:8px;
-            height:8px;
+
+        html,
+        body {
+            height: 100%;
         }
-        .table-scroll::-webkit-scrollbar-track{
-            background:transparent;
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
         }
-        .table-scroll::-webkit-scrollbar-thumb{
-            background:#2E3745;
-            border-radius:8px;
+
+        .wrap {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px clamp(12px, 4vw, 32px) 40px;
         }
-        .table-scroll::-webkit-scrollbar-thumb:hover{
-            background:#3A4453;
+
+        h1 {
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 0 0 4px;
         }
-        table{width:100%;min-width:600px;border-collapse:collapse;font-family:var(--mono);font-size:13px;}
-        thead th{text-align:left;font-family:var(--sans);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:2;}
-        tbody td{padding:7px 10px;border-bottom:1px solid var(--line);}
-        tbody tr:hover{background:var(--panel);}
-        input.cell{background:transparent;border:none;color:var(--text);font-family:var(--mono);font-size:13px;width:100%;padding:3px 4px;border-radius:4px;}
-        input.cell:focus{outline:1px solid #2E3745;background:var(--panel2);}
-        input.edit-cell{
-            background:var(--panel2);
-            border:1px solid var(--line);
-            color:var(--text);
-            font-family:var(--mono);
-            font-size:13px;
-            padding:5px 8px;
-            border-radius:5px;
-            outline:none;
+
+        .sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin: 0 0 20px;
         }
-        input.edit-cell::placeholder{color:var(--muted);}
-        input.edit-cell:focus{border-color:#2DD4BF;}
-        input.edit-cell{
-            background:var(--panel2);
-            border:1px solid var(--line);
-            color:var(--text);
-            font-family:var(--mono);
-            font-size:13px;
-            padding:5px 8px;
-            border-radius:5px;
-            outline:none;
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
         }
-        input.edit-cell::placeholder{color:var(--muted);}
-        input.edit-cell:focus{border-color:#2DD4BF;}
-        .num{text-align:right;}
-        .badge{display:inline-block;font-size:11px;font-family:var(--sans);font-weight:500;padding:2px 8px;border-radius:20px;}
-        .b-triggered{background:#3A1518;color:var(--triggered);}
-        .b-near{background:#332310;color:var(--near);}
-        .b-watch{background:#0F2B27;color:var(--watch);}
-        .b-far{background:#1A1E26;color:var(--far);}
-        .dist{font-weight:600;}
-        textarea{width:100%;min-height:80px;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:6px;font-family:var(--mono);font-size:12px;padding:10px;resize:vertical;}
-        .paste{display:none;margin-bottom:14px;}
-        .paste.show{display:block;}
-        .paste .row{display:flex;gap:8px;margin-top:8px;}
-        .hint{font-size:11px;color:var(--muted);margin-top:6px;}
-        .empty{color:var(--muted);font-size:12px;padding:24px 10px;text-align:center;}
-        .topbar{
-          display:flex;
-          justify-content:space-between;
-          align-items:flex-start;
-          gap:20px;
-          margin-bottom:22px;
-          border-bottom:1px solid var(--line);
-          padding-bottom:16px;
-          flex-wrap:wrap;
-      }
 
-      .navbar{
-          display:flex;
-          gap:8px;
-          flex-wrap:wrap;
-      }
+        .stat {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: .15s;
+        }
 
-      .navbar a{
-          text-decoration:none;
-          color:var(--muted);
-          background:var(--panel);
-          border:1px solid var(--line);
-          padding:8px 14px;
-          border-radius:6px;
-          font-size:12px;
-          font-weight:500;
-          transition:.2s;
-      }
+        .stat:hover {
+            border-color: #2E3745;
+            background: var(--panel2);
+        }
 
-      .navbar a:hover{
-          background:var(--panel2);
-          border-color:#2E3745;
-          color:var(--text);
-      }
+        .stat.active {
+            background: var(--panel2);
+            border-color: currentColor;
+        }
 
-      .navbar a.active{
-          background:#1B2A2E;
-          border-color:#2DD4BF;
-          color:#2DD4BF;
-      }
-      #authStatus{
-          font-size:11px;
-          color:var(--muted);
-          align-self:center;
-      }
-      .stock-link{
-    color:#f5f7fa;
-    text-decoration:none;
-    font-weight:600;
-    transition:.2s;
-}
-.alert-edit-row{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-}
+        .stat .n {
+            font-family: var(--mono);
+            font-size: 22px;
+            font-weight: 600;
+        }
 
-.alert-edit-row input{
-    width:65px;
-}
+        .stat .l {
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            margin-top: 2px;
+        }
 
-.fib-label{
-    font-size:11px;
-    color:#8fa2c2;
-}
+        .showing {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
 
-.stock-link:hover{
-    color:#2dd4bf;
-    text-decoration:underline;
-}
+        .showing b {
+            color: var(--text);
+            font-weight: 600;
+        }
 
-.layout{
-    display:flex;
-    align-items:flex-start;
-    gap:20px;
-}
+        .showing .clear {
+            color: var(--watch);
+            cursor: pointer;
+            margin-left: 8px;
+            text-decoration: underline;
+        }
 
-.sidebar{
-    width:200px;
-    flex-shrink:0;
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:6px;
-    padding:14px;
-    position:sticky;
-    top:20px;
-    max-height:calc(100vh - 40px);
-    overflow-y:auto;
-}
+        .toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
 
-.sidebar-search{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    background:var(--panel2);
-    border:1px solid var(--line);
-    border-radius:5px;
-    padding:7px 10px;
-    margin-bottom:14px;
-}
+        button {
+            background: var(--panel2);
+            color: var(--text);
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            padding: 7px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: var(--sans);
+        }
 
-.sidebar-search svg{
-    flex-shrink:0;
-    opacity:.6;
-}
+        button:hover {
+            background: #1D2430;
+            border-color: #2E3745;
+        }
 
-.sidebar-search input{
-    flex:1;
-    background:transparent;
-    border:none;
-    color:var(--text);
-    font-size:12px;
-    font-family:var(--sans);
-    min-width:0;
-}
+        button.primary {
+            background: #1B2A2E;
+            border-color: #2DD4BF;
+            color: #2DD4BF;
+        }
 
-.sidebar-search input:focus{
-    outline:none;
-}
+        button.danger {
+            background: transparent;
+            border-color: transparent;
+            color: var(--muted);
+            padding: 4px 6px;
+        }
 
-.sidebar-title{
-    font-size:11px;
-    color:var(--muted);
-    text-transform:uppercase;
-    letter-spacing:.05em;
-    font-weight:500;
-    margin:0 0 8px;
-    padding:0 4px;
-}
+        button.danger:hover {
+            color: var(--triggered);
+        }
 
-.sector-list{
-    list-style:none;
-    margin:0;
-    padding:0;
-    display:flex;
-    flex-direction:column;
-    gap:2px;
-}
+        button:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
 
-.sector-item{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:8px;
-    padding:7px 8px;
-    border-radius:5px;
-    font-size:12.5px;
-    color:var(--muted);
-    cursor:pointer;
-    transition:.15s;
-}
+        .table-scroll {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #2E3745 transparent;
+        }
 
-.sector-item:hover{
-    background:var(--panel2);
-    color:var(--text);
-}
+        .table-scroll::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
 
-.sector-item.active{
-    background:#1B2A2E;
-    color:#2DD4BF;
-}
+        .table-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
 
-.sector-item .count{
-    font-family:var(--mono);
-    font-size:11px;
-    color:var(--far);
-}
+        .table-scroll::-webkit-scrollbar-thumb {
+            background: #2E3745;
+            border-radius: 8px;
+        }
 
-.sector-item.active .count{
-    color:#2DD4BF;
-}
+        .table-scroll::-webkit-scrollbar-thumb:hover {
+            background: #3A4453;
+        }
 
-.main{
-    flex:1;
-    min-width:0;
-}
+        table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+            font-family: var(--mono);
+            font-size: 13px;
+        }
 
-/* ---- Responsive breakpoints ---- */
+        thead th {
+            text-align: left;
+            font-family: var(--sans);
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            font-weight: 500;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--line);
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            z-index: 2;
+        }
 
-/* Tablet and below: stack sidebar above content, sectors become a scrollable row */
-@media (max-width: 900px){
-    .layout{
-        flex-direction:column;
-    }
-    .sidebar{
-        width:100%;
-        position:static;
-        max-height:none;
-    }
-    .sector-list{
-        position:relative;
-        flex-direction:row;
-        flex-wrap:nowrap;
-        overflow-x:auto;
-        gap:6px;
-        padding-bottom:4px;
-        scrollbar-width:none;       /* Firefox */
-        -ms-overflow-style:none;    /* old Edge/IE */
-    }
-    .sector-list::-webkit-scrollbar{
-        display:none;               /* Chrome/Safari */
-    }
-    .sidebar{
-        position:relative;
-        overflow:hidden;
-    }
-    .sidebar::after{
-        content:"";
-        position:absolute;
-        top:0;
-        right:0;
-        bottom:0;
-        width:24px;
-        pointer-events:none;
-        background:linear-gradient(to right, transparent, var(--panel));
-    }
-    .sector-item{
-        flex-shrink:0;
-        white-space:nowrap;
-    }
-    .stats{
-        grid-template-columns:repeat(2,1fr);
-    }
-}
+        tbody td {
+            padding: 7px 10px;
+            border-bottom: 1px solid var(--line);
+        }
 
-/* Desktop/tablet: pin everything except the table rows in place.
+        tbody tr:hover {
+            background: var(--panel);
+        }
+
+        input.cell {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 13px;
+            width: 100%;
+            padding: 3px 4px;
+            border-radius: 4px;
+        }
+
+        input.cell:focus {
+            outline: 1px solid #2E3745;
+            background: var(--panel2);
+        }
+
+        input.edit-cell {
+            background: var(--panel2);
+            border: 1px solid var(--line);
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 13px;
+            padding: 5px 8px;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input.edit-cell::placeholder {
+            color: var(--muted);
+        }
+
+        input.edit-cell:focus {
+            border-color: #2DD4BF;
+        }
+
+        input.edit-cell {
+            background: var(--panel2);
+            border: 1px solid var(--line);
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 13px;
+            padding: 5px 8px;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input.edit-cell::placeholder {
+            color: var(--muted);
+        }
+
+        input.edit-cell:focus {
+            border-color: #2DD4BF;
+        }
+
+        .num {
+            text-align: right;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 11px;
+            font-family: var(--sans);
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        .b-triggered {
+            background: #3A1518;
+            color: var(--triggered);
+        }
+
+        .b-near {
+            background: #332310;
+            color: var(--near);
+        }
+
+        .b-watch {
+            background: #0F2B27;
+            color: var(--watch);
+        }
+
+        .b-far {
+            background: #1A1E26;
+            color: var(--far);
+        }
+
+        .dist {
+            font-weight: 600;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            background: var(--panel);
+            color: var(--text);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            font-family: var(--mono);
+            font-size: 12px;
+            padding: 10px;
+            resize: vertical;
+        }
+
+        .paste {
+            display: none;
+            margin-bottom: 14px;
+        }
+
+        .paste.show {
+            display: block;
+        }
+
+        .paste .row {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        .empty {
+            color: var(--muted);
+            font-size: 12px;
+            padding: 24px 10px;
+            text-align: center;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 22px;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .navbar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: var(--muted);
+            background: var(--panel);
+            border: 1px solid var(--line);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: .2s;
+        }
+
+        .navbar a:hover {
+            background: var(--panel2);
+            border-color: #2E3745;
+            color: var(--text);
+        }
+
+        .navbar a.active {
+            background: #1B2A2E;
+            border-color: #2DD4BF;
+            color: #2DD4BF;
+        }
+
+        #authStatus {
+            font-size: 11px;
+            color: var(--muted);
+            align-self: center;
+        }
+
+        .stock-link {
+            color: #f5f7fa;
+            text-decoration: none;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .alert-edit-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .alert-edit-row input {
+            width: 65px;
+        }
+
+        .fib-label {
+            font-size: 11px;
+            color: #8fa2c2;
+        }
+
+        .stock-link:hover {
+            color: #2dd4bf;
+            text-decoration: underline;
+        }
+
+        .layout {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .sidebar {
+            width: 200px;
+            flex-shrink: 0;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 14px;
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        .sidebar-search {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--panel2);
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            padding: 7px 10px;
+            margin-bottom: 14px;
+        }
+
+        .sidebar-search svg {
+            flex-shrink: 0;
+            opacity: .6;
+        }
+
+        .sidebar-search input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-size: 12px;
+            font-family: var(--sans);
+            min-width: 0;
+        }
+
+        .sidebar-search input:focus {
+            outline: none;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            font-weight: 500;
+            margin: 0 0 8px;
+            padding: 0 4px;
+        }
+
+        .sector-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .sector-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 8px;
+            border-radius: 5px;
+            font-size: 12.5px;
+            color: var(--muted);
+            cursor: pointer;
+            transition: .15s;
+        }
+
+        .sector-item:hover {
+            background: var(--panel2);
+            color: var(--text);
+        }
+
+        .sector-item.active {
+            background: #1B2A2E;
+            color: #2DD4BF;
+        }
+
+        .sector-item .count {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--far);
+        }
+
+        .sector-item.active .count {
+            color: #2DD4BF;
+        }
+
+        .main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* ---- Responsive breakpoints ---- */
+
+        /* Tablet and below: stack sidebar above content, sectors become a scrollable row */
+        @media (max-width: 900px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: static;
+                max-height: none;
+            }
+
+            .sector-list {
+                position: relative;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                gap: 6px;
+                padding-bottom: 4px;
+                scrollbar-width: none;
+                /* Firefox */
+                -ms-overflow-style: none;
+                /* old Edge/IE */
+            }
+
+            .sector-list::-webkit-scrollbar {
+                display: none;
+                /* Chrome/Safari */
+            }
+
+            .sidebar {
+                position: relative;
+                overflow: hidden;
+            }
+
+            .sidebar::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                width: 24px;
+                pointer-events: none;
+                background: linear-gradient(to right, transparent, var(--panel));
+            }
+
+            .sector-item {
+                flex-shrink: 0;
+                white-space: nowrap;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Desktop/tablet: pin everything except the table rows in place.
    The header, stats, toolbar, sidebar and table header stay fixed;
    only the table body scrolls inside its own container. */
-@media (min-width: 901px){
-    html, body{ overflow:hidden; }
-    .wrap{
-        height:100vh;
-        display:flex;
-        flex-direction:column;
-        overflow:hidden;
-        padding-bottom:16px;
-    }
-    .topbar{ flex-shrink:0; }
-    .layout{
-        flex:1;
-        min-height:0;
-        overflow:hidden;
-    }
-    .sidebar{
-        height:100%;
-        max-height:100%;
-    }
-    .main{
-        display:flex;
-        flex-direction:column;
-        height:100%;
-        min-height:0;
-    }
-    .stats, .toolbar, .showing, .paste{ flex-shrink:0; }
-    .table-scroll{
-        flex:1;
-        min-height:0;
-        overflow-y:auto;
-    }
-    .empty{ flex-shrink:0; }
-}
+        @media (min-width: 901px) {
 
-/* Phones: tighten spacing and shrink type */
-@media (max-width: 560px){
-    .wrap{ padding:14px 12px 32px; }
-    .stats{ gap:8px; }
-    .stat{ padding:10px; }
-    .stat .n{ font-size:18px; }
-    .toolbar{ gap:6px; }
-    button{ padding:6px 10px; font-size:11px; }
-    table{ font-size:11px; }
-    thead th, tbody td{ padding:6px 6px; }
-    .sidebar{ padding:10px; }
-}
+            html,
+            body {
+                overflow: hidden;
+            }
+
+            .wrap {
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                padding-bottom: 16px;
+            }
+
+            .topbar {
+                flex-shrink: 0;
+            }
+
+            .layout {
+                flex: 1;
+                min-height: 0;
+                overflow: hidden;
+            }
+
+            .sidebar {
+                height: 100%;
+                max-height: 100%;
+            }
+
+            .main {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                min-height: 0;
+            }
+
+            .stats,
+            .toolbar,
+            .showing,
+            .paste {
+                flex-shrink: 0;
+            }
+
+            .table-scroll {
+                flex: 1;
+                min-height: 0;
+                overflow-y: auto;
+            }
+
+            .empty {
+                flex-shrink: 0;
+            }
+        }
+
+        /* Phones: tighten spacing and shrink type */
+        @media (max-width: 560px) {
+            .wrap {
+                padding: 14px 12px 32px;
+            }
+
+            .stats {
+                gap: 8px;
+            }
+
+            .stat {
+                padding: 10px;
+            }
+
+            .stat .n {
+                font-size: 18px;
+            }
+
+            .toolbar {
+                gap: 6px;
+            }
+
+            button {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            table {
+                font-size: 11px;
+            }
+
+            thead th,
+            tbody td {
+                padding: 6px 6px;
+            }
+
+            .sidebar {
+                padding: 10px;
+            }
+        }
     </style>
 </head>
+
 <body>
-<div class="wrap">
-    <div class="topbar">
+    <div class="wrap">
+        <div class="topbar">
 
-        <div>
-            <h1>Stock Dashboard</h1>
-            <p class="sub" id="subline">Loading...</p>
+            <div>
+                <h1>Stock Dashboard</h1>
+                <p class="sub" id="subline">Loading...</p>
+            </div>
+            <span id="refreshMsg" style="font-size:20px;color:var(--triggered);margin-left:6px;"></span>
+            <nav class="navbar">
+
+                <a href="index.html" class="active">Dashboard</a>
+                <a href="heatmap.html">Heat Map</a>
+            </nav>
+
         </div>
-        <span id="refreshMsg" style="font-size:20px;color:var(--triggered);margin-left:6px;"></span>
-        <nav class="navbar">
 
-            <a href="index.html" class="active">Dashboard</a>
-            <a href="heatmap.html">Heat Map</a>
-        </nav>
+        <div class="layout">
 
-    </div>
-
-    <div class="layout">
-
-        <aside class="sidebar">
-            <div class="sidebar-search">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input
-                        type="text"
-                        id="searchBox"
-                        placeholder="Search symbol or sector..."
-                >
-            </div>
-
-            <p class="sidebar-title">Sectors</p>
-            <ul class="sector-list" id="sectorList"></ul>
-        </aside>
-
-        <main class="main">
-
-            <div class="stats" id="stats"></div>
-
-            <div class="toolbar">
-                <button id="refreshBtn">Refresh Now</button>
-                <button id="loginBtn" disabled>Loading Google Sign-In…</button>
-                <span id="authStatus"></span>
-                <button id="sortBtn">Sort by closest to alert</button>
-                <button id="sortMcBtn">
-                    Market Cap ↓
-                </button>
-            </div>
-
-            <div class="showing" id="showingLine"></div>
-
-            <div class="paste" id="pasteBox">
-                <textarea id="pasteArea"
-                          placeholder="Paste rows copied from Google Sheets (Symbol, Current price, Alert price) — tab or comma separated, one row per line"></textarea>
-                <div class="row">
-                    <button class="primary" id="importBtn">Import</button>
+            <aside class="sidebar">
+                <div class="sidebar-search">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    <input type="text" id="searchBox" placeholder="Search symbol or sector...">
                 </div>
 
-                <p class="hint">Select your Symbol / Current Price / Alert Price columns in Sheets, copy, then paste here.</p>
-            </div>
-            <div class="table-scroll">
-                <table>
-                    <thead>
-                    <tr>
-                        <th style="width:22%">Symbol</th>
-                        <th class="num" style="width:18%">Current</th>
-                        <th id="alertHeader" class="num" style="width:18%">Alert</th>
-                        <th class="num" style="width:16%">Distance</th>
-                        <th style="width:18%">Status</th>
-                        <th style="width:8%">Sector</th>
-                    </tr>
-                    </thead>
-                    <tbody id="tbody"></tbody>
-                </table>
-            </div>
-            <div class="empty" id="emptyMsg" style="display:none;">No stocks yet. Add a row or paste from your sheet.</div>
+                <p class="sidebar-title">Sectors</p>
+                <ul class="sector-list" id="sectorList"></ul>
+            </aside>
 
-        </main>
+            <main class="main">
 
+                <div class="stats" id="stats"></div>
+
+                <div class="toolbar">
+                    <button id="refreshBtn">Refresh Now</button>
+                    <button id="loginBtn" disabled>Loading Google Sign-In…</button>
+                    <span id="authStatus"></span>
+                    <button id="sortBtn">Sort by closest to alert</button>
+                    <button id="sortMcBtn">
+                        Market Cap ↓
+                    </button>
+                </div>
+
+                <div class="showing" id="showingLine"></div>
+
+                <div class="paste" id="pasteBox">
+                    <textarea id="pasteArea"
+                        placeholder="Paste rows copied from Google Sheets (Symbol, Current price, Alert price) — tab or comma separated, one row per line"></textarea>
+                    <div class="row">
+                        <button class="primary" id="importBtn">Import</button>
+                    </div>
+
+                    <p class="hint">Select your Symbol / Current Price / Alert Price columns in Sheets, copy, then paste
+                        here.</p>
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:22%">Symbol</th>
+                                <th class="num" style="width:18%">Current</th>
+                                <th id="alertHeader" class="num" style="width:18%">Alert</th>
+                                <th class="num" style="width:16%">Distance</th>
+                                <th style="width:18%">Status</th>
+                                <th style="width:8%">Sector</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody"></tbody>
+                    </table>
+                </div>
+                <div class="empty" id="emptyMsg" style="display:none;">No stocks yet. Add a row or paste from your
+                    sheet.</div>
+
+            </main>
+
+        </div>
     </div>
-</div>
 
-<script>
-    const CLIENT_ID = "105417196420-ln76t9mgghpdpa1d9sfrash34gdoarde.apps.googleusercontent.com";
-      let rows = [];
-      let allRows = [];
-      let contextRows = []; // allRows filtered by search + sector, but NOT by status
-      let statusFilter = ""; // "" | "Triggered" | "Near" | "Watch"
-      let sectorFilter = ""; // "" | sector name, set by clicking a sidebar item
-  const SPREADSHEET_ID ="1AQ93bxs1qthy6WSqtkV-DhMYjAMaZrsQLLabk_KGgyQ"
-  let accessToken = sessionStorage.getItem("accessToken");;
-  let tokenClient = null;
-  const loginBtn = document.getElementById("loginBtn");
-  const authStatus = document.getElementById("authStatus");
+    <script>
+        const CLIENT_ID = "105417196420-ln76t9mgghpdpa1d9sfrash34gdoarde.apps.googleusercontent.com";
+        let rows = [];
+        let allRows = [];
+        let contextRows = []; // allRows filtered by search + sector, but NOT by status
+        let statusFilter = ""; // "" | "Triggered" | "Near" | "Watch"
+        let sectorFilter = ""; // "" | sector name, set by clicking a sidebar item
+        const SPREADSHEET_ID = "1AQ93bxs1qthy6WSqtkV-DhMYjAMaZrsQLLabk_KGgyQ"
+        let accessToken = sessionStorage.getItem("accessToken");;
+        let tokenClient = null;
+        const loginBtn = document.getElementById("loginBtn");
+        const authStatus = document.getElementById("authStatus");
 
-  function initGoogleAuth() {
-      try {
-          tokenClient = google.accounts.oauth2.initTokenClient({
-              client_id: CLIENT_ID,
-              scope: "https://www.googleapis.com/auth/spreadsheets",
-              callback: (response) => {
-                  if (response.error) {
-                      console.error("Google auth error:", response);
-                      authStatus.textContent = "Sign-in failed: " + response.error;
-                      return;
-                  }
-                  accessToken = response.access_token;
-                  sessionStorage.setItem("accessToken", accessToken);
-                  loginBtn.textContent = "✅ Connected";
-                  authStatus.textContent = "";
-              },
-              error_callback: (err) => {
-                  console.error("Google auth error_callback:", err);
-                  authStatus.textContent = "Sign-in error: " + (err && err.type ? err.type : "unknown");
-              }
-          });
+        function initGoogleAuth() {
+            try {
+                tokenClient = google.accounts.oauth2.initTokenClient({
+                    client_id: CLIENT_ID,
+                    scope: "https://www.googleapis.com/auth/spreadsheets",
+                    callback: (response) => {
+                        if (response.error) {
+                            console.error("Google auth error:", response);
+                            authStatus.textContent = "Sign-in failed: " + response.error;
+                            return;
+                        }
+                        accessToken = response.access_token;
+                        sessionStorage.setItem("accessToken", accessToken);
+                        loginBtn.textContent = "✅ Connected";
+                        authStatus.textContent = "";
+                    },
+                    error_callback: (err) => {
+                        console.error("Google auth error_callback:", err);
+                        authStatus.textContent = "Sign-in error: " + (err && err.type ? err.type : "unknown");
+                    }
+                });
 
-          loginBtn.disabled = false;
-          if (accessToken) {
-      loginBtn.textContent = "✅ Connected";
-  } else {
-      loginBtn.textContent = "Sign in with Google";
-  }
-          authStatus.textContent = "";
-      } catch (e) {
-          console.error("Failed to initialize Google Identity Services:", e);
-          loginBtn.disabled = true;
-          loginBtn.textContent = "Sign-in unavailable";
-          authStatus.textContent = "Google script failed to load — check network/adblock.";
-      }
-  }
+                loginBtn.disabled = false;
+                if (accessToken) {
+                    loginBtn.textContent = "✅ Connected";
+                } else {
+                    loginBtn.textContent = "Sign in with Google";
+                }
+                authStatus.textContent = "";
+            } catch (e) {
+                console.error("Failed to initialize Google Identity Services:", e);
+                loginBtn.disabled = true;
+                loginBtn.textContent = "Sign-in unavailable";
+                authStatus.textContent = "Google script failed to load — check network/adblock.";
+            }
+        }
 
-  loginBtn.addEventListener("click", () => {
-      if (!tokenClient) {
-          authStatus.textContent = "Still loading, try again in a moment.";
-          return;
-      }
-      tokenClient.requestAccessToken({
-      prompt: accessToken ? "" : "consent"
-       });
-  });
+        loginBtn.addEventListener("click", () => {
+            if (!tokenClient) {
+                authStatus.textContent = "Still loading, try again in a moment.";
+                return;
+            }
+            tokenClient.requestAccessToken({
+                prompt: accessToken ? "" : "consent"
+            });
+        });
 
-  (function waitForGoogleIdentity(attemptsLeft) {
-      if (window.google && window.google.accounts && window.google.accounts.oauth2) {
-          initGoogleAuth();
-          return;
-      }
-      if (attemptsLeft <= 0) {
-          loginBtn.disabled = true;
-          loginBtn.textContent = "Sign-in unavailable";
-          authStatus.textContent = "Could not load Google Identity Services. Check your connection or ad blocker.";
-          return;
-      }
-      setTimeout(() => waitForGoogleIdentity(attemptsLeft - 1), 200);
-  })(50);
+        (function waitForGoogleIdentity(attemptsLeft) {
+            if (window.google && window.google.accounts && window.google.accounts.oauth2) {
+                initGoogleAuth();
+                return;
+            }
+            if (attemptsLeft <= 0) {
+                loginBtn.disabled = true;
+                loginBtn.textContent = "Sign-in unavailable";
+                authStatus.textContent = "Could not load Google Identity Services. Check your connection or ad blocker.";
+                return;
+            }
+            setTimeout(() => waitForGoogleIdentity(attemptsLeft - 1), 200);
+        })(50);
 
-      function fmtPct(n) {
-          return (n > 0 ? "+" : "") + Number(n).toFixed(1) + "%";
-      }
+        function fmtPct(n) {
+            return (n > 0 ? "+" : "") + Number(n).toFixed(1) + "%";
+        }
 
-      function render() {
+        function render() {
 
-          const tbody = document.getElementById("tbody");
-          tbody.innerHTML = "";
+            const tbody = document.getElementById("tbody");
+            tbody.innerHTML = "";
 
-          let triggered = 0;
-          let near = 0;
-          let watch = 0;
-          let far = 0;
+            let triggered = 0;
+            let near = 0;
+            let watch = 0;
+            let far = 0;
 
-          contextRows.forEach(r => {
-              switch (r.status) {
-                  case "Triggered": triggered++; break;
-                  case "Near": near++; break;
-                  case "Watch": watch++; break;
-                  default: far++;
-              }
-          });
+            contextRows.forEach(r => {
+                switch (r.status) {
+                    case "Triggered": triggered++; break;
+                    case "Near": near++; break;
+                    case "Watch": watch++; break;
+                    default: far++;
+                }
+            });
 
-          rows.forEach(r => {
+            rows.forEach(r => {
 
-              let color = "var(--far)";
-              let badge = "b-far";
+                let color = "var(--far)";
+                let badge = "b-far";
 
-              if (r.status === "Triggered") {
-                  color = "var(--triggered)";
-                  badge = "b-triggered";
-              }
-              else if (r.status === "Near") {
-                  color = "var(--near)";
-                  badge = "b-near";
-              }
-              else if (r.status === "Watch") {
-                  color = "var(--watch)";
-                  badge = "b-watch";
-              }
+                if (r.status === "Triggered") {
+                    color = "var(--triggered)";
+                    badge = "b-triggered";
+                }
+                else if (r.status === "Near") {
+                    color = "var(--near)";
+                    badge = "b-near";
+                }
+                else if (r.status === "Watch") {
+                    color = "var(--watch)";
+                    badge = "b-watch";
+                }
 
-              tbody.innerHTML += `
+                tbody.innerHTML += `
               <tr>
                  <td>
       <a href="${r.screenerUrl}" target="_blank" class="stock-link">
@@ -596,9 +916,9 @@
   </td>
               </tr>
               `;
-          });
+            });
 
-          document.getElementById("stats").innerHTML = `
+            document.getElementById("stats").innerHTML = `
               <div class="stat ${statusFilter === "Triggered" ? "active" : ""}" data-status="Triggered" style="color:var(--triggered)">
                   <div class="n" style="color:var(--triggered)">
                       ${triggered}
@@ -626,193 +946,219 @@
               </div>
           `;
 
-          renderShowingLine();
-      }
+            renderShowingLine();
+        }
 
-      function renderShowingLine(){
+        function renderShowingLine() {
 
-          const el = document.getElementById("showingLine");
-          const search = document.getElementById("searchBox").value.trim();
+            const el = document.getElementById("showingLine");
+            const search = document.getElementById("searchBox").value.trim();
 
-          const parts = [];
-          if(statusFilter) parts.push(statusFilter);
-          if(sectorFilter) parts.push(sectorFilter);
-          if(search) parts.push(`"${search}"`);
+            const parts = [];
+            if (statusFilter) parts.push(statusFilter);
+            if (sectorFilter) parts.push(sectorFilter);
+            if (search) parts.push(`"${search}"`);
 
-          const label = parts.length ? parts.join(" • ") : "All";
+            const label = parts.length ? parts.join(" • ") : "All";
 
-          el.innerHTML = `Showing: <b>${label}</b> • <b>${rows.length}</b> Stocks` +
-              (parts.length ? `<span class="clear" id="clearFilters">Clear</span>` : "");
+            el.innerHTML = `Showing: <b>${label}</b> • <b>${rows.length}</b> Stocks` +
+                (parts.length ? `<span class="clear" id="clearFilters">Clear</span>` : "");
 
-          const clearBtn = document.getElementById("clearFilters");
-          if(clearBtn){
-              clearBtn.addEventListener("click", () => {
-                  statusFilter = "";
-                  sectorFilter = "";
-                  document.getElementById("searchBox").value = "";
-                  applyFilters();
-              });
-          }
-      }
-      function renderSectorList(searchFilteredRows) {
+            const clearBtn = document.getElementById("clearFilters");
+            if (clearBtn) {
+                clearBtn.addEventListener("click", () => {
+                    statusFilter = "";
+                    sectorFilter = "";
+                    document.getElementById("searchBox").value = "";
+                    applyFilters();
+                });
+            }
+        }
+        function renderSectorList(searchFilteredRows) {
 
-        const list = document.getElementById("sectorList");
+            const list = document.getElementById("sectorList");
 
-        const sectors = [...new Set(
-            allRows
-                .map(stock => stock.sheet)
-                .filter(Boolean)
-        )].sort();
+            const sectors = [...new Set(
+                allRows
+                    .map(stock => stock.sheet)
+                    .filter(Boolean)
+            )].sort();
 
-        const countFor = sector => searchFilteredRows.filter(s => s.sheet === sector).length;
+            const countFor = sector => searchFilteredRows.filter(s => s.sheet === sector).length;
 
-        let html = `
+            let html = `
             <li class="sector-item ${sectorFilter === "" ? "active" : ""}" data-sector="">
                 <span>All Sectors</span>
                 <span class="count">${searchFilteredRows.length}</span>
             </li>
         `;
 
-        sectors.forEach(sector => {
-            html += `
+            sectors.forEach(sector => {
+                html += `
                 <li class="sector-item ${sectorFilter === sector ? "active" : ""}" data-sector="${sector}">
                     <span>${sector}</span>
                     <span class="count">${countFor(sector)}</span>
                 </li>
             `;
+            });
+
+            list.innerHTML = html;
+
+        }
+
+        document.getElementById("sectorList").addEventListener("click", (e) => {
+
+            const item = e.target.closest(".sector-item");
+            if (!item) return;
+
+            const clicked = item.dataset.sector;
+
+            sectorFilter = (sectorFilter === clicked) ? "" : clicked;
+
+            applyFilters();
         });
 
-        list.innerHTML = html;
+        function applyFilters() {
 
-    }
+            const text =
+                document.getElementById("searchBox")
+                    .value
+                    .trim()
+                    .toUpperCase();
 
-    document.getElementById("sectorList").addEventListener("click", (e) => {
+            const searchFilteredRows = allRows.filter(stock => {
 
-        const item = e.target.closest(".sector-item");
-        if(!item) return;
+                return text === "" ||
 
-        const clicked = item.dataset.sector;
+                    stock.symbol.toUpperCase().includes(text) ||
 
-        sectorFilter = (sectorFilter === clicked) ? "" : clicked;
+                    (stock.sheet ?? "")
+                        .toUpperCase()
+                        .includes(text);
 
-        applyFilters();
-    });
+            });
 
-    function applyFilters() {
+            contextRows = searchFilteredRows.filter(stock => {
 
-        const text =
-            document.getElementById("searchBox")
-                .value
-                .trim()
-                .toUpperCase();
+                return sectorFilter === "" ||
 
-        const searchFilteredRows = allRows.filter(stock => {
+                    sectorFilter === stock.sheet;
 
-            return text === "" ||
+            });
 
-                stock.symbol.toUpperCase().includes(text) ||
+            rows = statusFilter === ""
+                ? contextRows
+                : contextRows.filter(stock => (stock.status || "Far") === statusFilter);
 
-                (stock.sheet ?? "")
-                    .toUpperCase()
-                    .includes(text);
+            renderSectorList(searchFilteredRows);
 
+            render();
+
+        }
+
+        document.getElementById("stats").addEventListener("click", (e) => {
+
+            const card = e.target.closest(".stat");
+            if (!card) return;
+
+            const clicked = card.dataset.status;
+
+            statusFilter = (statusFilter === clicked) ? "" : clicked;
+
+            applyFilters();
         });
+        async function loadDashboard() {
 
-        contextRows = searchFilteredRows.filter(stock => {
+            try {
 
-            return sectorFilter === "" ||
+                const [dataRes, metaRes] = await Promise.all([
+                    fetch("dashboard-data.json?" + Date.now()),
+                    fetch("dashboard-meta.json?" + Date.now())
+                ]);
+                const data = await dataRes.json();
+                const meta = await metaRes.json();
 
-                sectorFilter === stock.sheet;
+                allRows = data
+                rows = [...allRows];
+                contextRows = [...allRows];
+                renderSectorList(allRows);
+                const updated = new Date(meta.lastUpdated);
 
+                const subline = document.getElementById("subline");
+
+                subline.innerText = `🟢 Updated ${timeAgo(updated)}`;
+
+                subline.title =
+                    `Last updated: ${updated.toLocaleString()}
+                       Generated in ${(meta.generationTimeMs / 1000).toFixed(1)} sec`;
+
+                render();
+
+            } catch (e) {
+
+                document.getElementById("subline").innerText =
+                    "Unable to load dashboard data.";
+
+                console.error(e);
+            }
+        }
+
+        loadDashboard();
+function timeAgo(date) {
+
+    const diff = Math.floor((Date.now() - date.getTime()) / 1000);
+
+    if (diff < 60)
+        return "just now";
+
+    if (diff < 3600)
+        return `${Math.floor(diff / 60)} min ago`;
+
+    if (diff < 86400)
+        return `${Math.floor(diff / 3600)} hr ago`;
+
+    return `${Math.floor(diff / 86400)} day ago`;
+}
+        document.getElementById("sortBtn").addEventListener("click", () => {
+
+            rows.sort((a, b) => {
+
+                return a.distance - b.distance;
+
+            });
+
+            render();
         });
+        document.getElementById("searchBox")
+            .addEventListener("input", applyFilters);
 
-        rows = statusFilter === ""
-            ? contextRows
-            : contextRows.filter(stock => (stock.status || "Far") === statusFilter);
+        let marketCapAscending = false;
+        const mcBtn = document.getElementById("sortMcBtn");
 
-        renderSectorList(searchFilteredRows);
+        mcBtn.addEventListener("click", () => {
 
-        render();
+            rows.sort((a, b) =>
+                marketCapAscending
+                    ? Number(a.marketCap || 0) - Number(b.marketCap || 0)
+                    : Number(b.marketCap || 0) - Number(a.marketCap || 0)
+            );
 
-    }
+            marketCapAscending = !marketCapAscending;
 
-    document.getElementById("stats").addEventListener("click", (e) => {
+            mcBtn.textContent = marketCapAscending
+                ? "Market Cap ↑"
+                : "Market Cap ↓";
 
-        const card = e.target.closest(".stat");
-        if(!card) return;
-
-        const clicked = card.dataset.status;
-
-        statusFilter = (statusFilter === clicked) ? "" : clicked;
-
-        applyFilters();
-    });
-      async function loadDashboard() {
-
-          try {
-
-              const response = await fetch("dashboard-data.json?t=" + Date.now());
-
-            allRows = await response.json();
-            rows = [...allRows];
-            contextRows = [...allRows];
-            renderSectorList(allRows);
-              document.getElementById("subline").innerText =
-                  "Last updated : " + new Date().toLocaleString();
-
-              render();
-
-          } catch (e) {
-
-              document.getElementById("subline").innerText =
-                  "Unable to load dashboard data.";
-
-              console.error(e);
-          }
-      }
-
-      loadDashboard();
-
-      document.getElementById("sortBtn").addEventListener("click", () => {
-
-        rows.sort((a, b) => {
-
-            return a.distance - b.distance;
-
+            render();
         });
+        function editAlert(symbol, btn) {
+            document.getElementById("alertHeader").innerHTML =
+                "✏️ Editing";
+            const row = btn.closest("tr");
 
-        render();
-    });
-    document.getElementById("searchBox")
-        .addEventListener("input", applyFilters);
-
-    let marketCapAscending = false;
-    const mcBtn = document.getElementById("sortMcBtn");
-
-    mcBtn.addEventListener("click", () => {
-
-        rows.sort((a, b) =>
-            marketCapAscending
-                ? Number(a.marketCap || 0) - Number(b.marketCap || 0)
-                : Number(b.marketCap || 0) - Number(a.marketCap || 0)
-        );
-
-        marketCapAscending = !marketCapAscending;
-
-        mcBtn.textContent = marketCapAscending
-            ? "Market Cap ↑"
-            : "Market Cap ↓";
-
-        render();
-    });
-  function editAlert(symbol, btn) {
-  document.getElementById("alertHeader").innerHTML =
-        "✏️ Editing";
-      const row = btn.closest("tr");
-
-      const stock = allRows.find(s => s.symbol === symbol);
-row.cells[2].style.position = "relative";
-      row.cells[2].innerHTML = `
+            const stock = allRows.find(s => s.symbol === symbol);
+            row.cells[2].style.position = "relative";
+            row.cells[2].innerHTML = `
    <div class="alert-edit-row">
      <span class="fib-label">Alert</span>
     <input id="edit-${symbol}"
@@ -827,163 +1173,164 @@ row.cells[2].style.position = "relative";
 </div>
       `;
 
-      row.cells[6].innerHTML =
-          `<button onclick="saveAlert('${symbol}')">💾</button>`;
-  }
-    async function findRow(sheetName, symbol) {
-
-      const url =
-          `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(sheetName)}!A:A`;
-
-      const res = await fetch(url, {
-          headers: {
-              Authorization: "Bearer " + accessToken
-          }
-      });
-
-      const data = await res.json();
-
-      const rows = data.values || [];
-
-      for (let i = 0; i < rows.length; i++) {
-
-          if (rows[i][0] === symbol) {
-
-              return i + 1;
-
-          }
-      }
-
-      return -1;
-  }
-    async function saveAlert(symbol) {
-
-      const input = document.getElementById("edit-" + symbol);
-      const fibInput = document.getElementById("edit-fib-" + symbol);
-
-      const newAlert = input.value;
-      const newFib = fibInput.value;
-
-      const stock = allRows.find(s => s.symbol === symbol);
-
-      const row = await findRow(stock.sheet, symbol);
-
-      if (row === -1) {
-         document.getElementById("alertHeader").textContent = "Alert";
-          loadDashboard();
-          alert("Stock not found.");
-          return;
-      }
-
-      const url =
-          `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values:batchUpdate`;
-
-      const body = {
-          valueInputOption: "USER_ENTERED",
-          data: [
-              { range: `${stock.sheet}!C${row}`, values: [[newAlert]] },
-              { range: `${stock.sheet}!D${row}`, values: [[newFib]] }
-          ]
-      };
-
-      const res = await fetch(url, {
-
-          method: "POST",
-
-          headers: {
-              Authorization: "Bearer " + accessToken,
-              "Content-Type": "application/json"
-          },
-
-          body: JSON.stringify(body)
-
-      });
-
-      if (!res.ok) {
-         document.getElementById("alertHeader").textContent = "Alert";
-             loadDashboard();
-          alert("Failed to save");
-          return;
-
-      }
-
-      stock.alertPrice = Number(newAlert);
-      stock.fib = newFib;
-          document.getElementById("alertHeader").textContent = "Alert";
-      render();
-
-      alert("Saved!");
-  }
-
-
-
-  const COOLDOWN_SECONDS = 120;
-  const refreshBtn = document.getElementById("refreshBtn");
-  let cooldownInterval = null;
-
-  function startCooldown(seconds) {
-    let remaining = seconds;
-    refreshBtn.disabled = true;
-    refreshBtn.textContent = `Wait ${remaining}s`;
-
-    clearInterval(cooldownInterval);
-    cooldownInterval = setInterval(() => {
-      remaining--;
-      if (remaining <= 0) {
-        clearInterval(cooldownInterval);
-        refreshBtn.disabled = false;
-        refreshBtn.textContent = "Refresh Now";
-      } else {
-        refreshBtn.textContent = `Wait ${remaining}s`;
-      }
-    }, 1000);
-  }
-
-  refreshBtn.addEventListener("click", async () => {
-    const msgEl = document.getElementById("refreshMsg");
-    refreshBtn.disabled = true;
-    refreshBtn.textContent = "Triggering...";
-    msgEl.textContent = "";
-
-    try {
-      const res = await fetch("https://tiny-art-8473.dobbyop09.workers.dev", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-trigger-key": "97c15c54-40bf-479a-a4e2-8c470506502c"
+            row.cells[6].innerHTML =
+                `<button onclick="saveAlert('${symbol}')">💾</button>`;
         }
-      });
+        async function findRow(sheetName, symbol) {
 
-      let data = {};
-      try { data = await res.json(); } catch {}
+            const url =
+                `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(sheetName)}!A:A`;
 
-      if (res.status === 429) {
-        const wait = data.retryAfter || COOLDOWN_SECONDS;
-        msgEl.textContent = `Rate limited — please wait ${Math.ceil(wait / 60)} min.`;
-        refreshBtn.textContent = "Refresh Now";
-        startCooldown(wait);
-        return;
-      }
+            const res = await fetch(url, {
+                headers: {
+                    Authorization: "Bearer " + accessToken
+                }
+            });
 
-      if (res.ok) {
-        msgEl.textContent = "";
-        startCooldown(COOLDOWN_SECONDS);
-      } else {
-        msgEl.textContent = data.error || "Something went wrong.";
-        refreshBtn.disabled = false;
-        refreshBtn.textContent = "Failed — try again";
-        setTimeout(() => { refreshBtn.textContent = "Refresh Now"; }, 3000);
-      }
-    } catch {
-      msgEl.textContent = "Network error.";
-      refreshBtn.disabled = false;
-      refreshBtn.textContent = "Failed — try again";
-      setTimeout(() => { refreshBtn.textContent = "Refresh Now"; }, 3000);
-    }
-  });
+            const data = await res.json();
 
-</script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+            const rows = data.values || [];
+
+            for (let i = 0; i < rows.length; i++) {
+
+                if (rows[i][0] === symbol) {
+
+                    return i + 1;
+
+                }
+            }
+
+            return -1;
+        }
+        async function saveAlert(symbol) {
+
+            const input = document.getElementById("edit-" + symbol);
+            const fibInput = document.getElementById("edit-fib-" + symbol);
+
+            const newAlert = input.value;
+            const newFib = fibInput.value;
+
+            const stock = allRows.find(s => s.symbol === symbol);
+
+            const row = await findRow(stock.sheet, symbol);
+
+            if (row === -1) {
+                document.getElementById("alertHeader").textContent = "Alert";
+                loadDashboard();
+                alert("Stock not found.");
+                return;
+            }
+
+            const url =
+                `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values:batchUpdate`;
+
+            const body = {
+                valueInputOption: "USER_ENTERED",
+                data: [
+                    { range: `${stock.sheet}!C${row}`, values: [[newAlert]] },
+                    { range: `${stock.sheet}!D${row}`, values: [[newFib]] }
+                ]
+            };
+
+            const res = await fetch(url, {
+
+                method: "POST",
+
+                headers: {
+                    Authorization: "Bearer " + accessToken,
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(body)
+
+            });
+
+            if (!res.ok) {
+                document.getElementById("alertHeader").textContent = "Alert";
+                loadDashboard();
+                alert("Failed to save");
+                return;
+
+            }
+
+            stock.alertPrice = Number(newAlert);
+            stock.fib = newFib;
+            document.getElementById("alertHeader").textContent = "Alert";
+            render();
+
+            alert("Saved!");
+        }
+
+
+
+        const COOLDOWN_SECONDS = 120;
+        const refreshBtn = document.getElementById("refreshBtn");
+        let cooldownInterval = null;
+
+        function startCooldown(seconds) {
+            let remaining = seconds;
+            refreshBtn.disabled = true;
+            refreshBtn.textContent = `Wait ${remaining}s`;
+
+            clearInterval(cooldownInterval);
+            cooldownInterval = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(cooldownInterval);
+                    refreshBtn.disabled = false;
+                    refreshBtn.textContent = "Refresh Now";
+                } else {
+                    refreshBtn.textContent = `Wait ${remaining}s`;
+                }
+            }, 1000);
+        }
+
+        refreshBtn.addEventListener("click", async () => {
+            const msgEl = document.getElementById("refreshMsg");
+            refreshBtn.disabled = true;
+            refreshBtn.textContent = "Triggering...";
+            msgEl.textContent = "";
+
+            try {
+                const res = await fetch("https://tiny-art-8473.dobbyop09.workers.dev", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-trigger-key": "97c15c54-40bf-479a-a4e2-8c470506502c"
+                    }
+                });
+
+                let data = {};
+                try { data = await res.json(); } catch { }
+
+                if (res.status === 429) {
+                    const wait = data.retryAfter || COOLDOWN_SECONDS;
+                    msgEl.textContent = `Rate limited — please wait ${Math.ceil(wait / 60)} min.`;
+                    refreshBtn.textContent = "Refresh Now";
+                    startCooldown(wait);
+                    return;
+                }
+
+                if (res.ok) {
+                    msgEl.textContent = "";
+                    startCooldown(COOLDOWN_SECONDS);
+                } else {
+                    msgEl.textContent = data.error || "Something went wrong.";
+                    refreshBtn.disabled = false;
+                    refreshBtn.textContent = "Failed — try again";
+                    setTimeout(() => { refreshBtn.textContent = "Refresh Now"; }, 3000);
+                }
+            } catch {
+                msgEl.textContent = "Network error.";
+                refreshBtn.disabled = false;
+                refreshBtn.textContent = "Failed — try again";
+                setTimeout(() => { refreshBtn.textContent = "Refresh Now"; }, 3000);
+            }
+        });
+
+    </script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 </body>
+
 </html>
