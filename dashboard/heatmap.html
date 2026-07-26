@@ -15,72 +15,57 @@
 </head>
 
 <body>
-    <div class="wrap">
-        <div class="topbar">
-            <div>
-                <h1>Market Heatmap</h1>
-                <p class="sub" id="updated">Loading...</p>
-            </div>
-            <nav class="navbar">
-                <a href="index.html">Dashboard</a>
-                <a href="heatmap.html" class="active">Heat Map</a>
-            </nav>
+<div class="wrap">
+    <div class="topbar">
+        <div>
+            <h1>Market Heatmap</h1>
+            <p class="sub" id="updated">Loading...</p>
         </div>
-
-        <div class="layout">
-            <aside class="sidebar">
-                <div class="sidebar-search">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                    <input type="text" id="search" placeholder="Search symbol or sector...">
-                </div>
-
-                <p class="sidebar-title">Sectors</p>
-                <ul class="sector-list" id="sectorList"></ul>
-            </aside>
-
-            <main class="main">
-                <div class="toolbar">
-                    <select id="changeFilter" class="select-control">
-                        <option value="all">All Changes</option>
-                        <option value="gainers">Gainers (&gt; 0%)</option>
-                        <option value="losers">Losers (&lt; 0%)</option>
-                        <option value="strongGainers">Strong Gainers (&gt; 5%)</option>
-                        <option value="strongLosers">Strong Losers (&lt; -5%)</option>
-                    </select>
-
-                    <select id="sortBy" class="select-control">
-                        <option value="marketCap">Sort: Market Cap</option>
-                        <option value="changeDesc">Sort: Change % (High to Low)</option>
-                        <option value="changeAsc">Sort: Change % (Low to High)</option>
-                        <option value="symbol">Sort: Symbol (A-Z)</option>
-                    </select>
-
-                    <div class="legend">
-                        <span><span class="sw" style="background:#7f1d1d"></span>&lt; -5%</span>
-                        <span><span class="sw" style="background:#b91c1c"></span>-5% to -2%</span>
-                        <span><span class="sw" style="background:#ef4444"></span>-2% to 0%</span>
-                        <span><span class="sw" style="background:#22c55e"></span>0% to 2%</span>
-                        <span><span class="sw" style="background:#16a34a"></span>2% to 5%</span>
-                        <span><span class="sw" style="background:#166534"></span>&gt; 5%</span>
-                    </div>
-                </div>
-
-                <div class="showing" id="showingLine"></div>
-
-                <div class="heatmap-scroll">
-                    <div id="heatmap" class="heatmap"></div>
-                </div>
-            </main>
-        </div>
+        <nav class="navbar">
+            <a href="index.html">Dashboard</a>
+            <a href="heatmap.html" class="active">Heat Map</a>
+        </nav>
     </div>
 
-    <div class="tooltip" id="tooltip"></div>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-search">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input type="text" id="search" placeholder="Search symbol or sector...">
+            </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-    <script type="module" src="js/heatmap/main.js"></script>
+            <p class="sidebar-title">Sectors</p>
+            <ul class="sector-list" id="sectorList"></ul>
+        </aside>
+
+        <main class="main">
+            <div class="toolbar">
+                <select id="sortBy" class="select-control">
+                    <option value="marketCap">Sort: Market Cap</option>
+                    <option value="changeDesc">Sort: Change % (High to Low)</option>
+                    <option value="changeAsc">Sort: Change % (Low to High)</option>
+                    <option value="symbol">Sort: Symbol (A-Z)</option>
+                </select>
+
+                <div class="legend" id="legend"></div>
+            </div>
+
+            <div class="showing" id="showingLine"></div>
+
+            <div class="heatmap-scroll">
+                <div id="heatmap" class="heatmap"></div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script type="module" src="js/heatmap/main.js"></script>
 </body>
 
 </html>

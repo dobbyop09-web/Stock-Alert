@@ -1,5 +1,7 @@
 import { state } from "./state.js";
 import { render } from "./render.js";
+import { BUCKETS, getBucket } from "./utils.js";
+import { renderLegend } from "./legend.js";
 
 function applySort(rows) {
     const sorted = [...rows];
@@ -32,19 +34,10 @@ export function getSearchFilteredRows() {
 }
 
 export function getFilteredRows() {
-    const changeMode = document.getElementById("changeFilter").value;
-
     const rows = getSearchFilteredRows().filter(s => {
         const matchesSector = state.sectorFilter === "" || s.sheet === state.sectorFilter;
-
-        let matchesChange = true;
-        const c = s.changePercent;
-        if (changeMode === "gainers") matchesChange = c > 0;
-        else if (changeMode === "losers") matchesChange = c < 0;
-        else if (changeMode === "strongGainers") matchesChange = c > 5;
-        else if (changeMode === "strongLosers") matchesChange = c < -5;
-
-        return matchesSector && matchesChange;
+        const matchesBucket = state.activeBuckets.has(getBucket(s.changePercent).id);
+        return matchesSector && matchesBucket;
     });
 
     return applySort(rows);
@@ -79,12 +72,17 @@ export function renderSectorList() {
 export function renderShowingLine(visibleCount) {
     const el = document.getElementById("showingLine");
     const search = document.getElementById("search").value.trim();
-    const changeMode = document.getElementById("changeFilter").value;
-    const changeLabel = document.getElementById("changeFilter").selectedOptions[0].textContent;
 
     const parts = [];
     if (state.sectorFilter) parts.push(state.sectorFilter);
-    if (changeMode !== "all") parts.push(changeLabel);
+
+    if (state.activeBuckets.size < BUCKETS.length) {
+        const activeLabels = BUCKETS
+            .filter(b => state.activeBuckets.has(b.id))
+            .map(b => b.label);
+        parts.push(activeLabels.length ? activeLabels.join(", ") : "no ranges selected");
+    }
+
     if (search) parts.push(`"${search}"`);
 
     const label = parts.length ? parts.join(" • ") : "All";
@@ -96,8 +94,9 @@ export function renderShowingLine(visibleCount) {
     if (clearBtn) {
         clearBtn.addEventListener("click", () => {
             state.sectorFilter = "";
+            state.activeBuckets = new Set(BUCKETS.map(b => b.id));
             document.getElementById("search").value = "";
-            document.getElementById("changeFilter").value = "all";
+            renderLegend();
             refresh();
         });
     }
@@ -111,7 +110,6 @@ export function refresh() {
 
 export function initFilters() {
     document.getElementById("search").addEventListener("input", refresh);
-    document.getElementById("changeFilter").addEventListener("change", refresh);
 
     document.getElementById("sortBy").addEventListener("change", function () {
         state.sortMode = this.value;
