@@ -133,7 +133,7 @@
   "currentPrice" : 740.25,
   "alertPrice" : 659.0,
   "previousClose" : 742.8,
-  "marketCap" : 118005112097,
+  "marketCap" : 118438668457,
   "changePercent" : -0.3444782168186362,
   "distance" : 12.329286798179059,
   "fib" : 0.0,
@@ -146,7 +146,7 @@
   "currentPrice" : 1445.5,
   "alertPrice" : 1260.0,
   "previousClose" : 1432.9,
-  "marketCap" : 107570758419,
+  "marketCap" : 107877385556,
   "changePercent" : 0.8716707021791704,
   "distance" : 14.722222222222223,
   "fib" : 0.0,
@@ -937,11 +937,11 @@
 }, {
   "symbol" : "FORCEMOT",
   "currentPrice" : 17289.0,
-  "alertPrice" : 16800.0,
+  "alertPrice" : 16500.0,
   "previousClose" : 17620.0,
   "marketCap" : 227506424037,
   "changePercent" : -1.9145121175313782,
-  "distance" : 2.9107142857142856,
+  "distance" : 4.781818181818181,
   "fib" : 16200.0,
   "status" : "Near",
   "sheet" : "Auto",
@@ -1262,13 +1262,13 @@
 }, {
   "symbol" : "DIXON",
   "currentPrice" : 13780.0,
-  "alertPrice" : 10900.0,
+  "alertPrice" : 12746.0,
   "previousClose" : 13846.0,
   "marketCap" : 8.3425060207E+11,
   "changePercent" : -0.47895500725689405,
-  "distance" : 26.422018348623855,
-  "fib" : 10200.0,
-  "status" : "Far",
+  "distance" : 8.112348972226581,
+  "fib" : 11553.0,
+  "status" : "Watch",
   "sheet" : "Manufacturing",
   "sheetRow" : 4,
   "screenerUrl" : "https://www.screener.in/company/DIXON/consolidated/"
@@ -1702,6 +1702,71 @@
   "sheetRow" : 2,
   "screenerUrl" : "https://www.screener.in/company/PERSISTENT/consolidated/"
 }, {
+  "symbol" : "TCS",
+  "currentPrice" : 2296.9,
+  "alertPrice" : 2020.0,
+  "previousClose" : 2254.3,
+  "marketCap" : 8305279929918,
+  "changePercent" : 1.8546736906264925,
+  "distance" : 13.707920792079213,
+  "fib" : 0.0,
+  "status" : "Watch",
+  "sheet" : "It",
+  "sheetRow" : 3,
+  "screenerUrl" : "https://www.screener.in/company/TCS/consolidated/"
+}, {
+  "symbol" : "INFY",
+  "currentPrice" : 1078.3,
+  "alertPrice" : 986.0,
+  "previousClose" : 1040.9,
+  "marketCap" : 45554286314,
+  "changePercent" : 3.4684225169247767,
+  "distance" : 9.361054766734275,
+  "fib" : 850.0,
+  "status" : "Watch",
+  "sheet" : "It",
+  "sheetRow" : 4,
+  "screenerUrl" : "https://www.screener.in/company/INFY/consolidated/"
+}, {
+  "symbol" : "HCLTECH",
+  "currentPrice" : 1294.9,
+  "alertPrice" : 1238.0,
+  "previousClose" : 1271.0,
+  "marketCap" : 3508305177052,
+  "changePercent" : 1.845702370839454,
+  "distance" : 4.59612277867529,
+  "fib" : 1096.0,
+  "status" : "Near",
+  "sheet" : "It",
+  "sheetRow" : 5,
+  "screenerUrl" : "https://www.screener.in/company/HCLTECH/consolidated/"
+}, {
+  "symbol" : "TECHM",
+  "currentPrice" : 1576.0,
+  "alertPrice" : 1490.0,
+  "previousClose" : 1559.5,
+  "marketCap" : 1.54175822983E+12,
+  "changePercent" : 1.0469543147208122,
+  "distance" : 5.771812080536913,
+  "fib" : 1390.0,
+  "status" : "Watch",
+  "sheet" : "It",
+  "sheetRow" : 6,
+  "screenerUrl" : "https://www.screener.in/company/TECHM/consolidated/"
+}, {
+  "symbol" : "LTM",
+  "currentPrice" : 4181.3,
+  "alertPrice" : 3924.0,
+  "previousClose" : 4091.8,
+  "marketCap" : 1.213173E+12,
+  "changePercent" : 2.1404826250209266,
+  "distance" : 6.557084607543327,
+  "fib" : 3555.0,
+  "status" : "Watch",
+  "sheet" : "It",
+  "sheetRow" : 7,
+  "screenerUrl" : "https://www.screener.in/company/LTM/consolidated/"
+}, {
   "symbol" : "POLICYBZR",
   "currentPrice" : 1554.0,
   "alertPrice" : 1360.0,
@@ -1712,7 +1777,7 @@
   "fib" : 1480.0,
   "status" : "Watch",
   "sheet" : "It",
-  "sheetRow" : 3,
+  "sheetRow" : 8,
   "screenerUrl" : "https://www.screener.in/company/POLICYBZR/consolidated/"
 }, {
   "symbol" : "NAUKRI",
@@ -1725,7 +1790,7 @@
   "fib" : 910.0,
   "status" : "Far",
   "sheet" : "It",
-  "sheetRow" : 4,
+  "sheetRow" : 9,
   "screenerUrl" : "https://www.screener.in/company/NAUKRI/consolidated/"
 }, {
   "symbol" : "COFORGE",
@@ -1738,7 +1803,7 @@
   "fib" : 1295.0,
   "status" : "Watch",
   "sheet" : "It",
-  "sheetRow" : 5,
+  "sheetRow" : 10,
   "screenerUrl" : "https://www.screener.in/company/COFORGE/consolidated/"
 }, {
   "symbol" : "NETWEB",
@@ -1751,7 +1816,7 @@
   "fib" : 3250.0,
   "status" : "Far",
   "sheet" : "It",
-  "sheetRow" : 6,
+  "sheetRow" : 11,
   "screenerUrl" : "https://www.screener.in/company/NETWEB/consolidated/"
 }, {
   "symbol" : "AFFLE",
@@ -1764,7 +1829,7 @@
   "fib" : 1220.0,
   "status" : "Watch",
   "sheet" : "It",
-  "sheetRow" : 7,
+  "sheetRow" : 12,
   "screenerUrl" : "https://www.screener.in/company/AFFLE/consolidated/"
 }, {
   "symbol" : "PINELABS",
@@ -1777,7 +1842,7 @@
   "fib" : 0.0,
   "status" : "Watch",
   "sheet" : "It",
-  "sheetRow" : 8,
+  "sheetRow" : 13,
   "screenerUrl" : "https://www.screener.in/company/PINELABS/consolidated/"
 }, {
   "symbol" : "FSL",
@@ -1790,7 +1855,7 @@
   "fib" : 0.0,
   "status" : "Watch",
   "sheet" : "It",
-  "sheetRow" : 9,
+  "sheetRow" : 14,
   "screenerUrl" : "https://www.screener.in/company/FSL/consolidated/"
 }, {
   "symbol" : "KPITTECH",
@@ -1803,7 +1868,7 @@
   "fib" : 386.0,
   "status" : "Far",
   "sheet" : "It",
-  "sheetRow" : 10,
+  "sheetRow" : 15,
   "screenerUrl" : "https://www.screener.in/company/KPITTECH/consolidated/"
 }, {
   "symbol" : "ECLERX",
@@ -1816,7 +1881,7 @@
   "fib" : 1335.0,
   "status" : "Far",
   "sheet" : "It",
-  "sheetRow" : 11,
+  "sheetRow" : 16,
   "screenerUrl" : "https://www.screener.in/company/ECLERX/consolidated/"
 }, {
   "symbol" : "RATEGAIN",
@@ -1829,7 +1894,7 @@
   "fib" : 699.0,
   "status" : "Far",
   "sheet" : "It",
-  "sheetRow" : 12,
+  "sheetRow" : 17,
   "screenerUrl" : "https://www.screener.in/company/RATEGAIN/consolidated/"
 }, {
   "symbol" : "MCX",
@@ -2510,13 +2575,13 @@
 }, {
   "symbol" : "DIVISLAB",
   "currentPrice" : 7440.0,
-  "alertPrice" : 6200.0,
+  "alertPrice" : 7094.0,
   "previousClose" : 7248.5,
   "marketCap" : 1.97467718E+12,
   "changePercent" : 2.5739247311827955,
-  "distance" : 20.0,
-  "fib" : 5640.0,
-  "status" : "Far",
+  "distance" : 4.877361150267832,
+  "fib" : 6300.0,
+  "status" : "Near",
   "sheet" : "Health",
   "sheetRow" : 22,
   "screenerUrl" : "https://www.screener.in/company/DIVISLAB/consolidated/"
@@ -2564,7 +2629,7 @@
   "currentPrice" : 1151.0,
   "alertPrice" : 1077.0,
   "previousClose" : 1151.7,
-  "marketCap" : 9.95924097E+9,
+  "marketCap" : 9950815827,
   "changePercent" : -0.06081668114683279,
   "distance" : 6.8709377901578454,
   "fib" : 995.0,
@@ -2913,13 +2978,13 @@
 }, {
   "symbol" : "LLOYDSME",
   "currentPrice" : 2013.9,
-  "alertPrice" : 1565.0,
+  "alertPrice" : 1902.0,
   "previousClose" : 1940.5,
   "marketCap" : 1132999007785,
   "changePercent" : 3.6446695466507815,
-  "distance" : 28.683706070287545,
-  "fib" : 1466.0,
-  "status" : "Far",
+  "distance" : 5.883280757097797,
+  "fib" : 1614.0,
+  "status" : "Watch",
   "sheet" : "Metal",
   "sheetRow" : 12,
   "screenerUrl" : "https://www.screener.in/company/LLOYDSME/consolidated/"
@@ -3758,13 +3823,13 @@
 }, {
   "symbol" : "TITAN",
   "currentPrice" : 4739.0,
-  "alertPrice" : 3963.0,
+  "alertPrice" : 4370.0,
   "previousClose" : 4677.0,
   "marketCap" : 4204875392325,
   "changePercent" : 1.3082928887951044,
-  "distance" : 19.581125410042898,
-  "fib" : 3802.0,
-  "status" : "Far",
+  "distance" : 8.443935926773454,
+  "fib" : 3981.0,
+  "status" : "Watch",
   "sheet" : "Misc",
   "sheetRow" : 7,
   "screenerUrl" : "https://www.screener.in/company/TITAN/consolidated/"
@@ -3823,11 +3888,11 @@
 }, {
   "symbol" : "KALYANKJIL",
   "currentPrice" : 565.4,
-  "alertPrice" : 460.0,
+  "alertPrice" : 475.0,
   "previousClose" : 573.55,
   "marketCap" : 582563732393,
   "changePercent" : -1.4414573753095115,
-  "distance" : 22.913043478260864,
+  "distance" : 19.031578947368416,
   "fib" : 360.0,
   "status" : "Far",
   "sheet" : "Misc",
@@ -3862,13 +3927,13 @@
 }, {
   "symbol" : "ANANTRAJ",
   "currentPrice" : 618.55,
-  "alertPrice" : 511.0,
+  "alertPrice" : 568.0,
   "previousClose" : 586.55,
   "marketCap" : 212666389174,
   "changePercent" : 5.1733893783849325,
-  "distance" : 21.04696673189823,
-  "fib" : 460.0,
-  "status" : "Far",
+  "distance" : 8.899647887323937,
+  "fib" : 511.0,
+  "status" : "Watch",
   "sheet" : "Misc",
   "sheetRow" : 15,
   "screenerUrl" : "https://www.screener.in/company/ANANTRAJ/consolidated/"
@@ -3979,11 +4044,11 @@
 }, {
   "symbol" : "INDIAMART",
   "currentPrice" : 1764.3,
-  "alertPrice" : 1330.0,
+  "alertPrice" : 1462.0,
   "previousClose" : 1759.9,
   "marketCap" : 105531182051,
   "changePercent" : 0.24939069319275994,
-  "distance" : 32.65413533834586,
+  "distance" : 20.677154582763336,
   "fib" : 0.0,
   "status" : "Far",
   "sheet" : "Misc",
@@ -4135,13 +4200,13 @@
 }, {
   "symbol" : "PAYTM",
   "currentPrice" : 1292.5,
-  "alertPrice" : 971.0,
+  "alertPrice" : 1170.0,
   "previousClose" : 1283.2,
   "marketCap" : 822340980595,
   "changePercent" : 0.7195357833655671,
-  "distance" : 33.11019567456231,
-  "fib" : 0.0,
-  "status" : "Far",
+  "distance" : 10.47008547008547,
+  "fib" : 1000.0,
+  "status" : "Watch",
   "sheet" : "Misc",
   "sheetRow" : 36,
   "screenerUrl" : "https://www.screener.in/company/PAYTM/consolidated/"
