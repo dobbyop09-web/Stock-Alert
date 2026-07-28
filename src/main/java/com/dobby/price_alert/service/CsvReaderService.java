@@ -6,6 +6,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -25,6 +26,8 @@ public class CsvReaderService {
     @Autowired
     private StockAlertService stockAlertService;
 
+    @Autowired
+    private MarketDataService marketDataService;
     private static final Logger log =
             LoggerFactory.getLogger(CsvReaderService.class);
 
@@ -43,12 +46,17 @@ public class CsvReaderService {
 
         for (CSVRecord record : records) {
             int rowNumber = (int)record.getRecordNumber()+1;
-            double current =Double.parseDouble(record.get("Current Price"));
+            String symbol = record.get("Symbol");
             double alert = Double.parseDouble(record.get("Alert Price"));
             double fib = Double.parseDouble(record.get("FIB"));
-            double prevClose = Double.parseDouble(record.get("PrevClose"));
-            double marketCap = Double.parseDouble(record.get("MarketCap"));
-            String symbol = record.get("Symbol");
+            MarketData marketData = new MarketData();
+            if(!(symbol.equals("544224") || symbol.equals("526433"))) {
+              marketData=  marketDataService.getMarketData(symbol);
+            }
+            double current =marketData.getCurrentPrice();
+            double prevClose = marketData.getPreviousPrice();
+            double marketCap = marketData.getMarketCap();
+
             String screenerUrl ="https://www.screener.in/company/" + symbol + "/consolidated/";
             AlertStatus  alertStatus = stockAlertService.shouldSendAlert(sheetConfig.getName(), symbol, current, alert,triggeredToday);
             if (alertStatus.isShouldSend()) {
@@ -60,7 +68,7 @@ public class CsvReaderService {
 
             }
             double distance = ((current - alert) / alert) * 100;
-            double changePerc = (current - prevClose) / current * 100;
+            double changePerc = marketData.getChangePercent();
             String status;
 
             if (alertStatus.isTriggeredToday()) {
