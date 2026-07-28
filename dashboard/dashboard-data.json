@@ -124,7 +124,7 @@
   "changePercent" : -5.258825681360892,
   "distance" : 10.960016237061092,
   "fib" : 4038.0,
-  "status" : "Watch",
+  "status" : "Triggered",
   "sheet" : "Defence",
   "sheetRow" : 11,
   "screenerUrl" : "https://www.screener.in/company/MTARTECH/consolidated/"
@@ -1723,7 +1723,7 @@
   "changePercent" : -0.6702560158224371,
   "distance" : 21.411419423692635,
   "fib" : 3200.0,
-  "status" : "Far",
+  "status" : "Triggered",
   "sheet" : "Manufacturing",
   "sheetRow" : 39,
   "screenerUrl" : "https://www.screener.in/company/526433/consolidated/"
@@ -2776,7 +2776,7 @@
   "changePercent" : 0.2980009105583303,
   "distance" : 15.547584887613578,
   "fib" : 0.0,
-  "status" : "Far",
+  "status" : "Triggered",
   "sheet" : "Health",
   "sheetRow" : 32,
   "screenerUrl" : "https://www.screener.in/company/JBCHEPHARM/consolidated/"
@@ -3426,7 +3426,7 @@
   "changePercent" : 1.6185185185185118,
   "distance" : 9.40032414910859,
   "fib" : 971.0,
-  "status" : "Watch",
+  "status" : "Triggered",
   "sheet" : "Smallcap",
   "sheetRow" : 6,
   "screenerUrl" : "https://www.screener.in/company/544224/consolidated/"
@@ -3803,7 +3803,7 @@
   "changePercent" : -0.9407948094079407,
   "distance" : 20.88235294117647,
   "fib" : 0.0,
-  "status" : "Far",
+  "status" : "Triggered",
   "sheet" : "Smallcap",
   "sheetRow" : 35,
   "screenerUrl" : "https://www.screener.in/company/KRN/consolidated/"
