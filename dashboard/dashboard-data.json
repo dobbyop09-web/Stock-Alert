@@ -2263,11 +2263,11 @@
 }, {
   "symbol" : "HINDUNILVR",
   "currentPrice" : 2020.0,
-  "alertPrice" : 2033.0,
+  "alertPrice" : 1900.0,
   "previousClose" : 2174.6,
   "marketCap" : 4.74617434924E+12,
   "changePercent" : -7.11,
-  "distance" : -0.6394490900147565,
+  "distance" : 6.315789473684211,
   "fib" : 0.0,
   "status" : "Triggered",
   "sheet" : "Fmcg",
