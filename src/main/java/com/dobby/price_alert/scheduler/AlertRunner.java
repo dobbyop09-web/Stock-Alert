@@ -1,11 +1,9 @@
 package com.dobby.price_alert.scheduler;
 
 import com.dobby.price_alert.constants.SheetType;
+import com.dobby.price_alert.dto.CsvRecordDto;
 import com.dobby.price_alert.dto.DashboardStock;
-import com.dobby.price_alert.service.CsvReaderService;
-import com.dobby.price_alert.service.DashBoardMetaDataService;
-import com.dobby.price_alert.service.DashboardJsonService;
-import com.dobby.price_alert.service.StockAlertService;
+import com.dobby.price_alert.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -21,14 +19,15 @@ public class AlertRunner implements CommandLineRunner {
     private static final Logger log =
             LoggerFactory.getLogger(CsvReaderService.class);
     private final DashboardJsonService dashboardJsonService;
-
+    private final MarketDataService marketDataService;
     private final DashBoardMetaDataService dashBoardMetaDataService;
     private final StockAlertService stockAlertService;
     List<DashboardStock> dashboard = new ArrayList<>();
-    public AlertRunner(CsvReaderService csvReaderService, DashboardJsonService dashboardJsonService, DashBoardMetaDataService dashBoardMetaDataService, StockAlertService stockAlertService
+    public AlertRunner(CsvReaderService csvReaderService, DashboardJsonService dashboardJsonService, MarketDataService marketDataService, DashBoardMetaDataService dashBoardMetaDataService, StockAlertService stockAlertService
     ) {
         this.csvReaderService = csvReaderService;
         this.dashboardJsonService = dashboardJsonService;
+        this.marketDataService = marketDataService;
         this.dashBoardMetaDataService = dashBoardMetaDataService;
         this.stockAlertService = stockAlertService;
     }
@@ -37,15 +36,16 @@ public class AlertRunner implements CommandLineRunner {
         log.info("========== STOCK ALERT JOB STARTED ==========");
         long startTime = System.currentTimeMillis();
         Set<String> triggeredToday = stockAlertService.getAllTriggeredToday();
+        List<CsvRecordDto> allRecords = new ArrayList<>();
 
         for(SheetType sheet: SheetType.values()){
-            dashboard.addAll(
-                    csvReaderService.readCsvAndCheckAlerts(
-                            sheet.getSheetConfig(),
-                            triggeredToday
+            allRecords.addAll(
+                    csvReaderService.readCsv(
+                            sheet.getSheetConfig()
                     )
             );
         }
+        dashboard = marketDataService.getDashboardData(allRecords, triggeredToday);
         log.info("Preparing to write dashboard JSON...");
         log.info("Total dashboard records: {}", dashboard.size());
         dashboardJsonService.write(dashboard);

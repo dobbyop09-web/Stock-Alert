@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class MarketData {
-    private  double currentPrice;
-    private  double marketCap;
-    private  double previousPrice;
-    private  double changePercent;
+public class CsvRecordDto {
+    private String symbol;
+    private double alertPrice;
+    private double fib;
+    private int rowNumber;
+    private String sheetName;
 }

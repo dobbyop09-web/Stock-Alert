@@ -13,30 +13,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class CsvReaderService {
-    @Autowired
-    private TelegramService telegramService;
-
-    @Autowired
-    private StockAlertService stockAlertService;
-
-    @Autowired
-    private MarketDataService marketDataService;
     private static final Logger log =
             LoggerFactory.getLogger(CsvReaderService.class);
 
-
-    public List<DashboardStock> readCsvAndCheckAlerts(SheetConfig sheetConfig, Set<String> triggeredToday) throws IOException {
-
-        log.info("Reading {}", sheetConfig.getName());
-        List<DashboardStock> dashboardStocks = new ArrayList<>();
-
+    public List<CsvRecordDto> readCsv(SheetConfig sheetConfig) throws IOException {
         Reader reader = new InputStreamReader(
                 new URL(sheetConfig.getUrl()).openStream());
 
@@ -44,60 +30,18 @@ public class CsvReaderService {
                 .withFirstRecordAsHeader()
                 .parse(reader);
 
+        List<CsvRecordDto> recordList = new ArrayList<>();
         for (CSVRecord record : records) {
-            int rowNumber = (int)record.getRecordNumber()+1;
-            String symbol = record.get("Symbol");
-            double alert = Double.parseDouble(record.get("Alert Price"));
-            double fib = Double.parseDouble(record.get("FIB"));
-            MarketData marketData = new MarketData();
-            if(!(symbol.equals("544224") || symbol.equals("526433"))) {
-              marketData=  marketDataService.getMarketData(symbol);
-            }
-            double current =marketData.getCurrentPrice();
-            double prevClose = marketData.getPreviousPrice();
-            double marketCap = marketData.getMarketCap();
-
-            String screenerUrl ="https://www.screener.in/company/" + symbol + "/consolidated/";
-            AlertStatus  alertStatus = stockAlertService.shouldSendAlert(sheetConfig.getName(), symbol, current, alert,triggeredToday);
-            if (alertStatus.isShouldSend()) {
-                log.info("Telegram sent for {}", symbol);
-
-                StockMessageDto dto = StockMessageDto.builder().stockName(symbol).currentPrice(current).targetPrice(alert).screenerUrl(screenerUrl).sheetName(sheetConfig.getName()).build();
-                String message = MessageFormat.format(dto);
-                telegramService.sendMessage(message);
-
-            }
-            double distance = ((current - alert) / alert) * 100;
-            double changePerc = marketData.getChangePercent();
-            String status;
-
-            if (alertStatus.isTriggeredToday()) {
-                status = "Triggered";
-            } else if (distance <= 5) {
-                status = "Near";
-            } else if (distance <= 15) {
-                status = "Watch";
-            } else {
-                status = "Far";
-            }
-
-            dashboardStocks.add(
-                    DashboardStock.builder()
-                            .symbol(symbol)
-                            .currentPrice(BigDecimal.valueOf(current))
-                            .alertPrice(BigDecimal.valueOf(alert))
-                            .distance(BigDecimal.valueOf(distance))
-                            .status(status)
-                            .sheet(sheetConfig.getName())
-                            .previousClose(BigDecimal.valueOf(prevClose))
-                            .marketCap(BigDecimal.valueOf(marketCap))
-                            .changePercent(BigDecimal.valueOf(changePerc))
-                            .sheetRow(rowNumber)
-                            .screenerUrl(screenerUrl)
-                            .fib(BigDecimal.valueOf(fib))
+            recordList.add(
+                    CsvRecordDto.builder()
+                            .symbol(record.get("Symbol").trim())
+                            .alertPrice(Double.parseDouble(record.get("Alert Price")))
+                            .fib(Double.parseDouble(record.get("FIB")))
+                            .rowNumber((int) record.getRecordNumber() + 1)
+                            .sheetName(sheetConfig.getName())
                             .build()
             );
         }
-        return dashboardStocks;
+     return recordList;
     }
 }

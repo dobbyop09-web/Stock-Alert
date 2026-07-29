@@ -74,7 +74,7 @@ public class NSEClient {
                 .encode()
                 .toUriString();
 
-        log.info("Fetching NSE data for {} from {}", symbol, uri);
+        log.debug("Fetching NSE data for {} from {}", symbol, uri);
 
         String body = getWithSessionRetry(uri, referer);
 
