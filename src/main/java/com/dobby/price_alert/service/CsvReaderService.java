@@ -53,12 +53,13 @@ public class CsvReaderService {
             if(!(symbol.equals("544224") || symbol.equals("526433"))) {
               marketData=  marketDataService.getMarketData(symbol);
             }
+            double dayLow = marketData.getDayLow();
             double current =marketData.getCurrentPrice();
             double prevClose = marketData.getPreviousPrice();
             double marketCap = marketData.getMarketCap();
 
-            String screenerUrl ="https://www.screener.in/company/" + symbol + "/consolidated/";
-            AlertStatus  alertStatus = stockAlertService.shouldSendAlert(sheetConfig.getName(), symbol, current, alert,triggeredToday);
+            String screenerUrl ="https://www.screener.in/company/" + symbol + "/consolidated";
+            AlertStatus  alertStatus = stockAlertService.shouldSendAlert(sheetConfig.getName(), symbol, dayLow, alert,triggeredToday);
             if (alertStatus.isShouldSend()) {
                 log.info("Telegram sent for {}", symbol);
 
@@ -68,7 +69,7 @@ public class CsvReaderService {
 
             }
             double distance = ((current - alert) / alert) * 100;
-            double changePerc = marketData.getChangePercent();
+            double changePerc = ((current-prevClose)/prevClose)*100;
             String status;
 
             if (alertStatus.isTriggeredToday()) {

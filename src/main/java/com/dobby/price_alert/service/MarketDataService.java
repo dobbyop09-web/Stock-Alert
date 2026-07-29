@@ -8,6 +8,9 @@ import com.dobby.price_alert.dto.nse.NseResponse;
 import com.dobby.price_alert.dto.nse.TradeInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.error.Mark;
+
+import java.math.BigDecimal;
 
 @Service
 public class MarketDataService {
@@ -29,13 +32,17 @@ public class MarketDataService {
         EquityResponse equity = response.getEquityResponse().get(0);
         MetaData metaData = equity.getMetaData();
         TradeInfo tradeInfo = equity.getTradeInfo();
-
-        return new MarketData(
-                tradeInfo.getLastPrice().doubleValue(),
-                tradeInfo.getTotalMarketCap().doubleValue(),
-                metaData.getPreviousClose().doubleValue(),
-                metaData.getPChange().doubleValue()
-        );
+        BigDecimal currentPrice = (metaData.getClosePrice() == null
+                || BigDecimal.ZERO.compareTo(metaData.getClosePrice()) == 0)
+                ? tradeInfo.getLastPrice()
+                : metaData.getClosePrice();
+        return MarketData.builder()
+                .currentPrice(currentPrice.doubleValue())
+                .marketCap(tradeInfo.getTotalMarketCap().doubleValue())
+                .previousPrice(metaData.getPreviousClose().doubleValue())
+                .changePercent(metaData.getPChange().doubleValue())
+                .dayLow(metaData.getDayLow().doubleValue())
+                .build();
     }
 
     private boolean isValidResponse(NseResponse response) {
