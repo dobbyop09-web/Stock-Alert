@@ -10,6 +10,6 @@ import java.util.concurrent.Executors;
 public class AsyncConfig {
     @Bean
     public ExecutorService marketDataExecutor() {
-        return Executors.newFixedThreadPool(20);
+        return Executors.newFixedThreadPool(5);
     }
 }
