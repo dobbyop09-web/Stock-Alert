@@ -15,7 +15,50 @@
     padding-bottom: 16px;
     flex-wrap: wrap;
 }
+.topbar{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:24px;
+}
 
+.market-overview{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    gap:28px;
+}
+
+.market-item{
+    min-width:120px;
+    text-align:center;
+}
+
+.market-name{
+    font-size:11px;
+    text-transform:uppercase;
+    color:#8b98a5;
+    margin-bottom:4px;
+}
+
+.market-value{
+    font-size:20px;
+    font-weight:700;
+}
+
+.market-change{
+    margin-top:3px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.market-change.positive{
+    color:#00c853;
+}
+
+.market-change.negative{
+    color:#ff5252;
+}
 .layout {
     display: flex;
     align-items: flex-start;

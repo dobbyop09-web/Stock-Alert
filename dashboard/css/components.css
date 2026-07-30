@@ -509,3 +509,76 @@ textarea {
         padding: 6px 6px;
     }
 }
+.ticker-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none; /* Firefox */
+}
+.ticker-scroll::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Edge */
+}
+.ticker-scroll {
+    cursor: grab;
+}
+.ticker-scroll.dragging {
+    cursor: grabbing;
+    user-select: none;
+}
+
+.ticker {
+    display: flex;
+    gap: 24px;
+    padding: 6px 0;
+    width: max-content; /* forces the row to be as wide as its content, never compress */
+}
+
+.ticker-item {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;        /* <-- stops items from squeezing and overlapping */
+    min-width: 140px;
+    padding-right: 24px;
+    border-right: 1px solid var(--border, #2a2a2a);
+}
+
+.ticker-item:last-child {
+    border-right: none;
+    padding-right: 0;
+}
+
+.ticker-name {
+    font-size: 12px;
+    color: var(--text-muted, #9a9a9a);
+    white-space: nowrap;
+}
+
+.ticker-last {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text, #eaeaea);
+}
+
+.ticker-change {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.ticker-change.up { color: var(--up, #22c55e); }
+.ticker-change.down { color: var(--down, #ef4444); }
+
+.ticker-item {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    min-width: 140px;
+    padding-right: 24px;
+    border-right: 1px solid var(--border, #2a2a2a);
+    text-decoration: none;   /* remove underline */
+    color: inherit;          /* don't let default link blue leak in */
+}
+
+.ticker-item:hover {
+    opacity: 0.85;
+}
