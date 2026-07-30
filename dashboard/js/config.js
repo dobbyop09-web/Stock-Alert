@@ -1,6 +1,6 @@
 export const CLIENT_ID = "105417196420-ln76t9mgghpdpa1d9sfrash34gdoarde.apps.googleusercontent.com";
 export const SPREADSHEET_ID = "1AQ93bxs1qthy6WSqtkV-DhMYjAMaZrsQLLabk_KGgyQ";
-export const REFRESH_WORKER_URL = "https://tiny-art-8473.dobbyop09.workers.dev";
+export const REFRESH_WORKER_URL = "https://tiny-art-8473.dobbyop09.workers.dev/refresh";
 // NOTE: this key is shipped to every browser that loads the page, so it only
 // works as a light rate-limit deterrent, not real authentication. If this
 // endpoint needs real protection, move the trigger behind a server route

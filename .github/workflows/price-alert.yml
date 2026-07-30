@@ -44,18 +44,18 @@ jobs:
       - name: Run Application
         run: java -jar target/*.jar
 
-      - name: Commit dashboard data
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add dashboard/dashboard-data.json dashboard/dashboard-meta.json dashboard/dashboard-indices.json
-
-          if git diff --cached --quiet; then
-            echo "No dashboard changes detected."
-            exit 0
-          fi
-
-          git commit -m "Update dashboard data"
-
-          git push
+#      - name: Commit dashboard data
+#        run: |
+#          git config user.name "github-actions[bot]"
+#          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+#
+#          git add dashboard/dashboard-data.json dashboard/dashboard-meta.json dashboard/dashboard-indices.json
+#
+#          if git diff --cached --quiet; then
+#            echo "No dashboard changes detected."
+#            exit 0
+#          fi
+#
+#          git commit -m "Update dashboard data"
+#
+#          git push

@@ -75,7 +75,9 @@ export function enableTickerDragScroll() {
 async function loadIndices() {
     try {
             // cache-bust so the browser doesn't serve a stale copy of the static file
-           const res = await fetch(`./dashboard-indices.json?t=${Date.now()}`);
+          const res = await fetch(
+    `https://tiny-art-8473.dobbyop09.workers.dev/dashboard-indices?t=${Date.now()}`
+);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             renderTicker(data);
