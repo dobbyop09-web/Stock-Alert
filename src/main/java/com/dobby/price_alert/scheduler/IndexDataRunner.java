@@ -1,6 +1,8 @@
 package com.dobby.price_alert.scheduler;
 
 import com.dobby.price_alert.client.NSEClient;
+import com.dobby.price_alert.constants.DashboardIndex;
+import com.dobby.price_alert.dto.nse.DashboardIndexData;
 import com.dobby.price_alert.dto.nse.IndexData;
 import com.dobby.price_alert.dto.nse.IndexResponseData;
 import lombok.extern.slf4j.Slf4j;
@@ -11,10 +13,7 @@ import org.springframework.stereotype.Component;
 import tools.jackson.databind.SerializationFeature;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -39,20 +38,42 @@ public class IndexDataRunner implements CommandLineRunner {
             "NIFTY IT",
             "NIFTY CAPITAL MARKETS"
     );
+
     @Override
     public void run(String... args) throws Exception {
         log.info("Fetching index data...");
-        IndexResponseData response = client.getIndexData();
-        Map<String, IndexData> indexMap = response.getData().stream()
-                .collect(Collectors.toMap(
-                        IndexData::getIndex,
-                        Function.identity()
-                ));
 
-        List<IndexData> dashboardIndices = DASHBOARD_INDICES.stream()
-                .map(indexMap::get)
-                .filter(Objects::nonNull)
-                .toList();
+        IndexResponseData response = client.getIndexData();
+
+        Map<String, IndexData> indexMap =
+                response.getData()
+                        .stream()
+                        .collect(Collectors.toMap(
+                                IndexData::getIndex,
+                                Function.identity()
+                        ));
+
+        List<DashboardIndexData> dashboardIndices =
+                Arrays.stream(DashboardIndex.values())
+                        .map(config -> {
+                            IndexData data = indexMap.get(config.getNseName());
+
+                            if (data == null) {
+                                return null;
+                            }
+
+                            return DashboardIndexData.builder()
+                                    .name(data.getIndex())
+                                    .last(data.getLast())
+                                    .variation(data.getVariation())
+                                    .percentChange(data.getPercentChange())
+                                    .screenerUrl(
+                                            "https://www.screener.in/company/"
+                                                    + config.getScreenerSlug() + "/")
+                                    .build();
+                        })
+                        .filter(Objects::nonNull)
+                        .toList();
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -61,7 +82,9 @@ public class IndexDataRunner implements CommandLineRunner {
                         new File("dashboard/dashboard-indices.json"),
                         dashboardIndices
                 );
-        log.info("DASHBOARD INDEX DATA FETCHED");
-    }
 
+        log.info("Dashboard index data written successfully.");
+    }
 }
+
+

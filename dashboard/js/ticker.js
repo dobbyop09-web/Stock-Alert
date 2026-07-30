@@ -6,11 +6,11 @@ export function renderTicker(indices) {
         const isUp = row.percentChange >= 0;
         const arrow = isUp ? '▲' : '▼';
         const sign = isUp ? '+' : '';
-        const screenerUrl = `https://www.screener.in/`;
+        const screenerUrl = row.screenerUrl;
 
         return `
             <a class="ticker-item" href="${screenerUrl}" target="_blank" rel="noopener noreferrer">
-                <span class="ticker-name">${row.index}</span>
+                <span class="ticker-name">${row.name}</span>
                 <span class="ticker-last">${row.last.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                 <span class="ticker-change ${isUp ? 'up' : 'down'}">
                     ${arrow} ${sign}${row.percentChange.toFixed(2)}%
