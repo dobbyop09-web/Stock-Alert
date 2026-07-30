@@ -5,6 +5,7 @@ import com.dobby.price_alert.constants.DashboardIndex;
 import com.dobby.price_alert.dto.nse.DashboardIndexData;
 import com.dobby.price_alert.dto.nse.IndexData;
 import com.dobby.price_alert.dto.nse.IndexResponseData;
+import com.dobby.price_alert.service.R2UploadService;
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import tools.jackson.databind.SerializationFeature;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -23,21 +25,8 @@ public class IndexDataRunner implements CommandLineRunner {
     @Autowired
     private NSEClient client;
 
-    private static final List<String> DASHBOARD_INDICES = List.of(
-            "NIFTY 50",
-            "NIFTY BANK",
-            "NIFTY SMALLCAP 250",
-            "NIFTY AUTO",
-            "NIFTY FMCG",
-            "NIFTY PSU BANK",
-            "NIFTY ENERGY",
-            "NIFTY METAL",
-            "NIFTY OIL & GAS",
-            "NIFTY HEALTHCARE INDEX",
-            "NIFTY INDIA DEFENCE",
-            "NIFTY IT",
-            "NIFTY CAPITAL MARKETS"
-    );
+    @Autowired
+    private R2UploadService r2UploadService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -82,7 +71,9 @@ public class IndexDataRunner implements CommandLineRunner {
                         new File("dashboard/dashboard-indices.json"),
                         dashboardIndices
                 );
-
+        r2UploadService.upload(
+                Path.of("dashboard/dashboard-indices.json"),
+                "dashboard/dashboard-indices.json");
         log.info("Dashboard index data written successfully.");
     }
 }
