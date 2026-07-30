@@ -565,8 +565,8 @@ textarea {
     gap: 3px;
 }
 
-.ticker-change.up { color: var(--up, #22c55e); }
-.ticker-change.down { color: var(--down, #ef4444); }
+.ticker-change.up { color: #2DD4BF; }
+.ticker-change.down {  color: #FF5C6C; }
 
 .ticker-item {
     display: flex;
