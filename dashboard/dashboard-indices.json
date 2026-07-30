@@ -1,78 +1,78 @@
 [ {
-  "index" : "NIFTY 50",
-  "indexSymbol" : "NIFTY 50",
+  "name" : "NIFTY 50",
+  "screenerUrl" : "https://www.screener.in/company/NIFTY/",
   "last" : 24317.15,
   "variation" : 66.95,
   "percentChange" : 0.28
 }, {
-  "index" : "NIFTY BANK",
-  "indexSymbol" : "NIFTY BANK",
+  "name" : "NIFTY BANK",
+  "screenerUrl" : "https://www.screener.in/company/BANKNIFTY/",
   "last" : 57147.5,
   "variation" : -58.4,
   "percentChange" : -0.1
 }, {
-  "index" : "NIFTY SMALLCAP 250",
-  "indexSymbol" : "NIFTY SMLCAP 250",
+  "name" : "NIFTY SMALLCAP 250",
+  "screenerUrl" : "https://www.screener.in/company/SMALLCA250/",
   "last" : 17845.6,
   "variation" : -132.45,
   "percentChange" : -0.74
 }, {
-  "index" : "NIFTY AUTO",
-  "indexSymbol" : "NIFTY AUTO",
+  "name" : "NIFTY AUTO",
+  "screenerUrl" : "https://www.screener.in/company/CNXAUTO/",
   "last" : 28279.1,
   "variation" : 453.15,
   "percentChange" : 1.63
 }, {
-  "index" : "NIFTY FMCG",
-  "indexSymbol" : "NIFTY FMCG",
+  "name" : "NIFTY FMCG",
+  "screenerUrl" : "https://www.screener.in/company/CNXFMCG/",
   "last" : 49642.05,
   "variation" : -48.6,
   "percentChange" : -0.1
 }, {
-  "index" : "NIFTY PSU BANK",
-  "indexSymbol" : "NIFTY PSU BANK",
+  "name" : "NIFTY PSU BANK",
+  "screenerUrl" : "https://www.screener.in/company/CNXPSUBANK/",
   "last" : 8327.65,
   "variation" : 10.5,
   "percentChange" : 0.13
 }, {
-  "index" : "NIFTY ENERGY",
-  "indexSymbol" : "NIFTY ENERGY",
+  "name" : "NIFTY ENERGY",
+  "screenerUrl" : "https://www.screener.in/company/CNXENERGY/",
   "last" : 38313.55,
   "variation" : 133.0,
   "percentChange" : 0.35
 }, {
-  "index" : "NIFTY METAL",
-  "indexSymbol" : "NIFTY METAL",
+  "name" : "NIFTY METAL",
+  "screenerUrl" : "https://www.screener.in/company/CNXMETAL/",
   "last" : 12701.8,
   "variation" : 15.0,
   "percentChange" : 0.12
 }, {
-  "index" : "NIFTY OIL & GAS",
-  "indexSymbol" : "NIFTY OIL AND GAS",
+  "name" : "NIFTY OIL & GAS",
+  "screenerUrl" : "https://www.screener.in/company/NIFTOILGAS/",
   "last" : 11127.75,
   "variation" : 51.45,
   "percentChange" : 0.46
 }, {
-  "index" : "NIFTY HEALTHCARE INDEX",
-  "indexSymbol" : "NIFTY HEALTHCARE",
+  "name" : "NIFTY HEALTHCARE INDEX",
+  "screenerUrl" : "https://www.screener.in/company/NFTHEALTHC/",
   "last" : 16699.65,
   "variation" : 3.35,
   "percentChange" : 0.02
 }, {
-  "index" : "NIFTY INDIA DEFENCE",
-  "indexSymbol" : "NIFTY IND DEFENCE",
+  "name" : "NIFTY INDIA DEFENCE",
+  "screenerUrl" : "https://www.screener.in/company/NIFINDDEFE/",
   "last" : 9188.35,
   "variation" : -32.95,
   "percentChange" : -0.36
 }, {
-  "index" : "NIFTY IT",
-  "indexSymbol" : "NIFTY IT",
+  "name" : "NIFTY IT",
+  "screenerUrl" : "https://www.screener.in/company/CNXIT/",
   "last" : 31194.55,
   "variation" : 71.45,
   "percentChange" : 0.23
 }, {
-  "index" : "NIFTY CAPITAL MARKETS",
-  "indexSymbol" : "NIFTY CAPITAL MKT",
+  "name" : "NIFTY CAPITAL MARKETS",
+  "screenerUrl" : "https://www.screener.in/company/NIFCAPMARK/",
   "last" : 5232.2,
   "variation" : -53.5,
   "percentChange" : -1.01
