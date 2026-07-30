@@ -26,6 +26,9 @@ jobs:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
       CHAT_IDS: ${{ secrets.CHAT_IDS }}
+      ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
+      ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
     steps:
       - name: Checkout Code
