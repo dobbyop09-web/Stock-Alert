@@ -1,5 +1,7 @@
 package com.dobby.price_alert.client;
 
+import com.dobby.price_alert.dto.nse.IndexData;
+import com.dobby.price_alert.dto.nse.IndexResponseData;
 import com.dobby.price_alert.dto.nse.NseResponse;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Slf4j
 @Data
@@ -25,6 +28,9 @@ public class NSEClient {
 
     @Value("${nse.base-url}")
     private String baseUrl;
+
+    @Value("${nse.index.baseurl}")
+    private String baseIndexUrl;
 
     private volatile boolean sessionWarm = false;
 
@@ -114,5 +120,25 @@ public class NSEClient {
             }
             throw e;
         }
+    }
+    public IndexResponseData getIndexData(){
+        if(!sessionWarm){
+            warmSession();
+        }
+        URI  uri = UriComponentsBuilder.fromUriString(baseIndexUrl).build().toUri();
+
+        String refer = UriComponentsBuilder.fromUriString("https://www.nseindia.com/api/allIndices").build().encode().toUriString();
+
+        String body = getWithSessionRetry(uri, refer);
+        if (body == null || body.isBlank()) {
+            throw new RuntimeException("Empty response from NSE for Market Index Data");
+        }
+        try{
+            return objectMapper.readValue(body, IndexResponseData.class);
+        }catch (Exception e){
+            log.error("Could not get the index data {}: {}", body, e.getMessage());
+            throw new RuntimeException("Bad JSON from NSE for Market Index Data", e);
+        }
+
     }
 }
