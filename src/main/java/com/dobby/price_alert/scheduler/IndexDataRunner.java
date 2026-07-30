@@ -3,6 +3,7 @@ package com.dobby.price_alert.scheduler;
 import com.dobby.price_alert.client.NSEClient;
 import com.dobby.price_alert.dto.nse.IndexData;
 import com.dobby.price_alert.dto.nse.IndexResponseData;
+import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -17,6 +18,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class IndexDataRunner implements CommandLineRunner {
     @Autowired
@@ -39,6 +41,7 @@ public class IndexDataRunner implements CommandLineRunner {
     );
     @Override
     public void run(String... args) throws Exception {
+        log.info("Fetching index data...");
         IndexResponseData response = client.getIndexData();
         Map<String, IndexData> indexMap = response.getData().stream()
                 .collect(Collectors.toMap(
@@ -58,6 +61,7 @@ public class IndexDataRunner implements CommandLineRunner {
                         new File("dashboard/dashboard-indices.json"),
                         dashboardIndices
                 );
+        log.info("DASHBOARD INDEX DATA FETCHED");
     }
 
 }
