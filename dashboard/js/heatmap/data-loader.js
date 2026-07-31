@@ -4,11 +4,12 @@ import { render } from "./render.js";
 import { timeAgo } from "../utils.js";
 
 export async function load() {
+const BASE_URL = "https://tiny-art-8473.dobbyop09.workers.dev";
     try {
         const [dataRes, metaRes] = await Promise.all([
-            fetch("dashboard-data.json?t=" + Date.now()),
-            fetch("dashboard-meta.json?t=" + Date.now())
-        ]);
+                  fetch(`${BASE_URL}/dashboard-data?t=${Date.now()}`),
+                  fetch(`${BASE_URL}/dashboard-status?t=${Date.now()}`)
+              ]);
 
         state.allRows = await dataRes.json();
 
