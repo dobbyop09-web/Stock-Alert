@@ -3,7 +3,7 @@ import { initFilters } from "./filters.js";
 import { initRefresh } from "./refresh.js";
 import { loadDashboard } from "./data-loader.js";
 import { editAlert, saveAlert } from "./alerts.js";
-import { renderTicker, enableTickerDragScroll } from './ticker.js';
+import { renderTicker } from './ticker.js';
 
 
 // editAlert/saveAlert are invoked via inline onclick="" attributes generated
@@ -15,4 +15,3 @@ initAuth();
 initFilters();
 initRefresh();
 loadDashboard();
-enableTickerDragScroll();
