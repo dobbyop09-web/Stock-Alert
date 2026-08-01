@@ -1,0 +1,12 @@
+{
+  "holdings": [
+    {
+      "symbol": "AAPL",
+      "buyPrice": 150.00,
+      "currentPrice": 175.32,
+      "buyDate": "2024-01-15",
+      "targetAmount": 200.00
+    }
+  ],
+  "lastUpdated": "2026-08-01T10:00:00Z"
+}
