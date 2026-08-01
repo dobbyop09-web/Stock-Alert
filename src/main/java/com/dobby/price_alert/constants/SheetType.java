@@ -22,7 +22,7 @@ public enum SheetType {
 
     ENERGY("OilEnergy", "1475720491"),
 
-    SMALLCAP("Smallcap", "2029475330"),
+//    SMALLCAP("Smallcap", "2029475330"),
 
     MISCELLANEOUS("Misc", "709000981"),
 
