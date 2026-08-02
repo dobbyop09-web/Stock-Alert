@@ -32,10 +32,366 @@
         flex-wrap: wrap;
     }
 
+    .topbar-left {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .last-updated-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
     @media (max-width: 560px) {
         .wrap {
             padding: 14px 12px 32px;
         }
+    }
+
+    /* ---- Small icon-only / icon+text buttons used in the topbar and banners ---- */
+
+    .icon-btn {
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        padding: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--muted);
+    }
+    .icon-btn svg {
+        width: 15px;
+        height: 15px;
+    }
+    .icon-btn.danger {
+        color: var(--triggered);
+    }
+    .icon-btn.danger:hover {
+        background: rgba(255, 92, 108, 0.12);
+        border-color: var(--triggered);
+    }
+    .icon-btn.subtle {
+        padding: 2px;
+        color: var(--muted);
+    }
+    .icon-btn.subtle svg {
+        width: 14px;
+        height: 14px;
+    }
+    .icon-btn.subtle:hover {
+        color: var(--text);
+    }
+
+    .icon-text-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .icon-text-btn svg {
+        width: 14px;
+        height: 14px;
+        flex: none;
+    }
+
+    /* ---- Two-column body: table/editor on the left, insights pinned on
+       the right so Top Gainers/Losers/Sector stay visible while scrolling ---- */
+
+    .page-body {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 20px;
+        align-items: start;
+    }
+
+    .main-col {
+        min-width: 0;
+    }
+
+    @media (max-width: 900px) {
+        .page-body {
+            grid-template-columns: 1fr;
+        }
+        .side-col {
+            position: static !important;
+        }
+    }
+
+    /* ---- Stat cards: icon badge + value/label stack ---- */
+
+    .stat .n.pos { color: var(--watch); }
+    .stat .n.neg { color: var(--triggered); }
+
+    .stats#portfolioStats {
+        gap: 10px;
+    }
+    .stats#portfolioStats .stat {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 16px;
+    }
+    .stats#portfolioStats .n {
+        font-size: 19px;
+    }
+    .stats#portfolioStats .l {
+        font-size: 10px;
+    }
+    .stat-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+    }
+    .stat-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+    .stat-icon.icon-blue   { background: rgba(91, 158, 255, 0.15); color: #5B9EFF; }
+    .stat-icon.icon-purple { background: rgba(139, 92, 246, 0.15); color: #8B5CF6; }
+    .stat-icon.icon-teal   { background: rgba(45, 212, 191, 0.15); color: #2DD4BF; }
+    .stat-icon.icon-orange { background: rgba(245, 166, 35, 0.15); color: #F5A623; }
+    .stat-body {
+        min-width: 0;
+    }
+
+    .stat-sub {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 4px;
+    }
+
+    /* ---- Prominent "Edit Portfolio" entry point, right-aligned above the table ---- */
+
+    .edit-entry-row {
+        display: none;
+        justify-content: flex-end;
+        margin-bottom: 14px;
+    }
+
+    /* ---- Edit-mode banner: replaces the entry button while editing ---- */
+
+    .edit-banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        background: rgba(45, 212, 191, 0.08);
+        border: 1px solid rgba(45, 212, 191, 0.35);
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+    }
+    .edit-banner-text {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .edit-banner-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(45, 212, 191, 0.18);
+        color: #2DD4BF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+    }
+    .edit-banner-icon svg {
+        width: 15px;
+        height: 15px;
+    }
+    .edit-banner-title {
+        font-weight: 600;
+        color: var(--text);
+        font-size: 13.5px;
+    }
+    .edit-banner #saveStatus {
+        font-size: 11.5px;
+        margin-top: 1px;
+    }
+    .edit-banner-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    /* ---- Account bar: who's signed in + Edit/Sign out, sitting inline
+       in the topbar row above the stat cards — plain/borderless so it
+       reads as part of the header, not a boxed panel ---- */
+
+    .sidebar-account-bar {
+        display: none; /* JS sets to flex once signed in */
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .sidebar-account-bar #whoami {
+        margin: 0;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .sidebar-account-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* The Edit button's wrapper is reused here from its old sidebar
+       position — inline in the topbar it should hug its button rather
+       than stretch and add its own spacing. */
+    .sidebar-account-actions .edit-entry-row {
+        display: none;
+        margin: 0;
+    }
+
+    /* ---- Sidebar: Top Gainers / Top Losers / Sector Allocation, pinned so
+       they stay visible while the table scrolls ---- */
+    .insights-row.side-col {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        position: sticky;
+        top: 20px;
+        max-height: calc(100vh - 40px);
+        overflow-y: auto;
+    }
+
+    .insight-panels {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .insight-panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 14px;
+    }
+
+    .insight-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .insight-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 12.5px;
+    }
+
+    .insight-row .sym {
+        font-family: var(--mono);
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .insight-row .val {
+        font-family: var(--mono);
+        font-weight: 600;
+    }
+
+    .insight-empty {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    /* ---- Sector allocation: donut chart + legend ---- */
+
+    .donut-panel-body {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+    .donut-wrap {
+        position: relative;
+        flex: none;
+        width: 120px;
+        height: 120px;
+    }
+    .donut-wrap svg {
+        display: block;
+    }
+    .donut-center {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .donut-count {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.1;
+    }
+    .donut-label {
+        font-size: 9.5px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+    .sector-legend {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+        min-width: 0;
+        font-size: 11.5px;
+    }
+    .sector-legend li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+    }
+    .sector-legend .name {
+        display: flex;
+        align-items: center;
+        color: var(--text);
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .sector-legend .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 6px;
+        flex: none;
+    }
+    .sector-legend .pct {
+        font-family: var(--mono);
+        color: var(--muted);
+        flex: none;
     }
 
     /* ---- View toggle (Table / JSON), styled like .sector-item.active ---- */
@@ -68,7 +424,37 @@
         color: #2DD4BF;
     }
 
-    /* ---- Remove column, only shown while editing ---- */
+    /* ---- Sortable column headers (Symbol / Chg % / Profit ₹ / Profit %) ---- */
+    .th-sort {
+        background: transparent;
+        border: none;
+        color: inherit;
+        font: inherit;
+        text-transform: inherit;
+        letter-spacing: inherit;
+        padding: 0;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    th.num .th-sort {
+        justify-content: flex-end;
+    }
+    .th-sort:hover {
+        color: var(--text);
+    }
+    .sort-arrow {
+        font-size: 9px;
+        width: 8px;
+        display: inline-block;
+        opacity: 0.7;
+    }
+    .th-sort.active {
+        color: #2DD4BF;
+    }
+
+    /* ---- Remove/Actions column, only shown while editing ---- */
 
     .remove-cell {
         display: none;
@@ -77,6 +463,71 @@
 
     .remove-cell.visible {
         display: table-cell;
+    }
+
+    /* ---- Sell date column, only shown while editing ---- */
+
+    .sell-date-cell {
+        display: none;
+    }
+
+    .sell-date-cell.visible {
+        display: table-cell;
+    }
+
+    /* ---- Scrollable table body with a sticky header (safety net for very
+       large, fully-expanded portfolios) ---- */
+
+    .table-scroll {
+        max-height: 900px;
+        overflow-y: auto;
+    }
+
+    .table-scroll table thead th {
+        position: sticky;
+        top: 0;
+        background: var(--panel);
+        z-index: 1;
+    }
+
+    /* ---- Symbol badge: colored avatar + ticker ---- */
+
+    .stock-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .stock-badge .avatar {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        color: #0B0F11;
+        flex: none;
+    }
+
+    /* ---- Show more / show less toggle below a collapsed table ---- */
+
+    .show-more-row {
+        text-align: center;
+        margin-top: 10px;
+    }
+    .link-btn {
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        font-size: 12.5px;
+        cursor: pointer;
+        text-decoration: underline;
+        padding: 4px;
+    }
+    .link-btn:hover {
+        color: #2DD4BF;
     }
 
     /* ---- Add-holding button ---- */
@@ -171,65 +622,164 @@
 <body>
     <div class="wrap">
         <div class="topbar">
-            <div>
+            <div class="topbar-left">
                 <h1>Portfolio</h1>
-                <p class="sub" id="lastUpdated">Loading...</p>
+                <p class="sub last-updated-row">
+                    <span id="lastUpdated">Loading...</span>
+                    <button class="icon-btn subtle" id="refreshBtn" title="Refresh">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                    </button>
+                </p>
             </div>
 
-            <nav class="navbar">
-                <a href="index.html">Dashboard</a>
-                <a href="heatmap.html">Heat Map</a>
-                <a href="portfolio.html" class="active">Portfolio</a>
-            </nav>
-        </div>
-
-        <div class="toolbar" id="sortToolbar">
-            <button id="signInBtn" style="display:none;">Sign in</button>
-            <button id="editBtn" style="display:none;">Edit</button>
-            <button id="cancelBtn" style="display:none;">Cancel</button>
-            <button id="logoutBtn" style="display:none;">Sign out</button>
-            <span class="hint" id="whoami" style="display:none;"></span>
-            <button id="sortSymbolBtn" style="display:none;">Sort A–Z</button>
-            <button id="sortProfitBtn" style="display:none;">Sort by Profit ↓</button>
-        </div>
-
-        <div class="toolbar" id="toolbar" style="display:none;">
-            <div class="view-toggle">
-                <button id="tableViewBtn" class="active">Table</button>
-                <button id="jsonViewBtn">JSON</button>
+            <div class="topbar-right">
+                <nav class="navbar">
+                    <a href="index.html">Dashboard</a>
+                    <a href="heatmap.html">Heat Map</a>
+                    <a href="portfolio.html" class="active">Portfolio</a>
+                </nav>
+                <div class="sidebar-account-bar" id="sidebarAccountBar">
+                    <span class="hint" id="whoami" style="display:none;"></span>
+                    <div class="sidebar-account-actions">
+                        <div class="edit-entry-row" id="editEntryBar">
+                            <button class="primary icon-text-btn" id="editBtn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                                Edit
+                            </button>
+                        </div>
+                        <button class="icon-text-btn" id="logoutBtn" style="display:none;">
+                            Sign out
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <button id="signInBtn" style="display:none;">Sign in</button>
             </div>
         </div>
 
-        <div class="table-scroll" id="tableView">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width:15%">Symbol</th>
-                        <th class="num" style="width:11%">Buy Price</th>
-                        <th class="num" style="width:11%">Current Price</th>
-                        <th class="num" style="width:9%">Chg %</th>
-                        <th class="num" style="width:10%">Profit</th>
-                        <th style="width:14%">Buy Date</th>
-                        <th class="num" style="width:10%">Target</th>
-                        <th class="num" style="width:10%">Target %</th>
-                        <th class="remove-cell" id="removeHeaderCell"></th>
-                    </tr>
-                </thead>
-                <tbody id="tbody"></tbody>
-            </table>
+        <div class="stats" id="portfolioStats" style="display:none;">
+            <div class="stat">
+                <div class="stat-icon icon-blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                </div>
+                <div class="stat-body">
+                    <div class="n" id="statInvestment">—</div>
+                    <div class="l">Total Investment</div>
+                    <div class="stat-sub" id="statInvestmentSub"></div>
+                </div>
+            </div>
+            <div class="stat">
+                <div class="stat-icon icon-purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                </div>
+                <div class="stat-body">
+                    <div class="n" id="statCurrentValue">—</div>
+                    <div class="l">Current Value</div>
+                </div>
+            </div>
+            <div class="stat">
+                <div class="stat-icon icon-teal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                </div>
+                <div class="stat-body">
+                    <div class="n" id="statGainLoss">—</div>
+                    <div class="l">Total Gain / Loss</div>
+                    <div class="stat-sub" id="statGainLossSub"></div>
+                </div>
+            </div>
+            <div class="stat">
+                <div class="stat-icon icon-orange">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+                </div>
+                <div class="stat-body">
+                    <div class="n" id="statTodayChange">—</div>
+                    <div class="l">Today's Change</div>
+                    <div class="stat-sub" id="statTodayChangeSub"></div>
+                </div>
+            </div>
         </div>
-        <div class="empty" id="emptyMsg" style="display:none;">No holdings yet.</div>
 
-        <button class="add-row-btn" id="addRowBtn" style="display:none;">+ Add holding</button>
+        <div class="page-body" id="pageBody">
+            <div class="main-col">
+                <div class="edit-banner" id="bottomBar" style="display:none;">
+                    <div class="edit-banner-text">
+                        <span class="edit-banner-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                        </span>
+                        <div>
+                            <div class="edit-banner-title">Editing Portfolio</div>
+                            <div class="hint" id="saveStatus">You have unsaved changes</div>
+                        </div>
+                    </div>
+                    <div class="edit-banner-actions">
+                        <button id="cancelBtn">Cancel</button>
+                        <button class="primary icon-text-btn" id="saveBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
 
-        <textarea id="jsonEditor" spellcheck="false" style="display:none;"></textarea>
-        <p class="hint" id="jsonError" style="color:var(--triggered); display:none;"></p>
+                <div class="toolbar" id="toolbar" style="display:none;">
+                    <div class="view-toggle">
+                        <button id="tableViewBtn" class="active">Table</button>
+                        <button id="jsonViewBtn">JSON</button>
+                    </div>
+                </div>
 
-        <datalist id="symbolList"></datalist>
+                <div class="table-scroll" id="tableView">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:11%"><button class="th-sort" id="thSortSymbol" data-field="symbol">Symbol<span class="sort-arrow"></span></button></th>
+                                <th class="num" style="width:6%">Qty</th>
+                                <th class="num" style="width:9%">Buy Price</th>
+                                <th class="num" style="width:9%">Current Price</th>
+                                <th class="num" style="width:7%"><button class="th-sort" id="thSortChg" data-field="chg">Chg %<span class="sort-arrow"></span></button></th>
+                                <th class="num" style="width:9%"><button class="th-sort" id="thSortProfitRs" data-field="profitRs">Profit ₹<span class="sort-arrow"></span></button></th>
+                                <th class="num" style="width:8%"><button class="th-sort" id="thSortProfitPct" data-field="profitPct">Profit %<span class="sort-arrow"></span></button></th>
+                                <th class="num" style="width:8%">Target ₹</th>
+                                <th class="num" style="width:8%">Target %</th>
+                                <th style="width:9%">Buy Date</th>
+                                <th class="sell-date-cell" id="sellDateHeaderCell" style="width:9%">Sell Date</th>
+                                <th class="remove-cell" id="removeHeaderCell">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody"></tbody>
+                    </table>
+                </div>
+                <div class="show-more-row" id="showMoreWrap" style="display:none;">
+                    <button class="link-btn" id="showMoreBtn"></button>
+                </div>
+                <div class="empty" id="emptyMsg" style="display:none;">No holdings yet.</div>
 
-        <div class="toolbar" id="bottomBar" style="display:none; justify-content:space-between;">
-            <span class="hint" id="saveStatus"></span>
-            <button class="primary" id="saveBtn">Save to R2</button>
+                <button class="add-row-btn" id="addRowBtn" style="display:none;">+ Add holding</button>
+
+                <textarea id="jsonEditor" spellcheck="false" style="display:none;"></textarea>
+                <p class="hint" id="jsonError" style="color:var(--triggered); display:none;"></p>
+
+                <datalist id="symbolList"></datalist>
+            </div>
+
+            <aside class="insights-row side-col" id="insightsRow">
+                <div class="insight-panels" id="insightPanels" style="display:none;">
+                    <div class="insight-panel">
+                        <p class="sidebar-title">Top Gainers</p>
+                        <ul class="insight-list" id="topGainersList"></ul>
+                    </div>
+                    <div class="insight-panel">
+                        <p class="sidebar-title">Top Losers</p>
+                        <ul class="insight-list" id="topLosersList"></ul>
+                    </div>
+                    <div class="insight-panel">
+                        <p class="sidebar-title">Allocation by Sector</p>
+                        <div class="donut-panel-body">
+                            <div class="donut-wrap" id="sectorDonutWrap"></div>
+                            <ul class="sector-legend" id="sectorAllocList"></ul>
+                        </div>
+                    </div>
+                </div>
+            </aside>
         </div>
     </div>
 
@@ -258,28 +808,39 @@
 (() => {
   const API_BASE = "https://tiny-art-8473.dobbyop09.workers.dev";
 
+  const ICON_TRASH = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
+
+  const ROW_LIMIT = 5;
+
   let sessionToken = null;
   let holdings = [];
   let holdingsSnapshot = [];
   let isEditing = false;
   let currentView = "table";
   let symbolDataMap = {}; // SYMBOL -> { currentPrice, changePercent, sector, screenerUrl }
+  let showMoreExpanded = false;
 
-  const sortSymbolBtn  = document.getElementById("sortSymbolBtn");
-  const sortProfitBtn  = document.getElementById("sortProfitBtn");
-  let sortField = null;   // "symbol" | "profit" | null
+  const thSortSymbol    = document.getElementById("thSortSymbol");
+  const thSortChg       = document.getElementById("thSortChg");
+  const thSortProfitRs  = document.getElementById("thSortProfitRs");
+  const thSortProfitPct = document.getElementById("thSortProfitPct");
+  let sortField = null;   // "symbol" | "chg" | "profitRs" | "profitPct" | null
   let sortDir   = "asc";  // "asc" | "desc"
 
   const signInBtn       = document.getElementById("signInBtn");
-  const editBtn        = document.getElementById("editBtn");
+  const editBtn         = document.getElementById("editBtn");
+  const editEntryBar    = document.getElementById("editEntryBar");
+  const sidebarAccountBar = document.getElementById("sidebarAccountBar");
   const cancelBtn       = document.getElementById("cancelBtn");
   const logoutBtn       = document.getElementById("logoutBtn");
+  const refreshBtn      = document.getElementById("refreshBtn");
   const whoami          = document.getElementById("whoami");
   const toolbar         = document.getElementById("toolbar");
   const tbody            = document.getElementById("tbody");
   const emptyMsg         = document.getElementById("emptyMsg");
   const addRowBtn        = document.getElementById("addRowBtn");
   const removeHeaderCell = document.getElementById("removeHeaderCell");
+  const sellDateHeaderCell = document.getElementById("sellDateHeaderCell");
   const bottomBar        = document.getElementById("bottomBar");
   const saveStatus       = document.getElementById("saveStatus");
   const jsonEditor        = document.getElementById("jsonEditor");
@@ -288,6 +849,21 @@
   const tableViewBtn      = document.getElementById("tableViewBtn");
   const jsonViewBtn       = document.getElementById("jsonViewBtn");
   const lastUpdatedEl     = document.getElementById("lastUpdated");
+  const showMoreWrap      = document.getElementById("showMoreWrap");
+  const showMoreBtn       = document.getElementById("showMoreBtn");
+  const portfolioStats    = document.getElementById("portfolioStats");
+  const statInvestment    = document.getElementById("statInvestment");
+  const statInvestmentSub = document.getElementById("statInvestmentSub");
+  const statCurrentValue  = document.getElementById("statCurrentValue");
+  const statGainLoss      = document.getElementById("statGainLoss");
+  const statGainLossSub   = document.getElementById("statGainLossSub");
+  const statTodayChange   = document.getElementById("statTodayChange");
+  const statTodayChangeSub = document.getElementById("statTodayChangeSub");
+  const insightPanels     = document.getElementById("insightPanels");
+  const topGainersList    = document.getElementById("topGainersList");
+  const topLosersList     = document.getElementById("topLosersList");
+  const sectorAllocList   = document.getElementById("sectorAllocList");
+  const sectorDonutWrap   = document.getElementById("sectorDonutWrap");
 
   const loginModal    = document.getElementById("loginModal");
   const loginError    = document.getElementById("loginError");
@@ -320,11 +896,10 @@
   // ---------------- Auth UI state ----------------
 
   function updateAuthUI(loggedIn, username) {
-    signInBtn.style.display     = loggedIn ? "none" : "inline-block";
-    editBtn.style.display       = loggedIn ? "inline-block" : "none";
-    logoutBtn.style.display     = loggedIn ? "inline-block" : "none";
-    sortSymbolBtn.style.display = loggedIn ? "inline-block" : "none";
-    sortProfitBtn.style.display = loggedIn ? "inline-block" : "none";
+    signInBtn.style.display   = loggedIn ? "none" : "inline-block";
+    logoutBtn.style.display   = loggedIn ? "inline-flex" : "none";
+    sidebarAccountBar.style.display = loggedIn ? "flex" : "none";
+    editEntryBar.style.display = (loggedIn && !isEditing) ? "flex" : "none";
     if (loggedIn) {
       whoami.textContent = `Signed in as ${username}`;
       whoami.style.display = "inline";
@@ -339,7 +914,10 @@
     emptyMsg.textContent = "Sign in to view your portfolio.";
     addRowBtn.style.display = "none";
     bottomBar.style.display = "none";
+    showMoreWrap.style.display = "none";
     lastUpdatedEl.textContent = "";
+    portfolioStats.style.display = "none";
+    insightPanels.style.display = "none";
   }
 
   function handleAuthExpired() {
@@ -347,8 +925,8 @@
     sessionToken = null;
     isEditing = false;
     toolbar.style.display = "none";
-    cancelBtn.style.display = "none";
     removeHeaderCell.classList.remove("visible");
+    sellDateHeaderCell.classList.remove("visible");
     addRowBtn.style.display = "none";
     bottomBar.style.display = "none";
     updateAuthUI(false);
@@ -385,6 +963,7 @@
         throw new Error("Failed to load");
       }
       holdingsSnapshot = JSON.parse(JSON.stringify(holdings));
+      showMoreExpanded = false;
       renderTable();
     } catch (err) {
       lastUpdatedEl.textContent = "Failed to load portfolio";
@@ -482,12 +1061,14 @@
     isEditing = true;
     holdingsSnapshot = JSON.parse(JSON.stringify(holdings));
 
-    editBtn.style.display = "none";
-    cancelBtn.style.display = "inline-block";
+    editEntryBar.style.display = "none";
     toolbar.style.display = "flex";
     addRowBtn.style.display = "block";
     removeHeaderCell.classList.add("visible");
+    sellDateHeaderCell.classList.add("visible");
     bottomBar.style.display = "flex";
+    saveStatus.textContent = "You have unsaved changes";
+    saveStatus.className = "hint";
 
     renderTable();
   }
@@ -498,11 +1079,11 @@
       holdings = JSON.parse(JSON.stringify(holdingsSnapshot));
     }
 
-    editBtn.style.display = sessionToken ? "inline-block" : "none";
-    cancelBtn.style.display = "none";
+    editEntryBar.style.display = sessionToken ? "flex" : "none";
     toolbar.style.display = "none";
     addRowBtn.style.display = "none";
     removeHeaderCell.classList.remove("visible");
+    sellDateHeaderCell.classList.remove("visible");
     bottomBar.style.display = "none";
     saveStatus.textContent = "";
     saveStatus.className = "hint";
@@ -511,23 +1092,23 @@
     renderTable();
   }
 
+  function isDirty() {
+    return JSON.stringify(holdings) !== JSON.stringify(holdingsSnapshot);
+  }
+
   function cancelEdit() {
-    const dirty = JSON.stringify(holdings) !== JSON.stringify(holdingsSnapshot);
-    if (dirty && !confirm("Discard unsaved changes?")) return;
+    if (isDirty() && !confirm("Discard unsaved changes?")) return;
     exitEditMode(true);
   }
 
   function logout() {
-    if (isEditing) {
-      const dirty = JSON.stringify(holdings) !== JSON.stringify(holdingsSnapshot);
-      if (dirty && !confirm("Discard unsaved changes and sign out?")) return;
-    }
+    if (isEditing && isDirty() && !confirm("Discard unsaved changes and sign out?")) return;
     clearStoredToken();
     sessionToken = null;
     isEditing = false;
     toolbar.style.display = "none";
-    cancelBtn.style.display = "none";
     removeHeaderCell.classList.remove("visible");
+    sellDateHeaderCell.classList.remove("visible");
     addRowBtn.style.display = "none";
     bottomBar.style.display = "none";
     holdings = [];
@@ -589,6 +1170,19 @@
     return ((c - b) / b) * 100;
   }
 
+  function chgOf(h) {
+    const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
+    const chg = symbolData ? parseFloat(symbolData.changePercent) : NaN;
+    return isFinite(chg) ? chg : -Infinity;
+  }
+
+  function profitRsOf(h) {
+    const b = parseFloat(h.buyPrice);
+    const c = parseFloat(h.currentPrice);
+    if (!isFinite(b) || !isFinite(c)) return -Infinity;
+    return (c - b) * qtyOf(h);
+  }
+
   function applySort() {
     if (!sortField) return;
     holdings.sort((a, b) => {
@@ -599,20 +1193,32 @@
         if (va > vb) return sortDir === "asc" ? 1 : -1;
         return 0;
       }
-      // profit
-      const pa = profitPct(a.buyPrice, a.currentPrice);
-      const pb = profitPct(b.buyPrice, b.currentPrice);
-      return sortDir === "asc" ? pa - pb : pb - pa;
+      let va, vb;
+      if (sortField === "chg") {
+        va = chgOf(a); vb = chgOf(b);
+      } else if (sortField === "profitRs") {
+        va = profitRsOf(a); vb = profitRsOf(b);
+      } else {
+        va = profitPct(a.buyPrice, a.currentPrice); vb = profitPct(b.buyPrice, b.currentPrice);
+      }
+      return sortDir === "asc" ? va - vb : vb - va;
     });
   }
 
-  function updateSortButtons() {
-    sortSymbolBtn.textContent = sortField === "symbol"
-      ? `Sort ${sortDir === "asc" ? "A–Z" : "Z–A"}`
-      : "Sort A–Z";
-    sortProfitBtn.textContent = sortField === "profit"
-      ? `Sort by Profit ${sortDir === "desc" ? "↓" : "↑"}`
-      : "Sort by Profit ↓";
+  const sortHeaderMap = { symbol: thSortSymbol, chg: thSortChg, profitRs: thSortProfitRs, profitPct: thSortProfitPct };
+
+  function updateSortIndicators() {
+    Object.entries(sortHeaderMap).forEach(([field, el]) => {
+      if (!el) return;
+      const arrow = el.querySelector(".sort-arrow");
+      if (sortField === field) {
+        el.classList.add("active");
+        arrow.textContent = sortDir === "asc" ? "▲" : "▼";
+      } else {
+        el.classList.remove("active");
+        arrow.textContent = "";
+      }
+    });
   }
 
   function sortHoldings(field) {
@@ -620,10 +1226,10 @@
       sortDir = sortDir === "asc" ? "desc" : "asc";
     } else {
       sortField = field;
-      sortDir = field === "profit" ? "desc" : "asc";
+      sortDir = field === "symbol" ? "asc" : "desc";
     }
     applySort();
-    updateSortButtons();
+    updateSortIndicators();
     if (currentView === "json") {
       renderJson();
     } else {
@@ -631,10 +1237,16 @@
     }
   }
 
-  sortSymbolBtn.addEventListener("click", () => sortHoldings("symbol"));
-  sortProfitBtn.addEventListener("click", () => sortHoldings("profit"));
+  Object.values(sortHeaderMap).forEach((el) => {
+    if (el) el.addEventListener("click", () => sortHoldings(el.getAttribute("data-field")));
+  });
 
   // ---------------- Table rendering ----------------
+
+  function qtyOf(h) {
+    const q = parseFloat(h.quantity);
+    return isFinite(q) && q > 0 ? q : 1;
+  }
 
   function profitInfo(buyPrice, currentPrice) {
     const b = parseFloat(buyPrice);
@@ -656,7 +1268,10 @@
   function fmtDate(v) {
     if (!v) return "—";
     const d = new Date(v);
-    return isNaN(d) ? v : d.toLocaleDateString();
+    if (isNaN(d)) return v;
+    const opts = { day: "numeric", month: "short" };
+    if (d.getFullYear() !== new Date().getFullYear()) opts.year = "numeric";
+    return d.toLocaleDateString("en-GB", opts);
   }
 
   function changeBadge(pct) {
@@ -667,23 +1282,42 @@
     return `<span class="badge ${cls}">${sign}${n.toFixed(2)}%</span>`;
   }
 
+  // Profit in ₹ scales with quantity, not just per-share price.
+  function profitRupeesBadge(buyPrice, currentPrice, quantity) {
+    const b = parseFloat(buyPrice);
+    const c = parseFloat(currentPrice);
+    if (!isFinite(b) || !isFinite(c)) return `<span class="badge b-far">—</span>`;
+    const qty = isFinite(parseFloat(quantity)) && parseFloat(quantity) > 0 ? parseFloat(quantity) : 1;
+    const diff = (c - b) * qty;
+    const cls = diff > 0 ? "b-watch" : diff < 0 ? "b-triggered" : "b-far";
+    const sign = diff > 0 ? "+" : "";
+    return `<span class="badge ${cls}">${sign}${fmtMoney(diff)}</span>`;
+  }
+
   function renderTable() {
     tbody.innerHTML = "";
+
+    computeStats();
+    renderInsights();
 
     if (holdings.length === 0) {
       tableView.style.display = "none";
       emptyMsg.style.display = "block";
       emptyMsg.textContent = isEditing ? "No holdings yet. Add one below." : "No holdings yet.";
+      showMoreWrap.style.display = "none";
       return;
     }
 
     tableView.style.display = "block";
     emptyMsg.style.display = "none";
 
-    holdings.forEach((h, i) => {
+    const rowsToRender = showMoreExpanded ? holdings : holdings.slice(0, ROW_LIMIT);
+
+    rowsToRender.forEach((h, i) => {
       const tr = document.createElement("tr");
       const profit = profitInfo(h.buyPrice, h.currentPrice);
       const profitBadge = `<span class="badge ${profit.cls}">${profit.text}</span>`;
+      const profitRsBadge = profitRupeesBadge(h.buyPrice, h.currentPrice, h.quantity);
       const targetPct = profitInfo(h.buyPrice, h.targetAmount);
       const targetPctBadge = `<span class="badge ${targetPct.cls}">${targetPct.text}</span>`;
       const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
@@ -692,29 +1326,200 @@
       if (isEditing) {
         tr.innerHTML = `
           <td><input type="text" class="cell" list="symbolList" value="${escapeAttr(h.symbol ?? "")}" data-i="${i}" data-f="symbol" placeholder="AAPL"></td>
+          <td><input type="number" step="any" min="0" class="cell num" value="${numOrBlank(h.quantity)}" data-i="${i}" data-f="quantity" placeholder="1"></td>
           <td><input type="number" step="any" class="cell num" value="${numOrBlank(h.buyPrice)}" data-i="${i}" data-f="buyPrice" placeholder="0.00"></td>
           <td class="num current-price-cell">${fmtMoney(h.currentPrice)}</td>
           <td class="num chg-cell">${chgBadge}</td>
+          <td class="num profit-rs-cell">${profitRsBadge}</td>
           <td class="num profit-cell">${profitBadge}</td>
-          <td><input type="date" class="cell" value="${escapeAttr(h.buyDate ?? "")}" data-i="${i}" data-f="buyDate"></td>
           <td><input type="number" step="any" class="cell num" value="${numOrBlank(h.targetAmount)}" data-i="${i}" data-f="targetAmount" placeholder="0.00"></td>
           <td class="num target-pct-cell">${targetPctBadge}</td>
-          <td class="remove-cell visible"><button class="danger" data-remove="${i}">Remove</button></td>
+          <td><input type="date" class="cell" value="${escapeAttr(h.buyDate ?? "")}" data-i="${i}" data-f="buyDate"></td>
+          <td class="sell-date-cell visible"><input type="date" class="cell" value="${escapeAttr(h.sellDate ?? "")}" data-i="${i}" data-f="sellDate"></td>
+          <td class="remove-cell visible"><button class="icon-btn danger" data-remove="${i}" title="Remove" aria-label="Remove">${ICON_TRASH}</button></td>
         `;
       } else {
         tr.innerHTML = `
-          <td><a class="stock-link">${escapeHtml(h.symbol || "—")}</a></td>
+          <td>
+            <span class="stock-badge">
+              <span class="avatar" style="background:${avatarColor(h.symbol)}">${escapeHtml((h.symbol || "?").charAt(0).toUpperCase())}</span>
+              <a class="stock-link">${escapeHtml(h.symbol || "—")}</a>
+            </span>
+          </td>
+          <td class="num">${escapeHtml(String(qtyOf(h)))}</td>
           <td class="num">${fmtMoney(h.buyPrice)}</td>
           <td class="num">${fmtMoney(h.currentPrice)}</td>
           <td class="num chg-cell">${chgBadge}</td>
+          <td class="num profit-rs-cell">${profitRsBadge}</td>
           <td class="num profit-cell">${profitBadge}</td>
-          <td>${fmtDate(h.buyDate)}</td>
           <td class="num">${fmtMoney(h.targetAmount)}</td>
           <td class="num target-pct-cell">${targetPctBadge}</td>
+          <td>${fmtDate(h.buyDate)}</td>
         `;
       }
       tbody.appendChild(tr);
     });
+
+    if (holdings.length > ROW_LIMIT) {
+      showMoreWrap.style.display = "block";
+      showMoreBtn.textContent = showMoreExpanded ? "Show less" : `+ ${holdings.length - ROW_LIMIT} more stocks`;
+    } else {
+      showMoreWrap.style.display = "none";
+    }
+  }
+
+  showMoreBtn.addEventListener("click", () => {
+    showMoreExpanded = !showMoreExpanded;
+    renderTable();
+  });
+
+  // ---------------- Stat cards ----------------
+
+  function computeStats() {
+    if (!sessionToken || holdings.length === 0) {
+      portfolioStats.style.display = "none";
+      statInvestmentSub.textContent = "";
+      statGainLossSub.textContent = "";
+      statTodayChangeSub.textContent = "";
+      return;
+    }
+    portfolioStats.style.display = "grid";
+
+    let investment = 0, currentValue = 0, todayChange = 0;
+    let gainersCount = 0, losersCount = 0;
+    let best = null;
+
+    holdings.forEach((h) => {
+      const buy = parseFloat(h.buyPrice);
+      const cur = parseFloat(h.currentPrice);
+      const qty = qtyOf(h);
+      if (isFinite(buy)) investment += buy * qty;
+      if (isFinite(cur)) currentValue += cur * qty;
+
+      const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
+      const chg = symbolData ? parseFloat(symbolData.changePercent) : NaN;
+      if (isFinite(cur) && isFinite(chg)) todayChange += cur * qty * (chg / 100);
+      if (isFinite(chg)) {
+        if (chg > 0) gainersCount++;
+        else if (chg < 0) losersCount++;
+      }
+
+      const pct = profitPct(h.buyPrice, h.currentPrice);
+      if (isFinite(pct) && (!best || pct > best.pct)) {
+        best = { symbol: h.symbol || "—", pct };
+      }
+    });
+
+    const gainLoss = currentValue - investment;
+    const gainLossPct = investment !== 0 ? (gainLoss / investment) * 100 : 0;
+    const todayChangePct = currentValue !== 0 ? (todayChange / currentValue) * 100 : 0;
+
+    statInvestment.textContent = "₹" + fmtMoney(investment);
+    statInvestment.className = "n";
+    statInvestmentSub.textContent = `Across ${holdings.length} stock${holdings.length === 1 ? "" : "s"}`;
+
+    statCurrentValue.textContent = "₹" + fmtMoney(currentValue);
+    statCurrentValue.className = "n";
+
+    statGainLoss.textContent = `${gainLoss >= 0 ? "+" : ""}₹${fmtMoney(gainLoss)} (${gainLossPct >= 0 ? "+" : ""}${gainLossPct.toFixed(2)}%)`;
+    statGainLoss.className = "n " + (gainLoss >= 0 ? "pos" : "neg");
+    statGainLossSub.textContent = best ? `Best: ${best.symbol} ${best.pct >= 0 ? "+" : ""}${best.pct.toFixed(2)}%` : "";
+
+    statTodayChange.textContent = `${todayChange >= 0 ? "+" : ""}₹${fmtMoney(todayChange)} (${todayChangePct >= 0 ? "+" : ""}${todayChangePct.toFixed(2)}%)`;
+    statTodayChange.className = "n " + (todayChange >= 0 ? "pos" : "neg");
+    statTodayChangeSub.textContent = (gainersCount || losersCount) ? `${gainersCount} up · ${losersCount} down` : "";
+  }
+
+  // ---------------- Top Gainers / Losers / Sector Allocation ----------------
+
+  const SECTOR_COLORS = ["#2DD4BF", "#F5A623", "#8B5CF6", "#5B9EFF", "#FF5C6C", "#5B6472", "#22C55E", "#EAB308"];
+
+  function avatarColor(symbol) {
+    const s = (symbol || "?").toUpperCase();
+    let hash = 0;
+    for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) >>> 0;
+    return SECTOR_COLORS[hash % SECTOR_COLORS.length];
+  }
+
+  function buildDonutSVG(entries, total) {
+    const size = 120, radius = 42, cx = 60, cy = 60, circumference = 2 * Math.PI * radius;
+    let offset = 0;
+    const segments = entries.map(([sector, value], idx) => {
+      const pct = value / total;
+      const dash = pct * circumference;
+      const color = SECTOR_COLORS[idx % SECTOR_COLORS.length];
+      const seg = `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${color}" stroke-width="16" stroke-dasharray="${dash.toFixed(2)} ${(circumference - dash).toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 ${cx} ${cy})"></circle>`;
+      offset += dash;
+      return seg;
+    }).join("");
+    return `<svg viewBox="0 0 ${size} ${size}" width="120" height="120">${segments}</svg>`;
+  }
+
+  function renderInsights() {
+    if (!sessionToken || holdings.length === 0) {
+      insightPanels.style.display = "none";
+      return;
+    }
+    insightPanels.style.display = "flex";
+
+    const withChange = holdings
+      .map((h) => {
+        const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
+        const chg = symbolData ? parseFloat(symbolData.changePercent) : NaN;
+        return { symbol: h.symbol || "—", chg };
+      })
+      .filter((x) => isFinite(x.chg));
+
+    const gainers = [...withChange].sort((a, b) => b.chg - a.chg).slice(0, 3);
+    const losers = [...withChange].sort((a, b) => a.chg - b.chg).slice(0, 3);
+
+    topGainersList.innerHTML = gainers.length
+      ? gainers.map((g) => `
+          <li class="insight-row">
+            <span class="sym">${escapeHtml(g.symbol)}</span>
+            <span class="val" style="color:var(--watch)">+${g.chg.toFixed(2)}%</span>
+          </li>`).join("")
+      : `<li class="insight-empty">No change data available.</li>`;
+
+    topLosersList.innerHTML = losers.length
+      ? losers.map((l) => `
+          <li class="insight-row">
+            <span class="sym">${escapeHtml(l.symbol)}</span>
+            <span class="val" style="color:var(--triggered)">${l.chg.toFixed(2)}%</span>
+          </li>`).join("")
+      : `<li class="insight-empty">No change data available.</li>`;
+
+    // Sector allocation, weighted by current value (price × quantity).
+    const sectorTotals = {};
+    let total = 0;
+    holdings.forEach((h) => {
+      const cur = parseFloat(h.currentPrice);
+      if (!isFinite(cur)) return;
+      const value = cur * qtyOf(h);
+      const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
+      const sector = (symbolData && symbolData.sector) || "Other";
+      sectorTotals[sector] = (sectorTotals[sector] || 0) + value;
+      total += value;
+    });
+
+    const sectorEntries = Object.entries(sectorTotals).sort((a, b) => b[1] - a[1]);
+
+    if (sectorEntries.length && total > 0) {
+      sectorDonutWrap.innerHTML = buildDonutSVG(sectorEntries, total)
+        + `<div class="donut-center"><span class="donut-count">${holdings.length}</span><span class="donut-label">Stocks</span></div>`;
+      sectorAllocList.innerHTML = sectorEntries.map(([sector, value], idx) => {
+        const pct = (value / total) * 100;
+        const color = SECTOR_COLORS[idx % SECTOR_COLORS.length];
+        return `
+          <li>
+            <span class="name"><span class="dot" style="background:${color}"></span>${escapeHtml(sector)}</span>
+            <span class="pct">${pct.toFixed(1)}%</span>
+          </li>`;
+      }).join("");
+    } else {
+      sectorDonutWrap.innerHTML = "";
+      sectorAllocList.innerHTML = `<li class="insight-empty">No sector data available.</li>`;
+    }
   }
 
   function numOrBlank(v) {
@@ -737,7 +1542,7 @@
     const idx = parseInt(i, 10);
     let val = target.value;
 
-    if (f === "buyPrice" || f === "targetAmount") {
+    if (f === "buyPrice" || f === "targetAmount" || f === "quantity") {
       holdings[idx][f] = val === "" ? "" : parseFloat(val);
     } else {
       holdings[idx][f] = val;
@@ -762,6 +1567,11 @@
       cell.innerHTML = `<span class="badge ${profit.cls}">${profit.text}</span>`;
     }
 
+    if (f === "buyPrice" || f === "symbol" || f === "quantity") {
+      const rsCell = row.querySelector(".profit-rs-cell");
+      if (rsCell) rsCell.innerHTML = profitRupeesBadge(holdings[idx].buyPrice, holdings[idx].currentPrice, holdings[idx].quantity);
+    }
+
     if (f === "buyPrice" || f === "targetAmount") {
       const targetCell = row.querySelector(".target-pct-cell");
       if (targetCell) {
@@ -769,19 +1579,26 @@
         targetCell.innerHTML = `<span class="badge ${targetPct.cls}">${targetPct.text}</span>`;
       }
     }
+
+    computeStats();
+
+    if (saveStatus.className === "hint") {
+      saveStatus.textContent = isDirty() ? "You have unsaved changes" : "No changes yet";
+    }
   });
 
   tbody.addEventListener("click", (e) => {
     if (!isEditing) return;
-    const removeIdx = e.target.getAttribute("data-remove");
-    if (removeIdx !== null) {
-      holdings.splice(parseInt(removeIdx, 10), 1);
+    const removeBtn = e.target.closest("[data-remove]");
+    if (removeBtn) {
+      holdings.splice(parseInt(removeBtn.getAttribute("data-remove"), 10), 1);
       renderTable();
     }
   });
 
   addRowBtn.addEventListener("click", () => {
-    holdings.push({ symbol: "", buyPrice: "", currentPrice: "", buyDate: "", targetAmount: "" });
+    holdings.push({ symbol: "", quantity: 1, buyPrice: "", currentPrice: "", buyDate: "", targetAmount: "", sellDate: "" });
+    showMoreExpanded = true;
     renderTable();
     const inputs = tbody.querySelectorAll('input[data-f="symbol"]');
     if (inputs.length) inputs[inputs.length - 1].focus();
@@ -827,6 +1644,7 @@
     tableView.style.display = showTable ? (holdings.length ? "block" : "none") : "none";
     emptyMsg.style.display = (showTable && holdings.length === 0) ? "block" : "none";
     addRowBtn.style.display = (showTable && isEditing) ? "block" : "none";
+    showMoreWrap.style.display = (showTable && holdings.length > ROW_LIMIT) ? "block" : "none";
     jsonEditor.style.display = showTable ? "none" : "block";
     jsonErrorEl.style.display = (!showTable && jsonErrorEl.textContent) ? "block" : "none";
     tableViewBtn.classList.toggle("active", showTable);
@@ -842,6 +1660,7 @@
   editBtn.addEventListener("click", enterEditMode);
   cancelBtn.addEventListener("click", cancelEdit);
   logoutBtn.addEventListener("click", logout);
+  refreshBtn.addEventListener("click", () => loadPortfolio());
   document.getElementById("saveBtn").addEventListener("click", savePortfolio);
 
   document.getElementById("loginCancelBtn").addEventListener("click", closeLoginModal);
