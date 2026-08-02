@@ -184,12 +184,13 @@
         </div>
 
         <div class="toolbar" id="sortToolbar">
-            <button id="editBtn">Edit</button>
+            <button id="signInBtn" style="display:none;">Sign in</button>
+            <button id="editBtn" style="display:none;">Edit</button>
             <button id="cancelBtn" style="display:none;">Cancel</button>
             <button id="logoutBtn" style="display:none;">Sign out</button>
             <span class="hint" id="whoami" style="display:none;"></span>
-            <button id="sortSymbolBtn">Sort A–Z</button>
-            <button id="sortProfitBtn">Sort by Profit ↓</button>
+            <button id="sortSymbolBtn" style="display:none;">Sort A–Z</button>
+            <button id="sortProfitBtn" style="display:none;">Sort by Profit ↓</button>
         </div>
 
         <div class="toolbar" id="toolbar" style="display:none;">
@@ -269,6 +270,7 @@
   let sortField = null;   // "symbol" | "profit" | null
   let sortDir   = "asc";  // "asc" | "desc"
 
+  const signInBtn       = document.getElementById("signInBtn");
   const editBtn        = document.getElementById("editBtn");
   const cancelBtn       = document.getElementById("cancelBtn");
   const logoutBtn       = document.getElementById("logoutBtn");
@@ -292,12 +294,84 @@
   const usernameInput = document.getElementById("username");
   const passwordInput = document.getElementById("password");
 
-  // ---------------- Load (public, no auth) ----------------
+  // ---------------- Token storage (survives page refresh) ----------------
+
+  const TOKEN_KEY = "portfolioAdminToken";
+
+  function saveToken(token) {
+    try { sessionStorage.setItem(TOKEN_KEY, token); } catch (e) { /* ignore */ }
+  }
+  function readStoredToken() {
+    try { return sessionStorage.getItem(TOKEN_KEY); } catch (e) { return null; }
+  }
+  function clearStoredToken() {
+    try { sessionStorage.removeItem(TOKEN_KEY); } catch (e) { /* ignore */ }
+  }
+  function decodeTokenPayload(token) {
+    try {
+      const b64payload = token.split(".")[0];
+      const json = atob(b64payload.replace(/-/g, "+").replace(/_/g, "/"));
+      return JSON.parse(json);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // ---------------- Auth UI state ----------------
+
+  function updateAuthUI(loggedIn, username) {
+    signInBtn.style.display     = loggedIn ? "none" : "inline-block";
+    editBtn.style.display       = loggedIn ? "inline-block" : "none";
+    logoutBtn.style.display     = loggedIn ? "inline-block" : "none";
+    sortSymbolBtn.style.display = loggedIn ? "inline-block" : "none";
+    sortProfitBtn.style.display = loggedIn ? "inline-block" : "none";
+    if (loggedIn) {
+      whoami.textContent = `Signed in as ${username}`;
+      whoami.style.display = "inline";
+    } else {
+      whoami.style.display = "none";
+    }
+  }
+
+  function showSignedOutPlaceholder() {
+    tableView.style.display = "none";
+    emptyMsg.style.display = "block";
+    emptyMsg.textContent = "Sign in to view your portfolio.";
+    addRowBtn.style.display = "none";
+    bottomBar.style.display = "none";
+    lastUpdatedEl.textContent = "";
+  }
+
+  function handleAuthExpired() {
+    clearStoredToken();
+    sessionToken = null;
+    isEditing = false;
+    toolbar.style.display = "none";
+    cancelBtn.style.display = "none";
+    removeHeaderCell.classList.remove("visible");
+    addRowBtn.style.display = "none";
+    bottomBar.style.display = "none";
+    updateAuthUI(false);
+    showSignedOutPlaceholder();
+    openLoginModal();
+  }
+
+  // ---------------- Load (requires auth) ----------------
 
   async function loadPortfolio() {
+    if (!sessionToken) {
+      showSignedOutPlaceholder();
+      return;
+    }
     lastUpdatedEl.textContent = "Loading...";
     try {
-      const res = await fetch(`${API_BASE}/portfolio.json`);
+      const res = await fetch(`${API_BASE}/portfolio.json`, {
+        headers: { "Authorization": `Bearer ${sessionToken}` },
+      });
+      if (res.status === 401) {
+        handleAuthExpired();
+        return;
+      }
       if (res.status === 404) {
         holdings = [];
         lastUpdatedEl.textContent = "No data yet";
@@ -386,11 +460,12 @@
 
       const data = await res.json();
       sessionToken = data.token;
-      whoami.textContent = `Signed in as ${username}`;
-      whoami.style.display = "inline";
+      saveToken(data.token);
+      const uname = data.username || username;
+      updateAuthUI(true, uname);
 
       closeLoginModal();
-      enterEditMode();
+      await loadPortfolio();
     } catch (err) {
       loginError.textContent = "Could not reach the server. Try again.";
     } finally {
@@ -400,12 +475,15 @@
   }
 
   function enterEditMode() {
+    if (!sessionToken) {
+      openLoginModal();
+      return;
+    }
     isEditing = true;
     holdingsSnapshot = JSON.parse(JSON.stringify(holdings));
 
     editBtn.style.display = "none";
     cancelBtn.style.display = "inline-block";
-    logoutBtn.style.display = "inline-block";
     toolbar.style.display = "flex";
     addRowBtn.style.display = "block";
     removeHeaderCell.classList.add("visible");
@@ -420,10 +498,8 @@
       holdings = JSON.parse(JSON.stringify(holdingsSnapshot));
     }
 
-    editBtn.style.display = "inline-block";
+    editBtn.style.display = sessionToken ? "inline-block" : "none";
     cancelBtn.style.display = "none";
-    logoutBtn.style.display = "none";
-    whoami.style.display = "none";
     toolbar.style.display = "none";
     addRowBtn.style.display = "none";
     removeHeaderCell.classList.remove("visible");
@@ -442,8 +518,21 @@
   }
 
   function logout() {
+    if (isEditing) {
+      const dirty = JSON.stringify(holdings) !== JSON.stringify(holdingsSnapshot);
+      if (dirty && !confirm("Discard unsaved changes and sign out?")) return;
+    }
+    clearStoredToken();
     sessionToken = null;
-    cancelEdit();
+    isEditing = false;
+    toolbar.style.display = "none";
+    cancelBtn.style.display = "none";
+    removeHeaderCell.classList.remove("visible");
+    addRowBtn.style.display = "none";
+    bottomBar.style.display = "none";
+    holdings = [];
+    updateAuthUI(false);
+    showSignedOutPlaceholder();
   }
 
   // ---------------- Save ----------------
@@ -474,9 +563,7 @@
       if (res.status === 401) {
         saveStatus.textContent = "Session expired — sign in again.";
         saveStatus.className = "hint status-err";
-        sessionToken = null;
-        exitEditMode(false);
-        openLoginModal();
+        handleAuthExpired();
         return;
       }
 
@@ -751,7 +838,8 @@
 
   // ---------------- Wire up ----------------
 
-  editBtn.addEventListener("click", openLoginModal);
+  signInBtn.addEventListener("click", openLoginModal);
+  editBtn.addEventListener("click", enterEditMode);
   cancelBtn.addEventListener("click", cancelEdit);
   logoutBtn.addEventListener("click", logout);
   document.getElementById("saveBtn").addEventListener("click", savePortfolio);
@@ -765,8 +853,27 @@
     if (e.target === loginModal) closeLoginModal();
   });
 
-  loadPortfolio();
-  loadSymbolList();
+  // ---------------- Startup: restore session or prompt login ----------------
+
+  function init() {
+    const token = readStoredToken();
+    const payload = token ? decodeTokenPayload(token) : null;
+    const stillValid = payload && payload.exp > Math.floor(Date.now() / 1000);
+
+    if (stillValid) {
+      sessionToken = token;
+      updateAuthUI(true, payload.u);
+      loadPortfolio();
+    } else {
+      if (token) clearStoredToken();
+      updateAuthUI(false);
+      showSignedOutPlaceholder();
+      openLoginModal();
+    }
+    loadSymbolList();
+  }
+
+  init();
 })();
 </script>
 
