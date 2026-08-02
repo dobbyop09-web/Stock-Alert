@@ -46,8 +46,9 @@
 
     .topbar-right {
         display: flex;
-        align-items: center;
-        gap: 14px;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 10px;
         flex-wrap: wrap;
     }
 
@@ -137,9 +138,10 @@
     }
     .stats#portfolioStats .stat {
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         gap: 12px;
         padding: 14px 16px;
+        min-height: 78px;
     }
     .stats#portfolioStats .n {
         font-size: 19px;
@@ -180,6 +182,12 @@
         display: none;
         justify-content: flex-end;
         margin-bottom: 14px;
+    }
+
+    .edit-mode-actions {
+        display: none;
+        align-items: center;
+        gap: 8px;
     }
 
     /* ---- Edit-mode banner: replaces the entry button while editing ---- */
@@ -258,6 +266,10 @@
        than stretch and add its own spacing. */
     .sidebar-account-actions .edit-entry-row {
         display: none;
+        margin: 0;
+    }
+
+    .sidebar-account-actions .edit-mode-actions {
         margin: 0;
     }
 
@@ -394,36 +406,6 @@
         flex: none;
     }
 
-    /* ---- View toggle (Table / JSON), styled like .sector-item.active ---- */
-
-    .view-toggle {
-        display: inline-flex;
-        background: var(--panel2);
-        border: 1px solid var(--line);
-        border-radius: 6px;
-        padding: 2px;
-    }
-
-    .view-toggle button {
-        background: transparent;
-        border: 1px solid transparent;
-        color: var(--muted);
-        padding: 6px 12px;
-        border-radius: 4px;
-    }
-
-    .view-toggle button:hover {
-        background: transparent;
-        border-color: transparent;
-        color: var(--text);
-    }
-
-    .view-toggle button.active {
-        background: #1B2A2E;
-        border-color: #2DD4BF;
-        color: #2DD4BF;
-    }
-
     /* ---- Sortable column headers (Symbol / Chg % / Profit ₹ / Profit %) ---- */
     .th-sort {
         background: transparent;
@@ -511,25 +493,6 @@
         flex: none;
     }
 
-    /* ---- Show more / show less toggle below a collapsed table ---- */
-
-    .show-more-row {
-        text-align: center;
-        margin-top: 10px;
-    }
-    .link-btn {
-        background: transparent;
-        border: none;
-        color: var(--muted);
-        font-size: 12.5px;
-        cursor: pointer;
-        text-decoration: underline;
-        padding: 4px;
-    }
-    .link-btn:hover {
-        color: #2DD4BF;
-    }
-
     /* ---- Add-holding button ---- */
 
     .add-row-btn {
@@ -550,11 +513,15 @@
     .status-ok { color: var(--watch); }
     .status-err { color: var(--triggered); }
 
-    /* ---- JSON editor ---- */
+    /* ---- Quantity input: plain number field, no spinner arrows ---- */
 
-    #jsonEditor {
-        min-height: 420px;
-        font-size: 13px;
+    input.cell[data-f="quantity"]::-webkit-outer-spin-button,
+    input.cell[data-f="quantity"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input.cell[data-f="quantity"] {
+        -moz-appearance: textfield;
     }
 
     /* ---- Login modal ---- */
@@ -647,6 +614,13 @@
                                 Edit
                             </button>
                         </div>
+                        <div class="edit-mode-actions" id="editModeActions" style="display:none;">
+                            <button id="cancelBtn">Cancel</button>
+                            <button class="primary icon-text-btn" id="saveBtn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                Save Changes
+                            </button>
+                        </div>
                         <button class="icon-text-btn" id="logoutBtn" style="display:none;">
                             Sign out
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -711,20 +685,6 @@
                             <div class="hint" id="saveStatus">You have unsaved changes</div>
                         </div>
                     </div>
-                    <div class="edit-banner-actions">
-                        <button id="cancelBtn">Cancel</button>
-                        <button class="primary icon-text-btn" id="saveBtn">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                            Save Changes
-                        </button>
-                    </div>
-                </div>
-
-                <div class="toolbar" id="toolbar" style="display:none;">
-                    <div class="view-toggle">
-                        <button id="tableViewBtn" class="active">Table</button>
-                        <button id="jsonViewBtn">JSON</button>
-                    </div>
                 </div>
 
                 <div class="table-scroll" id="tableView">
@@ -734,8 +694,8 @@
                                 <th style="width:11%"><button class="th-sort" id="thSortSymbol" data-field="symbol">Symbol<span class="sort-arrow"></span></button></th>
                                 <th class="num" style="width:6%">Qty</th>
                                 <th class="num" style="width:9%">Buy Price</th>
-                                <th class="num" style="width:9%">Current Price</th>
-                                <th class="num" style="width:7%"><button class="th-sort" id="thSortChg" data-field="chg">Chg %<span class="sort-arrow"></span></button></th>
+                                <th class="num" style="width:9%" id="curPriceHeaderCell">Current Price</th>
+                                <th class="num" style="width:7%" id="chgHeaderCell"><button class="th-sort" id="thSortChg" data-field="chg">Chg %<span class="sort-arrow"></span></button></th>
                                 <th class="num" style="width:9%"><button class="th-sort" id="thSortProfitRs" data-field="profitRs">Profit ₹<span class="sort-arrow"></span></button></th>
                                 <th class="num" style="width:8%"><button class="th-sort" id="thSortProfitPct" data-field="profitPct">Profit %<span class="sort-arrow"></span></button></th>
                                 <th class="num" style="width:8%">Target ₹</th>
@@ -748,15 +708,9 @@
                         <tbody id="tbody"></tbody>
                     </table>
                 </div>
-                <div class="show-more-row" id="showMoreWrap" style="display:none;">
-                    <button class="link-btn" id="showMoreBtn"></button>
-                </div>
                 <div class="empty" id="emptyMsg" style="display:none;">No holdings yet.</div>
 
                 <button class="add-row-btn" id="addRowBtn" style="display:none;">+ Add holding</button>
-
-                <textarea id="jsonEditor" spellcheck="false" style="display:none;"></textarea>
-                <p class="hint" id="jsonError" style="color:var(--triggered); display:none;"></p>
 
                 <datalist id="symbolList"></datalist>
             </div>
@@ -810,15 +764,11 @@
 
   const ICON_TRASH = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
 
-  const ROW_LIMIT = 5;
-
   let sessionToken = null;
   let holdings = [];
   let holdingsSnapshot = [];
   let isEditing = false;
-  let currentView = "table";
   let symbolDataMap = {}; // SYMBOL -> { currentPrice, changePercent, sector, screenerUrl }
-  let showMoreExpanded = false;
 
   const thSortSymbol    = document.getElementById("thSortSymbol");
   const thSortChg       = document.getElementById("thSortChg");
@@ -830,27 +780,23 @@
   const signInBtn       = document.getElementById("signInBtn");
   const editBtn         = document.getElementById("editBtn");
   const editEntryBar    = document.getElementById("editEntryBar");
+  const editModeActions = document.getElementById("editModeActions");
   const sidebarAccountBar = document.getElementById("sidebarAccountBar");
   const cancelBtn       = document.getElementById("cancelBtn");
   const logoutBtn       = document.getElementById("logoutBtn");
   const refreshBtn      = document.getElementById("refreshBtn");
   const whoami          = document.getElementById("whoami");
-  const toolbar         = document.getElementById("toolbar");
   const tbody            = document.getElementById("tbody");
   const emptyMsg         = document.getElementById("emptyMsg");
   const addRowBtn        = document.getElementById("addRowBtn");
   const removeHeaderCell = document.getElementById("removeHeaderCell");
   const sellDateHeaderCell = document.getElementById("sellDateHeaderCell");
+  const curPriceHeaderCell = document.getElementById("curPriceHeaderCell");
+  const chgHeaderCell      = document.getElementById("chgHeaderCell");
   const bottomBar        = document.getElementById("bottomBar");
   const saveStatus       = document.getElementById("saveStatus");
-  const jsonEditor        = document.getElementById("jsonEditor");
-  const jsonErrorEl       = document.getElementById("jsonError");
   const tableView         = document.getElementById("tableView");
-  const tableViewBtn      = document.getElementById("tableViewBtn");
-  const jsonViewBtn       = document.getElementById("jsonViewBtn");
   const lastUpdatedEl     = document.getElementById("lastUpdated");
-  const showMoreWrap      = document.getElementById("showMoreWrap");
-  const showMoreBtn       = document.getElementById("showMoreBtn");
   const portfolioStats    = document.getElementById("portfolioStats");
   const statInvestment    = document.getElementById("statInvestment");
   const statInvestmentSub = document.getElementById("statInvestmentSub");
@@ -914,7 +860,6 @@
     emptyMsg.textContent = "Sign in to view your portfolio.";
     addRowBtn.style.display = "none";
     bottomBar.style.display = "none";
-    showMoreWrap.style.display = "none";
     lastUpdatedEl.textContent = "";
     portfolioStats.style.display = "none";
     insightPanels.style.display = "none";
@@ -924,11 +869,13 @@
     clearStoredToken();
     sessionToken = null;
     isEditing = false;
-    toolbar.style.display = "none";
     removeHeaderCell.classList.remove("visible");
     sellDateHeaderCell.classList.remove("visible");
+    curPriceHeaderCell.style.display = "";
+    chgHeaderCell.style.display = "";
     addRowBtn.style.display = "none";
     bottomBar.style.display = "none";
+    editModeActions.style.display = "none";
     updateAuthUI(false);
     showSignedOutPlaceholder();
     openLoginModal();
@@ -963,7 +910,6 @@
         throw new Error("Failed to load");
       }
       holdingsSnapshot = JSON.parse(JSON.stringify(holdings));
-      showMoreExpanded = false;
       renderTable();
     } catch (err) {
       lastUpdatedEl.textContent = "Failed to load portfolio";
@@ -994,7 +940,7 @@
     } catch (err) {
       // Autocomplete just won't be available — not fatal.
     }
-    if (currentView === "table") renderTable();
+    renderTable();
   }
 
   // ---------------- Edit gating / login ----------------
@@ -1062,10 +1008,12 @@
     holdingsSnapshot = JSON.parse(JSON.stringify(holdings));
 
     editEntryBar.style.display = "none";
-    toolbar.style.display = "flex";
+    editModeActions.style.display = "flex";
     addRowBtn.style.display = "block";
     removeHeaderCell.classList.add("visible");
     sellDateHeaderCell.classList.add("visible");
+    curPriceHeaderCell.style.display = "none";
+    chgHeaderCell.style.display = "none";
     bottomBar.style.display = "flex";
     saveStatus.textContent = "You have unsaved changes";
     saveStatus.className = "hint";
@@ -1080,15 +1028,16 @@
     }
 
     editEntryBar.style.display = sessionToken ? "flex" : "none";
-    toolbar.style.display = "none";
+    editModeActions.style.display = "none";
     addRowBtn.style.display = "none";
     removeHeaderCell.classList.remove("visible");
     sellDateHeaderCell.classList.remove("visible");
+    curPriceHeaderCell.style.display = "";
+    chgHeaderCell.style.display = "";
     bottomBar.style.display = "none";
     saveStatus.textContent = "";
     saveStatus.className = "hint";
 
-    switchView("table", true);
     renderTable();
   }
 
@@ -1106,11 +1055,13 @@
     clearStoredToken();
     sessionToken = null;
     isEditing = false;
-    toolbar.style.display = "none";
     removeHeaderCell.classList.remove("visible");
     sellDateHeaderCell.classList.remove("visible");
+    curPriceHeaderCell.style.display = "";
+    chgHeaderCell.style.display = "";
     addRowBtn.style.display = "none";
     bottomBar.style.display = "none";
+    editModeActions.style.display = "none";
     holdings = [];
     updateAuthUI(false);
     showSignedOutPlaceholder();
@@ -1119,10 +1070,6 @@
   // ---------------- Save ----------------
 
   async function savePortfolio() {
-    if (currentView === "json") {
-      if (!syncFromJson()) return;
-    }
-
     saveStatus.textContent = "Saving...";
     saveStatus.className = "hint";
 
@@ -1154,7 +1101,6 @@
       saveStatus.textContent = "Saved — " + new Date().toLocaleTimeString();
       saveStatus.className = "hint status-ok";
       lastUpdatedEl.textContent = "Last updated " + new Date(payload.lastUpdated).toLocaleString();
-      renderJson();
     } catch (err) {
       saveStatus.textContent = "Save failed. Try again.";
       saveStatus.className = "hint status-err";
@@ -1230,11 +1176,7 @@
     }
     applySort();
     updateSortIndicators();
-    if (currentView === "json") {
-      renderJson();
-    } else {
-      renderTable();
-    }
+    renderTable();
   }
 
   Object.values(sortHeaderMap).forEach((el) => {
@@ -1304,16 +1246,13 @@
       tableView.style.display = "none";
       emptyMsg.style.display = "block";
       emptyMsg.textContent = isEditing ? "No holdings yet. Add one below." : "No holdings yet.";
-      showMoreWrap.style.display = "none";
       return;
     }
 
     tableView.style.display = "block";
     emptyMsg.style.display = "none";
 
-    const rowsToRender = showMoreExpanded ? holdings : holdings.slice(0, ROW_LIMIT);
-
-    rowsToRender.forEach((h, i) => {
+    holdings.forEach((h, i) => {
       const tr = document.createElement("tr");
       const profit = profitInfo(h.buyPrice, h.currentPrice);
       const profitBadge = `<span class="badge ${profit.cls}">${profit.text}</span>`;
@@ -1328,8 +1267,6 @@
           <td><input type="text" class="cell" list="symbolList" value="${escapeAttr(h.symbol ?? "")}" data-i="${i}" data-f="symbol" placeholder="AAPL"></td>
           <td><input type="number" step="any" min="0" class="cell num" value="${numOrBlank(h.quantity)}" data-i="${i}" data-f="quantity" placeholder="1"></td>
           <td><input type="number" step="any" class="cell num" value="${numOrBlank(h.buyPrice)}" data-i="${i}" data-f="buyPrice" placeholder="0.00"></td>
-          <td class="num current-price-cell">${fmtMoney(h.currentPrice)}</td>
-          <td class="num chg-cell">${chgBadge}</td>
           <td class="num profit-rs-cell">${profitRsBadge}</td>
           <td class="num profit-cell">${profitBadge}</td>
           <td><input type="number" step="any" class="cell num" value="${numOrBlank(h.targetAmount)}" data-i="${i}" data-f="targetAmount" placeholder="0.00"></td>
@@ -1359,19 +1296,7 @@
       }
       tbody.appendChild(tr);
     });
-
-    if (holdings.length > ROW_LIMIT) {
-      showMoreWrap.style.display = "block";
-      showMoreBtn.textContent = showMoreExpanded ? "Show less" : `+ ${holdings.length - ROW_LIMIT} more stocks`;
-    } else {
-      showMoreWrap.style.display = "none";
-    }
   }
-
-  showMoreBtn.addEventListener("click", () => {
-    showMoreExpanded = !showMoreExpanded;
-    renderTable();
-  });
 
   // ---------------- Stat cards ----------------
 
@@ -1598,61 +1523,10 @@
 
   addRowBtn.addEventListener("click", () => {
     holdings.push({ symbol: "", quantity: 1, buyPrice: "", currentPrice: "", buyDate: "", targetAmount: "", sellDate: "" });
-    showMoreExpanded = true;
     renderTable();
     const inputs = tbody.querySelectorAll('input[data-f="symbol"]');
     if (inputs.length) inputs[inputs.length - 1].focus();
   });
-
-  // ---------------- JSON view ----------------
-
-  function renderJson() {
-    jsonEditor.value = JSON.stringify({ holdings }, null, 2);
-    jsonErrorEl.style.display = "none";
-  }
-
-  function syncFromJson() {
-    try {
-      const parsed = JSON.parse(jsonEditor.value);
-      if (!Array.isArray(parsed.holdings)) {
-        throw new Error('JSON must have a "holdings" array');
-      }
-      holdings = parsed.holdings;
-      jsonErrorEl.style.display = "none";
-      return true;
-    } catch (err) {
-      jsonErrorEl.textContent = "Invalid JSON: " + err.message;
-      jsonErrorEl.style.display = "block";
-      return false;
-    }
-  }
-
-  function switchView(view, force) {
-    if (view === currentView && !force) return;
-
-    if (!force) {
-      if (currentView === "table" && view === "json") {
-        renderJson();
-      } else if (currentView === "json" && view === "table") {
-        if (!syncFromJson()) return;
-        renderTable();
-      }
-    }
-
-    currentView = view;
-    const showTable = view === "table";
-    tableView.style.display = showTable ? (holdings.length ? "block" : "none") : "none";
-    emptyMsg.style.display = (showTable && holdings.length === 0) ? "block" : "none";
-    addRowBtn.style.display = (showTable && isEditing) ? "block" : "none";
-    showMoreWrap.style.display = (showTable && holdings.length > ROW_LIMIT) ? "block" : "none";
-    jsonEditor.style.display = showTable ? "none" : "block";
-    jsonErrorEl.style.display = (!showTable && jsonErrorEl.textContent) ? "block" : "none";
-    tableViewBtn.classList.toggle("active", showTable);
-    jsonViewBtn.classList.toggle("active", !showTable);
-  }
-
-  tableViewBtn.addEventListener("click", () => switchView("table"));
-  jsonViewBtn.addEventListener("click", () => switchView("json"));
 
   // ---------------- Wire up ----------------
 
