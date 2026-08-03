@@ -614,11 +614,108 @@
 
     /* Closed trades have their own page, keeping this view focused on open holdings. */
     .portfolio-page #realizedSummary { display: none !important; }
+
+    /* ---- Holdings dashboard refresh ---- */
+    body.portfolio-page { background: var(--bg); }
+    .app-shell { min-height: 100vh; display: grid; grid-template-columns: 188px minmax(0, 1fr); }
+    .app-sidebar { background: var(--panel); border-right: 1px solid var(--line); padding: 24px 12px; display: flex; flex-direction: column; }
+    .brand { color: var(--text); font-size: 13px; font-weight: 700; letter-spacing: .06em; padding: 0 10px 22px; border-bottom: 1px solid var(--line); }
+    .brand-mark { color: #2DD4BF; font-size: 20px; margin-right: 7px; vertical-align: -1px; }
+    .side-nav { display: flex; flex-direction: column; gap: 5px; padding-top: 20px; }
+    .side-nav a { color: var(--muted); text-decoration: none; font-size: 12.5px; padding: 11px 12px; border-radius: 7px; transition: .15s ease; }
+    .side-nav a:hover { color: var(--text); background: rgba(255,255,255,.035); }
+    .side-nav a.active { color: #2DD4BF; background: rgba(45,212,191,.11); }
+    .wrap { max-width: 1560px; padding-top: 22px; position: relative; }
+    /* Edit is visually part of the summary row, without taking a row of its own. */
+    .topbar { position: absolute; top: 22px; right: clamp(12px, 4vw, 32px); z-index: 2; width: 310px; min-height: 0; margin: 0; padding: 0; border: 0; }
+    .topbar-left h1 { margin: 0; font-size: 26px; letter-spacing: -.03em; }
+    .topbar-left .sub { margin: 4px 0 0; }
+    .topbar-right { flex-direction: row; align-items: center; gap: 10px; }
+    .topbar-right .navbar { display: none; }
+    .topbar-left { display: none !important; }
+    .topbar-right { margin-left: auto; }
+    .sidebar-account-actions { gap: 9px; }
+    .sidebar-account-bar { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); display: grid; grid-template-columns: 25px minmax(0, 1fr); column-gap: 9px; row-gap: 10px; }
+    .sidebar-account-bar::before { display: none !important; }
+    .sidebar-account-bar #whoami { max-width: 132px; overflow: hidden; text-overflow: ellipsis; }
+    #profileAvatarBtn { grid-column: 1; grid-row: 1; width: 25px; height: 25px; padding: 0; border-radius: 50%; background: rgba(45,212,191,.16); border: 1px solid rgba(45,212,191,.35); color: #2DD4BF; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .sidebar-account-bar #whoami { grid-column: 2; grid-row: 1; align-self: center; max-width: none; }
+    .sidebar-account-actions { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
+    .sidebar-account-actions .edit-entry-row, .sidebar-account-actions .edit-mode-actions { width: 100%; }
+    .sidebar-account-actions .edit-mode-actions { flex-direction: column; }
+    .sidebar-account-actions button { width: 100%; justify-content: center; }
+    #quickAddBtn { display: none !important; }
+    #logoutBtn { display: none !important; }
+    .sidebar-account-bar.profile-menu-open #logoutBtn { display: inline-flex !important; }
+    .sidebar-account-actions .primary, #quickAddBtn {
+        background: linear-gradient(135deg, #256e70, #318884);
+        border-color: #3b9991;
+        box-shadow: 0 6px 16px rgba(45, 141, 133, .16);
+    }
+    #editBtn { min-height: 38px; padding-inline: 15px; color: #e7fffc; }
+    #quickAddBtn { white-space: nowrap; }
+    /* Reserve room for either Edit or the wider Cancel / Save Changes group. */
+    .stats#portfolioStats { grid-template-columns: repeat(5, minmax(0, 1fr)); width: 100%; margin-bottom: 18px; }
+    .stats#portfolioStats .stat { min-height: 92px; border-radius: 10px; background: var(--panel); }
+    .stats#portfolioStats .sidebar-account-bar { min-height: 92px; align-content: center; }
+    .stats#portfolioStats .n { font-size: 18px; }
+    .page-body { grid-template-columns: minmax(0, 1fr) 310px; gap: 18px; }
+    .main-col { background: var(--panel); border: 1px solid var(--line); border-radius: 11px; overflow: hidden; }
+    .table-scroll { height: calc(100vh - 150px); max-height: none; }
+    .table-scroll table { min-width: 1020px; }
+    .table-scroll table thead th { background: #0c2231; padding-top: 13px; padding-bottom: 13px; }
+    .table-scroll table tbody tr { transition: background .15s ease; }
+    .table-scroll table tbody tr:hover { background: rgba(45,212,191,.045); }
+    .add-row-btn { width: calc(100% - 24px); margin: 12px; border-radius: 8px; padding: 11px; }
+    .empty { margin: 18px; }
+    .insights-row.side-col { gap: 14px; }
+    .insights-row.side-col { margin-top: 0; }
+    .insight-panels { gap: 14px; }
+    .insight-panel { border-radius: 10px; padding: 16px; background: var(--panel); }
+    .insight-panel .sidebar-title { color: var(--text); font-size: 13px; margin-bottom: 13px; }
+    .health-counts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .health-count { border-radius: 8px; padding: 11px 10px; background: rgba(255,255,255,.025); }
+    .health-count .value { display: block; font-size: 20px; font-weight: 700; line-height: 1; }
+    .health-count .label { display: block; margin-top: 6px; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
+    .health-count.profit .value { color: var(--watch); }
+    .health-count.loss .value { color: var(--triggered); }
+    .donut-panel-body { gap: 10px; }
+    .donut-wrap { width: 112px; height: 112px; }
+    .edit-banner { margin: 12px; border-radius: 8px; }
+    @media (max-width: 1100px) {
+        .topbar { position: static; width: auto; justify-content: flex-end; margin-bottom: 10px; }
+        .stats#portfolioStats { grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+        .page-body { grid-template-columns: 1fr; }
+        .insights-row.side-col { position: static; max-height: none; }
+        .insights-row.side-col { margin-top: 0; }
+        .insight-panels { display: grid; grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 700px) {
+        .app-shell { grid-template-columns: 1fr; }
+        .app-sidebar { display: none; }
+        .topbar-right { width: 100%; justify-content: space-between; }
+        .sidebar-account-bar #whoami { display: none !important; }
+        .topbar-right .navbar { display: none; }
+        .stats#portfolioStats { grid-template-columns: 1fr; }
+        .table-scroll { height: calc(100vh - 145px); }
+        .insight-panels { grid-template-columns: 1fr; }
+        #quickAddBtn { font-size: 12px; }
+    }
 </style>
 </head>
 
 <body class="portfolio-page">
-    <div class="wrap">
+    <div class="app-shell">
+        <aside class="app-sidebar" aria-label="Primary navigation">
+            <div class="brand"><span class="brand-mark">↗</span>PORTFOLIO</div>
+            <nav class="side-nav">
+                <a href="index.html">Dashboard</a>
+                <a href="portfolio.html" class="active">Holdings</a>
+                <a href="heatmap.html">Heat Map</a>
+                <a href="realized-profit.html">Realized Profit</a>
+            </nav>
+        </aside>
+        <div class="wrap">
         <div class="topbar">
             <div class="topbar-left">
                 <h1>Portfolio</h1>
@@ -638,6 +735,7 @@
                     <a href="realized-profit.html">Realized Profit</a>
                 </nav>
                 <div class="sidebar-account-bar" id="sidebarAccountBar">
+                    <button id="profileAvatarBtn" type="button" title="Profile menu" aria-label="Open profile menu">P</button>
                     <span class="hint" id="whoami" style="display:none;"></span>
                     <div class="sidebar-account-actions">
                         <div class="edit-entry-row" id="editEntryBar">
@@ -659,6 +757,10 @@
                         </button>
                     </div>
                 </div>
+                <button class="primary icon-text-btn" id="quickAddBtn" type="button" style="display:none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                    Add Holding
+                </button>
                 <button id="signInBtn" style="display:none;">Sign in</button>
             </div>
         </div>
@@ -769,6 +871,13 @@
             <aside class="insights-row side-col" id="insightsRow">
                 <div class="insight-panels" id="insightPanels" style="display:none;">
                     <div class="insight-panel">
+                        <p class="sidebar-title">Portfolio Health</p>
+                        <div class="health-counts">
+                            <div class="health-count profit"><span class="value" id="profitableCount">â€”</span><span class="label">Profitable stocks</span></div>
+                            <div class="health-count loss"><span class="value" id="lossMakingCount">â€”</span><span class="label">Loss-making stocks</span></div>
+                        </div>
+                    </div>
+                    <div class="insight-panel">
                         <p class="sidebar-title">Top Gainers</p>
                         <ul class="insight-list" id="topGainersList"></ul>
                     </div>
@@ -785,6 +894,7 @@
                     </div>
                 </div>
             </aside>
+        </div>
         </div>
     </div>
 
@@ -849,9 +959,11 @@
 
   const signInBtn       = document.getElementById("signInBtn");
   const editBtn         = document.getElementById("editBtn");
+  const quickAddBtn     = document.getElementById("quickAddBtn");
   const editEntryBar    = document.getElementById("editEntryBar");
   const editModeActions = document.getElementById("editModeActions");
   const sidebarAccountBar = document.getElementById("sidebarAccountBar");
+  const profileAvatarBtn = document.getElementById("profileAvatarBtn");
   const cancelBtn       = document.getElementById("cancelBtn");
   const logoutBtn       = document.getElementById("logoutBtn");
   const refreshBtn      = document.getElementById("refreshBtn");
@@ -876,6 +988,8 @@
   const statTodayChange   = document.getElementById("statTodayChange");
   const statTodayChangeSub = document.getElementById("statTodayChangeSub");
   const insightPanels     = document.getElementById("insightPanels");
+  const profitableCount   = document.getElementById("profitableCount");
+  const lossMakingCount   = document.getElementById("lossMakingCount");
   const topGainersList    = document.getElementById("topGainersList");
   const topLosersList     = document.getElementById("topLosersList");
   const sectorAllocList   = document.getElementById("sectorAllocList");
@@ -926,8 +1040,10 @@
   function updateAuthUI(loggedIn, username) {
     signInBtn.style.display   = loggedIn ? "none" : "inline-block";
     logoutBtn.style.display   = loggedIn ? "inline-flex" : "none";
-    sidebarAccountBar.style.display = loggedIn ? "flex" : "none";
+    sidebarAccountBar.style.display = loggedIn ? "grid" : "none";
+    sidebarAccountBar.classList.remove("profile-menu-open");
     editEntryBar.style.display = (loggedIn && !isEditing) ? "flex" : "none";
+    quickAddBtn.style.display = loggedIn ? "inline-flex" : "none";
     if (loggedIn) {
       whoami.textContent = `Signed in as ${username}`;
       whoami.style.display = "inline";
@@ -1544,6 +1660,17 @@
     }
     insightPanels.style.display = "flex";
 
+    let profitable = 0, lossMaking = 0;
+    holdings.forEach((h) => {
+      const buy = parseFloat(h.buyPrice);
+      const current = curPriceOf(h);
+      if (!isFinite(buy) || !isFinite(current)) return;
+      if (current > buy) profitable++;
+      else if (current < buy) lossMaking++;
+    });
+    profitableCount.textContent = profitable;
+    lossMakingCount.textContent = lossMaking;
+
     const withChange = holdings
       .map((h) => {
         const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
@@ -1731,8 +1858,22 @@
 
   signInBtn.addEventListener("click", openLoginModal);
   editBtn.addEventListener("click", enterEditMode);
+  quickAddBtn.addEventListener("click", () => {
+    if (!sessionToken) {
+      openLoginModal();
+      return;
+    }
+    if (!isEditing) enterEditMode();
+    holdings.push({ symbol: "", quantity: 1, buyPrice: "", buyDate: "", targetAmount: "" });
+    renderTable();
+    const inputs = tbody.querySelectorAll('input[data-f="symbol"]');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  });
   cancelBtn.addEventListener("click", cancelEdit);
   logoutBtn.addEventListener("click", logout);
+  profileAvatarBtn.addEventListener("click", () => {
+    if (sessionToken) sidebarAccountBar.classList.toggle("profile-menu-open");
+  });
   refreshBtn.addEventListener("click", () => loadPortfolio());
   document.getElementById("saveBtn").addEventListener("click", savePortfolio);
 
@@ -1770,6 +1911,8 @@
     loadSymbolList();
   }
 
+  // The account controls are the fifth summary card, keeping the top row unified.
+  portfolioStats.appendChild(sidebarAccountBar);
   init();
 })();
 </script>
