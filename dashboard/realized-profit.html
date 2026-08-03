@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" href="favicon.png">
-<title>Portfolio</title>
+<title>Realized Profit</title>
 
 <link rel="stylesheet" href="css/variables.css">
 <link rel="stylesheet" href="css/base.css">
@@ -612,16 +612,108 @@
     .realized-table th, .realized-table td { padding: 9px 10px; }
     @media (max-width: 720px) { .realized-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
-    /* Closed trades have their own page, keeping this view focused on open holdings. */
-    .portfolio-page #realizedSummary { display: none !important; }
+    /* This view intentionally contains only closed-trade reporting. */
+    .realized-profit-page #portfolioStats,
+    .realized-profit-page #pageBody { display: none !important; }
+    .realized-profit-page #realizedSummary { margin-top: 0; }
+    .realized-profit-page #editEntryBar,
+    .realized-profit-page #editModeActions { display: none !important; }
+
+    .realized-profit-page .wrap { max-width: 1500px; }
+    .realized-profit-page .realized-summary {
+        border: 1px solid var(--line);
+        background: linear-gradient(145deg, rgba(16, 28, 41, .78), rgba(9, 18, 28, .72));
+        padding: clamp(18px, 2.2vw, 28px);
+    }
+    .realized-profit-page .realized-summary-head { margin-bottom: 20px; }
+    .realized-profit-page .realized-summary-head h2 { font-size: 1.15rem; }
+    .realized-profit-page .realized-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .realized-profit-page .realized-metric {
+        min-height: 104px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        background: rgba(9, 18, 28, .5);
+    }
+    .realized-profit-page .realized-metric .value { font-size: 1.35rem; margin-top: 14px; }
+    .realized-profit-page .realized-metric .label { font-size: .78rem; letter-spacing: .03em; text-transform: uppercase; }
+    .realized-performance-grid { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(260px, .9fr); gap: 16px; margin-top: 18px; }
+    .realized-panel {
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        padding: 17px;
+        background: rgba(9, 18, 28, .45);
+    }
+    .realized-panel h3 { margin: 0 0 16px; font-size: .95rem; }
+    .realized-chart { width: 100%; min-height: 230px; }
+    .realized-chart svg { width: 100%; height: 240px; overflow: visible; }
+    .trend-grid { stroke: var(--line); stroke-dasharray: 3 4; }
+    .trend-area { fill: rgba(45, 212, 191, .13); }
+    .trend-line { fill: none; stroke: var(--watch); stroke-width: 2.25; }
+    .trend-dot { fill: var(--watch); stroke: #102433; stroke-width: 2; }
+    .trend-axis { fill: var(--muted); font-size: 10px; }
+    .outcome-list { display: grid; gap: 10px; }
+    .outcome-item { display:flex; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); }
+    .outcome-item:last-child { border-bottom: 0; }
+    .outcome-item .name { color: var(--muted); font-size: .82rem; }
+    .outcome-item .amount { font-weight: 700; text-align:right; }
+    .outcome-note { color: var(--muted); font-size: .8rem; margin: 14px 0 0; }
+    .realized-table { margin-top: 18px; border: 1px solid var(--line); border-radius: 9px; }
+    .realized-table::before { content: "Closed Trades"; display: block; padding: 16px 17px 4px; font-weight: 700; }
+    @media (max-width: 960px) { .realized-profit-page .realized-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .realized-performance-grid { grid-template-columns: 1fr; } }
+
+    /* Full realised-portfolio dashboard */
+    .realized-profit-page > .wrap { display: none; }
+    .rp-shell { min-height: 100vh; display: grid; grid-template-columns: 185px minmax(0, 1fr); background: #06121e; color: #edf5ff; }
+    .rp-sidebar { border-right: 1px solid #183044; padding: 20px 12px; background: #071522; }
+    .rp-brand { display:flex; gap:10px; align-items:center; padding:8px 8px 22px; border-bottom:1px solid #183044; font-weight:700; }
+    .rp-brand-mark { color:#2bdd9a; font-size:25px; line-height:1; }
+    .rp-nav { display:grid; gap:5px; margin-top:15px; }
+    .rp-nav a { color:#d7e2ef; text-decoration:none; padding:10px 11px; border-radius:5px; font-size:.86rem; }
+    .rp-nav a.active { color:#2be3a0; background:#063d36; }
+    .rp-market { margin-top:28px; border:1px solid #173047; border-radius:7px; overflow:hidden; }
+    .rp-market h3 { margin:0; padding:12px; font-size:.78rem; color:#92a4b8; font-weight:500; }
+    .rp-index { padding:11px 12px; border-top:1px solid #173047; }
+    .rp-index span { display:block; font-size:.7rem; color:#93a5b8; } .rp-index strong { display:inline-block; margin-top:5px; font-size:.85rem; } .rp-index em { float:right; margin-top:5px; color:#2ce29b; font-size:.72rem; font-style:normal; }
+    .rp-main { padding:22px clamp(16px, 2vw, 32px) 32px; max-width:1500px; width:100%; margin:0 auto; }
+    .rp-head { display:flex; justify-content:space-between; gap:18px; align-items:start; margin-bottom:18px; }
+    .rp-head h1 { font-size:1.55rem; margin:0 0 5px; } .rp-head p { margin:0; color:#a9b8c8; font-size:.82rem; }
+    .rp-actions { display:flex; gap:10px; } .rp-actions button { background:#0a1928; border:1px solid #254057; color:#e3edf7; border-radius:6px; padding:10px 13px; cursor:pointer; }
+    .rp-kpis { display:grid; grid-template-columns:repeat(6,minmax(130px,1fr)); gap:12px; }
+    .rp-kpi,.rp-panel { border:1px solid #183249; border-radius:7px; background:linear-gradient(135deg,#0a1826,#081521); }
+    .rp-kpi { padding:16px; min-height:76px; } .rp-kpi .label { color:#b2c0d0; font-size:.74rem; } .rp-kpi .value { margin-top:10px; font-weight:700; font-size:1.25rem; } .rp-kpi .note { font-size:.72rem; color:#97a9bb; margin-top:8px; }
+    .rp-pos { color:#2ce19b; } .rp-neg { color:#ff594e; } .rp-blue { color:#57a9ff; }
+    .rp-grid { display:grid; grid-template-columns:minmax(0,1.75fr) minmax(310px,.8fr); gap:12px; margin-top:14px; }
+    .rp-panel { padding:14px; } .rp-panel h2 { font-size:.9rem; margin:0 0 12px; } .rp-chart { min-height:210px; } .rp-chart svg { width:100%; height:220px; overflow:visible; }
+    .rp-chart-grid { stroke:#254056; stroke-dasharray:3 4; } .rp-chart-label { fill:#9eb0c4; font-size:10px; } .rp-bar-pos { fill:#23c789; } .rp-bar-neg { fill:#ef5249; }
+    .rp-summary-row { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #1b344b; font-size:.78rem; color:#c4d0dd; }.rp-summary-row:last-child{border-bottom:0}.rp-summary-row strong{color:#edf5ff}.rp-total{margin-top:10px;padding:12px;border:1px solid #1c8c65;border-radius:6px;color:#dce9f5;font-weight:600}.rp-total b{float:right;color:#2ce19b}
+    .rp-lower { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1.05fr) minmax(280px,.8fr); gap:12px; margin-top:12px; }.rp-sector-body {display:flex;align-items:center;gap:16px}.rp-donut {width:142px;min-width:142px;height:142px}.rp-sector-list{list-style:none;padding:0;margin:0;width:100%;display:grid;gap:8px}.rp-sector-list li{display:flex;justify-content:space-between;font-size:.75rem;color:#b7c5d4}.rp-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px}.rp-month-list{display:grid;gap:10px}.rp-month-row{display:grid;grid-template-columns:52px 1fr 62px;gap:8px;align-items:center;font-size:.74rem;color:#b6c4d3}.rp-month-track{height:10px;background:#102337;border-radius:2px}.rp-month-fill{height:100%;background:#25c789;border-radius:2px}.rp-stocks{display:grid;gap:9px}.rp-stock{display:flex;justify-content:space-between;gap:8px;font-size:.76rem}.rp-stock small{display:block;color:#8ea1b4;margin-top:2px}.rp-empty{color:#92a4b8;font-size:.8rem;padding:22px 0;text-align:center}
+    .rp-trades { margin-top:12px; overflow:auto; }.rp-table{width:100%;border-collapse:collapse;font-size:.74rem;min-width:760px}.rp-table th{color:#9eb0c3;font-weight:500;text-align:left;padding:9px;border-bottom:1px solid #1d364b}.rp-table td{padding:10px 9px;border-bottom:1px solid #132b40;color:#dfe9f3}.rp-table .num{text-align:right}.rp-footer{margin-top:16px;color:#8397aa;font-size:.73rem}
+    @media(max-width:1200px){.rp-kpis{grid-template-columns:repeat(3,1fr)}.rp-lower{grid-template-columns:1fr 1fr}.rp-lower .rp-stocks-panel{grid-column:span 2}}@media(max-width:760px){.rp-shell{grid-template-columns:1fr}.rp-sidebar{display:none}.rp-main{padding:16px}.rp-head{display:block}.rp-actions{margin-top:14px}.rp-kpis,.rp-grid,.rp-lower{grid-template-columns:1fr}.rp-lower .rp-stocks-panel{grid-column:auto}.rp-sector-body{flex-wrap:wrap}}
 </style>
 </head>
 
-<body class="portfolio-page">
+<body class="realized-profit-page">
+    <div class="rp-shell">
+        <aside class="rp-sidebar">
+            <div class="rp-brand"><span class="rp-brand-mark">↗</span><span>PORTFOLIO</span></div>
+            <nav class="rp-nav">
+                <a href="index.html">⌂ &nbsp; Dashboard</a><a href="portfolio.html">▣ &nbsp; Holdings</a><a href="heatmap.html">✧ &nbsp; Heat Map</a><a class="active" href="realized-profit.html">▣ &nbsp; Realized</a>
+            </nav>
+            <div class="rp-market"><h3>Market Overview</h3><div class="rp-index"><span>NIFTY 50</span><strong>24,502.15</strong><em>+0.62%</em></div><div class="rp-index"><span>SENSEX</span><strong>80,197.88</strong><em>+0.48%</em></div><div class="rp-index"><span>BANK NIFTY</span><strong>55,321.45</strong><em style="color:#ff594e">-0.18%</em></div></div>
+        </aside>
+        <main class="rp-main">
+            <header class="rp-head"><div><h1>Realised Portfolio</h1><p>Track your realised profits, trading performance and closed positions</p></div><div class="rp-actions"><button type="button" id="rpRefresh">↻ Refresh</button><button type="button" id="rpExport">⇩ Export</button></div></header>
+            <section class="rp-kpis" id="rpKpis"></section>
+            <section class="rp-grid"><div class="rp-panel"><h2>Realised Profit Over Time</h2><div class="rp-chart" id="rpTimeChart"></div></div><div class="rp-panel"><h2>Realised P&amp;L Summary</h2><div id="rpPnlSummary"></div></div></section>
+            <section class="rp-lower"><div class="rp-panel"><h2>Realised Profit by Sector</h2><div class="rp-sector-body" id="rpSector"></div></div><div class="rp-panel"><h2>Realised Profit by Month (₹)</h2><div class="rp-month-list" id="rpMonths"></div></div><div class="rp-panel rp-stocks-panel"><h2>Top Profitable Stocks</h2><div class="rp-stocks" id="rpWinners"></div><h2 style="margin-top:22px">Top Loss Making Stocks</h2><div class="rp-stocks" id="rpLosers"></div></div></section>
+            <section class="rp-panel rp-trades"><h2>Realised Trades</h2><div id="rpTrades"></div></section>
+            <footer class="rp-footer" id="rpUpdated"></footer>
+        </main>
+    </div>
     <div class="wrap">
         <div class="topbar">
             <div class="topbar-left">
-                <h1>Portfolio</h1>
+                <h1>Realized Profit</h1>
                 <p class="sub last-updated-row">
                     <span id="lastUpdated">Loading...</span>
                     <button class="icon-btn subtle" id="refreshBtn" title="Refresh">
@@ -634,8 +726,8 @@
                 <nav class="navbar">
                     <a href="index.html">Dashboard</a>
                     <a href="heatmap.html">Heat Map</a>
-                    <a href="portfolio.html" class="active">Portfolio</a>
-                    <a href="realized-profit.html">Realized Profit</a>
+                    <a href="portfolio.html">Portfolio</a>
+                    <a href="realized-profit.html" class="active">Realized Profit</a>
                 </nav>
                 <div class="sidebar-account-bar" id="sidebarAccountBar">
                     <span class="hint" id="whoami" style="display:none;"></span>
@@ -715,6 +807,17 @@
                 <div class="realized-metric"><div class="value" id="realizedReturn">—</div><div class="label">Return on Closed Positions</div></div>
                 <div class="realized-metric"><div class="value" id="realizedWins">—</div><div class="label">Winning / Losing Trades</div></div>
                 <div class="realized-metric"><div class="value" id="realizedHoldingPeriod">—</div><div class="label">Average Holding Period</div></div>
+            </div>
+            <div class="realized-performance-grid">
+                <section class="realized-panel">
+                    <h3>Realized Profit Trend</h3>
+                    <div class="realized-chart" id="realizedTrend" aria-live="polite"></div>
+                </section>
+                <section class="realized-panel">
+                    <h3>Trade Outcomes</h3>
+                    <div class="outcome-list" id="realizedInsights"></div>
+                    <p class="outcome-note">Based only on completed trades; live market prices are not used here.</p>
+                </section>
             </div>
             <div class="table-scroll realized-table">
                 <table>
@@ -887,6 +990,8 @@
   const realizedWins      = document.getElementById("realizedWins");
   const realizedHoldingPeriod = document.getElementById("realizedHoldingPeriod");
   const realizedTbody     = document.getElementById("realizedTbody");
+  const realizedTrend     = document.getElementById("realizedTrend");
+  const realizedInsights  = document.getElementById("realizedInsights");
 
   const loginModal    = document.getElementById("loginModal");
   const loginError    = document.getElementById("loginError");
@@ -1421,8 +1526,26 @@
   }
 
   function renderRealizedSummary() {
-    if (!sessionToken || closedTransactions.length === 0) {
+    if (!sessionToken) {
       realizedSummary.style.display = "none";
+      renderRpDashboard();
+      return;
+    }
+    if (closedTransactions.length === 0) {
+      if (!document.body.classList.contains("realized-profit-page")) {
+        realizedSummary.style.display = "none";
+        return;
+      }
+      realizedSummary.style.display = "block";
+      realizedCount.textContent = "No closed transactions yet";
+      realizedTotal.textContent = "—";
+      realizedReturn.textContent = "—";
+      realizedWins.textContent = "—";
+      realizedHoldingPeriod.textContent = "—";
+      realizedTbody.innerHTML = '<tr><td colspan="8" class="hint">Close a holding from the Portfolio page to see it here.</td></tr>';
+      realizedTrend.innerHTML = '<p class="hint">Your realized P&L trend will appear after you close a trade.</p>';
+      realizedInsights.innerHTML = '<div class="outcome-item"><span class="name">Completed trades</span><span class="amount">0</span></div>';
+      renderRpDashboard();
       return;
     }
     realizedSummary.style.display = "block";
@@ -1453,6 +1576,89 @@
       const term = days === null ? "—" : (days > 365 ? "Long-term" : "Short-term");
       return `<tr><td>${escapeHtml(t.symbol || "—")}</td><td class="num">${escapeHtml(String(qtyOf(t)))}</td><td class="num">₹${fmtMoney(t.buyPrice)}</td><td class="num">₹${fmtMoney(t.sellPrice)}</td><td class="num"><span class="badge ${cls}">${info.profit >= 0 ? "+" : ""}${fmtMoney(info.profit)}</span></td><td class="num"><span class="badge ${cls}">${isFinite(info.pct) ? `${info.pct >= 0 ? "+" : ""}${info.pct.toFixed(2)}%` : "—"}</span></td><td>${fmtDate(t.sellDate)}</td><td>${term}</td></tr>`;
     }).join("");
+    renderRealizedTrend();
+    renderRealizedInsights();
+    renderRpDashboard();
+  }
+
+  function renderRpDashboard() {
+    const kpis = document.getElementById("rpKpis");
+    if (!kpis) return;
+    const valid = closedTransactions.map((t) => ({ ...t, info: realizedInfo(t), days: holdingDays(t) })).filter((t) => isFinite(t.info.profit));
+    const profit = valid.reduce((s, t) => s + t.info.profit, 0);
+    const gains = valid.filter((t) => t.info.profit > 0); const losses = valid.filter((t) => t.info.profit < 0);
+    const gainTotal = gains.reduce((s, t) => s + t.info.profit, 0); const lossTotal = Math.abs(losses.reduce((s, t) => s + t.info.profit, 0));
+    const buyTotal = valid.reduce((s, t) => s + t.info.cost, 0); const sellTotal = buyTotal + profit;
+    const avgDays = valid.filter((t) => t.days !== null); const avgHolding = avgDays.length ? avgDays.reduce((s,t) => s + t.days,0) / avgDays.length : null;
+    const money = rpMoney;
+    const cards = [
+      ["Total Realised Profit", money(gainTotal), "rp-pos", `${gains.length} profitable trade${gains.length === 1 ? "" : "s"}`],
+      ["Total Realised Loss", money(lossTotal), "rp-neg", `${losses.length} losing trade${losses.length === 1 ? "" : "s"}`],
+      ["Net Realised Profit", money(profit), profit >= 0 ? "rp-pos" : "rp-neg", buyTotal ? `${((profit / buyTotal) * 100).toFixed(2)}% return` : "No closed capital"],
+      ["Winning Trades", String(gains.length), "rp-pos", valid.length ? `${((gains.length / valid.length) * 100).toFixed(1)}% win rate` : "—"],
+      ["Losing Trades", String(losses.length), "rp-neg", valid.length ? `${((losses.length / valid.length) * 100).toFixed(1)}% loss rate` : "—"],
+      ["Avg. Holding Period", avgHolding === null ? "—" : `${avgHolding.toFixed(1)} Days`, "rp-blue", `${valid.length} closed position${valid.length === 1 ? "" : "s"}`]
+    ];
+    kpis.innerHTML = cards.map(([label,value,cls,note]) => `<div class="rp-kpi"><div class="label">${label} ⓘ</div><div class="value ${cls}">${value}</div><div class="note">${note}</div></div>`).join("");
+    document.getElementById("rpPnlSummary").innerHTML = [["Total Buy Value",money(buyTotal)], ["Total Sell Value",money(sellTotal)], ["Net Realised Profit",money(profit)], ["Charges & Taxes","Not recorded"]].map(([l,v]) => `<div class="rp-summary-row"><span>${l}</span><strong>${v}</strong></div>`).join("") + `<div class="rp-total">Net Realised Profit <b>${money(profit)}</b></div>`;
+    renderRpTimeChart(valid); renderRpSector(valid, profit); renderRpMonths(valid); renderRpStocks(valid); renderRpTrades(valid);
+    const updated = document.getElementById("rpUpdated"); if (updated) updated.textContent = valid.length ? `Realised profit includes ${valid.length} closed position${valid.length === 1 ? "" : "s"}. Data updated ${new Date().toLocaleString()}.` : "No closed positions yet. Close a holding from the Portfolio page to populate this dashboard.";
+  }
+
+  function rpMoney(value) { return `₹${fmtMoney(value)}`; }
+
+  function renderRpTimeChart(valid) {
+    const el = document.getElementById("rpTimeChart"); if (!valid.length) { el.innerHTML = '<div class="rp-empty">Close a holding to start building your realised P&L history.</div>'; return; }
+    const buckets = {}; valid.forEach(t => { const key = t.sellDate ? t.sellDate.slice(0,7) : "Unknown"; buckets[key] = (buckets[key] || 0) + t.info.profit; });
+    const data = Object.entries(buckets).sort((a,b) => a[0].localeCompare(b[0])).slice(-12); const max = Math.max(...data.map(d => Math.abs(d[1])), 1); const w=760,h=220,left=38,base=110,plot=155;
+    const grid=[-1,0,1].map(n=>{const yy=base-n*(plot/2);return `<line class="rp-chart-grid" x1="${left}" y1="${yy}" x2="${w-8}" y2="${yy}"/><text class="rp-chart-label" x="0" y="${yy+3}">${n===0?"0":`${n>0?"+":"-"}₹${Math.round(max*Math.abs(n)).toLocaleString()}`}</text>`}).join("");
+    const slot=(w-left-12)/data.length; const bars=data.map(([key,value],i)=>{const bh=Math.abs(value)/max*(plot/2);const x=left+i*slot+slot*.28;const y=value>=0?base-bh:base;return `<rect class="${value>=0?"rp-bar-pos":"rp-bar-neg"}" x="${x}" y="${y}" width="${Math.max(8,slot*.42)}" height="${bh}" rx="1"><title>${key}: ₹${fmtMoney(value)}</title></rect><text class="rp-chart-label" text-anchor="middle" x="${x+Math.max(8,slot*.42)/2}" y="${h-8}">${escapeHtml(key.slice(2).replace("-","/"))}</text>`}).join("");
+    el.innerHTML=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Realised monthly profit and loss chart"><title>Realised profit over time</title>${grid}${bars}</svg>`;
+  }
+
+  function renderRpSector(valid, profit) {
+    const el=document.getElementById("rpSector"); if(!valid.length){el.innerHTML='<div class="rp-empty">Sector data will appear when closed symbols match the market feed.</div>';return;} const totals={}; valid.forEach(t=>{const sector=(symbolDataMap[(t.symbol||"").toUpperCase()]||{}).sector||"Other";totals[sector]=(totals[sector]||0)+t.info.profit}); const entries=Object.entries(totals).sort((a,b)=>b[1]-a[1]); const colors=["#2cd596","#4f9dff","#f2c94c","#aa7cf5","#ff6c61","#7e92aa"]; const sum=entries.reduce((s,e)=>s+Math.abs(e[1]),0)||1;let offset=0;const seg=entries.map(([name,value],i)=>{const pct=Math.abs(value)/sum*100;const out=`<circle cx="70" cy="70" r="47" fill="none" stroke="${colors[i%colors.length]}" stroke-width="19" stroke-dasharray="${pct*2.953} 295.3" stroke-dashoffset="${-offset*2.953}" transform="rotate(-90 70 70)"/>`;offset+=pct;return out}).join(""); el.innerHTML=`<svg class="rp-donut" viewBox="0 0 140 140" role="img" aria-label="Realised profit by sector">${seg}<text x="70" y="66" text-anchor="middle" fill="#edf5ff" font-size="14" font-weight="700">${rpMoney(profit)}</text><text x="70" y="84" text-anchor="middle" fill="#9eb0c4" font-size="10">Net Profit</text></svg><ul class="rp-sector-list">${entries.map(([name,value],i)=>`<li><span><i class="rp-dot" style="background:${colors[i%colors.length]}"></i>${escapeHtml(name)}</span><strong class="${value>=0?"rp-pos":"rp-neg"}">${rpMoney(value)}</strong></li>`).join("")}</ul>`;
+  }
+
+  function renderRpMonths(valid) { const el=document.getElementById("rpMonths"); const data=[...valid].sort((a,b)=>String(b.sellDate||"").localeCompare(String(a.sellDate||""))).slice(0,7); if(!data.length){el.innerHTML='<div class="rp-empty">No monthly results yet.</div>';return;} const max=Math.max(...data.map(t=>Math.abs(t.info.profit)),1);el.innerHTML=data.map(t=>`<div class="rp-month-row"><span>${escapeHtml(fmtDate(t.sellDate))}</span><div class="rp-month-track"><div class="rp-month-fill" style="width:${Math.abs(t.info.profit)/max*100}%;background:${t.info.profit>=0?"#25c789":"#ef5249"}"></div></div><strong class="${t.info.profit>=0?"rp-pos":"rp-neg"}">${rpMoney(t.info.profit)}</strong></div>`).join(""); }
+  function renderRpStocks(valid) { const fill=(id,list,negative)=>{const el=document.getElementById(id);const rows=list.slice(0,5);el.innerHTML=rows.length?rows.map(t=>`<div class="rp-stock"><span><strong>${escapeHtml(t.symbol||"—")}</strong><small>${fmtDate(t.sellDate)}</small></span><span class="${negative?"rp-neg":"rp-pos"}"><strong>${rpMoney(t.info.profit)}</strong><small>${isFinite(t.info.pct)?`${t.info.pct>=0?"+":""}${t.info.pct.toFixed(2)}%`:"—"}</small></span></div>`).join(""):'<div class="rp-empty">No trades in this group.</div>';};fill("rpWinners",[...valid].filter(t=>t.info.profit>0).sort((a,b)=>b.info.profit-a.info.profit),false);fill("rpLosers",[...valid].filter(t=>t.info.profit<0).sort((a,b)=>a.info.profit-b.info.profit),true); }
+  function renderRpTrades(valid) { const el=document.getElementById("rpTrades");el.innerHTML=valid.length?`<table class="rp-table"><thead><tr><th>Date</th><th>Stock</th><th>Qty</th><th class="num">Buy Price (₹)</th><th class="num">Sell Price (₹)</th><th class="num">Buy Value (₹)</th><th class="num">Sell Value (₹)</th><th class="num">Profit / Loss (₹)</th><th class="num">P&L (%)</th><th>Holding Period</th></tr></thead><tbody>${[...valid].sort((a,b)=>String(b.sellDate||"").localeCompare(String(a.sellDate||""))).map(t=>`<tr><td>${fmtDate(t.sellDate)}</td><td><strong>${escapeHtml(t.symbol||"—")}</strong></td><td>${qtyOf(t)}</td><td class="num">${fmtMoney(t.buyPrice)}</td><td class="num">${fmtMoney(t.sellPrice)}</td><td class="num">${fmtMoney(t.info.cost)}</td><td class="num">${fmtMoney(parseFloat(t.sellPrice)*qtyOf(t))}</td><td class="num ${t.info.profit>=0?"rp-pos":"rp-neg"}">${rpMoney(t.info.profit)}</td><td class="num ${t.info.pct>=0?"rp-pos":"rp-neg"}">${t.info.pct.toFixed(2)}%</td><td>${t.days===null?"—":`${t.days} Days`}</td></tr>`).join("")}</tbody></table>`:'<div class="rp-empty">No realised trades yet.</div>'; }
+
+  function renderRealizedTrend() {
+    const trades = [...closedTransactions]
+      .map((t) => ({ ...t, profit: realizedInfo(t).profit }))
+      .filter((t) => isFinite(t.profit))
+      .sort((a, b) => String(a.sellDate || "").localeCompare(String(b.sellDate || "")));
+    if (!trades.length) { realizedTrend.innerHTML = '<p class="hint">No valid close-price data available.</p>'; return; }
+    let cumulative = 0;
+    const points = trades.map((t) => ({ date: t.sellDate, value: cumulative += t.profit }));
+    const w = 600, h = 240, pad = { l: 48, r: 14, t: 16, b: 34 };
+    const values = points.map((p) => p.value).concat([0]);
+    let min = Math.min(...values), max = Math.max(...values);
+    if (min === max) { min -= Math.max(1, Math.abs(min) * .15); max += Math.max(1, Math.abs(max) * .15); }
+    const x = (i) => points.length === 1 ? (w - pad.l + pad.r) / 2 : pad.l + i * ((w - pad.l - pad.r) / (points.length - 1));
+    const y = (v) => pad.t + ((max - v) / (max - min)) * (h - pad.t - pad.b);
+    const line = points.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)} ${y(p.value).toFixed(1)}`).join(" ");
+    const area = `${line} L ${x(points.length - 1).toFixed(1)} ${y(0).toFixed(1)} L ${x(0).toFixed(1)} ${y(0).toFixed(1)} Z`;
+    const grid = [0, .5, 1].map((n) => { const value = max - n * (max - min); const yy = y(value); return `<line class="trend-grid" x1="${pad.l}" y1="${yy}" x2="${w - pad.r}" y2="${yy}"/><text class="trend-axis" x="2" y="${yy + 3}">₹${Math.round(value).toLocaleString()}</text>`; }).join("");
+    const labels = points.map((p, i) => `<text class="trend-axis" x="${x(i)}" y="${h - 8}" text-anchor="middle">${escapeHtml(fmtDate(p.date))}</text>`).join("");
+    const dots = points.map((p, i) => `<circle class="trend-dot" cx="${x(i)}" cy="${y(p.value)}" r="4"><title>${escapeHtml(fmtDate(p.date))}: ₹${fmtMoney(p.value)}</title></circle>`).join("");
+    realizedTrend.innerHTML = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Cumulative realized profit over closed trades"><title>Cumulative realized profit trend</title>${grid}<path class="trend-area" d="${area}"/><path class="trend-line" d="${line}"/>${dots}${labels}</svg>`;
+  }
+
+  function renderRealizedInsights() {
+    const valid = closedTransactions.map((t) => ({ ...t, info: realizedInfo(t), days: holdingDays(t) })).filter((t) => isFinite(t.info.profit));
+    const best = [...valid].sort((a, b) => b.info.profit - a.info.profit)[0];
+    const worst = [...valid].sort((a, b) => a.info.profit - b.info.profit)[0];
+    const longTerm = valid.filter((t) => t.days !== null && t.days > 365).length;
+    const shortTerm = valid.filter((t) => t.days === null || t.days <= 365).length;
+    const result = (label, value, className = "") => `<div class="outcome-item"><span class="name">${label}</span><span class="amount ${className}">${value}</span></div>`;
+    realizedInsights.innerHTML = [
+      result("Best realized trade", best ? `${escapeHtml(best.symbol || "—")} · +₹${fmtMoney(best.info.profit)}` : "—", "pos"),
+      result("Largest loss", worst && worst.info.profit < 0 ? `${escapeHtml(worst.symbol || "—")} · -₹${fmtMoney(Math.abs(worst.info.profit))}` : "No losing trades", worst && worst.info.profit < 0 ? "neg" : "pos"),
+      result("Short-term / long-term", `${shortTerm} / ${longTerm}`),
+      result("Total closed capital", `₹${fmtMoney(valid.reduce((sum, t) => sum + t.info.cost, 0))}`),
+    ].join("");
   }
 
   // ---------------- Stat cards ----------------
@@ -1740,6 +1946,13 @@
   document.getElementById("loginSubmitBtn").addEventListener("click", submitLogin);
   document.getElementById("saleCancelBtn").addEventListener("click", closeSaleModal);
   document.getElementById("saleConfirmBtn").addEventListener("click", confirmSale);
+  document.getElementById("rpRefresh").addEventListener("click", () => loadPortfolio());
+  document.getElementById("rpExport").addEventListener("click", () => {
+    const rows = [["Symbol", "Quantity", "Buy Price", "Buy Date", "Sell Price", "Sell Date", "Realized P&L"]];
+    closedTransactions.forEach((t) => { const info = realizedInfo(t); rows.push([t.symbol || "", qtyOf(t), t.buyPrice || "", t.buyDate || "", t.sellPrice || "", t.sellDate || "", isFinite(info.profit) ? info.profit : ""]); });
+    const csv = rows.map((row) => row.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); const link = document.createElement("a"); link.href = url; link.download = "realized-profit.csv"; link.click(); URL.revokeObjectURL(url);
+  });
   passwordInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") submitLogin();
   });
