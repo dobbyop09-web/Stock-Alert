@@ -1,241 +1,283 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="favicon.png">
-<title>Realized Profit</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <title>Realized Profit</title>
 
-<link rel="stylesheet" href="css/variables.css">
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
 
-<style>
+  <style>
     /* ---- Page shell (mirrors layout.css .wrap/.topbar, without the
        dashboard's sidebar-driven fixed-viewport rules) ---- */
 
     .wrap {
-        max-width: 1400px;
-        width: 100%;
-        margin: 0 auto;
-        padding: 20px clamp(12px, 4vw, 32px) 40px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px clamp(12px, 4vw, 32px) 40px;
     }
 
     .topbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 20px;
-        margin-bottom: 22px;
-        border-bottom: 1px solid var(--line);
-        padding-bottom: 16px;
-        flex-wrap: wrap;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      flex-wrap: wrap;
     }
 
     .topbar-left {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
     .last-updated-row {
-        display: flex;
-        align-items: center;
-        gap: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .topbar-right {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 10px;
-        flex-wrap: wrap;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     @media (max-width: 560px) {
-        .wrap {
-            padding: 14px 12px 32px;
-        }
+      .wrap {
+        padding: 14px 12px 32px;
+      }
     }
 
     /* ---- Small icon-only / icon+text buttons used in the topbar and banners ---- */
 
     .icon-btn {
-        background: transparent;
-        border: 1px solid transparent;
-        border-radius: 6px;
-        padding: 6px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        color: var(--muted);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--muted);
     }
+
     .icon-btn svg {
-        width: 15px;
-        height: 15px;
+      width: 15px;
+      height: 15px;
     }
+
     .icon-btn.danger {
-        color: var(--triggered);
+      color: var(--triggered);
     }
+
     .icon-btn.danger:hover {
-        background: rgba(255, 92, 108, 0.12);
-        border-color: var(--triggered);
+      background: rgba(255, 92, 108, 0.12);
+      border-color: var(--triggered);
     }
+
     .icon-btn.subtle {
-        padding: 2px;
-        color: var(--muted);
+      padding: 2px;
+      color: var(--muted);
     }
+
     .icon-btn.subtle svg {
-        width: 14px;
-        height: 14px;
+      width: 14px;
+      height: 14px;
     }
+
     .icon-btn.subtle:hover {
-        color: var(--text);
+      color: var(--text);
     }
 
     .icon-text-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
+
     .icon-text-btn svg {
-        width: 14px;
-        height: 14px;
-        flex: none;
+      width: 14px;
+      height: 14px;
+      flex: none;
     }
 
     /* ---- Two-column body: table/editor on the left, insights pinned on
        the right so Top Gainers/Losers/Sector stay visible while scrolling ---- */
 
     .page-body {
-        display: grid;
-        grid-template-columns: 1fr 300px;
-        gap: 20px;
-        align-items: start;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 20px;
+      align-items: start;
     }
 
     .main-col {
-        min-width: 0;
+      min-width: 0;
     }
 
     @media (max-width: 900px) {
-        .page-body {
-            grid-template-columns: 1fr;
-        }
-        .side-col {
-            position: static !important;
-        }
+      .page-body {
+        grid-template-columns: 1fr;
+      }
+
+      .side-col {
+        position: static !important;
+      }
     }
 
     /* ---- Stat cards: icon badge + value/label stack ---- */
 
-    .stat .n.pos { color: var(--watch); }
-    .stat .n.neg { color: var(--triggered); }
+    .stat .n.pos {
+      color: var(--watch);
+    }
+
+    .stat .n.neg {
+      color: var(--triggered);
+    }
 
     .stats#portfolioStats {
-        gap: 10px;
+      gap: 10px;
     }
+
     .stats#portfolioStats .stat {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 16px;
-        min-height: 78px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      min-height: 78px;
     }
+
     .stats#portfolioStats .n {
-        font-size: 19px;
+      font-size: 19px;
     }
+
     .stats#portfolioStats .l {
-        font-size: 10px;
+      font-size: 10px;
     }
+
     .stat-icon {
-        width: 38px;
-        height: 38px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
     }
+
     .stat-icon svg {
-        width: 18px;
-        height: 18px;
+      width: 18px;
+      height: 18px;
     }
-    .stat-icon.icon-blue   { background: rgba(91, 158, 255, 0.15); color: #5B9EFF; }
-    .stat-icon.icon-purple { background: rgba(139, 92, 246, 0.15); color: #8B5CF6; }
-    .stat-icon.icon-teal   { background: rgba(45, 212, 191, 0.15); color: #2DD4BF; }
-    .stat-icon.icon-orange { background: rgba(245, 166, 35, 0.15); color: #F5A623; }
+
+    .stat-icon.icon-blue {
+      background: rgba(91, 158, 255, 0.15);
+      color: #5B9EFF;
+    }
+
+    .stat-icon.icon-purple {
+      background: rgba(139, 92, 246, 0.15);
+      color: #8B5CF6;
+    }
+
+    .stat-icon.icon-teal {
+      background: rgba(45, 212, 191, 0.15);
+      color: #2DD4BF;
+    }
+
+    .stat-icon.icon-orange {
+      background: rgba(245, 166, 35, 0.15);
+      color: #F5A623;
+    }
+
     .stat-body {
-        min-width: 0;
+      min-width: 0;
     }
 
     .stat-sub {
-        font-size: 11px;
-        color: var(--muted);
-        margin-top: 4px;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
     }
 
     /* ---- Prominent "Edit Portfolio" entry point, right-aligned above the table ---- */
 
     .edit-entry-row {
-        display: none;
-        justify-content: flex-end;
-        margin-bottom: 14px;
+      display: none;
+      justify-content: flex-end;
+      margin-bottom: 14px;
     }
 
     .edit-mode-actions {
-        display: none;
-        align-items: center;
-        gap: 8px;
+      display: none;
+      align-items: center;
+      gap: 8px;
     }
 
     /* ---- Edit-mode banner: replaces the entry button while editing ---- */
 
     .edit-banner {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        background: rgba(45, 212, 191, 0.08);
-        border: 1px solid rgba(45, 212, 191, 0.35);
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin-bottom: 14px;
-        flex-wrap: wrap;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: rgba(45, 212, 191, 0.08);
+      border: 1px solid rgba(45, 212, 191, 0.35);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
     }
+
     .edit-banner-text {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
+
     .edit-banner-icon {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: rgba(45, 212, 191, 0.18);
-        color: #2DD4BF;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(45, 212, 191, 0.18);
+      color: #2DD4BF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
     }
+
     .edit-banner-icon svg {
-        width: 15px;
-        height: 15px;
+      width: 15px;
+      height: 15px;
     }
+
     .edit-banner-title {
-        font-weight: 600;
-        color: var(--text);
-        font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text);
+      font-size: 13.5px;
     }
+
     .edit-banner #saveStatus {
-        font-size: 11.5px;
-        margin-top: 1px;
+      font-size: 11.5px;
+      margin-top: 1px;
     }
+
     .edit-banner-actions {
-        display: flex;
-        gap: 8px;
+      display: flex;
+      gap: 8px;
     }
 
     /* ---- Account bar: who's signed in + Edit/Sign out, sitting inline
@@ -243,1235 +285,1884 @@
        reads as part of the header, not a boxed panel ---- */
 
     .sidebar-account-bar {
-        display: none; /* JS sets to flex once signed in */
-        align-items: center;
-        gap: 10px;
-        flex-wrap: wrap;
+      display: none;
+      /* JS sets to flex once signed in */
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .sidebar-account-bar #whoami {
-        margin: 0;
-        font-size: 11px;
-        white-space: nowrap;
+      margin: 0;
+      font-size: 11px;
+      white-space: nowrap;
     }
 
     .sidebar-account-actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     /* The Edit button's wrapper is reused here from its old sidebar
        position — inline in the topbar it should hug its button rather
        than stretch and add its own spacing. */
     .sidebar-account-actions .edit-entry-row {
-        display: none;
-        margin: 0;
+      display: none;
+      margin: 0;
     }
 
     .sidebar-account-actions .edit-mode-actions {
-        margin: 0;
+      margin: 0;
     }
 
     /* ---- Sidebar: Top Gainers / Top Losers / Sector Allocation, pinned so
        they stay visible while the table scrolls ---- */
     .insights-row.side-col {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        position: sticky;
-        top: 20px;
-        max-height: calc(100vh - 40px);
-        overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: sticky;
+      top: 20px;
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
     }
 
     .insight-panels {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .insight-panel {
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 6px;
-        padding: 14px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 14px;
     }
 
     .insight-list {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .insight-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        font-size: 12.5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12.5px;
     }
 
     .insight-row .sym {
-        font-family: var(--mono);
-        font-weight: 600;
-        color: var(--text);
+      font-family: var(--mono);
+      font-weight: 600;
+      color: var(--text);
     }
 
     .insight-row .val {
-        font-family: var(--mono);
-        font-weight: 600;
+      font-family: var(--mono);
+      font-weight: 600;
     }
 
     .insight-empty {
-        color: var(--muted);
-        font-size: 12px;
+      color: var(--muted);
+      font-size: 12px;
     }
 
     /* ---- Sector allocation: donut chart + legend ---- */
 
     .donut-panel-body {
-        display: flex;
-        align-items: center;
-        gap: 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
+
     .donut-wrap {
-        position: relative;
-        flex: none;
-        width: 120px;
-        height: 120px;
+      position: relative;
+      flex: none;
+      width: 120px;
+      height: 120px;
     }
+
     .donut-wrap svg {
-        display: block;
+      display: block;
     }
+
     .donut-center {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
+
     .donut-count {
-        font-size: 18px;
-        font-weight: 700;
-        color: var(--text);
-        line-height: 1.1;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.1;
     }
+
     .donut-label {
-        font-size: 9.5px;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: .04em;
+      font-size: 9.5px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
     }
+
     .sector-legend {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        flex: 1;
-        min-width: 0;
-        font-size: 11.5px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
+      font-size: 11.5px;
     }
+
     .sector-legend li {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
     }
+
     .sector-legend .name {
-        display: flex;
-        align-items: center;
-        color: var(--text);
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+      display: flex;
+      align-items: center;
+      color: var(--text);
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
+
     .sector-legend .dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        margin-right: 6px;
-        flex: none;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      flex: none;
     }
+
     .sector-legend .pct {
-        font-family: var(--mono);
-        color: var(--muted);
-        flex: none;
+      font-family: var(--mono);
+      color: var(--muted);
+      flex: none;
     }
 
     /* ---- Sortable column headers (Symbol / Chg % / Profit ₹ / Profit %) ---- */
     .th-sort {
-        background: transparent;
-        border: none;
-        color: inherit;
-        font: inherit;
-        text-transform: inherit;
-        letter-spacing: inherit;
-        padding: 0;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
+      background: transparent;
+      border: none;
+      color: inherit;
+      font: inherit;
+      text-transform: inherit;
+      letter-spacing: inherit;
+      padding: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
+
     th.num .th-sort {
-        justify-content: flex-end;
+      justify-content: flex-end;
     }
+
     .th-sort:hover {
-        color: var(--text);
+      color: var(--text);
     }
+
     .sort-arrow {
-        font-size: 9px;
-        width: 8px;
-        display: inline-block;
-        opacity: 0.7;
+      font-size: 9px;
+      width: 8px;
+      display: inline-block;
+      opacity: 0.7;
     }
+
     .th-sort.active {
-        color: #2DD4BF;
+      color: #2DD4BF;
     }
 
     /* ---- Remove/Actions column, only shown while editing ---- */
 
     .remove-cell {
-        display: none;
-        width: 70px;
+      display: none;
+      width: 70px;
     }
 
     .remove-cell.visible {
-        display: table-cell;
+      display: table-cell;
     }
 
     /* ---- Sell date column, only shown while editing ---- */
 
     .sell-date-cell {
-        display: none;
+      display: none;
     }
 
     .sell-date-cell.visible {
-        display: table-cell;
+      display: table-cell;
     }
 
     /* ---- Scrollable table body with a sticky header (safety net for very
        large, fully-expanded portfolios) ---- */
 
     .table-scroll {
-        max-height: 900px;
-        overflow-y: auto;
+      max-height: 900px;
+      overflow-y: auto;
     }
 
     .table-scroll table thead th {
-        position: sticky;
-        top: 0;
-        background: var(--panel);
-        z-index: 1;
+      position: sticky;
+      top: 0;
+      background: var(--panel);
+      z-index: 1;
     }
 
     /* ---- Symbol badge: colored avatar + ticker ---- */
 
     .stock-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .stock-badge .avatar {
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
-        font-weight: 700;
-        color: #0B0F11;
-        flex: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: #0B0F11;
+      flex: none;
     }
 
     /* ---- Add-holding button ---- */
 
     .add-row-btn {
-        width: 100%;
-        background: transparent;
-        border: 1px dashed var(--line);
-        color: var(--muted);
-        margin-top: 10px;
+      width: 100%;
+      background: transparent;
+      border: 1px dashed var(--line);
+      color: var(--muted);
+      margin-top: 10px;
     }
 
     .add-row-btn:hover {
-        color: var(--text);
-        border-color: #2DD4BF;
+      color: var(--text);
+      border-color: #2DD4BF;
     }
 
     /* ---- Status text ---- */
 
-    .status-ok { color: var(--watch); }
-    .status-err { color: var(--triggered); }
+    .status-ok {
+      color: var(--watch);
+    }
+
+    .status-err {
+      color: var(--triggered);
+    }
 
     /* ---- Quantity input: plain number field, no spinner arrows ---- */
 
     input.cell[data-f="quantity"]::-webkit-outer-spin-button,
     input.cell[data-f="quantity"]::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
+      -webkit-appearance: none;
+      margin: 0;
     }
+
     input.cell[data-f="quantity"] {
-        -moz-appearance: textfield;
+      -moz-appearance: textfield;
     }
 
     /* ---- Login modal ---- */
 
     .modal-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.6);
-        align-items: center;
-        justify-content: center;
-        z-index: 100;
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
     }
 
     .modal-overlay.visible {
-        display: flex;
+      display: flex;
     }
 
     .modal {
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 24px;
-        width: 100%;
-        max-width: 320px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 24px;
+      width: 100%;
+      max-width: 320px;
     }
 
     .modal h2 {
-        font-size: 15px;
-        text-transform: none;
-        letter-spacing: normal;
-        color: var(--text);
-        margin: 0 0 4px;
+      font-size: 15px;
+      text-transform: none;
+      letter-spacing: normal;
+      color: var(--text);
+      margin: 0 0 4px;
     }
 
     .modal .hint {
-        margin: 0 0 16px;
+      margin: 0 0 16px;
     }
 
     .modal label {
-        display: block;
-        font-size: 11px;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: .05em;
-        margin: 12px 0 6px;
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin: 12px 0 6px;
     }
 
     .modal input.text-control {
-        width: 100%;
+      width: 100%;
     }
 
     .modal-actions {
-        display: flex;
-        gap: 8px;
-        margin-top: 18px;
+      display: flex;
+      gap: 8px;
+      margin-top: 18px;
     }
 
     .modal-actions button {
-        flex: 1;
+      flex: 1;
     }
 
     /* ---- Closed-position / realised profit summary ---- */
     .realized-summary {
-        margin: 0 0 22px;
-        padding: 18px;
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        background: var(--panel, transparent);
+      margin: 0 0 22px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel, transparent);
     }
+
     .realized-summary-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: 12px;
-        margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 14px;
     }
-    .realized-summary-head h2 { margin: 0; font-size: 1rem; }
+
+    .realized-summary-head h2 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
     .realized-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 12px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
     }
-    .realized-metric { padding: 10px 12px; border-radius: 8px; background: var(--surface, rgba(255,255,255,.03)); }
-    .realized-metric .value { font-weight: 700; font-size: 1.05rem; }
-    .realized-metric .label { margin-top: 3px; font-size: .78rem; color: var(--muted); }
-    .realized-table { margin-top: 16px; }
-    .realized-table th, .realized-table td { padding: 9px 10px; }
-    @media (max-width: 720px) { .realized-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+    .realized-metric {
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: var(--surface, rgba(255, 255, 255, .03));
+    }
+
+    .realized-metric .value {
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .realized-metric .label {
+      margin-top: 3px;
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
+    .realized-table {
+      margin-top: 16px;
+    }
+
+    .realized-table th,
+    .realized-table td {
+      padding: 9px 10px;
+    }
+
+    @media (max-width: 720px) {
+      .realized-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
 
     /* This view intentionally contains only closed-trade reporting. */
     .realized-profit-page #portfolioStats,
-    .realized-profit-page #pageBody { display: none !important; }
-    .realized-profit-page #realizedSummary { margin-top: 0; }
-    .realized-profit-page #editEntryBar,
-    .realized-profit-page #editModeActions { display: none !important; }
+    .realized-profit-page #pageBody {
+      display: none !important;
+    }
 
-    .realized-profit-page .wrap { max-width: 1500px; }
+    .realized-profit-page #realizedSummary {
+      margin-top: 0;
+    }
+
+    .realized-profit-page #editEntryBar,
+    .realized-profit-page #editModeActions {
+      display: none !important;
+    }
+
+    .realized-profit-page .wrap {
+      max-width: 1500px;
+    }
+
     .realized-profit-page .realized-summary {
-        border: 1px solid var(--line);
-        background: linear-gradient(145deg, rgba(16, 28, 41, .78), rgba(9, 18, 28, .72));
-        padding: clamp(18px, 2.2vw, 28px);
+      border: 1px solid var(--line);
+      background: linear-gradient(145deg, rgba(16, 28, 41, .78), rgba(9, 18, 28, .72));
+      padding: clamp(18px, 2.2vw, 28px);
     }
-    .realized-profit-page .realized-summary-head { margin-bottom: 20px; }
-    .realized-profit-page .realized-summary-head h2 { font-size: 1.15rem; }
-    .realized-profit-page .realized-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+
+    .realized-profit-page .realized-summary-head {
+      margin-bottom: 20px;
+    }
+
+    .realized-profit-page .realized-summary-head h2 {
+      font-size: 1.15rem;
+    }
+
+    .realized-profit-page .realized-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
     .realized-profit-page .realized-metric {
-        min-height: 104px;
-        padding: 18px;
-        border: 1px solid var(--line);
-        background: rgba(9, 18, 28, .5);
+      min-height: 104px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: rgba(9, 18, 28, .5);
     }
-    .realized-profit-page .realized-metric .value { font-size: 1.35rem; margin-top: 14px; }
-    .realized-profit-page .realized-metric .label { font-size: .78rem; letter-spacing: .03em; text-transform: uppercase; }
-    .realized-performance-grid { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(260px, .9fr); gap: 16px; margin-top: 18px; }
+
+    .realized-profit-page .realized-metric .value {
+      font-size: 1.35rem;
+      margin-top: 14px;
+    }
+
+    .realized-profit-page .realized-metric .label {
+      font-size: .78rem;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
+    .realized-performance-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.65fr) minmax(260px, .9fr);
+      gap: 16px;
+      margin-top: 18px;
+    }
+
     .realized-panel {
-        border: 1px solid var(--line);
-        border-radius: 9px;
-        padding: 17px;
-        background: rgba(9, 18, 28, .45);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 17px;
+      background: rgba(9, 18, 28, .45);
     }
-    .realized-panel h3 { margin: 0 0 16px; font-size: .95rem; }
-    .realized-chart { width: 100%; min-height: 230px; }
-    .realized-chart svg { width: 100%; height: 240px; overflow: visible; }
-    .trend-grid { stroke: var(--line); stroke-dasharray: 3 4; }
-    .trend-area { fill: rgba(45, 212, 191, .13); }
-    .trend-line { fill: none; stroke: var(--watch); stroke-width: 2.25; }
-    .trend-dot { fill: var(--watch); stroke: #102433; stroke-width: 2; }
-    .trend-axis { fill: var(--muted); font-size: 10px; }
-    .outcome-list { display: grid; gap: 10px; }
-    .outcome-item { display:flex; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); }
-    .outcome-item:last-child { border-bottom: 0; }
-    .outcome-item .name { color: var(--muted); font-size: .82rem; }
-    .outcome-item .amount { font-weight: 700; text-align:right; }
-    .outcome-note { color: var(--muted); font-size: .8rem; margin: 14px 0 0; }
-    .realized-table { margin-top: 18px; border: 1px solid var(--line); border-radius: 9px; }
-    .realized-table::before { content: "Closed Trades"; display: block; padding: 16px 17px 4px; font-weight: 700; }
-    @media (max-width: 960px) { .realized-profit-page .realized-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .realized-performance-grid { grid-template-columns: 1fr; } }
+
+    .realized-panel h3 {
+      margin: 0 0 16px;
+      font-size: .95rem;
+    }
+
+    .realized-chart {
+      width: 100%;
+      min-height: 230px;
+    }
+
+    .realized-chart svg {
+      width: 100%;
+      height: 240px;
+      overflow: visible;
+    }
+
+    .trend-grid {
+      stroke: var(--line);
+      stroke-dasharray: 3 4;
+    }
+
+    .trend-area {
+      fill: rgba(45, 212, 191, .13);
+    }
+
+    .trend-line {
+      fill: none;
+      stroke: var(--watch);
+      stroke-width: 2.25;
+    }
+
+    .trend-dot {
+      fill: var(--watch);
+      stroke: #102433;
+      stroke-width: 2;
+    }
+
+    .trend-axis {
+      fill: var(--muted);
+      font-size: 10px;
+    }
+
+    .outcome-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .outcome-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .outcome-item:last-child {
+      border-bottom: 0;
+    }
+
+    .outcome-item .name {
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .outcome-item .amount {
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .outcome-note {
+      color: var(--muted);
+      font-size: .8rem;
+      margin: 14px 0 0;
+    }
+
+    .realized-table {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+    }
+
+    .realized-table::before {
+      content: "Closed Trades";
+      display: block;
+      padding: 16px 17px 4px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 960px) {
+      .realized-profit-page .realized-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .realized-performance-grid {
+        grid-template-columns: 1fr;
+      }
+    }
 
     /* Full realised-portfolio dashboard */
-    .realized-profit-page > .wrap { display: none; }
-    .rp-shell { min-height: 100vh; display: grid; grid-template-columns: 185px minmax(0, 1fr); background: #06121e; color: #edf5ff; }
-    .rp-sidebar { border-right: 1px solid #183044; padding: 20px 12px; background: #071522; }
-    .rp-brand { display:flex; gap:10px; align-items:center; padding:8px 8px 22px; border-bottom:1px solid #183044; font-weight:700; }
-    .rp-brand-mark { color:#2bdd9a; font-size:25px; line-height:1; }
-    .rp-nav { display:grid; gap:5px; margin-top:15px; }
-    .rp-nav a { color:#d7e2ef; text-decoration:none; padding:10px 11px; border-radius:5px; font-size:.86rem; }
-    .rp-nav a.active { color:#2be3a0; background:#063d36; }
-    .rp-market { margin-top:28px; border:1px solid #173047; border-radius:7px; overflow:hidden; }
-    .rp-market h3 { margin:0; padding:12px; font-size:.78rem; color:#92a4b8; font-weight:500; }
-    .rp-index { padding:11px 12px; border-top:1px solid #173047; }
-    .rp-index span { display:block; font-size:.7rem; color:#93a5b8; } .rp-index strong { display:inline-block; margin-top:5px; font-size:.85rem; } .rp-index em { float:right; margin-top:5px; color:#2ce29b; font-size:.72rem; font-style:normal; }
-    .rp-main { padding:22px clamp(16px, 2vw, 32px) 32px; max-width:1500px; width:100%; margin:0 auto; }
-    .rp-head { display:flex; justify-content:space-between; gap:18px; align-items:start; margin-bottom:18px; }
-    .rp-head h1 { font-size:1.55rem; margin:0 0 5px; } .rp-head p { margin:0; color:#a9b8c8; font-size:.82rem; }
-    .rp-actions { display:flex; gap:10px; } .rp-actions button { background:#0a1928; border:1px solid #254057; color:#e3edf7; border-radius:6px; padding:10px 13px; cursor:pointer; }
-    .rp-kpis { display:grid; grid-template-columns:repeat(6,minmax(130px,1fr)); gap:12px; }
-    .rp-kpi,.rp-panel { border:1px solid #183249; border-radius:7px; background:linear-gradient(135deg,#0a1826,#081521); }
-    .rp-kpi { padding:16px; min-height:76px; } .rp-kpi .label { color:#b2c0d0; font-size:.74rem; } .rp-kpi .value { margin-top:10px; font-weight:700; font-size:1.25rem; } .rp-kpi .note { font-size:.72rem; color:#97a9bb; margin-top:8px; }
-    .rp-pos { color:#2ce19b; } .rp-neg { color:#ff594e; } .rp-blue { color:#57a9ff; }
-    .rp-grid { display:grid; grid-template-columns:minmax(0,1.75fr) minmax(310px,.8fr); gap:12px; margin-top:14px; }
-    .rp-panel { padding:14px; } .rp-panel h2 { font-size:.9rem; margin:0 0 12px; } .rp-chart { min-height:210px; } .rp-chart svg { width:100%; height:220px; overflow:visible; }
-    .rp-chart-grid { stroke:#254056; stroke-dasharray:3 4; } .rp-chart-label { fill:#9eb0c4; font-size:10px; } .rp-bar-pos { fill:#23c789; } .rp-bar-neg { fill:#ef5249; }
-    .rp-summary-row { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #1b344b; font-size:.78rem; color:#c4d0dd; }.rp-summary-row:last-child{border-bottom:0}.rp-summary-row strong{color:#edf5ff}.rp-total{margin-top:10px;padding:12px;border:1px solid #1c8c65;border-radius:6px;color:#dce9f5;font-weight:600}.rp-total b{float:right;color:#2ce19b}
-    .rp-lower { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1.05fr) minmax(280px,.8fr); gap:12px; margin-top:12px; }.rp-sector-body {display:flex;align-items:center;gap:16px}.rp-donut {width:142px;min-width:142px;height:142px}.rp-sector-list{list-style:none;padding:0;margin:0;width:100%;display:grid;gap:8px}.rp-sector-list li{display:flex;justify-content:space-between;font-size:.75rem;color:#b7c5d4}.rp-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px}.rp-month-list{display:grid;gap:10px}.rp-month-row{display:grid;grid-template-columns:52px 1fr 62px;gap:8px;align-items:center;font-size:.74rem;color:#b6c4d3}.rp-month-track{height:10px;background:#102337;border-radius:2px}.rp-month-fill{height:100%;background:#25c789;border-radius:2px}.rp-stocks{display:grid;gap:9px}.rp-stock{display:flex;justify-content:space-between;gap:8px;font-size:.76rem}.rp-stock small{display:block;color:#8ea1b4;margin-top:2px}.rp-empty{color:#92a4b8;font-size:.8rem;padding:22px 0;text-align:center}
-    .rp-trades { margin-top:12px; overflow:auto; }.rp-table{width:100%;border-collapse:collapse;font-size:.74rem;min-width:760px}.rp-table th{color:#9eb0c3;font-weight:500;text-align:left;padding:9px;border-bottom:1px solid #1d364b}.rp-table td{padding:10px 9px;border-bottom:1px solid #132b40;color:#dfe9f3}.rp-table .num{text-align:right}.rp-footer{margin-top:16px;color:#8397aa;font-size:.73rem}
-    @media(max-width:1200px){.rp-kpis{grid-template-columns:repeat(3,1fr)}.rp-lower{grid-template-columns:1fr 1fr}.rp-lower .rp-stocks-panel{grid-column:span 2}}@media(max-width:760px){.rp-shell{grid-template-columns:1fr}.rp-sidebar{display:none}.rp-main{padding:16px}.rp-head{display:block}.rp-actions{margin-top:14px}.rp-kpis,.rp-grid,.rp-lower{grid-template-columns:1fr}.rp-lower .rp-stocks-panel{grid-column:auto}.rp-sector-body{flex-wrap:wrap}}
-</style>
+    .realized-profit-page>.wrap {
+      display: none;
+    }
+
+    .rp-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 185px minmax(0, 1fr);
+      background: #06121e;
+      color: #edf5ff;
+    }
+
+    .rp-sidebar {
+      border-right: 1px solid #183044;
+      padding: 20px 12px;
+      background: #071522;
+    }
+
+    .rp-brand {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 8px 22px;
+      border-bottom: 1px solid #183044;
+      font-weight: 700;
+    }
+
+    .rp-brand-mark {
+      color: #2bdd9a;
+      font-size: 25px;
+      line-height: 1;
+    }
+
+    .rp-nav {
+      display: grid;
+      gap: 5px;
+      margin-top: 15px;
+    }
+
+    .rp-nav a {
+      color: #d7e2ef;
+      text-decoration: none;
+      padding: 10px 11px;
+      border-radius: 5px;
+      font-size: .86rem;
+    }
+
+    .rp-nav a.active {
+      color: #2be3a0;
+      background: #063d36;
+    }
+
+    .rp-main {
+      padding: 22px clamp(16px, 2vw, 32px) 32px;
+      max-width: 1500px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .rp-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: start;
+      margin-bottom: 18px;
+    }
+
+    .rp-head h1 {
+      font-size: 1.55rem;
+      margin: 0 0 5px;
+    }
+
+    .rp-head p {
+      margin: 0;
+      color: #a9b8c8;
+      font-size: .82rem;
+    }
+
+    .rp-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .rp-actions button {
+      background: #0a1928;
+      border: 1px solid #254057;
+      color: #e3edf7;
+      border-radius: 6px;
+      padding: 10px 13px;
+      cursor: pointer;
+    }
+
+    .rp-kpis {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .rp-kpi,
+    .rp-panel {
+      border: 1px solid #183249;
+      border-radius: 7px;
+      background: linear-gradient(135deg, #0a1826, #081521);
+    }
+
+    .rp-kpi {
+      padding: 16px;
+      min-height: 76px;
+    }
+
+    .rp-kpi .label {
+      color: #b2c0d0;
+      font-size: .74rem;
+    }
+
+    .rp-kpi .value {
+      margin-top: 10px;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .rp-kpi .note {
+      font-size: .72rem;
+      color: #97a9bb;
+      margin-top: 8px;
+    }
+
+    .rp-pos {
+      color: #2ce19b;
+    }
+
+    .rp-neg {
+      color: #ff594e;
+    }
+
+    .rp-blue {
+      color: #57a9ff;
+    }
+
+    .rp-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.75fr) minmax(310px, .8fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .rp-panel {
+      padding: 14px;
+    }
+
+    .rp-panel h2 {
+      font-size: .9rem;
+      margin: 0 0 12px;
+    }
+
+    .rp-chart {
+      min-height: 210px;
+    }
+
+    .rp-chart svg {
+      width: 100%;
+      height: 220px;
+      overflow: visible;
+    }
+
+    .rp-chart-grid {
+      stroke: #254056;
+      stroke-dasharray: 3 4;
+    }
+
+    .rp-chart-label {
+      fill: #9eb0c4;
+      font-size: 10px;
+    }
+
+    .rp-bar-pos {
+      fill: #23c789;
+    }
+
+    .rp-bar-neg {
+      fill: #ef5249;
+    }
+
+    .rp-summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #1b344b;
+      font-size: .78rem;
+      color: #c4d0dd;
+    }
+
+    .rp-summary-row:last-child {
+      border-bottom: 0
+    }
+
+    .rp-summary-row strong {
+      color: #edf5ff
+    }
+
+    .rp-total {
+      margin-top: 10px;
+      padding: 12px;
+      border: 1px solid #1c8c65;
+      border-radius: 6px;
+      color: #dce9f5;
+      font-weight: 600
+    }
+
+    .rp-total b {
+      float: right;
+      color: #2ce19b
+    }
+
+    .rp-lower {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.05fr) minmax(280px, .8fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .rp-sector-body {
+      display: flex;
+      align-items: center;
+      gap: 16px
+    }
+
+    .rp-donut {
+      width: 142px;
+      min-width: 142px;
+      height: 142px
+    }
+
+    .rp-sector-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      display: grid;
+      gap: 8px
+    }
+
+    .rp-sector-list li {
+      display: flex;
+      justify-content: space-between;
+      font-size: .75rem;
+      color: #b7c5d4
+    }
+
+    .rp-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 7px
+    }
+
+    .rp-month-list {
+      display: grid;
+      gap: 10px
+    }
+
+    .rp-month-row {
+      display: grid;
+      grid-template-columns: 52px 1fr 62px;
+      gap: 8px;
+      align-items: center;
+      font-size: .74rem;
+      color: #b6c4d3
+    }
+
+    .rp-month-track {
+      height: 10px;
+      background: #102337;
+      border-radius: 2px
+    }
+
+    .rp-month-fill {
+      height: 100%;
+      background: #25c789;
+      border-radius: 2px
+    }
+
+    .rp-stocks {
+      display: grid;
+      gap: 9px
+    }
+
+    .rp-stock {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: .76rem
+    }
+
+    .rp-stock small {
+      display: block;
+      color: #8ea1b4;
+      margin-top: 2px
+    }
+
+    .rp-empty {
+      color: #92a4b8;
+      font-size: .8rem;
+      padding: 22px 0;
+      text-align: center
+    }
+
+    .rp-trades {
+      margin-top: 12px;
+      overflow: auto;
+    }
+
+    .rp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .74rem;
+      min-width: 760px
+    }
+
+    .rp-table th {
+      color: #9eb0c3;
+      font-weight: 500;
+      text-align: left;
+      padding: 9px;
+      border-bottom: 1px solid #1d364b
+    }
+
+    .rp-table td {
+      padding: 10px 9px;
+      border-bottom: 1px solid #132b40;
+      color: #dfe9f3
+    }
+
+    .rp-table .num {
+      text-align: right
+    }
+
+    .rp-footer {
+      margin-top: 16px;
+      color: #8397aa;
+      font-size: .73rem
+    }
+
+    @media(max-width:1400px) {
+      .rp-kpis {
+        grid-template-columns: repeat(3, 1fr)
+      }
+
+      .rp-lower {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .rp-lower .rp-stocks-panel {
+        grid-column: span 2
+      }
+    }
+
+    @media(max-width:960px) {
+      .rp-shell {
+        grid-template-columns: 1fr
+      }
+
+      .rp-sidebar {
+        display: none
+      }
+
+      .rp-main {
+        padding: 18px
+      }
+
+      .rp-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media(max-width:760px) {
+      .rp-main {
+        padding: 16px
+      }
+
+      .rp-head {
+        display: block
+      }
+
+      .rp-actions {
+        margin-top: 14px
+      }
+
+      .rp-kpis,
+      .rp-grid,
+      .rp-lower {
+        grid-template-columns: 1fr
+      }
+
+      .rp-lower .rp-stocks-panel {
+        grid-column: auto
+      }
+
+      .rp-sector-body {
+        flex-wrap: wrap
+      }
+    }
+  </style>
 </head>
 
 <body class="realized-profit-page">
-    <div class="rp-shell">
-        <aside class="rp-sidebar">
-            <div class="rp-brand"><span class="rp-brand-mark">↗</span><span>PORTFOLIO</span></div>
-            <nav class="rp-nav">
-                <a href="index.html">⌂ &nbsp; Dashboard</a><a href="portfolio.html">▣ &nbsp; Holdings</a><a href="heatmap.html">✧ &nbsp; Heat Map</a><a class="active" href="realized-profit.html">▣ &nbsp; Realized</a>
-            </nav>
-            <div class="rp-market"><h3>Market Overview</h3><div class="rp-index"><span>NIFTY 50</span><strong>24,502.15</strong><em>+0.62%</em></div><div class="rp-index"><span>SENSEX</span><strong>80,197.88</strong><em>+0.48%</em></div><div class="rp-index"><span>BANK NIFTY</span><strong>55,321.45</strong><em style="color:#ff594e">-0.18%</em></div></div>
-        </aside>
-        <main class="rp-main">
-            <header class="rp-head"><div><h1>Realised Portfolio</h1><p>Track your realised profits, trading performance and closed positions</p></div><div class="rp-actions"><button type="button" id="rpRefresh">↻ Refresh</button><button type="button" id="rpExport">⇩ Export</button></div></header>
-            <section class="rp-kpis" id="rpKpis"></section>
-            <section class="rp-grid"><div class="rp-panel"><h2>Realised Profit Over Time</h2><div class="rp-chart" id="rpTimeChart"></div></div><div class="rp-panel"><h2>Realised P&amp;L Summary</h2><div id="rpPnlSummary"></div></div></section>
-            <section class="rp-lower"><div class="rp-panel"><h2>Realised Profit by Sector</h2><div class="rp-sector-body" id="rpSector"></div></div><div class="rp-panel"><h2>Realised Profit by Month (₹)</h2><div class="rp-month-list" id="rpMonths"></div></div><div class="rp-panel rp-stocks-panel"><h2>Top Profitable Stocks</h2><div class="rp-stocks" id="rpWinners"></div><h2 style="margin-top:22px">Top Loss Making Stocks</h2><div class="rp-stocks" id="rpLosers"></div></div></section>
-            <section class="rp-panel rp-trades"><h2>Realised Trades</h2><div id="rpTrades"></div></section>
-            <footer class="rp-footer" id="rpUpdated"></footer>
-        </main>
+  <div class="rp-shell">
+    <aside class="rp-sidebar">
+      <div class="rp-brand"><span class="rp-brand-mark">↗</span><span>PORTFOLIO</span></div>
+      <nav class="rp-nav">
+        <a href="index.html">⌂ &nbsp; Dashboard</a><a href="admin.html">▣ &nbsp; Holdings</a><a href="heatmap.html">✧
+          &nbsp; Heat Map</a><a class="active" href="realized-profit.html">▣ &nbsp; Realized</a>
+        <a href="all-transactions.html">↗ &nbsp;Sold Transactions</a>
+      </nav>
+    </aside>
+    <main class="rp-main">
+      <header class="rp-head">
+        <div>
+          <h1>Realised Portfolio</h1>
+          <p>Track your realised profits, trading performance and closed positions</p>
+        </div>
+      </header>
+      <section class="rp-kpis" id="rpKpis"></section>
+      <section class="rp-grid">
+        <div class="rp-panel">
+          <h2>Realised Profit Over Time</h2>
+          <div class="rp-chart" id="rpTimeChart"></div>
+        </div>
+        <div class="rp-panel">
+          <h2>Realised P&amp;L Summary</h2>
+          <div id="rpPnlSummary"></div>
+        </div>
+      </section>
+      <section class="rp-lower">
+        <div class="rp-panel">
+          <h2>Realised Profit by Sector</h2>
+          <div class="rp-sector-body" id="rpSector"></div>
+        </div>
+        <div class="rp-panel">
+          <h2>Realised Profit by Month (₹)</h2>
+          <div class="rp-month-list" id="rpMonths"></div>
+        </div>
+        <div class="rp-panel rp-stocks-panel">
+          <h2>Top Profitable Stocks</h2>
+          <div class="rp-stocks" id="rpWinners"></div>
+          <h2 style="margin-top:22px">Top Loss Making Stocks</h2>
+          <div class="rp-stocks" id="rpLosers"></div>
+        </div>
+      </section>
+      <section class="rp-panel rp-trades">
+        <h2>Realised Trades</h2>
+        <div id="rpTrades"></div>
+      </section>
+      <footer class="rp-footer" id="rpUpdated"></footer>
+    </main>
+  </div>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1>Realized Profit</h1>
+        <p class="sub last-updated-row">
+          <span id="lastUpdated">Loading...</span>
+          <button class="icon-btn subtle" id="refreshBtn" title="Refresh">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10" />
+              <polyline points="1 20 1 14 7 14" />
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+            </svg>
+          </button>
+        </p>
+      </div>
+
+      <div class="topbar-right">
+        <nav class="navbar">
+          <a href="index.html">Dashboard</a>
+          <a href="heatmap.html">Heat Map</a>
+          <a href="admin.html">Portfolio</a>
+          <a href="realized-profit.html" class="active">Realized Profit</a>
+        </nav>
+        <div class="sidebar-account-bar" id="sidebarAccountBar">
+          <span class="hint" id="whoami" style="display:none;"></span>
+          <div class="sidebar-account-actions">
+            <div class="edit-entry-row" id="editEntryBar">
+              <button class="primary icon-text-btn" id="editBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M12 20h9" />
+                  <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                </svg>
+                Edit
+              </button>
+            </div>
+            <div class="edit-mode-actions" id="editModeActions" style="display:none;">
+              <button id="cancelBtn">Cancel</button>
+              <button class="primary icon-text-btn" id="saveBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z" />
+                  <polyline points="17 21 17 13 7 13 7 21" />
+                  <polyline points="7 3 7 8 15 8" />
+                </svg>
+                Save Changes
+              </button>
+            </div>
+            <button class="icon-text-btn" id="logoutBtn" style="display:none;">
+              Sign out
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <button id="signInBtn" style="display:none;">Sign in</button>
+      </div>
     </div>
-    <div class="wrap">
-        <div class="topbar">
-            <div class="topbar-left">
-                <h1>Realized Profit</h1>
-                <p class="sub last-updated-row">
-                    <span id="lastUpdated">Loading...</span>
-                    <button class="icon-btn subtle" id="refreshBtn" title="Refresh">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                    </button>
-                </p>
-            </div>
 
-            <div class="topbar-right">
-                <nav class="navbar">
-                    <a href="index.html">Dashboard</a>
-                    <a href="heatmap.html">Heat Map</a>
-                    <a href="portfolio.html">Portfolio</a>
-                    <a href="realized-profit.html" class="active">Realized Profit</a>
-                </nav>
-                <div class="sidebar-account-bar" id="sidebarAccountBar">
-                    <span class="hint" id="whoami" style="display:none;"></span>
-                    <div class="sidebar-account-actions">
-                        <div class="edit-entry-row" id="editEntryBar">
-                            <button class="primary icon-text-btn" id="editBtn">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                                Edit
-                            </button>
-                        </div>
-                        <div class="edit-mode-actions" id="editModeActions" style="display:none;">
-                            <button id="cancelBtn">Cancel</button>
-                            <button class="primary icon-text-btn" id="saveBtn">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                                Save Changes
-                            </button>
-                        </div>
-                        <button class="icon-text-btn" id="logoutBtn" style="display:none;">
-                            Sign out
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                        </button>
-                    </div>
-                </div>
-                <button id="signInBtn" style="display:none;">Sign in</button>
-            </div>
+    <div class="stats" id="portfolioStats" style="display:none;">
+      <div class="stat">
+        <div class="stat-icon icon-blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+            <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+            <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
+          </svg>
         </div>
-
-        <div class="stats" id="portfolioStats" style="display:none;">
-            <div class="stat">
-                <div class="stat-icon icon-blue">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-                </div>
-                <div class="stat-body">
-                    <div class="n" id="statInvestment">—</div>
-                    <div class="l">Total Investment</div>
-                    <div class="stat-sub" id="statInvestmentSub"></div>
-                </div>
-            </div>
-            <div class="stat">
-                <div class="stat-icon icon-purple">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
-                </div>
-                <div class="stat-body">
-                    <div class="n" id="statCurrentValue">—</div>
-                    <div class="l">Current Value</div>
-                </div>
-            </div>
-            <div class="stat">
-                <div class="stat-icon icon-teal">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-                </div>
-                <div class="stat-body">
-                    <div class="n" id="statGainLoss">—</div>
-                    <div class="l">Total Gain / Loss</div>
-                    <div class="stat-sub" id="statGainLossSub"></div>
-                </div>
-            </div>
-            <div class="stat">
-                <div class="stat-icon icon-orange">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
-                </div>
-                <div class="stat-body">
-                    <div class="n" id="statTodayChange">—</div>
-                    <div class="l">Today's Change</div>
-                    <div class="stat-sub" id="statTodayChangeSub"></div>
-                </div>
-            </div>
+        <div class="stat-body">
+          <div class="n" id="statInvestment">—</div>
+          <div class="l">Total Investment</div>
+          <div class="stat-sub" id="statInvestmentSub"></div>
         </div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon icon-purple">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+            <path d="M22 12A10 10 0 0 0 12 2v10z" />
+          </svg>
+        </div>
+        <div class="stat-body">
+          <div class="n" id="statCurrentValue">—</div>
+          <div class="l">Current Value</div>
+        </div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon icon-teal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+            <polyline points="17 6 23 6 23 12" />
+          </svg>
+        </div>
+        <div class="stat-body">
+          <div class="n" id="statGainLoss">—</div>
+          <div class="l">Total Gain / Loss</div>
+          <div class="stat-sub" id="statGainLossSub"></div>
+        </div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon icon-orange">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <line x1="12" y1="20" x2="12" y2="10" />
+            <line x1="18" y1="20" x2="18" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="16" />
+          </svg>
+        </div>
+        <div class="stat-body">
+          <div class="n" id="statTodayChange">—</div>
+          <div class="l">Today's Change</div>
+          <div class="stat-sub" id="statTodayChangeSub"></div>
+        </div>
+      </div>
+    </div>
 
-        <section class="realized-summary" id="realizedSummary" style="display:none;" aria-labelledby="realizedHeading">
-            <div class="realized-summary-head">
-                <h2 id="realizedHeading">Realized Profit Summary</h2>
-                <span class="hint" id="realizedCount"></span>
-            </div>
-            <div class="realized-grid">
-                <div class="realized-metric"><div class="value" id="realizedTotal">—</div><div class="label">Realized Profit / Loss</div></div>
-                <div class="realized-metric"><div class="value" id="realizedReturn">—</div><div class="label">Return on Closed Positions</div></div>
-                <div class="realized-metric"><div class="value" id="realizedWins">—</div><div class="label">Winning / Losing Trades</div></div>
-                <div class="realized-metric"><div class="value" id="realizedHoldingPeriod">—</div><div class="label">Average Holding Period</div></div>
-            </div>
-            <div class="realized-performance-grid">
-                <section class="realized-panel">
-                    <h3>Realized Profit Trend</h3>
-                    <div class="realized-chart" id="realizedTrend" aria-live="polite"></div>
-                </section>
-                <section class="realized-panel">
-                    <h3>Trade Outcomes</h3>
-                    <div class="outcome-list" id="realizedInsights"></div>
-                    <p class="outcome-note">Based only on completed trades; live market prices are not used here.</p>
-                </section>
-            </div>
-            <div class="table-scroll realized-table">
-                <table>
-                    <thead><tr><th>Symbol</th><th class="num">Qty</th><th class="num">Buy ₹</th><th class="num">Sell ₹</th><th class="num">Profit ₹</th><th class="num">Return</th><th>Sold</th><th>Term</th></tr></thead>
-                    <tbody id="realizedTbody"></tbody>
-                </table>
-            </div>
+    <section class="realized-summary" id="realizedSummary" style="display:none;" aria-labelledby="realizedHeading">
+      <div class="realized-summary-head">
+        <h2 id="realizedHeading">Realized Profit Summary</h2>
+        <span class="hint" id="realizedCount"></span>
+      </div>
+      <div class="realized-grid">
+        <div class="realized-metric">
+          <div class="value" id="realizedTotal">—</div>
+          <div class="label">Realized Profit / Loss</div>
+        </div>
+        <div class="realized-metric">
+          <div class="value" id="realizedReturn">—</div>
+          <div class="label">Return on Closed Positions</div>
+        </div>
+        <div class="realized-metric">
+          <div class="value" id="realizedWins">—</div>
+          <div class="label">Winning / Losing Trades</div>
+        </div>
+        <div class="realized-metric">
+          <div class="value" id="realizedHoldingPeriod">—</div>
+          <div class="label">Average Holding Period</div>
+        </div>
+      </div>
+      <div class="realized-performance-grid">
+        <section class="realized-panel">
+          <h3>Realized Profit Trend</h3>
+          <div class="realized-chart" id="realizedTrend" aria-live="polite"></div>
         </section>
+        <section class="realized-panel">
+          <h3>Trade Outcomes</h3>
+          <div class="outcome-list" id="realizedInsights"></div>
+          <p class="outcome-note">Based only on completed trades; live market prices are not used here.</p>
+        </section>
+      </div>
+      <div class="table-scroll realized-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th class="num">Qty</th>
+              <th class="num">Buy ₹</th>
+              <th class="num">Sell ₹</th>
+              <th class="num">Profit ₹</th>
+              <th class="num">Return</th>
+              <th>Sold</th>
+              <th>Term</th>
+            </tr>
+          </thead>
+          <tbody id="realizedTbody"></tbody>
+        </table>
+      </div>
+    </section>
 
-        <div class="page-body" id="pageBody">
-            <div class="main-col">
-                <div class="edit-banner" id="bottomBar" style="display:none;">
-                    <div class="edit-banner-text">
-                        <span class="edit-banner-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                        </span>
-                        <div>
-                            <div class="edit-banner-title">Editing Portfolio</div>
-                            <div class="hint" id="saveStatus">You have unsaved changes</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="table-scroll" id="tableView">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width:11%"><button class="th-sort" id="thSortSymbol" data-field="symbol">Symbol<span class="sort-arrow"></span></button></th>
-                                <th class="num" style="width:6%">Qty</th>
-                                <th class="num" style="width:9%">Buy Price</th>
-                                <th class="num" style="width:9%" id="curPriceHeaderCell">Current Price</th>
-                                <th class="num" style="width:7%" id="chgHeaderCell"><button class="th-sort" id="thSortChg" data-field="chg">Chg %<span class="sort-arrow"></span></button></th>
-                                <th class="num" style="width:9%"><button class="th-sort" id="thSortProfitRs" data-field="profitRs">Profit ₹<span class="sort-arrow"></span></button></th>
-                                <th class="num" style="width:8%"><button class="th-sort" id="thSortProfitPct" data-field="profitPct">Profit %<span class="sort-arrow"></span></button></th>
-                                <th class="num" style="width:8%">Target ₹</th>
-                                <th class="num" style="width:8%">Target %</th>
-                                <th style="width:9%">Buy Date</th>
-                                <th class="sell-date-cell" id="sellDateHeaderCell" style="width:9%">Sale</th>
-                                <th class="remove-cell" id="removeHeaderCell">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody"></tbody>
-                    </table>
-                </div>
-                <div class="empty" id="emptyMsg" style="display:none;">No holdings yet.</div>
-
-                <button class="add-row-btn" id="addRowBtn" style="display:none;">+ Add holding</button>
-
-                <datalist id="symbolList"></datalist>
+    <div class="page-body" id="pageBody">
+      <div class="main-col">
+        <div class="edit-banner" id="bottomBar" style="display:none;">
+          <div class="edit-banner-text">
+            <span class="edit-banner-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+              </svg>
+            </span>
+            <div>
+              <div class="edit-banner-title">Editing Portfolio</div>
+              <div class="hint" id="saveStatus">You have unsaved changes</div>
             </div>
-
-            <aside class="insights-row side-col" id="insightsRow">
-                <div class="insight-panels" id="insightPanels" style="display:none;">
-                    <div class="insight-panel">
-                        <p class="sidebar-title">Top Gainers</p>
-                        <ul class="insight-list" id="topGainersList"></ul>
-                    </div>
-                    <div class="insight-panel">
-                        <p class="sidebar-title">Top Losers</p>
-                        <ul class="insight-list" id="topLosersList"></ul>
-                    </div>
-                    <div class="insight-panel">
-                        <p class="sidebar-title">Allocation by Sector</p>
-                        <div class="donut-panel-body">
-                            <div class="donut-wrap" id="sectorDonutWrap"></div>
-                            <ul class="sector-legend" id="sectorAllocList"></ul>
-                        </div>
-                    </div>
-                </div>
-            </aside>
+          </div>
         </div>
-    </div>
 
-    <!-- Login modal -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal">
-            <h2>Sign in to edit</h2>
-            <p class="hint">Admin access required.</p>
+        <div class="table-scroll" id="tableView">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:11%"><button class="th-sort" id="thSortSymbol" data-field="symbol">Symbol<span
+                      class="sort-arrow"></span></button></th>
+                <th class="num" style="width:6%">Qty</th>
+                <th class="num" style="width:9%">Buy Price</th>
+                <th class="num" style="width:9%" id="curPriceHeaderCell">Current Price</th>
+                <th class="num" style="width:7%" id="chgHeaderCell"><button class="th-sort" id="thSortChg"
+                    data-field="chg">Chg %<span class="sort-arrow"></span></button></th>
+                <th class="num" style="width:9%"><button class="th-sort" id="thSortProfitRs"
+                    data-field="profitRs">Profit ₹<span class="sort-arrow"></span></button></th>
+                <th class="num" style="width:8%"><button class="th-sort" id="thSortProfitPct"
+                    data-field="profitPct">Profit %<span class="sort-arrow"></span></button></th>
+                <th class="num" style="width:8%">Target ₹</th>
+                <th class="num" style="width:8%">Target %</th>
+                <th style="width:9%">Buy Date</th>
+                <th class="sell-date-cell" id="sellDateHeaderCell" style="width:9%">Sale</th>
+                <th class="remove-cell" id="removeHeaderCell">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="emptyMsg" style="display:none;">No holdings yet.</div>
 
-            <label for="username">Username</label>
-            <input type="text" id="username" class="text-control" autocomplete="username">
+        <button class="add-row-btn" id="addRowBtn" style="display:none;">+ Add holding</button>
 
-            <label for="password">Password</label>
-            <input type="password" id="password" class="text-control" autocomplete="current-password">
+        <datalist id="symbolList"></datalist>
+      </div>
 
-            <p class="hint" id="loginError" style="color:var(--triggered);"></p>
-
-            <div class="modal-actions">
-                <button id="loginCancelBtn">Cancel</button>
-                <button class="primary" id="loginSubmitBtn">Sign in</button>
+      <aside class="insights-row side-col" id="insightsRow">
+        <div class="insight-panels" id="insightPanels" style="display:none;">
+          <div class="insight-panel">
+            <p class="sidebar-title">Top Gainers</p>
+            <ul class="insight-list" id="topGainersList"></ul>
+          </div>
+          <div class="insight-panel">
+            <p class="sidebar-title">Top Losers</p>
+            <ul class="insight-list" id="topLosersList"></ul>
+          </div>
+          <div class="insight-panel">
+            <p class="sidebar-title">Allocation by Sector</p>
+            <div class="donut-panel-body">
+              <div class="donut-wrap" id="sectorDonutWrap"></div>
+              <ul class="sector-legend" id="sectorAllocList"></ul>
             </div>
+          </div>
         </div>
+      </aside>
     </div>
+  </div>
 
-    <div class="modal-overlay" id="saleModal">
-        <div class="modal">
-            <h2>Close position</h2>
-            <p class="hint" id="salePositionLabel"></p>
-            <label for="salePrice">Sell price</label>
-            <input type="number" step="any" min="0" id="salePrice" class="text-control" placeholder="0.00">
-            <label for="saleDate">Sell date</label>
-            <input type="date" id="saleDate" class="text-control">
-            <p class="hint" id="saleError" style="color:var(--triggered);"></p>
-            <div class="modal-actions">
-                <button id="saleCancelBtn">Cancel</button>
-                <button class="primary" id="saleConfirmBtn">Close position</button>
-            </div>
-        </div>
+  <!-- Login modal -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <h2>Sign in to edit</h2>
+      <p class="hint">Admin access required.</p>
+
+      <label for="username">Username</label>
+      <input type="text" id="username" class="text-control" autocomplete="username">
+
+      <label for="password">Password</label>
+      <input type="password" id="password" class="text-control" autocomplete="current-password">
+
+      <p class="hint" id="loginError" style="color:var(--triggered);"></p>
+
+      <div class="modal-actions">
+        <button id="loginCancelBtn">Cancel</button>
+        <button class="primary" id="loginSubmitBtn">Sign in</button>
+      </div>
     </div>
+  </div>
 
-<script>
-(() => {
-  const API_BASE = "https://tiny-art-8473.dobbyop09.workers.dev";
+  <div class="modal-overlay" id="saleModal">
+    <div class="modal">
+      <h2>Close position</h2>
+      <p class="hint" id="salePositionLabel"></p>
+      <label for="salePrice">Sell price</label>
+      <input type="number" step="any" min="0" id="salePrice" class="text-control" placeholder="0.00">
+      <label for="saleDate">Sell date</label>
+      <input type="date" id="saleDate" class="text-control">
+      <p class="hint" id="saleError" style="color:var(--triggered);"></p>
+      <div class="modal-actions">
+        <button id="saleCancelBtn">Cancel</button>
+        <button class="primary" id="saleConfirmBtn">Close position</button>
+      </div>
+    </div>
+  </div>
 
-  const ICON_TRASH = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
+  <script>
+    (() => {
+      const API_BASE = "https://tiny-art-8473.dobbyop09.workers.dev";
 
-  let sessionToken = null;
-  let holdings = [];
-  let closedTransactions = [];
-  let holdingsSnapshot = [];
-  let closedTransactionsSnapshot = [];
-  let saleIndex = null;
-  let isEditing = false;
-  let symbolDataMap = {}; // SYMBOL -> { currentPrice, changePercent, sector, screenerUrl }
+      const ICON_TRASH = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
 
-  const thSortSymbol    = document.getElementById("thSortSymbol");
-  const thSortChg       = document.getElementById("thSortChg");
-  const thSortProfitRs  = document.getElementById("thSortProfitRs");
-  const thSortProfitPct = document.getElementById("thSortProfitPct");
-  let sortField = null;   // "symbol" | "chg" | "profitRs" | "profitPct" | null
-  let sortDir   = "asc";  // "asc" | "desc"
+      let sessionToken = null;
+      let holdings = [];
+      let closedTransactions = [];
+      let holdingsSnapshot = [];
+      let closedTransactionsSnapshot = [];
+      let saleIndex = null;
+      let isEditing = false;
+      let symbolDataMap = {}; // SYMBOL -> { currentPrice, changePercent, sector, screenerUrl }
 
-  const signInBtn       = document.getElementById("signInBtn");
-  const editBtn         = document.getElementById("editBtn");
-  const editEntryBar    = document.getElementById("editEntryBar");
-  const editModeActions = document.getElementById("editModeActions");
-  const sidebarAccountBar = document.getElementById("sidebarAccountBar");
-  const cancelBtn       = document.getElementById("cancelBtn");
-  const logoutBtn       = document.getElementById("logoutBtn");
-  const refreshBtn      = document.getElementById("refreshBtn");
-  const whoami          = document.getElementById("whoami");
-  const tbody            = document.getElementById("tbody");
-  const emptyMsg         = document.getElementById("emptyMsg");
-  const addRowBtn        = document.getElementById("addRowBtn");
-  const removeHeaderCell = document.getElementById("removeHeaderCell");
-  const sellDateHeaderCell = document.getElementById("sellDateHeaderCell");
-  const curPriceHeaderCell = document.getElementById("curPriceHeaderCell");
-  const chgHeaderCell      = document.getElementById("chgHeaderCell");
-  const bottomBar        = document.getElementById("bottomBar");
-  const saveStatus       = document.getElementById("saveStatus");
-  const tableView         = document.getElementById("tableView");
-  const lastUpdatedEl     = document.getElementById("lastUpdated");
-  const portfolioStats    = document.getElementById("portfolioStats");
-  const statInvestment    = document.getElementById("statInvestment");
-  const statInvestmentSub = document.getElementById("statInvestmentSub");
-  const statCurrentValue  = document.getElementById("statCurrentValue");
-  const statGainLoss      = document.getElementById("statGainLoss");
-  const statGainLossSub   = document.getElementById("statGainLossSub");
-  const statTodayChange   = document.getElementById("statTodayChange");
-  const statTodayChangeSub = document.getElementById("statTodayChangeSub");
-  const insightPanels     = document.getElementById("insightPanels");
-  const topGainersList    = document.getElementById("topGainersList");
-  const topLosersList     = document.getElementById("topLosersList");
-  const sectorAllocList   = document.getElementById("sectorAllocList");
-  const sectorDonutWrap   = document.getElementById("sectorDonutWrap");
-  const realizedSummary   = document.getElementById("realizedSummary");
-  const realizedCount     = document.getElementById("realizedCount");
-  const realizedTotal     = document.getElementById("realizedTotal");
-  const realizedReturn    = document.getElementById("realizedReturn");
-  const realizedWins      = document.getElementById("realizedWins");
-  const realizedHoldingPeriod = document.getElementById("realizedHoldingPeriod");
-  const realizedTbody     = document.getElementById("realizedTbody");
-  const realizedTrend     = document.getElementById("realizedTrend");
-  const realizedInsights  = document.getElementById("realizedInsights");
+      const thSortSymbol = document.getElementById("thSortSymbol");
+      const thSortChg = document.getElementById("thSortChg");
+      const thSortProfitRs = document.getElementById("thSortProfitRs");
+      const thSortProfitPct = document.getElementById("thSortProfitPct");
+      let sortField = null;   // "symbol" | "chg" | "profitRs" | "profitPct" | null
+      let sortDir = "asc";  // "asc" | "desc"
 
-  const loginModal    = document.getElementById("loginModal");
-  const loginError    = document.getElementById("loginError");
-  const usernameInput = document.getElementById("username");
-  const passwordInput = document.getElementById("password");
-  const saleModal     = document.getElementById("saleModal");
-  const salePositionLabel = document.getElementById("salePositionLabel");
-  const salePriceInput = document.getElementById("salePrice");
-  const saleDateInput  = document.getElementById("saleDate");
-  const saleError      = document.getElementById("saleError");
+      const signInBtn = document.getElementById("signInBtn");
+      const editBtn = document.getElementById("editBtn");
+      const editEntryBar = document.getElementById("editEntryBar");
+      const editModeActions = document.getElementById("editModeActions");
+      const sidebarAccountBar = document.getElementById("sidebarAccountBar");
+      const cancelBtn = document.getElementById("cancelBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const refreshBtn = document.getElementById("refreshBtn");
+      const whoami = document.getElementById("whoami");
+      const tbody = document.getElementById("tbody");
+      const emptyMsg = document.getElementById("emptyMsg");
+      const addRowBtn = document.getElementById("addRowBtn");
+      const removeHeaderCell = document.getElementById("removeHeaderCell");
+      const sellDateHeaderCell = document.getElementById("sellDateHeaderCell");
+      const curPriceHeaderCell = document.getElementById("curPriceHeaderCell");
+      const chgHeaderCell = document.getElementById("chgHeaderCell");
+      const bottomBar = document.getElementById("bottomBar");
+      const saveStatus = document.getElementById("saveStatus");
+      const tableView = document.getElementById("tableView");
+      const lastUpdatedEl = document.getElementById("lastUpdated");
+      const portfolioStats = document.getElementById("portfolioStats");
+      const statInvestment = document.getElementById("statInvestment");
+      const statInvestmentSub = document.getElementById("statInvestmentSub");
+      const statCurrentValue = document.getElementById("statCurrentValue");
+      const statGainLoss = document.getElementById("statGainLoss");
+      const statGainLossSub = document.getElementById("statGainLossSub");
+      const statTodayChange = document.getElementById("statTodayChange");
+      const statTodayChangeSub = document.getElementById("statTodayChangeSub");
+      const insightPanels = document.getElementById("insightPanels");
+      const topGainersList = document.getElementById("topGainersList");
+      const topLosersList = document.getElementById("topLosersList");
+      const sectorAllocList = document.getElementById("sectorAllocList");
+      const sectorDonutWrap = document.getElementById("sectorDonutWrap");
+      const realizedSummary = document.getElementById("realizedSummary");
+      const realizedCount = document.getElementById("realizedCount");
+      const realizedTotal = document.getElementById("realizedTotal");
+      const realizedReturn = document.getElementById("realizedReturn");
+      const realizedWins = document.getElementById("realizedWins");
+      const realizedHoldingPeriod = document.getElementById("realizedHoldingPeriod");
+      const realizedTbody = document.getElementById("realizedTbody");
+      const realizedTrend = document.getElementById("realizedTrend");
+      const realizedInsights = document.getElementById("realizedInsights");
 
-  // ---------------- Token storage (survives page refresh) ----------------
+      const loginModal = document.getElementById("loginModal");
+      const loginError = document.getElementById("loginError");
+      const usernameInput = document.getElementById("username");
+      const passwordInput = document.getElementById("password");
+      const saleModal = document.getElementById("saleModal");
+      const salePositionLabel = document.getElementById("salePositionLabel");
+      const salePriceInput = document.getElementById("salePrice");
+      const saleDateInput = document.getElementById("saleDate");
+      const saleError = document.getElementById("saleError");
 
-  const TOKEN_KEY = "portfolioAdminToken";
+      // ---------------- Token storage (survives page refresh) ----------------
 
-  function saveToken(token) {
-    try { sessionStorage.setItem(TOKEN_KEY, token); } catch (e) { /* ignore */ }
-  }
-  function readStoredToken() {
-    try { return sessionStorage.getItem(TOKEN_KEY); } catch (e) { return null; }
-  }
-  function clearStoredToken() {
-    try { sessionStorage.removeItem(TOKEN_KEY); } catch (e) { /* ignore */ }
-  }
-  function decodeTokenPayload(token) {
-    try {
-      const b64payload = token.split(".")[0];
-      const json = atob(b64payload.replace(/-/g, "+").replace(/_/g, "/"));
-      return JSON.parse(json);
-    } catch (e) {
-      return null;
-    }
-  }
+      const TOKEN_KEY = "portfolioAdminToken";
 
-  // ---------------- Auth UI state ----------------
-
-  function updateAuthUI(loggedIn, username) {
-    signInBtn.style.display   = loggedIn ? "none" : "inline-block";
-    logoutBtn.style.display   = loggedIn ? "inline-flex" : "none";
-    sidebarAccountBar.style.display = loggedIn ? "flex" : "none";
-    editEntryBar.style.display = (loggedIn && !isEditing) ? "flex" : "none";
-    if (loggedIn) {
-      whoami.textContent = `Signed in as ${username}`;
-      whoami.style.display = "inline";
-    } else {
-      whoami.style.display = "none";
-    }
-  }
-
-  function showSignedOutPlaceholder() {
-    tableView.style.display = "none";
-    emptyMsg.style.display = "block";
-    emptyMsg.textContent = "Sign in to view your portfolio.";
-    addRowBtn.style.display = "none";
-    bottomBar.style.display = "none";
-    lastUpdatedEl.textContent = "";
-    portfolioStats.style.display = "none";
-    insightPanels.style.display = "none";
-    realizedSummary.style.display = "none";
-  }
-
-  function handleAuthExpired() {
-    clearStoredToken();
-    sessionToken = null;
-    isEditing = false;
-    removeHeaderCell.classList.remove("visible");
-    sellDateHeaderCell.classList.remove("visible");
-    curPriceHeaderCell.style.display = "";
-    chgHeaderCell.style.display = "";
-    addRowBtn.style.display = "none";
-    bottomBar.style.display = "none";
-    editModeActions.style.display = "none";
-    updateAuthUI(false);
-    showSignedOutPlaceholder();
-    openLoginModal();
-  }
-
-  // ---------------- Load (requires auth) ----------------
-
-  async function loadPortfolio() {
-    if (!sessionToken) {
-      showSignedOutPlaceholder();
-      return;
-    }
-    lastUpdatedEl.textContent = "Loading...";
-    try {
-      const res = await fetch(`${API_BASE}/portfolio.json`, {
-        headers: { "Authorization": `Bearer ${sessionToken}` },
-      });
-      if (res.status === 401) {
-        handleAuthExpired();
-        return;
+      function saveToken(token) {
+        try { sessionStorage.setItem(TOKEN_KEY, token); } catch (e) { /* ignore */ }
       }
-      if (res.status === 404) {
+      function readStoredToken() {
+        try { return sessionStorage.getItem(TOKEN_KEY); } catch (e) { return null; }
+      }
+      function clearStoredToken() {
+        try { sessionStorage.removeItem(TOKEN_KEY); } catch (e) { /* ignore */ }
+      }
+      function decodeTokenPayload(token) {
+        try {
+          const b64payload = token.split(".")[0];
+          const json = atob(b64payload.replace(/-/g, "+").replace(/_/g, "/"));
+          return JSON.parse(json);
+        } catch (e) {
+          return null;
+        }
+      }
+
+      // ---------------- Auth UI state ----------------
+
+      function updateAuthUI(loggedIn, username) {
+        signInBtn.style.display = loggedIn ? "none" : "inline-block";
+        logoutBtn.style.display = loggedIn ? "inline-flex" : "none";
+        sidebarAccountBar.style.display = loggedIn ? "flex" : "none";
+        editEntryBar.style.display = (loggedIn && !isEditing) ? "flex" : "none";
+        if (loggedIn) {
+          whoami.textContent = `Signed in as ${username}`;
+          whoami.style.display = "inline";
+        } else {
+          whoami.style.display = "none";
+        }
+      }
+
+      function showSignedOutPlaceholder() {
+        tableView.style.display = "none";
+        emptyMsg.style.display = "block";
+        emptyMsg.textContent = "Sign in to view your portfolio.";
+        addRowBtn.style.display = "none";
+        bottomBar.style.display = "none";
+        lastUpdatedEl.textContent = "";
+        portfolioStats.style.display = "none";
+        insightPanels.style.display = "none";
+        realizedSummary.style.display = "none";
+      }
+
+      function handleAuthExpired() {
+        clearStoredToken();
+        sessionToken = null;
+        isEditing = false;
+        removeHeaderCell.classList.remove("visible");
+        sellDateHeaderCell.classList.remove("visible");
+        curPriceHeaderCell.style.display = "";
+        chgHeaderCell.style.display = "";
+        addRowBtn.style.display = "none";
+        bottomBar.style.display = "none";
+        editModeActions.style.display = "none";
+        updateAuthUI(false);
+        showSignedOutPlaceholder();
+        openLoginModal();
+      }
+
+      // ---------------- Load (requires auth) ----------------
+
+      async function loadPortfolio() {
+        if (!sessionToken) {
+          showSignedOutPlaceholder();
+          return;
+        }
+        lastUpdatedEl.textContent = "Loading...";
+        try {
+          const res = await fetch(`${API_BASE}/portfolio.json`, {
+            headers: { "Authorization": `Bearer ${sessionToken}` },
+          });
+          if (res.status === 401) {
+            handleAuthExpired();
+            return;
+          }
+          if (res.status === 404) {
+            holdings = [];
+            closedTransactions = [];
+            lastUpdatedEl.textContent = "No data yet";
+          } else if (res.ok) {
+            const data = await res.json();
+            holdings = Array.isArray(data.holdings) ? data.holdings : [];
+            closedTransactions = Array.isArray(data.closedTransactions) ? data.closedTransactions : [];
+            lastUpdatedEl.textContent = data.lastUpdated
+              ? "Last updated " + new Date(data.lastUpdated).toLocaleString()
+              : "";
+          } else {
+            throw new Error("Failed to load");
+          }
+          holdingsSnapshot = JSON.parse(JSON.stringify(holdings));
+          closedTransactionsSnapshot = JSON.parse(JSON.stringify(closedTransactions));
+          renderTable();
+        } catch (err) {
+          lastUpdatedEl.textContent = "Failed to load portfolio";
+        }
+      }
+
+      // ---------------- Symbol search (from dashboard-data.json) ----------------
+
+      async function loadSymbolList() {
+        try {
+          const res = await fetch(`${API_BASE}/dashboard-data`);
+          if (!res.ok) return;
+          const data = await res.json();
+          const list = document.getElementById("symbolList");
+          list.innerHTML = "";
+          (Array.isArray(data) ? data : []).forEach((item) => {
+            if (!item.symbol) return;
+            symbolDataMap[item.symbol.toUpperCase()] = {
+              currentPrice: item.currentPrice,
+              changePercent: item.changePercent,
+              sector: item.sheet,
+              screenerUrl: item.screenerUrl,
+            };
+            const opt = document.createElement("option");
+            opt.value = item.symbol;
+            list.appendChild(opt);
+          });
+        } catch (err) {
+          // Autocomplete just won't be available — not fatal.
+        }
+        renderTable();
+      }
+
+      // ---------------- Edit gating / login ----------------
+
+      function openLoginModal() {
+        loginError.textContent = "";
+        usernameInput.value = "";
+        passwordInput.value = "";
+        loginModal.classList.add("visible");
+        usernameInput.focus();
+      }
+
+      function closeLoginModal() {
+        loginModal.classList.remove("visible");
+      }
+
+      async function submitLogin() {
+        loginError.textContent = "";
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!username || !password) {
+          loginError.textContent = "Enter username and password.";
+          return;
+        }
+
+        const btn = document.getElementById("loginSubmitBtn");
+        btn.disabled = true;
+        btn.textContent = "Signing in...";
+
+        try {
+          const res = await fetch(`${API_BASE}/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          });
+
+          if (!res.ok) {
+            loginError.textContent = "Invalid username or password.";
+            return;
+          }
+
+          const data = await res.json();
+          sessionToken = data.token;
+          saveToken(data.token);
+          const uname = data.username || username;
+          updateAuthUI(true, uname);
+
+          closeLoginModal();
+          await loadPortfolio();
+        } catch (err) {
+          loginError.textContent = "Could not reach the server. Try again.";
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Sign in";
+        }
+      }
+
+      function enterEditMode() {
+        if (!sessionToken) {
+          openLoginModal();
+          return;
+        }
+        isEditing = true;
+        holdingsSnapshot = JSON.parse(JSON.stringify(holdings));
+        closedTransactionsSnapshot = JSON.parse(JSON.stringify(closedTransactions));
+
+        editEntryBar.style.display = "none";
+        editModeActions.style.display = "flex";
+        addRowBtn.style.display = "block";
+        removeHeaderCell.classList.add("visible");
+        sellDateHeaderCell.classList.add("visible");
+        curPriceHeaderCell.style.display = "none";
+        chgHeaderCell.style.display = "none";
+        bottomBar.style.display = "flex";
+        saveStatus.textContent = "You have unsaved changes";
+        saveStatus.className = "hint";
+
+        renderTable();
+      }
+
+      function exitEditMode(discard) {
+        isEditing = false;
+        if (discard) {
+          holdings = JSON.parse(JSON.stringify(holdingsSnapshot));
+          closedTransactions = JSON.parse(JSON.stringify(closedTransactionsSnapshot));
+        }
+
+        editEntryBar.style.display = sessionToken ? "flex" : "none";
+        editModeActions.style.display = "none";
+        addRowBtn.style.display = "none";
+        removeHeaderCell.classList.remove("visible");
+        sellDateHeaderCell.classList.remove("visible");
+        curPriceHeaderCell.style.display = "";
+        chgHeaderCell.style.display = "";
+        bottomBar.style.display = "none";
+        saveStatus.textContent = "";
+        saveStatus.className = "hint";
+
+        renderTable();
+      }
+
+      function isDirty() {
+        return JSON.stringify(holdings) !== JSON.stringify(holdingsSnapshot)
+          || JSON.stringify(closedTransactions) !== JSON.stringify(closedTransactionsSnapshot);
+      }
+
+      function cancelEdit() {
+        if (isDirty() && !confirm("Discard unsaved changes?")) return;
+        exitEditMode(true);
+      }
+
+      function logout() {
+        if (isEditing && isDirty() && !confirm("Discard unsaved changes and sign out?")) return;
+        clearStoredToken();
+        sessionToken = null;
+        isEditing = false;
+        removeHeaderCell.classList.remove("visible");
+        sellDateHeaderCell.classList.remove("visible");
+        curPriceHeaderCell.style.display = "";
+        chgHeaderCell.style.display = "";
+        addRowBtn.style.display = "none";
+        bottomBar.style.display = "none";
+        editModeActions.style.display = "none";
         holdings = [];
         closedTransactions = [];
-        lastUpdatedEl.textContent = "No data yet";
-      } else if (res.ok) {
-        const data = await res.json();
-        holdings = Array.isArray(data.holdings) ? data.holdings : [];
-        closedTransactions = Array.isArray(data.closedTransactions) ? data.closedTransactions : [];
-        lastUpdatedEl.textContent = data.lastUpdated
-          ? "Last updated " + new Date(data.lastUpdated).toLocaleString()
-          : "";
-      } else {
-        throw new Error("Failed to load");
+        updateAuthUI(false);
+        showSignedOutPlaceholder();
       }
-      holdingsSnapshot = JSON.parse(JSON.stringify(holdings));
-      closedTransactionsSnapshot = JSON.parse(JSON.stringify(closedTransactions));
-      renderTable();
-    } catch (err) {
-      lastUpdatedEl.textContent = "Failed to load portfolio";
-    }
-  }
 
-  // ---------------- Symbol search (from dashboard-data.json) ----------------
+      // ---------------- Save ----------------
 
-  async function loadSymbolList() {
-    try {
-      const res = await fetch(`${API_BASE}/dashboard-data`);
-      if (!res.ok) return;
-      const data = await res.json();
-      const list = document.getElementById("symbolList");
-      list.innerHTML = "";
-      (Array.isArray(data) ? data : []).forEach((item) => {
-        if (!item.symbol) return;
-        symbolDataMap[item.symbol.toUpperCase()] = {
-          currentPrice: item.currentPrice,
-          changePercent: item.changePercent,
-          sector: item.sheet,
-          screenerUrl: item.screenerUrl,
+      async function savePortfolio() {
+        saveStatus.textContent = "Saving...";
+        saveStatus.className = "hint";
+
+        const payload = {
+          holdings,
+          closedTransactions,
+          lastUpdated: new Date().toISOString(),
         };
-        const opt = document.createElement("option");
-        opt.value = item.symbol;
-        list.appendChild(opt);
-      });
-    } catch (err) {
-      // Autocomplete just won't be available — not fatal.
-    }
-    renderTable();
-  }
 
-  // ---------------- Edit gating / login ----------------
+        try {
+          const res = await fetch(`${API_BASE}/portfolio.json`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${sessionToken}`,
+            },
+            body: JSON.stringify(payload),
+          });
 
-  function openLoginModal() {
-    loginError.textContent = "";
-    usernameInput.value = "";
-    passwordInput.value = "";
-    loginModal.classList.add("visible");
-    usernameInput.focus();
-  }
+          if (res.status === 401) {
+            saveStatus.textContent = "Session expired — sign in again.";
+            saveStatus.className = "hint status-err";
+            handleAuthExpired();
+            return;
+          }
 
-  function closeLoginModal() {
-    loginModal.classList.remove("visible");
-  }
+          if (!res.ok) throw new Error("Save failed");
 
-  async function submitLogin() {
-    loginError.textContent = "";
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value;
-
-    if (!username || !password) {
-      loginError.textContent = "Enter username and password.";
-      return;
-    }
-
-    const btn = document.getElementById("loginSubmitBtn");
-    btn.disabled = true;
-    btn.textContent = "Signing in...";
-
-    try {
-      const res = await fetch(`${API_BASE}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!res.ok) {
-        loginError.textContent = "Invalid username or password.";
-        return;
+          holdingsSnapshot = JSON.parse(JSON.stringify(holdings));
+          closedTransactionsSnapshot = JSON.parse(JSON.stringify(closedTransactions));
+          saveStatus.textContent = "Saved — " + new Date().toLocaleTimeString();
+          saveStatus.className = "hint status-ok";
+          lastUpdatedEl.textContent = "Last updated " + new Date(payload.lastUpdated).toLocaleString();
+        } catch (err) {
+          saveStatus.textContent = "Save failed. Try again.";
+          saveStatus.className = "hint status-err";
+        }
       }
 
-      const data = await res.json();
-      sessionToken = data.token;
-      saveToken(data.token);
-      const uname = data.username || username;
-      updateAuthUI(true, uname);
+      // ---------------- Sorting ----------------
 
-      closeLoginModal();
-      await loadPortfolio();
-    } catch (err) {
-      loginError.textContent = "Could not reach the server. Try again.";
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Sign in";
-    }
-  }
+      function profitPct(buyPrice, currentPrice) {
+        const b = parseFloat(buyPrice);
+        const c = parseFloat(currentPrice);
+        if (!isFinite(b) || b === 0 || !isFinite(c)) return -Infinity;
+        return ((c - b) / b) * 100;
+      }
 
-  function enterEditMode() {
-    if (!sessionToken) {
-      openLoginModal();
-      return;
-    }
-    isEditing = true;
-    holdingsSnapshot = JSON.parse(JSON.stringify(holdings));
-    closedTransactionsSnapshot = JSON.parse(JSON.stringify(closedTransactions));
+      function chgOf(h) {
+        const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
+        const chg = symbolData ? parseFloat(symbolData.changePercent) : NaN;
+        return isFinite(chg) ? chg : -Infinity;
+      }
 
-    editEntryBar.style.display = "none";
-    editModeActions.style.display = "flex";
-    addRowBtn.style.display = "block";
-    removeHeaderCell.classList.add("visible");
-    sellDateHeaderCell.classList.add("visible");
-    curPriceHeaderCell.style.display = "none";
-    chgHeaderCell.style.display = "none";
-    bottomBar.style.display = "flex";
-    saveStatus.textContent = "You have unsaved changes";
-    saveStatus.className = "hint";
+      function profitRsOf(h) {
+        const b = parseFloat(h.buyPrice);
+        const c = curPriceOf(h);
+        if (!isFinite(b) || !isFinite(c)) return -Infinity;
+        return (c - b) * qtyOf(h);
+      }
 
-    renderTable();
-  }
+      function applySort() {
+        if (!sortField) return;
+        holdings.sort((a, b) => {
+          if (sortField === "symbol") {
+            const va = (a.symbol || "").toUpperCase();
+            const vb = (b.symbol || "").toUpperCase();
+            if (va < vb) return sortDir === "asc" ? -1 : 1;
+            if (va > vb) return sortDir === "asc" ? 1 : -1;
+            return 0;
+          }
+          let va, vb;
+          if (sortField === "chg") {
+            va = chgOf(a); vb = chgOf(b);
+          } else if (sortField === "profitRs") {
+            va = profitRsOf(a); vb = profitRsOf(b);
+          } else {
+            va = profitPct(a.buyPrice, curPriceOf(a)); vb = profitPct(b.buyPrice, curPriceOf(b));
+          }
+          return sortDir === "asc" ? va - vb : vb - va;
+        });
+      }
 
-  function exitEditMode(discard) {
-    isEditing = false;
-    if (discard) {
-      holdings = JSON.parse(JSON.stringify(holdingsSnapshot));
-      closedTransactions = JSON.parse(JSON.stringify(closedTransactionsSnapshot));
-    }
+      const sortHeaderMap = { symbol: thSortSymbol, chg: thSortChg, profitRs: thSortProfitRs, profitPct: thSortProfitPct };
 
-    editEntryBar.style.display = sessionToken ? "flex" : "none";
-    editModeActions.style.display = "none";
-    addRowBtn.style.display = "none";
-    removeHeaderCell.classList.remove("visible");
-    sellDateHeaderCell.classList.remove("visible");
-    curPriceHeaderCell.style.display = "";
-    chgHeaderCell.style.display = "";
-    bottomBar.style.display = "none";
-    saveStatus.textContent = "";
-    saveStatus.className = "hint";
+      function updateSortIndicators() {
+        Object.entries(sortHeaderMap).forEach(([field, el]) => {
+          if (!el) return;
+          const arrow = el.querySelector(".sort-arrow");
+          if (sortField === field) {
+            el.classList.add("active");
+            arrow.textContent = sortDir === "asc" ? "▲" : "▼";
+          } else {
+            el.classList.remove("active");
+            arrow.textContent = "";
+          }
+        });
+      }
 
-    renderTable();
-  }
+      function sortHoldings(field) {
+        if (sortField === field) {
+          sortDir = sortDir === "asc" ? "desc" : "asc";
+        } else {
+          sortField = field;
+          sortDir = field === "symbol" ? "asc" : "desc";
+        }
+        applySort();
+        updateSortIndicators();
+        renderTable();
+      }
 
-  function isDirty() {
-    return JSON.stringify(holdings) !== JSON.stringify(holdingsSnapshot)
-      || JSON.stringify(closedTransactions) !== JSON.stringify(closedTransactionsSnapshot);
-  }
-
-  function cancelEdit() {
-    if (isDirty() && !confirm("Discard unsaved changes?")) return;
-    exitEditMode(true);
-  }
-
-  function logout() {
-    if (isEditing && isDirty() && !confirm("Discard unsaved changes and sign out?")) return;
-    clearStoredToken();
-    sessionToken = null;
-    isEditing = false;
-    removeHeaderCell.classList.remove("visible");
-    sellDateHeaderCell.classList.remove("visible");
-    curPriceHeaderCell.style.display = "";
-    chgHeaderCell.style.display = "";
-    addRowBtn.style.display = "none";
-    bottomBar.style.display = "none";
-    editModeActions.style.display = "none";
-    holdings = [];
-    closedTransactions = [];
-    updateAuthUI(false);
-    showSignedOutPlaceholder();
-  }
-
-  // ---------------- Save ----------------
-
-  async function savePortfolio() {
-    saveStatus.textContent = "Saving...";
-    saveStatus.className = "hint";
-
-    const payload = {
-      holdings,
-      closedTransactions,
-      lastUpdated: new Date().toISOString(),
-    };
-
-    try {
-      const res = await fetch(`${API_BASE}/portfolio.json`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${sessionToken}`,
-        },
-        body: JSON.stringify(payload),
+      Object.values(sortHeaderMap).forEach((el) => {
+        if (el) el.addEventListener("click", () => sortHoldings(el.getAttribute("data-field")));
       });
 
-      if (res.status === 401) {
-        saveStatus.textContent = "Session expired — sign in again.";
-        saveStatus.className = "hint status-err";
-        handleAuthExpired();
-        return;
+      // ---------------- Table rendering ----------------
+
+      function qtyOf(h) {
+        const q = parseFloat(h.quantity);
+        return isFinite(q) && q > 0 ? q : 1;
       }
 
-      if (!res.ok) throw new Error("Save failed");
-
-      holdingsSnapshot = JSON.parse(JSON.stringify(holdings));
-      closedTransactionsSnapshot = JSON.parse(JSON.stringify(closedTransactions));
-      saveStatus.textContent = "Saved — " + new Date().toLocaleTimeString();
-      saveStatus.className = "hint status-ok";
-      lastUpdatedEl.textContent = "Last updated " + new Date(payload.lastUpdated).toLocaleString();
-    } catch (err) {
-      saveStatus.textContent = "Save failed. Try again.";
-      saveStatus.className = "hint status-err";
-    }
-  }
-
-  // ---------------- Sorting ----------------
-
-  function profitPct(buyPrice, currentPrice) {
-    const b = parseFloat(buyPrice);
-    const c = parseFloat(currentPrice);
-    if (!isFinite(b) || b === 0 || !isFinite(c)) return -Infinity;
-    return ((c - b) / b) * 100;
-  }
-
-  function chgOf(h) {
-    const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
-    const chg = symbolData ? parseFloat(symbolData.changePercent) : NaN;
-    return isFinite(chg) ? chg : -Infinity;
-  }
-
-  function profitRsOf(h) {
-    const b = parseFloat(h.buyPrice);
-    const c = curPriceOf(h);
-    if (!isFinite(b) || !isFinite(c)) return -Infinity;
-    return (c - b) * qtyOf(h);
-  }
-
-  function applySort() {
-    if (!sortField) return;
-    holdings.sort((a, b) => {
-      if (sortField === "symbol") {
-        const va = (a.symbol || "").toUpperCase();
-        const vb = (b.symbol || "").toUpperCase();
-        if (va < vb) return sortDir === "asc" ? -1 : 1;
-        if (va > vb) return sortDir === "asc" ? 1 : -1;
-        return 0;
+      // Current price ALWAYS comes from dashboard-data.json (symbolDataMap),
+      // never from the value stored in portfolio.json — the dashboard feed is
+      // refreshed regularly, the saved portfolio value can be stale.
+      function curPriceOf(h) {
+        const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
+        const c = symbolData ? parseFloat(symbolData.currentPrice) : NaN;
+        return c;
       }
-      let va, vb;
-      if (sortField === "chg") {
-        va = chgOf(a); vb = chgOf(b);
-      } else if (sortField === "profitRs") {
-        va = profitRsOf(a); vb = profitRsOf(b);
-      } else {
-        va = profitPct(a.buyPrice, curPriceOf(a)); vb = profitPct(b.buyPrice, curPriceOf(b));
+
+      function profitInfo(buyPrice, currentPrice) {
+        const b = parseFloat(buyPrice);
+        const c = parseFloat(currentPrice);
+        if (!isFinite(b) || b === 0 || !isFinite(c)) {
+          return { text: "—", cls: "b-far" };
+        }
+        const pct = ((c - b) / b) * 100;
+        const cls = pct > 0 ? "b-watch" : pct < 0 ? "b-triggered" : "b-far";
+        const sign = pct > 0 ? "+" : "";
+        return { text: `${sign}${pct.toFixed(2)}%`, cls };
       }
-      return sortDir === "asc" ? va - vb : vb - va;
-    });
-  }
 
-  const sortHeaderMap = { symbol: thSortSymbol, chg: thSortChg, profitRs: thSortProfitRs, profitPct: thSortProfitPct };
-
-  function updateSortIndicators() {
-    Object.entries(sortHeaderMap).forEach(([field, el]) => {
-      if (!el) return;
-      const arrow = el.querySelector(".sort-arrow");
-      if (sortField === field) {
-        el.classList.add("active");
-        arrow.textContent = sortDir === "asc" ? "▲" : "▼";
-      } else {
-        el.classList.remove("active");
-        arrow.textContent = "";
+      function fmtMoney(v) {
+        const n = parseFloat(v);
+        return isFinite(n) ? n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "—";
       }
-    });
-  }
 
-  function sortHoldings(field) {
-    if (sortField === field) {
-      sortDir = sortDir === "asc" ? "desc" : "asc";
-    } else {
-      sortField = field;
-      sortDir = field === "symbol" ? "asc" : "desc";
-    }
-    applySort();
-    updateSortIndicators();
-    renderTable();
-  }
+      function fmtDate(v) {
+        if (!v) return "—";
+        const d = new Date(v);
+        if (isNaN(d)) return v;
+        const opts = { day: "numeric", month: "short" };
+        if (d.getFullYear() !== new Date().getFullYear()) opts.year = "numeric";
+        return d.toLocaleDateString("en-GB", opts);
+      }
 
-  Object.values(sortHeaderMap).forEach((el) => {
-    if (el) el.addEventListener("click", () => sortHoldings(el.getAttribute("data-field")));
-  });
+      function changeBadge(pct) {
+        const n = parseFloat(pct);
+        if (!isFinite(n)) return `<span class="badge b-far">—</span>`;
+        const cls = n > 0 ? "b-watch" : n < 0 ? "b-triggered" : "b-far";
+        const sign = n > 0 ? "+" : "";
+        return `<span class="badge ${cls}">${sign}${n.toFixed(2)}%</span>`;
+      }
 
-  // ---------------- Table rendering ----------------
+      // Profit in ₹ scales with quantity, not just per-share price.
+      function profitRupeesBadge(buyPrice, currentPrice, quantity) {
+        const b = parseFloat(buyPrice);
+        const c = parseFloat(currentPrice);
+        if (!isFinite(b) || !isFinite(c)) return `<span class="badge b-far">—</span>`;
+        const qty = isFinite(parseFloat(quantity)) && parseFloat(quantity) > 0 ? parseFloat(quantity) : 1;
+        const diff = (c - b) * qty;
+        const cls = diff > 0 ? "b-watch" : diff < 0 ? "b-triggered" : "b-far";
+        const sign = diff > 0 ? "+" : "";
+        return `<span class="badge ${cls}">${sign}${fmtMoney(diff)}</span>`;
+      }
 
-  function qtyOf(h) {
-    const q = parseFloat(h.quantity);
-    return isFinite(q) && q > 0 ? q : 1;
-  }
+      function renderTable() {
+        tbody.innerHTML = "";
 
-  // Current price ALWAYS comes from dashboard-data.json (symbolDataMap),
-  // never from the value stored in portfolio.json — the dashboard feed is
-  // refreshed regularly, the saved portfolio value can be stale.
-  function curPriceOf(h) {
-    const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
-    const c = symbolData ? parseFloat(symbolData.currentPrice) : NaN;
-    return c;
-  }
+        computeStats();
+        renderInsights();
+        renderRealizedSummary();
 
-  function profitInfo(buyPrice, currentPrice) {
-    const b = parseFloat(buyPrice);
-    const c = parseFloat(currentPrice);
-    if (!isFinite(b) || b === 0 || !isFinite(c)) {
-      return { text: "—", cls: "b-far" };
-    }
-    const pct = ((c - b) / b) * 100;
-    const cls = pct > 0 ? "b-watch" : pct < 0 ? "b-triggered" : "b-far";
-    const sign = pct > 0 ? "+" : "";
-    return { text: `${sign}${pct.toFixed(2)}%`, cls };
-  }
+        if (holdings.length === 0) {
+          tableView.style.display = "none";
+          emptyMsg.style.display = "block";
+          emptyMsg.textContent = isEditing ? "No holdings yet. Add one below." : "No holdings yet.";
+          return;
+        }
 
-  function fmtMoney(v) {
-    const n = parseFloat(v);
-    return isFinite(n) ? n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "—";
-  }
+        tableView.style.display = "block";
+        emptyMsg.style.display = "none";
 
-  function fmtDate(v) {
-    if (!v) return "—";
-    const d = new Date(v);
-    if (isNaN(d)) return v;
-    const opts = { day: "numeric", month: "short" };
-    if (d.getFullYear() !== new Date().getFullYear()) opts.year = "numeric";
-    return d.toLocaleDateString("en-GB", opts);
-  }
+        holdings.forEach((h, i) => {
+          const tr = document.createElement("tr");
+          const curPrice = curPriceOf(h);
+          const profit = profitInfo(h.buyPrice, curPrice);
+          const profitBadge = `<span class="badge ${profit.cls}">${profit.text}</span>`;
+          const profitRsBadge = profitRupeesBadge(h.buyPrice, curPrice, h.quantity);
+          const targetPct = profitInfo(h.buyPrice, h.targetAmount);
+          const targetPctBadge = `<span class="badge ${targetPct.cls}">${targetPct.text}</span>`;
+          const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
+          const chgBadge = changeBadge(symbolData ? symbolData.changePercent : undefined);
 
-  function changeBadge(pct) {
-    const n = parseFloat(pct);
-    if (!isFinite(n)) return `<span class="badge b-far">—</span>`;
-    const cls = n > 0 ? "b-watch" : n < 0 ? "b-triggered" : "b-far";
-    const sign = n > 0 ? "+" : "";
-    return `<span class="badge ${cls}">${sign}${n.toFixed(2)}%</span>`;
-  }
-
-  // Profit in ₹ scales with quantity, not just per-share price.
-  function profitRupeesBadge(buyPrice, currentPrice, quantity) {
-    const b = parseFloat(buyPrice);
-    const c = parseFloat(currentPrice);
-    if (!isFinite(b) || !isFinite(c)) return `<span class="badge b-far">—</span>`;
-    const qty = isFinite(parseFloat(quantity)) && parseFloat(quantity) > 0 ? parseFloat(quantity) : 1;
-    const diff = (c - b) * qty;
-    const cls = diff > 0 ? "b-watch" : diff < 0 ? "b-triggered" : "b-far";
-    const sign = diff > 0 ? "+" : "";
-    return `<span class="badge ${cls}">${sign}${fmtMoney(diff)}</span>`;
-  }
-
-  function renderTable() {
-    tbody.innerHTML = "";
-
-    computeStats();
-    renderInsights();
-    renderRealizedSummary();
-
-    if (holdings.length === 0) {
-      tableView.style.display = "none";
-      emptyMsg.style.display = "block";
-      emptyMsg.textContent = isEditing ? "No holdings yet. Add one below." : "No holdings yet.";
-      return;
-    }
-
-    tableView.style.display = "block";
-    emptyMsg.style.display = "none";
-
-    holdings.forEach((h, i) => {
-      const tr = document.createElement("tr");
-      const curPrice = curPriceOf(h);
-      const profit = profitInfo(h.buyPrice, curPrice);
-      const profitBadge = `<span class="badge ${profit.cls}">${profit.text}</span>`;
-      const profitRsBadge = profitRupeesBadge(h.buyPrice, curPrice, h.quantity);
-      const targetPct = profitInfo(h.buyPrice, h.targetAmount);
-      const targetPctBadge = `<span class="badge ${targetPct.cls}">${targetPct.text}</span>`;
-      const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
-      const chgBadge = changeBadge(symbolData ? symbolData.changePercent : undefined);
-
-      if (isEditing) {
-        tr.innerHTML = `
+          if (isEditing) {
+            tr.innerHTML = `
           <td><input type="text" class="cell" list="symbolList" value="${escapeAttr(h.symbol ?? "")}" data-i="${i}" data-f="symbol" placeholder="AAPL"></td>
           <td><input type="number" step="any" min="0" class="cell num" value="${numOrBlank(h.quantity)}" data-i="${i}" data-f="quantity" placeholder="1"></td>
           <td><input type="number" step="any" class="cell num" value="${numOrBlank(h.buyPrice)}" data-i="${i}" data-f="buyPrice" placeholder="0.00"></td>
@@ -1483,8 +2174,8 @@
           <td class="sell-date-cell visible"><button class="icon-btn" data-sell="${i}" title="Close position" aria-label="Close position">Sell</button></td>
           <td class="remove-cell visible"><button class="icon-btn danger" data-remove="${i}" title="Remove" aria-label="Remove">${ICON_TRASH}</button></td>
         `;
-      } else {
-        tr.innerHTML = `
+          } else {
+            tr.innerHTML = `
           <td>
             <span class="stock-badge">
               <span class="avatar" style="background:${avatarColor(h.symbol)}">${escapeHtml((h.symbol || "?").charAt(0).toUpperCase())}</span>
@@ -1501,491 +2192,485 @@
           <td class="num target-pct-cell">${targetPctBadge}</td>
           <td>${fmtDate(h.buyDate)}</td>
         `;
-      }
-      tbody.appendChild(tr);
-    });
-  }
-
-  // Closed positions are never valued from the live dashboard feed. Their
-  // result is always derived from the prices captured when the trade closed.
-  function realizedInfo(t) {
-    const qty = qtyOf(t);
-    const buy = parseFloat(t.buyPrice);
-    const sell = parseFloat(t.sellPrice);
-    if (!isFinite(buy) || !isFinite(sell)) return { profit: NaN, pct: NaN, cost: NaN };
-    const cost = buy * qty;
-    const profit = (sell - buy) * qty;
-    return { profit, pct: cost ? (profit / cost) * 100 : NaN, cost };
-  }
-
-  function holdingDays(t) {
-    const buy = new Date(t.buyDate);
-    const sell = new Date(t.sellDate);
-    if (isNaN(buy) || isNaN(sell)) return null;
-    return Math.max(0, Math.round((sell - buy) / 86400000));
-  }
-
-  function renderRealizedSummary() {
-    if (!sessionToken) {
-      realizedSummary.style.display = "none";
-      renderRpDashboard();
-      return;
-    }
-    if (closedTransactions.length === 0) {
-      if (!document.body.classList.contains("realized-profit-page")) {
-        realizedSummary.style.display = "none";
-        return;
-      }
-      realizedSummary.style.display = "block";
-      realizedCount.textContent = "No closed transactions yet";
-      realizedTotal.textContent = "—";
-      realizedReturn.textContent = "—";
-      realizedWins.textContent = "—";
-      realizedHoldingPeriod.textContent = "—";
-      realizedTbody.innerHTML = '<tr><td colspan="8" class="hint">Close a holding from the Portfolio page to see it here.</td></tr>';
-      realizedTrend.innerHTML = '<p class="hint">Your realized P&L trend will appear after you close a trade.</p>';
-      realizedInsights.innerHTML = '<div class="outcome-item"><span class="name">Completed trades</span><span class="amount">0</span></div>';
-      renderRpDashboard();
-      return;
-    }
-    realizedSummary.style.display = "block";
-    let totalProfit = 0, totalCost = 0, wins = 0, losses = 0, daysTotal = 0, daysCount = 0;
-    closedTransactions.forEach((t) => {
-      const info = realizedInfo(t);
-      if (isFinite(info.profit)) {
-        totalProfit += info.profit;
-        totalCost += info.cost;
-        if (info.profit > 0) wins++;
-        else if (info.profit < 0) losses++;
-      }
-      const days = holdingDays(t);
-      if (days !== null) { daysTotal += days; daysCount++; }
-    });
-    const returnPct = totalCost ? (totalProfit / totalCost) * 100 : NaN;
-    realizedCount.textContent = `${closedTransactions.length} closed transaction${closedTransactions.length === 1 ? "" : "s"}`;
-    realizedTotal.textContent = `${totalProfit >= 0 ? "+" : ""}₹${fmtMoney(totalProfit)}`;
-    realizedTotal.className = "value " + (totalProfit >= 0 ? "pos" : "neg");
-    realizedReturn.textContent = isFinite(returnPct) ? `${returnPct >= 0 ? "+" : ""}${returnPct.toFixed(2)}%` : "—";
-    realizedReturn.className = "value " + (returnPct >= 0 ? "pos" : "neg");
-    realizedWins.textContent = `${wins} win${wins === 1 ? "" : "s"} / ${losses} loss${losses === 1 ? "" : "es"}`;
-    realizedHoldingPeriod.textContent = daysCount ? `${Math.round(daysTotal / daysCount)} days` : "—";
-    realizedTbody.innerHTML = [...closedTransactions].sort((a, b) => String(b.sellDate || "").localeCompare(String(a.sellDate || ""))).map((t) => {
-      const info = realizedInfo(t);
-      const days = holdingDays(t);
-      const cls = info.profit > 0 ? "b-watch" : info.profit < 0 ? "b-triggered" : "b-far";
-      const term = days === null ? "—" : (days > 365 ? "Long-term" : "Short-term");
-      return `<tr><td>${escapeHtml(t.symbol || "—")}</td><td class="num">${escapeHtml(String(qtyOf(t)))}</td><td class="num">₹${fmtMoney(t.buyPrice)}</td><td class="num">₹${fmtMoney(t.sellPrice)}</td><td class="num"><span class="badge ${cls}">${info.profit >= 0 ? "+" : ""}${fmtMoney(info.profit)}</span></td><td class="num"><span class="badge ${cls}">${isFinite(info.pct) ? `${info.pct >= 0 ? "+" : ""}${info.pct.toFixed(2)}%` : "—"}</span></td><td>${fmtDate(t.sellDate)}</td><td>${term}</td></tr>`;
-    }).join("");
-    renderRealizedTrend();
-    renderRealizedInsights();
-    renderRpDashboard();
-  }
-
-  function renderRpDashboard() {
-    const kpis = document.getElementById("rpKpis");
-    if (!kpis) return;
-    const valid = closedTransactions.map((t) => ({ ...t, info: realizedInfo(t), days: holdingDays(t) })).filter((t) => isFinite(t.info.profit));
-    const profit = valid.reduce((s, t) => s + t.info.profit, 0);
-    const gains = valid.filter((t) => t.info.profit > 0); const losses = valid.filter((t) => t.info.profit < 0);
-    const gainTotal = gains.reduce((s, t) => s + t.info.profit, 0); const lossTotal = Math.abs(losses.reduce((s, t) => s + t.info.profit, 0));
-    const buyTotal = valid.reduce((s, t) => s + t.info.cost, 0); const sellTotal = buyTotal + profit;
-    const avgDays = valid.filter((t) => t.days !== null); const avgHolding = avgDays.length ? avgDays.reduce((s,t) => s + t.days,0) / avgDays.length : null;
-    const money = rpMoney;
-    const cards = [
-      ["Total Realised Profit", money(gainTotal), "rp-pos", `${gains.length} profitable trade${gains.length === 1 ? "" : "s"}`],
-      ["Total Realised Loss", money(lossTotal), "rp-neg", `${losses.length} losing trade${losses.length === 1 ? "" : "s"}`],
-      ["Net Realised Profit", money(profit), profit >= 0 ? "rp-pos" : "rp-neg", buyTotal ? `${((profit / buyTotal) * 100).toFixed(2)}% return` : "No closed capital"],
-      ["Winning Trades", String(gains.length), "rp-pos", valid.length ? `${((gains.length / valid.length) * 100).toFixed(1)}% win rate` : "—"],
-      ["Losing Trades", String(losses.length), "rp-neg", valid.length ? `${((losses.length / valid.length) * 100).toFixed(1)}% loss rate` : "—"],
-      ["Avg. Holding Period", avgHolding === null ? "—" : `${avgHolding.toFixed(1)} Days`, "rp-blue", `${valid.length} closed position${valid.length === 1 ? "" : "s"}`]
-    ];
-    kpis.innerHTML = cards.map(([label,value,cls,note]) => `<div class="rp-kpi"><div class="label">${label} ⓘ</div><div class="value ${cls}">${value}</div><div class="note">${note}</div></div>`).join("");
-    document.getElementById("rpPnlSummary").innerHTML = [["Total Buy Value",money(buyTotal)], ["Total Sell Value",money(sellTotal)], ["Net Realised Profit",money(profit)], ["Charges & Taxes","Not recorded"]].map(([l,v]) => `<div class="rp-summary-row"><span>${l}</span><strong>${v}</strong></div>`).join("") + `<div class="rp-total">Net Realised Profit <b>${money(profit)}</b></div>`;
-    renderRpTimeChart(valid); renderRpSector(valid, profit); renderRpMonths(valid); renderRpStocks(valid); renderRpTrades(valid);
-    const updated = document.getElementById("rpUpdated"); if (updated) updated.textContent = valid.length ? `Realised profit includes ${valid.length} closed position${valid.length === 1 ? "" : "s"}. Data updated ${new Date().toLocaleString()}.` : "No closed positions yet. Close a holding from the Portfolio page to populate this dashboard.";
-  }
-
-  function rpMoney(value) { return `₹${fmtMoney(value)}`; }
-
-  function renderRpTimeChart(valid) {
-    const el = document.getElementById("rpTimeChart"); if (!valid.length) { el.innerHTML = '<div class="rp-empty">Close a holding to start building your realised P&L history.</div>'; return; }
-    const buckets = {}; valid.forEach(t => { const key = t.sellDate ? t.sellDate.slice(0,7) : "Unknown"; buckets[key] = (buckets[key] || 0) + t.info.profit; });
-    const data = Object.entries(buckets).sort((a,b) => a[0].localeCompare(b[0])).slice(-12); const max = Math.max(...data.map(d => Math.abs(d[1])), 1); const w=760,h=220,left=38,base=110,plot=155;
-    const grid=[-1,0,1].map(n=>{const yy=base-n*(plot/2);return `<line class="rp-chart-grid" x1="${left}" y1="${yy}" x2="${w-8}" y2="${yy}"/><text class="rp-chart-label" x="0" y="${yy+3}">${n===0?"0":`${n>0?"+":"-"}₹${Math.round(max*Math.abs(n)).toLocaleString()}`}</text>`}).join("");
-    const slot=(w-left-12)/data.length; const bars=data.map(([key,value],i)=>{const bh=Math.abs(value)/max*(plot/2);const x=left+i*slot+slot*.28;const y=value>=0?base-bh:base;return `<rect class="${value>=0?"rp-bar-pos":"rp-bar-neg"}" x="${x}" y="${y}" width="${Math.max(8,slot*.42)}" height="${bh}" rx="1"><title>${key}: ₹${fmtMoney(value)}</title></rect><text class="rp-chart-label" text-anchor="middle" x="${x+Math.max(8,slot*.42)/2}" y="${h-8}">${escapeHtml(key.slice(2).replace("-","/"))}</text>`}).join("");
-    el.innerHTML=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Realised monthly profit and loss chart"><title>Realised profit over time</title>${grid}${bars}</svg>`;
-  }
-
-  function renderRpSector(valid, profit) {
-    const el=document.getElementById("rpSector"); if(!valid.length){el.innerHTML='<div class="rp-empty">Sector data will appear when closed symbols match the market feed.</div>';return;} const totals={}; valid.forEach(t=>{const sector=(symbolDataMap[(t.symbol||"").toUpperCase()]||{}).sector||"Other";totals[sector]=(totals[sector]||0)+t.info.profit}); const entries=Object.entries(totals).sort((a,b)=>b[1]-a[1]); const colors=["#2cd596","#4f9dff","#f2c94c","#aa7cf5","#ff6c61","#7e92aa"]; const sum=entries.reduce((s,e)=>s+Math.abs(e[1]),0)||1;let offset=0;const seg=entries.map(([name,value],i)=>{const pct=Math.abs(value)/sum*100;const out=`<circle cx="70" cy="70" r="47" fill="none" stroke="${colors[i%colors.length]}" stroke-width="19" stroke-dasharray="${pct*2.953} 295.3" stroke-dashoffset="${-offset*2.953}" transform="rotate(-90 70 70)"/>`;offset+=pct;return out}).join(""); el.innerHTML=`<svg class="rp-donut" viewBox="0 0 140 140" role="img" aria-label="Realised profit by sector">${seg}<text x="70" y="66" text-anchor="middle" fill="#edf5ff" font-size="14" font-weight="700">${rpMoney(profit)}</text><text x="70" y="84" text-anchor="middle" fill="#9eb0c4" font-size="10">Net Profit</text></svg><ul class="rp-sector-list">${entries.map(([name,value],i)=>`<li><span><i class="rp-dot" style="background:${colors[i%colors.length]}"></i>${escapeHtml(name)}</span><strong class="${value>=0?"rp-pos":"rp-neg"}">${rpMoney(value)}</strong></li>`).join("")}</ul>`;
-  }
-
-  function renderRpMonths(valid) { const el=document.getElementById("rpMonths"); const data=[...valid].sort((a,b)=>String(b.sellDate||"").localeCompare(String(a.sellDate||""))).slice(0,7); if(!data.length){el.innerHTML='<div class="rp-empty">No monthly results yet.</div>';return;} const max=Math.max(...data.map(t=>Math.abs(t.info.profit)),1);el.innerHTML=data.map(t=>`<div class="rp-month-row"><span>${escapeHtml(fmtDate(t.sellDate))}</span><div class="rp-month-track"><div class="rp-month-fill" style="width:${Math.abs(t.info.profit)/max*100}%;background:${t.info.profit>=0?"#25c789":"#ef5249"}"></div></div><strong class="${t.info.profit>=0?"rp-pos":"rp-neg"}">${rpMoney(t.info.profit)}</strong></div>`).join(""); }
-  function renderRpStocks(valid) { const fill=(id,list,negative)=>{const el=document.getElementById(id);const rows=list.slice(0,5);el.innerHTML=rows.length?rows.map(t=>`<div class="rp-stock"><span><strong>${escapeHtml(t.symbol||"—")}</strong><small>${fmtDate(t.sellDate)}</small></span><span class="${negative?"rp-neg":"rp-pos"}"><strong>${rpMoney(t.info.profit)}</strong><small>${isFinite(t.info.pct)?`${t.info.pct>=0?"+":""}${t.info.pct.toFixed(2)}%`:"—"}</small></span></div>`).join(""):'<div class="rp-empty">No trades in this group.</div>';};fill("rpWinners",[...valid].filter(t=>t.info.profit>0).sort((a,b)=>b.info.profit-a.info.profit),false);fill("rpLosers",[...valid].filter(t=>t.info.profit<0).sort((a,b)=>a.info.profit-b.info.profit),true); }
-  function renderRpTrades(valid) { const el=document.getElementById("rpTrades");el.innerHTML=valid.length?`<table class="rp-table"><thead><tr><th>Date</th><th>Stock</th><th>Qty</th><th class="num">Buy Price (₹)</th><th class="num">Sell Price (₹)</th><th class="num">Buy Value (₹)</th><th class="num">Sell Value (₹)</th><th class="num">Profit / Loss (₹)</th><th class="num">P&L (%)</th><th>Holding Period</th></tr></thead><tbody>${[...valid].sort((a,b)=>String(b.sellDate||"").localeCompare(String(a.sellDate||""))).map(t=>`<tr><td>${fmtDate(t.sellDate)}</td><td><strong>${escapeHtml(t.symbol||"—")}</strong></td><td>${qtyOf(t)}</td><td class="num">${fmtMoney(t.buyPrice)}</td><td class="num">${fmtMoney(t.sellPrice)}</td><td class="num">${fmtMoney(t.info.cost)}</td><td class="num">${fmtMoney(parseFloat(t.sellPrice)*qtyOf(t))}</td><td class="num ${t.info.profit>=0?"rp-pos":"rp-neg"}">${rpMoney(t.info.profit)}</td><td class="num ${t.info.pct>=0?"rp-pos":"rp-neg"}">${t.info.pct.toFixed(2)}%</td><td>${t.days===null?"—":`${t.days} Days`}</td></tr>`).join("")}</tbody></table>`:'<div class="rp-empty">No realised trades yet.</div>'; }
-
-  function renderRealizedTrend() {
-    const trades = [...closedTransactions]
-      .map((t) => ({ ...t, profit: realizedInfo(t).profit }))
-      .filter((t) => isFinite(t.profit))
-      .sort((a, b) => String(a.sellDate || "").localeCompare(String(b.sellDate || "")));
-    if (!trades.length) { realizedTrend.innerHTML = '<p class="hint">No valid close-price data available.</p>'; return; }
-    let cumulative = 0;
-    const points = trades.map((t) => ({ date: t.sellDate, value: cumulative += t.profit }));
-    const w = 600, h = 240, pad = { l: 48, r: 14, t: 16, b: 34 };
-    const values = points.map((p) => p.value).concat([0]);
-    let min = Math.min(...values), max = Math.max(...values);
-    if (min === max) { min -= Math.max(1, Math.abs(min) * .15); max += Math.max(1, Math.abs(max) * .15); }
-    const x = (i) => points.length === 1 ? (w - pad.l + pad.r) / 2 : pad.l + i * ((w - pad.l - pad.r) / (points.length - 1));
-    const y = (v) => pad.t + ((max - v) / (max - min)) * (h - pad.t - pad.b);
-    const line = points.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)} ${y(p.value).toFixed(1)}`).join(" ");
-    const area = `${line} L ${x(points.length - 1).toFixed(1)} ${y(0).toFixed(1)} L ${x(0).toFixed(1)} ${y(0).toFixed(1)} Z`;
-    const grid = [0, .5, 1].map((n) => { const value = max - n * (max - min); const yy = y(value); return `<line class="trend-grid" x1="${pad.l}" y1="${yy}" x2="${w - pad.r}" y2="${yy}"/><text class="trend-axis" x="2" y="${yy + 3}">₹${Math.round(value).toLocaleString()}</text>`; }).join("");
-    const labels = points.map((p, i) => `<text class="trend-axis" x="${x(i)}" y="${h - 8}" text-anchor="middle">${escapeHtml(fmtDate(p.date))}</text>`).join("");
-    const dots = points.map((p, i) => `<circle class="trend-dot" cx="${x(i)}" cy="${y(p.value)}" r="4"><title>${escapeHtml(fmtDate(p.date))}: ₹${fmtMoney(p.value)}</title></circle>`).join("");
-    realizedTrend.innerHTML = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Cumulative realized profit over closed trades"><title>Cumulative realized profit trend</title>${grid}<path class="trend-area" d="${area}"/><path class="trend-line" d="${line}"/>${dots}${labels}</svg>`;
-  }
-
-  function renderRealizedInsights() {
-    const valid = closedTransactions.map((t) => ({ ...t, info: realizedInfo(t), days: holdingDays(t) })).filter((t) => isFinite(t.info.profit));
-    const best = [...valid].sort((a, b) => b.info.profit - a.info.profit)[0];
-    const worst = [...valid].sort((a, b) => a.info.profit - b.info.profit)[0];
-    const longTerm = valid.filter((t) => t.days !== null && t.days > 365).length;
-    const shortTerm = valid.filter((t) => t.days === null || t.days <= 365).length;
-    const result = (label, value, className = "") => `<div class="outcome-item"><span class="name">${label}</span><span class="amount ${className}">${value}</span></div>`;
-    realizedInsights.innerHTML = [
-      result("Best realized trade", best ? `${escapeHtml(best.symbol || "—")} · +₹${fmtMoney(best.info.profit)}` : "—", "pos"),
-      result("Largest loss", worst && worst.info.profit < 0 ? `${escapeHtml(worst.symbol || "—")} · -₹${fmtMoney(Math.abs(worst.info.profit))}` : "No losing trades", worst && worst.info.profit < 0 ? "neg" : "pos"),
-      result("Short-term / long-term", `${shortTerm} / ${longTerm}`),
-      result("Total closed capital", `₹${fmtMoney(valid.reduce((sum, t) => sum + t.info.cost, 0))}`),
-    ].join("");
-  }
-
-  // ---------------- Stat cards ----------------
-
-  function computeStats() {
-    if (!sessionToken || holdings.length === 0) {
-      portfolioStats.style.display = "none";
-      statInvestmentSub.textContent = "";
-      statGainLossSub.textContent = "";
-      statTodayChangeSub.textContent = "";
-      return;
-    }
-    portfolioStats.style.display = "grid";
-
-    let investment = 0, currentValue = 0, todayChange = 0;
-    let gainersCount = 0, losersCount = 0;
-    let best = null;
-
-    holdings.forEach((h) => {
-      const buy = parseFloat(h.buyPrice);
-      const cur = curPriceOf(h);
-      const qty = qtyOf(h);
-      if (isFinite(buy)) investment += buy * qty;
-      if (isFinite(cur)) currentValue += cur * qty;
-
-      const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
-      const chg = symbolData ? parseFloat(symbolData.changePercent) : NaN;
-      if (isFinite(cur) && isFinite(chg)) todayChange += cur * qty * (chg / 100);
-      if (isFinite(chg)) {
-        if (chg > 0) gainersCount++;
-        else if (chg < 0) losersCount++;
+          }
+          tbody.appendChild(tr);
+        });
       }
 
-      const pct = profitPct(h.buyPrice, cur);
-      if (isFinite(pct) && (!best || pct > best.pct)) {
-        best = { symbol: h.symbol || "—", pct };
+      // Closed positions are never valued from the live dashboard feed. Their
+      // result is always derived from the prices captured when the trade closed.
+      function realizedInfo(t) {
+        const qty = qtyOf(t);
+        const buy = parseFloat(t.buyPrice);
+        const sell = parseFloat(t.sellPrice);
+        if (!isFinite(buy) || !isFinite(sell)) return { profit: NaN, pct: NaN, cost: NaN };
+        const cost = buy * qty;
+        const profit = (sell - buy) * qty;
+        return { profit, pct: cost ? (profit / cost) * 100 : NaN, cost };
       }
-    });
 
-    const gainLoss = currentValue - investment;
-    const gainLossPct = investment !== 0 ? (gainLoss / investment) * 100 : 0;
-    const todayChangePct = currentValue !== 0 ? (todayChange / currentValue) * 100 : 0;
+      function holdingDays(t) {
+        const buy = new Date(t.buyDate);
+        const sell = new Date(t.sellDate);
+        if (isNaN(buy) || isNaN(sell)) return null;
+        return Math.max(0, Math.round((sell - buy) / 86400000));
+      }
 
-    statInvestment.textContent = "₹" + fmtMoney(investment);
-    statInvestment.className = "n";
-    statInvestmentSub.textContent = `Across ${holdings.length} stock${holdings.length === 1 ? "" : "s"}`;
+      function renderRealizedSummary() {
+        if (!sessionToken) {
+          realizedSummary.style.display = "none";
+          renderRpDashboard();
+          return;
+        }
+        if (closedTransactions.length === 0) {
+          if (!document.body.classList.contains("realized-profit-page")) {
+            realizedSummary.style.display = "none";
+            return;
+          }
+          realizedSummary.style.display = "block";
+          realizedCount.textContent = "No closed transactions yet";
+          realizedTotal.textContent = "—";
+          realizedReturn.textContent = "—";
+          realizedWins.textContent = "—";
+          realizedHoldingPeriod.textContent = "—";
+          realizedTbody.innerHTML = '<tr><td colspan="8" class="hint">Close a holding from the Portfolio page to see it here.</td></tr>';
+          realizedTrend.innerHTML = '<p class="hint">Your realized P&L trend will appear after you close a trade.</p>';
+          realizedInsights.innerHTML = '<div class="outcome-item"><span class="name">Completed trades</span><span class="amount">0</span></div>';
+          renderRpDashboard();
+          return;
+        }
+        realizedSummary.style.display = "block";
+        let totalProfit = 0, totalCost = 0, wins = 0, losses = 0, daysTotal = 0, daysCount = 0;
+        closedTransactions.forEach((t) => {
+          const info = realizedInfo(t);
+          if (isFinite(info.profit)) {
+            totalProfit += info.profit;
+            totalCost += info.cost;
+            if (info.profit > 0) wins++;
+            else if (info.profit < 0) losses++;
+          }
+          const days = holdingDays(t);
+          if (days !== null) { daysTotal += days; daysCount++; }
+        });
+        const returnPct = totalCost ? (totalProfit / totalCost) * 100 : NaN;
+        realizedCount.textContent = `${closedTransactions.length} closed transaction${closedTransactions.length === 1 ? "" : "s"}`;
+        realizedTotal.textContent = `${totalProfit >= 0 ? "+" : ""}₹${fmtMoney(totalProfit)}`;
+        realizedTotal.className = "value " + (totalProfit >= 0 ? "pos" : "neg");
+        realizedReturn.textContent = isFinite(returnPct) ? `${returnPct >= 0 ? "+" : ""}${returnPct.toFixed(2)}%` : "—";
+        realizedReturn.className = "value " + (returnPct >= 0 ? "pos" : "neg");
+        realizedWins.textContent = `${wins} win${wins === 1 ? "" : "s"} / ${losses} loss${losses === 1 ? "" : "es"}`;
+        realizedHoldingPeriod.textContent = daysCount ? `${Math.round(daysTotal / daysCount)} days` : "—";
+        realizedTbody.innerHTML = [...closedTransactions].sort((a, b) => String(b.sellDate || "").localeCompare(String(a.sellDate || ""))).map((t) => {
+          const info = realizedInfo(t);
+          const days = holdingDays(t);
+          const cls = info.profit > 0 ? "b-watch" : info.profit < 0 ? "b-triggered" : "b-far";
+          const term = days === null ? "—" : (days > 365 ? "Long-term" : "Short-term");
+          return `<tr><td>${escapeHtml(t.symbol || "—")}</td><td class="num">${escapeHtml(String(qtyOf(t)))}</td><td class="num">₹${fmtMoney(t.buyPrice)}</td><td class="num">₹${fmtMoney(t.sellPrice)}</td><td class="num"><span class="badge ${cls}">${info.profit >= 0 ? "+" : ""}${fmtMoney(info.profit)}</span></td><td class="num"><span class="badge ${cls}">${isFinite(info.pct) ? `${info.pct >= 0 ? "+" : ""}${info.pct.toFixed(2)}%` : "—"}</span></td><td>${fmtDate(t.sellDate)}</td><td>${term}</td></tr>`;
+        }).join("");
+        renderRealizedTrend();
+        renderRealizedInsights();
+        renderRpDashboard();
+      }
 
-    statCurrentValue.textContent = "₹" + fmtMoney(currentValue);
-    statCurrentValue.className = "n";
+      function renderRpDashboard() {
+        const kpis = document.getElementById("rpKpis");
+        if (!kpis) return;
+        const valid = closedTransactions.map((t) => ({ ...t, info: realizedInfo(t), days: holdingDays(t) })).filter((t) => isFinite(t.info.profit));
+        const profit = valid.reduce((s, t) => s + t.info.profit, 0);
+        const gains = valid.filter((t) => t.info.profit > 0); const losses = valid.filter((t) => t.info.profit < 0);
+        const gainTotal = gains.reduce((s, t) => s + t.info.profit, 0); const lossTotal = Math.abs(losses.reduce((s, t) => s + t.info.profit, 0));
+        const buyTotal = valid.reduce((s, t) => s + t.info.cost, 0); const sellTotal = buyTotal + profit;
+        const avgDays = valid.filter((t) => t.days !== null); const avgHolding = avgDays.length ? avgDays.reduce((s, t) => s + t.days, 0) / avgDays.length : null;
+        const money = rpMoney;
+        const cards = [
+          ["Total Realised Profit", money(gainTotal), "rp-pos", `${gains.length} profitable trade${gains.length === 1 ? "" : "s"}`],
+          ["Total Realised Loss", money(lossTotal), "rp-neg", `${losses.length} losing trade${losses.length === 1 ? "" : "s"}`],
+          ["Net Realised Profit", money(profit), profit >= 0 ? "rp-pos" : "rp-neg", buyTotal ? `${((profit / buyTotal) * 100).toFixed(2)}% return` : "No closed capital"],
+          ["Winning Trades", String(gains.length), "rp-pos", valid.length ? `${((gains.length / valid.length) * 100).toFixed(1)}% win rate` : "—"],
+          ["Losing Trades", String(losses.length), "rp-neg", valid.length ? `${((losses.length / valid.length) * 100).toFixed(1)}% loss rate` : "—"],
+          ["Avg. Holding Period", avgHolding === null ? "—" : `${avgHolding.toFixed(1)} Days`, "rp-blue", `${valid.length} closed position${valid.length === 1 ? "" : "s"}`]
+        ];
+        kpis.innerHTML = cards.map(([label, value, cls, note]) => `<div class="rp-kpi"><div class="label">${label} ⓘ</div><div class="value ${cls}">${value}</div><div class="note">${note}</div></div>`).join("");
+        document.getElementById("rpPnlSummary").innerHTML = [["Total Buy Value", money(buyTotal)], ["Total Sell Value", money(sellTotal)], ["Net Realised Profit", money(profit)]].map(([l, v]) => `<div class="rp-summary-row"><span>${l}</span><strong>${v}</strong></div>`).join("") + `<div class="rp-total">Net Realised Profit <b>${money(profit)}</b></div>`;
+        renderRpTimeChart(valid); renderRpSector(valid, profit); renderRpMonths(valid); renderRpStocks(valid); renderRpTrades(valid);
+        const updated = document.getElementById("rpUpdated"); if (updated) updated.textContent = valid.length ? `Realised profit includes ${valid.length} closed position${valid.length === 1 ? "" : "s"}. Data updated ${new Date().toLocaleString()}.` : "No closed positions yet. Close a holding from the Portfolio page to populate this dashboard.";
+      }
 
-    statGainLoss.textContent = `${gainLoss >= 0 ? "+" : ""}₹${fmtMoney(gainLoss)} (${gainLossPct >= 0 ? "+" : ""}${gainLossPct.toFixed(2)}%)`;
-    statGainLoss.className = "n " + (gainLoss >= 0 ? "pos" : "neg");
-    statGainLossSub.textContent = best ? `Best: ${best.symbol} ${best.pct >= 0 ? "+" : ""}${best.pct.toFixed(2)}%` : "";
+      function rpMoney(value) { return `₹${fmtMoney(value)}`; }
 
-    statTodayChange.textContent = `${todayChange >= 0 ? "+" : ""}₹${fmtMoney(todayChange)} (${todayChangePct >= 0 ? "+" : ""}${todayChangePct.toFixed(2)}%)`;
-    statTodayChange.className = "n " + (todayChange >= 0 ? "pos" : "neg");
-    statTodayChangeSub.textContent = (gainersCount || losersCount) ? `${gainersCount} up · ${losersCount} down` : "";
-  }
+      function renderRpTimeChart(valid) {
+        const el = document.getElementById("rpTimeChart"); if (!valid.length) { el.innerHTML = '<div class="rp-empty">Close a holding to start building your realised P&L history.</div>'; return; }
+        const buckets = {}; valid.forEach(t => { const key = t.sellDate ? t.sellDate.slice(0, 7) : "Unknown"; buckets[key] = (buckets[key] || 0) + t.info.profit; });
+        const data = Object.entries(buckets).sort((a, b) => a[0].localeCompare(b[0])).slice(-12); const max = Math.max(...data.map(d => Math.abs(d[1])), 1); const w = 760, h = 220, left = 38, base = 110, plot = 155;
+        const grid = [-1, 0, 1].map(n => { const yy = base - n * (plot / 2); return `<line class="rp-chart-grid" x1="${left}" y1="${yy}" x2="${w - 8}" y2="${yy}"/><text class="rp-chart-label" x="0" y="${yy + 3}">${n === 0 ? "0" : `${n > 0 ? "+" : "-"}₹${Math.round(max * Math.abs(n)).toLocaleString()}`}</text>` }).join("");
+        const slot = (w - left - 12) / data.length; const bars = data.map(([key, value], i) => { const bh = Math.abs(value) / max * (plot / 2); const x = left + i * slot + slot * .28; const y = value >= 0 ? base - bh : base; return `<rect class="${value >= 0 ? "rp-bar-pos" : "rp-bar-neg"}" x="${x}" y="${y}" width="${Math.max(8, slot * .42)}" height="${bh}" rx="1"><title>${key}: ₹${fmtMoney(value)}</title></rect><text class="rp-chart-label" text-anchor="middle" x="${x + Math.max(8, slot * .42) / 2}" y="${h - 8}">${escapeHtml(key.slice(2).replace("-", "/"))}</text>` }).join("");
+        el.innerHTML = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Realised monthly profit and loss chart"><title>Realised profit over time</title>${grid}${bars}</svg>`;
+      }
 
-  // ---------------- Top Gainers / Losers / Sector Allocation ----------------
+      function renderRpSector(valid, profit) {
+        const el = document.getElementById("rpSector"); if (!valid.length) { el.innerHTML = '<div class="rp-empty">Sector data will appear when closed symbols match the market feed.</div>'; return; } const totals = {}; valid.forEach(t => { const sector = (symbolDataMap[(t.symbol || "").toUpperCase()] || {}).sector || "Other"; totals[sector] = (totals[sector] || 0) + t.info.profit }); const entries = Object.entries(totals).sort((a, b) => b[1] - a[1]); const colors = ["#2cd596", "#4f9dff", "#f2c94c", "#aa7cf5", "#ff6c61", "#7e92aa"]; const sum = entries.reduce((s, e) => s + Math.abs(e[1]), 0) || 1; let offset = 0; const seg = entries.map(([name, value], i) => { const pct = Math.abs(value) / sum * 100; const out = `<circle cx="70" cy="70" r="47" fill="none" stroke="${colors[i % colors.length]}" stroke-width="19" stroke-dasharray="${pct * 2.953} 295.3" stroke-dashoffset="${-offset * 2.953}" transform="rotate(-90 70 70)"/>`; offset += pct; return out }).join(""); el.innerHTML = `<svg class="rp-donut" viewBox="0 0 140 140" role="img" aria-label="Realised profit by sector">${seg}<text x="70" y="66" text-anchor="middle" fill="#edf5ff" font-size="14" font-weight="700">${rpMoney(profit)}</text><text x="70" y="84" text-anchor="middle" fill="#9eb0c4" font-size="10">Net Profit</text></svg><ul class="rp-sector-list">${entries.map(([name, value], i) => `<li><span><i class="rp-dot" style="background:${colors[i % colors.length]}"></i>${escapeHtml(name)}</span><strong class="${value >= 0 ? "rp-pos" : "rp-neg"}">${rpMoney(value)}</strong></li>`).join("")}</ul>`;
+      }
 
-  const SECTOR_COLORS = ["#2DD4BF", "#F5A623", "#8B5CF6", "#5B9EFF", "#FF5C6C", "#5B6472", "#22C55E", "#EAB308"];
+      function renderRpMonths(valid) { const el = document.getElementById("rpMonths"); const data = [...valid].sort((a, b) => String(b.sellDate || "").localeCompare(String(a.sellDate || ""))).slice(0, 7); if (!data.length) { el.innerHTML = '<div class="rp-empty">No monthly results yet.</div>'; return; } const max = Math.max(...data.map(t => Math.abs(t.info.profit)), 1); el.innerHTML = data.map(t => `<div class="rp-month-row"><span>${escapeHtml(fmtDate(t.sellDate))}</span><div class="rp-month-track"><div class="rp-month-fill" style="width:${Math.abs(t.info.profit) / max * 100}%;background:${t.info.profit >= 0 ? "#25c789" : "#ef5249"}"></div></div><strong class="${t.info.profit >= 0 ? "rp-pos" : "rp-neg"}">${rpMoney(t.info.profit)}</strong></div>`).join(""); }
+      function renderRpStocks(valid) { const fill = (id, list, negative) => { const el = document.getElementById(id); const rows = list.slice(0, 5); el.innerHTML = rows.length ? rows.map(t => `<div class="rp-stock"><span><strong>${escapeHtml(t.symbol || "—")}</strong><small>${fmtDate(t.sellDate)}</small></span><span class="${negative ? "rp-neg" : "rp-pos"}"><strong>${rpMoney(t.info.profit)}</strong><small>${isFinite(t.info.pct) ? `${t.info.pct >= 0 ? "+" : ""}${t.info.pct.toFixed(2)}%` : "—"}</small></span></div>`).join("") : '<div class="rp-empty">No trades in this group.</div>'; }; fill("rpWinners", [...valid].filter(t => t.info.profit > 0).sort((a, b) => b.info.profit - a.info.profit), false); fill("rpLosers", [...valid].filter(t => t.info.profit < 0).sort((a, b) => a.info.profit - b.info.profit), true); }
+      function renderRpTrades(valid) { const el = document.getElementById("rpTrades"); el.innerHTML = valid.length ? `<table class="rp-table"><thead><tr><th>Date</th><th>Stock</th><th>Qty</th><th class="num">Buy Price (₹)</th><th class="num">Sell Price (₹)</th><th class="num">Buy Value (₹)</th><th class="num">Sell Value (₹)</th><th class="num">Profit / Loss (₹)</th><th class="num">P&L (%)</th><th>Holding Period</th></tr></thead><tbody>${[...valid].sort((a, b) => String(b.sellDate || "").localeCompare(String(a.sellDate || ""))).map(t => `<tr><td>${fmtDate(t.sellDate)}</td><td><strong>${escapeHtml(t.symbol || "—")}</strong></td><td>${qtyOf(t)}</td><td class="num">${fmtMoney(t.buyPrice)}</td><td class="num">${fmtMoney(t.sellPrice)}</td><td class="num">${fmtMoney(t.info.cost)}</td><td class="num">${fmtMoney(parseFloat(t.sellPrice) * qtyOf(t))}</td><td class="num ${t.info.profit >= 0 ? "rp-pos" : "rp-neg"}">${rpMoney(t.info.profit)}</td><td class="num ${t.info.pct >= 0 ? "rp-pos" : "rp-neg"}">${t.info.pct.toFixed(2)}%</td><td>${t.days === null ? "—" : `${t.days} Days`}</td></tr>`).join("")}</tbody></table>` : '<div class="rp-empty">No realised trades yet.</div>'; }
 
-  function avatarColor(symbol) {
-    const s = (symbol || "?").toUpperCase();
-    let hash = 0;
-    for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) >>> 0;
-    return SECTOR_COLORS[hash % SECTOR_COLORS.length];
-  }
+      function renderRealizedTrend() {
+        const trades = [...closedTransactions]
+          .map((t) => ({ ...t, profit: realizedInfo(t).profit }))
+          .filter((t) => isFinite(t.profit))
+          .sort((a, b) => String(a.sellDate || "").localeCompare(String(b.sellDate || "")));
+        if (!trades.length) { realizedTrend.innerHTML = '<p class="hint">No valid close-price data available.</p>'; return; }
+        let cumulative = 0;
+        const points = trades.map((t) => ({ date: t.sellDate, value: cumulative += t.profit }));
+        const w = 600, h = 240, pad = { l: 48, r: 14, t: 16, b: 34 };
+        const values = points.map((p) => p.value).concat([0]);
+        let min = Math.min(...values), max = Math.max(...values);
+        if (min === max) { min -= Math.max(1, Math.abs(min) * .15); max += Math.max(1, Math.abs(max) * .15); }
+        const x = (i) => points.length === 1 ? (w - pad.l + pad.r) / 2 : pad.l + i * ((w - pad.l - pad.r) / (points.length - 1));
+        const y = (v) => pad.t + ((max - v) / (max - min)) * (h - pad.t - pad.b);
+        const line = points.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)} ${y(p.value).toFixed(1)}`).join(" ");
+        const area = `${line} L ${x(points.length - 1).toFixed(1)} ${y(0).toFixed(1)} L ${x(0).toFixed(1)} ${y(0).toFixed(1)} Z`;
+        const grid = [0, .5, 1].map((n) => { const value = max - n * (max - min); const yy = y(value); return `<line class="trend-grid" x1="${pad.l}" y1="${yy}" x2="${w - pad.r}" y2="${yy}"/><text class="trend-axis" x="2" y="${yy + 3}">₹${Math.round(value).toLocaleString()}</text>`; }).join("");
+        const labels = points.map((p, i) => `<text class="trend-axis" x="${x(i)}" y="${h - 8}" text-anchor="middle">${escapeHtml(fmtDate(p.date))}</text>`).join("");
+        const dots = points.map((p, i) => `<circle class="trend-dot" cx="${x(i)}" cy="${y(p.value)}" r="4"><title>${escapeHtml(fmtDate(p.date))}: ₹${fmtMoney(p.value)}</title></circle>`).join("");
+        realizedTrend.innerHTML = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Cumulative realized profit over closed trades"><title>Cumulative realized profit trend</title>${grid}<path class="trend-area" d="${area}"/><path class="trend-line" d="${line}"/>${dots}${labels}</svg>`;
+      }
 
-  function buildDonutSVG(entries, total) {
-    const size = 120, radius = 42, cx = 60, cy = 60, circumference = 2 * Math.PI * radius;
-    let offset = 0;
-    const segments = entries.map(([sector, value], idx) => {
-      const pct = value / total;
-      const dash = pct * circumference;
-      const color = SECTOR_COLORS[idx % SECTOR_COLORS.length];
-      const seg = `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${color}" stroke-width="16" stroke-dasharray="${dash.toFixed(2)} ${(circumference - dash).toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 ${cx} ${cy})"></circle>`;
-      offset += dash;
-      return seg;
-    }).join("");
-    return `<svg viewBox="0 0 ${size} ${size}" width="120" height="120">${segments}</svg>`;
-  }
+      function renderRealizedInsights() {
+        const valid = closedTransactions.map((t) => ({ ...t, info: realizedInfo(t), days: holdingDays(t) })).filter((t) => isFinite(t.info.profit));
+        const best = [...valid].sort((a, b) => b.info.profit - a.info.profit)[0];
+        const worst = [...valid].sort((a, b) => a.info.profit - b.info.profit)[0];
+        const longTerm = valid.filter((t) => t.days !== null && t.days > 365).length;
+        const shortTerm = valid.filter((t) => t.days === null || t.days <= 365).length;
+        const result = (label, value, className = "") => `<div class="outcome-item"><span class="name">${label}</span><span class="amount ${className}">${value}</span></div>`;
+        realizedInsights.innerHTML = [
+          result("Best realized trade", best ? `${escapeHtml(best.symbol || "—")} · +₹${fmtMoney(best.info.profit)}` : "—", "pos"),
+          result("Largest loss", worst && worst.info.profit < 0 ? `${escapeHtml(worst.symbol || "—")} · -₹${fmtMoney(Math.abs(worst.info.profit))}` : "No losing trades", worst && worst.info.profit < 0 ? "neg" : "pos"),
+          result("Short-term / long-term", `${shortTerm} / ${longTerm}`),
+          result("Total closed capital", `₹${fmtMoney(valid.reduce((sum, t) => sum + t.info.cost, 0))}`),
+        ].join("");
+      }
 
-  function renderInsights() {
-    if (!sessionToken || holdings.length === 0) {
-      insightPanels.style.display = "none";
-      return;
-    }
-    insightPanels.style.display = "flex";
+      // ---------------- Stat cards ----------------
 
-    const withChange = holdings
-      .map((h) => {
-        const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
-        const chg = symbolData ? parseFloat(symbolData.changePercent) : NaN;
-        return { symbol: h.symbol || "—", chg };
-      })
-      .filter((x) => isFinite(x.chg));
+      function computeStats() {
+        if (!sessionToken || holdings.length === 0) {
+          portfolioStats.style.display = "none";
+          statInvestmentSub.textContent = "";
+          statGainLossSub.textContent = "";
+          statTodayChangeSub.textContent = "";
+          return;
+        }
+        portfolioStats.style.display = "grid";
 
-    const gainers = [...withChange].sort((a, b) => b.chg - a.chg).slice(0, 3);
-    const losers = [...withChange].sort((a, b) => a.chg - b.chg).slice(0, 3);
+        let investment = 0, currentValue = 0, todayChange = 0;
+        let gainersCount = 0, losersCount = 0;
+        let best = null;
 
-    topGainersList.innerHTML = gainers.length
-      ? gainers.map((g) => `
+        holdings.forEach((h) => {
+          const buy = parseFloat(h.buyPrice);
+          const cur = curPriceOf(h);
+          const qty = qtyOf(h);
+          if (isFinite(buy)) investment += buy * qty;
+          if (isFinite(cur)) currentValue += cur * qty;
+
+          const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
+          const chg = symbolData ? parseFloat(symbolData.changePercent) : NaN;
+          if (isFinite(cur) && isFinite(chg)) todayChange += cur * qty * (chg / 100);
+          if (isFinite(chg)) {
+            if (chg > 0) gainersCount++;
+            else if (chg < 0) losersCount++;
+          }
+
+          const pct = profitPct(h.buyPrice, cur);
+          if (isFinite(pct) && (!best || pct > best.pct)) {
+            best = { symbol: h.symbol || "—", pct };
+          }
+        });
+
+        const gainLoss = currentValue - investment;
+        const gainLossPct = investment !== 0 ? (gainLoss / investment) * 100 : 0;
+        const todayChangePct = currentValue !== 0 ? (todayChange / currentValue) * 100 : 0;
+
+        statInvestment.textContent = "₹" + fmtMoney(investment);
+        statInvestment.className = "n";
+        statInvestmentSub.textContent = `Across ${holdings.length} stock${holdings.length === 1 ? "" : "s"}`;
+
+        statCurrentValue.textContent = "₹" + fmtMoney(currentValue);
+        statCurrentValue.className = "n";
+
+        statGainLoss.textContent = `${gainLoss >= 0 ? "+" : ""}₹${fmtMoney(gainLoss)} (${gainLossPct >= 0 ? "+" : ""}${gainLossPct.toFixed(2)}%)`;
+        statGainLoss.className = "n " + (gainLoss >= 0 ? "pos" : "neg");
+        statGainLossSub.textContent = best ? `Best: ${best.symbol} ${best.pct >= 0 ? "+" : ""}${best.pct.toFixed(2)}%` : "";
+
+        statTodayChange.textContent = `${todayChange >= 0 ? "+" : ""}₹${fmtMoney(todayChange)} (${todayChangePct >= 0 ? "+" : ""}${todayChangePct.toFixed(2)}%)`;
+        statTodayChange.className = "n " + (todayChange >= 0 ? "pos" : "neg");
+        statTodayChangeSub.textContent = (gainersCount || losersCount) ? `${gainersCount} up · ${losersCount} down` : "";
+      }
+
+      // ---------------- Top Gainers / Losers / Sector Allocation ----------------
+
+      const SECTOR_COLORS = ["#2DD4BF", "#F5A623", "#8B5CF6", "#5B9EFF", "#FF5C6C", "#5B6472", "#22C55E", "#EAB308"];
+
+      function avatarColor(symbol) {
+        const s = (symbol || "?").toUpperCase();
+        let hash = 0;
+        for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) >>> 0;
+        return SECTOR_COLORS[hash % SECTOR_COLORS.length];
+      }
+
+      function buildDonutSVG(entries, total) {
+        const size = 120, radius = 42, cx = 60, cy = 60, circumference = 2 * Math.PI * radius;
+        let offset = 0;
+        const segments = entries.map(([sector, value], idx) => {
+          const pct = value / total;
+          const dash = pct * circumference;
+          const color = SECTOR_COLORS[idx % SECTOR_COLORS.length];
+          const seg = `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${color}" stroke-width="16" stroke-dasharray="${dash.toFixed(2)} ${(circumference - dash).toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 ${cx} ${cy})"></circle>`;
+          offset += dash;
+          return seg;
+        }).join("");
+        return `<svg viewBox="0 0 ${size} ${size}" width="120" height="120">${segments}</svg>`;
+      }
+
+      function renderInsights() {
+        if (!sessionToken || holdings.length === 0) {
+          insightPanels.style.display = "none";
+          return;
+        }
+        insightPanels.style.display = "flex";
+
+        const withChange = holdings
+          .map((h) => {
+            const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
+            const chg = symbolData ? parseFloat(symbolData.changePercent) : NaN;
+            return { symbol: h.symbol || "—", chg };
+          })
+          .filter((x) => isFinite(x.chg));
+
+        const gainers = [...withChange].sort((a, b) => b.chg - a.chg).slice(0, 3);
+        const losers = [...withChange].sort((a, b) => a.chg - b.chg).slice(0, 3);
+
+        topGainersList.innerHTML = gainers.length
+          ? gainers.map((g) => `
           <li class="insight-row">
             <span class="sym">${escapeHtml(g.symbol)}</span>
             <span class="val" style="color:var(--watch)">+${g.chg.toFixed(2)}%</span>
           </li>`).join("")
-      : `<li class="insight-empty">No change data available.</li>`;
+          : `<li class="insight-empty">No change data available.</li>`;
 
-    topLosersList.innerHTML = losers.length
-      ? losers.map((l) => `
+        topLosersList.innerHTML = losers.length
+          ? losers.map((l) => `
           <li class="insight-row">
             <span class="sym">${escapeHtml(l.symbol)}</span>
             <span class="val" style="color:var(--triggered)">${l.chg.toFixed(2)}%</span>
           </li>`).join("")
-      : `<li class="insight-empty">No change data available.</li>`;
+          : `<li class="insight-empty">No change data available.</li>`;
 
-    // Sector allocation, weighted by current value (price × quantity) —
-    // using the live dashboard price, not portfolio.json's stored value.
-    const sectorTotals = {};
-    let total = 0;
-    holdings.forEach((h) => {
-      const cur = curPriceOf(h);
-      if (!isFinite(cur)) return;
-      const value = cur * qtyOf(h);
-      const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
-      const sector = (symbolData && symbolData.sector) || "Other";
-      sectorTotals[sector] = (sectorTotals[sector] || 0) + value;
-      total += value;
-    });
+        // Sector allocation, weighted by current value (price × quantity) —
+        // using the live dashboard price, not portfolio.json's stored value.
+        const sectorTotals = {};
+        let total = 0;
+        holdings.forEach((h) => {
+          const cur = curPriceOf(h);
+          if (!isFinite(cur)) return;
+          const value = cur * qtyOf(h);
+          const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
+          const sector = (symbolData && symbolData.sector) || "Other";
+          sectorTotals[sector] = (sectorTotals[sector] || 0) + value;
+          total += value;
+        });
 
-    const sectorEntries = Object.entries(sectorTotals).sort((a, b) => b[1] - a[1]);
+        const sectorEntries = Object.entries(sectorTotals).sort((a, b) => b[1] - a[1]);
 
-    if (sectorEntries.length && total > 0) {
-      sectorDonutWrap.innerHTML = buildDonutSVG(sectorEntries, total)
-        + `<div class="donut-center"><span class="donut-count">${holdings.length}</span><span class="donut-label">Stocks</span></div>`;
-      sectorAllocList.innerHTML = sectorEntries.map(([sector, value], idx) => {
-        const pct = (value / total) * 100;
-        const color = SECTOR_COLORS[idx % SECTOR_COLORS.length];
-        return `
+        if (sectorEntries.length && total > 0) {
+          sectorDonutWrap.innerHTML = buildDonutSVG(sectorEntries, total)
+            + `<div class="donut-center"><span class="donut-count">${holdings.length}</span><span class="donut-label">Stocks</span></div>`;
+          sectorAllocList.innerHTML = sectorEntries.map(([sector, value], idx) => {
+            const pct = (value / total) * 100;
+            const color = SECTOR_COLORS[idx % SECTOR_COLORS.length];
+            return `
           <li>
             <span class="name"><span class="dot" style="background:${color}"></span>${escapeHtml(sector)}</span>
             <span class="pct">${pct.toFixed(1)}%</span>
           </li>`;
-      }).join("");
-    } else {
-      sectorDonutWrap.innerHTML = "";
-      sectorAllocList.innerHTML = `<li class="insight-empty">No sector data available.</li>`;
-    }
-  }
-
-  function numOrBlank(v) {
-    return (v === undefined || v === null || v === "") ? "" : v;
-  }
-  function escapeAttr(str) {
-    return String(str).replace(/"/g, "&quot;");
-  }
-  function escapeHtml(str) {
-    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
-
-  tbody.addEventListener("input", (e) => {
-    if (!isEditing) return;
-    const target = e.target;
-    const i = target.getAttribute("data-i");
-    const f = target.getAttribute("data-f");
-    if (i === null || !f) return;
-
-    const idx = parseInt(i, 10);
-    let val = target.value;
-
-    if (f === "buyPrice" || f === "targetAmount" || f === "quantity") {
-      holdings[idx][f] = val === "" ? "" : parseFloat(val);
-    } else {
-      holdings[idx][f] = val;
-    }
-
-    const row = target.closest("tr");
-
-    if (f === "symbol") {
-      const match = symbolDataMap[val.trim().toUpperCase()];
-      if (match !== undefined) {
-        const chgCell = row.querySelector(".chg-cell");
-        if (chgCell) chgCell.innerHTML = changeBadge(match.changePercent);
+          }).join("");
+        } else {
+          sectorDonutWrap.innerHTML = "";
+          sectorAllocList.innerHTML = `<li class="insight-empty">No sector data available.</li>`;
+        }
       }
-    }
 
-    if (f === "buyPrice" || f === "symbol") {
-      const profit = profitInfo(holdings[idx].buyPrice, curPriceOf(holdings[idx]));
-      const cell = row.querySelector(".profit-cell");
-      cell.innerHTML = `<span class="badge ${profit.cls}">${profit.text}</span>`;
-    }
-
-    if (f === "buyPrice" || f === "symbol" || f === "quantity") {
-      const rsCell = row.querySelector(".profit-rs-cell");
-      if (rsCell) rsCell.innerHTML = profitRupeesBadge(holdings[idx].buyPrice, curPriceOf(holdings[idx]), holdings[idx].quantity);
-    }
-
-    if (f === "buyPrice" || f === "targetAmount") {
-      const targetCell = row.querySelector(".target-pct-cell");
-      if (targetCell) {
-        const targetPct = profitInfo(holdings[idx].buyPrice, holdings[idx].targetAmount);
-        targetCell.innerHTML = `<span class="badge ${targetPct.cls}">${targetPct.text}</span>`;
+      function numOrBlank(v) {
+        return (v === undefined || v === null || v === "") ? "" : v;
       }
-    }
+      function escapeAttr(str) {
+        return String(str).replace(/"/g, "&quot;");
+      }
+      function escapeHtml(str) {
+        return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      }
 
-    computeStats();
+      tbody.addEventListener("input", (e) => {
+        if (!isEditing) return;
+        const target = e.target;
+        const i = target.getAttribute("data-i");
+        const f = target.getAttribute("data-f");
+        if (i === null || !f) return;
 
-    if (saveStatus.className === "hint") {
-      saveStatus.textContent = isDirty() ? "You have unsaved changes" : "No changes yet";
-    }
-  });
+        const idx = parseInt(i, 10);
+        let val = target.value;
 
-  tbody.addEventListener("click", (e) => {
-    if (!isEditing) return;
-    const sellBtn = e.target.closest("[data-sell]");
-    if (sellBtn) {
-      openSaleModal(parseInt(sellBtn.getAttribute("data-sell"), 10));
-      return;
-    }
-    const removeBtn = e.target.closest("[data-remove]");
-    if (removeBtn) {
-      holdings.splice(parseInt(removeBtn.getAttribute("data-remove"), 10), 1);
-      renderTable();
-    }
-  });
+        if (f === "buyPrice" || f === "targetAmount" || f === "quantity") {
+          holdings[idx][f] = val === "" ? "" : parseFloat(val);
+        } else {
+          holdings[idx][f] = val;
+        }
 
-  addRowBtn.addEventListener("click", () => {
-    holdings.push({ symbol: "", quantity: 1, buyPrice: "", buyDate: "", targetAmount: "" });
-    renderTable();
-    const inputs = tbody.querySelectorAll('input[data-f="symbol"]');
-    if (inputs.length) inputs[inputs.length - 1].focus();
-  });
+        const row = target.closest("tr");
 
-  function openSaleModal(index) {
-    const h = holdings[index];
-    if (!h) return;
-    saleIndex = index;
-    saleError.textContent = "";
-    salePositionLabel.textContent = `${h.symbol || "This holding"} · ${qtyOf(h)} share${qtyOf(h) === 1 ? "" : "s"}`;
-    salePriceInput.value = "";
-    saleDateInput.value = new Date().toISOString().slice(0, 10);
-    saleModal.classList.add("visible");
-    salePriceInput.focus();
-  }
+        if (f === "symbol") {
+          const match = symbolDataMap[val.trim().toUpperCase()];
+          if (match !== undefined) {
+            const chgCell = row.querySelector(".chg-cell");
+            if (chgCell) chgCell.innerHTML = changeBadge(match.changePercent);
+          }
+        }
 
-  function closeSaleModal() {
-    saleModal.classList.remove("visible");
-    saleIndex = null;
-  }
+        if (f === "buyPrice" || f === "symbol") {
+          const profit = profitInfo(holdings[idx].buyPrice, curPriceOf(holdings[idx]));
+          const cell = row.querySelector(".profit-cell");
+          cell.innerHTML = `<span class="badge ${profit.cls}">${profit.text}</span>`;
+        }
 
-  function confirmSale() {
-    const sellPrice = parseFloat(salePriceInput.value);
-    const sellDate = saleDateInput.value;
-    const h = holdings[saleIndex];
-    if (!h || !isFinite(sellPrice) || sellPrice < 0 || !sellDate) {
-      saleError.textContent = "Enter a valid sell price and sell date.";
-      return;
-    }
-    closedTransactions.push({
-      symbol: h.symbol || "",
-      quantity: qtyOf(h),
-      buyPrice: h.buyPrice,
-      buyDate: h.buyDate || "",
-      sellPrice,
-      sellDate,
-    });
-    holdings.splice(saleIndex, 1);
-    closeSaleModal();
-    renderTable();
-    if (saveStatus.className === "hint") saveStatus.textContent = "You have unsaved changes";
-  }
+        if (f === "buyPrice" || f === "symbol" || f === "quantity") {
+          const rsCell = row.querySelector(".profit-rs-cell");
+          if (rsCell) rsCell.innerHTML = profitRupeesBadge(holdings[idx].buyPrice, curPriceOf(holdings[idx]), holdings[idx].quantity);
+        }
 
-  // ---------------- Wire up ----------------
+        if (f === "buyPrice" || f === "targetAmount") {
+          const targetCell = row.querySelector(".target-pct-cell");
+          if (targetCell) {
+            const targetPct = profitInfo(holdings[idx].buyPrice, holdings[idx].targetAmount);
+            targetCell.innerHTML = `<span class="badge ${targetPct.cls}">${targetPct.text}</span>`;
+          }
+        }
 
-  signInBtn.addEventListener("click", openLoginModal);
-  editBtn.addEventListener("click", enterEditMode);
-  cancelBtn.addEventListener("click", cancelEdit);
-  logoutBtn.addEventListener("click", logout);
-  refreshBtn.addEventListener("click", () => loadPortfolio());
-  document.getElementById("saveBtn").addEventListener("click", savePortfolio);
+        computeStats();
 
-  document.getElementById("loginCancelBtn").addEventListener("click", closeLoginModal);
-  document.getElementById("loginSubmitBtn").addEventListener("click", submitLogin);
-  document.getElementById("saleCancelBtn").addEventListener("click", closeSaleModal);
-  document.getElementById("saleConfirmBtn").addEventListener("click", confirmSale);
-  document.getElementById("rpRefresh").addEventListener("click", () => loadPortfolio());
-  document.getElementById("rpExport").addEventListener("click", () => {
-    const rows = [["Symbol", "Quantity", "Buy Price", "Buy Date", "Sell Price", "Sell Date", "Realized P&L"]];
-    closedTransactions.forEach((t) => { const info = realizedInfo(t); rows.push([t.symbol || "", qtyOf(t), t.buyPrice || "", t.buyDate || "", t.sellPrice || "", t.sellDate || "", isFinite(info.profit) ? info.profit : ""]); });
-    const csv = rows.map((row) => row.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
-    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); const link = document.createElement("a"); link.href = url; link.download = "realized-profit.csv"; link.click(); URL.revokeObjectURL(url);
-  });
-  passwordInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") submitLogin();
-  });
-  loginModal.addEventListener("click", (e) => {
-    if (e.target === loginModal) closeLoginModal();
-  });
-  saleModal.addEventListener("click", (e) => {
-    if (e.target === saleModal) closeSaleModal();
-  });
+        if (saveStatus.className === "hint") {
+          saveStatus.textContent = isDirty() ? "You have unsaved changes" : "No changes yet";
+        }
+      });
 
-  // ---------------- Startup: restore session or prompt login ----------------
+      tbody.addEventListener("click", (e) => {
+        if (!isEditing) return;
+        const sellBtn = e.target.closest("[data-sell]");
+        if (sellBtn) {
+          openSaleModal(parseInt(sellBtn.getAttribute("data-sell"), 10));
+          return;
+        }
+        const removeBtn = e.target.closest("[data-remove]");
+        if (removeBtn) {
+          holdings.splice(parseInt(removeBtn.getAttribute("data-remove"), 10), 1);
+          renderTable();
+        }
+      });
 
-  function init() {
-    const token = readStoredToken();
-    const payload = token ? decodeTokenPayload(token) : null;
-    const stillValid = payload && payload.exp > Math.floor(Date.now() / 1000);
+      addRowBtn.addEventListener("click", () => {
+        holdings.push({ symbol: "", quantity: 1, buyPrice: "", buyDate: "", targetAmount: "" });
+        renderTable();
+        const inputs = tbody.querySelectorAll('input[data-f="symbol"]');
+        if (inputs.length) inputs[inputs.length - 1].focus();
+      });
 
-    if (stillValid) {
-      sessionToken = token;
-      updateAuthUI(true, payload.u);
-      loadPortfolio();
-    } else {
-      if (token) clearStoredToken();
-      updateAuthUI(false);
-      showSignedOutPlaceholder();
-      openLoginModal();
-    }
-    loadSymbolList();
-  }
+      function openSaleModal(index) {
+        const h = holdings[index];
+        if (!h) return;
+        saleIndex = index;
+        saleError.textContent = "";
+        salePositionLabel.textContent = `${h.symbol || "This holding"} · ${qtyOf(h)} share${qtyOf(h) === 1 ? "" : "s"}`;
+        salePriceInput.value = "";
+        saleDateInput.value = new Date().toISOString().slice(0, 10);
+        saleModal.classList.add("visible");
+        salePriceInput.focus();
+      }
 
-  init();
-})();
-</script>
+      function closeSaleModal() {
+        saleModal.classList.remove("visible");
+        saleIndex = null;
+      }
+
+      function confirmSale() {
+        const sellPrice = parseFloat(salePriceInput.value);
+        const sellDate = saleDateInput.value;
+        const h = holdings[saleIndex];
+        if (!h || !isFinite(sellPrice) || sellPrice < 0 || !sellDate) {
+          saleError.textContent = "Enter a valid sell price and sell date.";
+          return;
+        }
+        closedTransactions.push({
+          symbol: h.symbol || "",
+          quantity: qtyOf(h),
+          buyPrice: h.buyPrice,
+          buyDate: h.buyDate || "",
+          sellPrice,
+          sellDate,
+        });
+        holdings.splice(saleIndex, 1);
+        closeSaleModal();
+        renderTable();
+        if (saveStatus.className === "hint") saveStatus.textContent = "You have unsaved changes";
+      }
+
+      // ---------------- Wire up ----------------
+
+      signInBtn.addEventListener("click", openLoginModal);
+      editBtn.addEventListener("click", enterEditMode);
+      cancelBtn.addEventListener("click", cancelEdit);
+      logoutBtn.addEventListener("click", logout);
+      refreshBtn.addEventListener("click", () => loadPortfolio());
+      document.getElementById("saveBtn").addEventListener("click", savePortfolio);
+
+      document.getElementById("loginCancelBtn").addEventListener("click", closeLoginModal);
+      document.getElementById("loginSubmitBtn").addEventListener("click", submitLogin);
+      document.getElementById("saleCancelBtn").addEventListener("click", closeSaleModal);
+      document.getElementById("saleConfirmBtn").addEventListener("click", confirmSale);
+      passwordInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") submitLogin();
+      });
+      loginModal.addEventListener("click", (e) => {
+        if (e.target === loginModal) closeLoginModal();
+      });
+      saleModal.addEventListener("click", (e) => {
+        if (e.target === saleModal) closeSaleModal();
+      });
+
+      // ---------------- Startup: restore session or prompt login ----------------
+
+      function init() {
+        const token = readStoredToken();
+        const payload = token ? decodeTokenPayload(token) : null;
+        const stillValid = payload && payload.exp > Math.floor(Date.now() / 1000);
+
+        if (stillValid) {
+          sessionToken = token;
+          updateAuthUI(true, payload.u);
+          loadPortfolio();
+        } else {
+          if (token) clearStoredToken();
+          updateAuthUI(false);
+          showSignedOutPlaceholder();
+          openLoginModal();
+        }
+        loadSymbolList();
+      }
+
+      init();
+    })();
+  </script>
 
 </body>
+
 </html>
