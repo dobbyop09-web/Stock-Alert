@@ -1124,7 +1124,7 @@
 
   function profitRsOf(h) {
     const b = parseFloat(h.buyPrice);
-    const c = parseFloat(h.currentPrice);
+    const c = curPriceOf(h);
     if (!isFinite(b) || !isFinite(c)) return -Infinity;
     return (c - b) * qtyOf(h);
   }
@@ -1145,7 +1145,7 @@
       } else if (sortField === "profitRs") {
         va = profitRsOf(a); vb = profitRsOf(b);
       } else {
-        va = profitPct(a.buyPrice, a.currentPrice); vb = profitPct(b.buyPrice, b.currentPrice);
+        va = profitPct(a.buyPrice, curPriceOf(a)); vb = profitPct(b.buyPrice, curPriceOf(b));
       }
       return sortDir === "asc" ? va - vb : vb - va;
     });
@@ -1188,6 +1188,15 @@
   function qtyOf(h) {
     const q = parseFloat(h.quantity);
     return isFinite(q) && q > 0 ? q : 1;
+  }
+
+  // Current price ALWAYS comes from dashboard-data.json (symbolDataMap),
+  // never from the value stored in portfolio.json — the dashboard feed is
+  // refreshed regularly, the saved portfolio value can be stale.
+  function curPriceOf(h) {
+    const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
+    const c = symbolData ? parseFloat(symbolData.currentPrice) : NaN;
+    return c;
   }
 
   function profitInfo(buyPrice, currentPrice) {
@@ -1254,9 +1263,10 @@
 
     holdings.forEach((h, i) => {
       const tr = document.createElement("tr");
-      const profit = profitInfo(h.buyPrice, h.currentPrice);
+      const curPrice = curPriceOf(h);
+      const profit = profitInfo(h.buyPrice, curPrice);
       const profitBadge = `<span class="badge ${profit.cls}">${profit.text}</span>`;
-      const profitRsBadge = profitRupeesBadge(h.buyPrice, h.currentPrice, h.quantity);
+      const profitRsBadge = profitRupeesBadge(h.buyPrice, curPrice, h.quantity);
       const targetPct = profitInfo(h.buyPrice, h.targetAmount);
       const targetPctBadge = `<span class="badge ${targetPct.cls}">${targetPct.text}</span>`;
       const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
@@ -1285,7 +1295,7 @@
           </td>
           <td class="num">${escapeHtml(String(qtyOf(h)))}</td>
           <td class="num">${fmtMoney(h.buyPrice)}</td>
-          <td class="num">${fmtMoney(h.currentPrice)}</td>
+          <td class="num current-price-cell">${fmtMoney(curPrice)}</td>
           <td class="num chg-cell">${chgBadge}</td>
           <td class="num profit-rs-cell">${profitRsBadge}</td>
           <td class="num profit-cell">${profitBadge}</td>
@@ -1316,7 +1326,7 @@
 
     holdings.forEach((h) => {
       const buy = parseFloat(h.buyPrice);
-      const cur = parseFloat(h.currentPrice);
+      const cur = curPriceOf(h);
       const qty = qtyOf(h);
       if (isFinite(buy)) investment += buy * qty;
       if (isFinite(cur)) currentValue += cur * qty;
@@ -1329,7 +1339,7 @@
         else if (chg < 0) losersCount++;
       }
 
-      const pct = profitPct(h.buyPrice, h.currentPrice);
+      const pct = profitPct(h.buyPrice, cur);
       if (isFinite(pct) && (!best || pct > best.pct)) {
         best = { symbol: h.symbol || "—", pct };
       }
@@ -1414,11 +1424,12 @@
           </li>`).join("")
       : `<li class="insight-empty">No change data available.</li>`;
 
-    // Sector allocation, weighted by current value (price × quantity).
+    // Sector allocation, weighted by current value (price × quantity) —
+    // using the live dashboard price, not portfolio.json's stored value.
     const sectorTotals = {};
     let total = 0;
     holdings.forEach((h) => {
-      const cur = parseFloat(h.currentPrice);
+      const cur = curPriceOf(h);
       if (!isFinite(cur)) return;
       const value = cur * qtyOf(h);
       const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
@@ -1478,23 +1489,20 @@
     if (f === "symbol") {
       const match = symbolDataMap[val.trim().toUpperCase()];
       if (match !== undefined) {
-        holdings[idx].currentPrice = match.currentPrice;
-        const priceCell = row.querySelector(".current-price-cell");
-        if (priceCell) priceCell.textContent = fmtMoney(match.currentPrice);
         const chgCell = row.querySelector(".chg-cell");
         if (chgCell) chgCell.innerHTML = changeBadge(match.changePercent);
       }
     }
 
     if (f === "buyPrice" || f === "symbol") {
-      const profit = profitInfo(holdings[idx].buyPrice, holdings[idx].currentPrice);
+      const profit = profitInfo(holdings[idx].buyPrice, curPriceOf(holdings[idx]));
       const cell = row.querySelector(".profit-cell");
       cell.innerHTML = `<span class="badge ${profit.cls}">${profit.text}</span>`;
     }
 
     if (f === "buyPrice" || f === "symbol" || f === "quantity") {
       const rsCell = row.querySelector(".profit-rs-cell");
-      if (rsCell) rsCell.innerHTML = profitRupeesBadge(holdings[idx].buyPrice, holdings[idx].currentPrice, holdings[idx].quantity);
+      if (rsCell) rsCell.innerHTML = profitRupeesBadge(holdings[idx].buyPrice, curPriceOf(holdings[idx]), holdings[idx].quantity);
     }
 
     if (f === "buyPrice" || f === "targetAmount") {
@@ -1522,7 +1530,7 @@
   });
 
   addRowBtn.addEventListener("click", () => {
-    holdings.push({ symbol: "", quantity: 1, buyPrice: "", currentPrice: "", buyDate: "", targetAmount: "", sellDate: "" });
+    holdings.push({ symbol: "", quantity: 1, buyPrice: "", buyDate: "", targetAmount: "", sellDate: "" });
     renderTable();
     const inputs = tbody.querySelectorAll('input[data-f="symbol"]');
     if (inputs.length) inputs[inputs.length - 1].focus();
