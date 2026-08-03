@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sold Transactions</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #06121e;
+      --panel: #0a1826;
+      --line: #183249;
+      --text: #edf5ff;
+      --muted: #9eb0c4;
+      --green: #2ce19b;
+      --red: #ff594e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font: 14px/1.45 Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 185px minmax(0, 1fr);
+    }
+
+    aside {
+      padding: 20px 12px;
+      border-right: 1px solid var(--line);
+      background: #071522;
+    }
+
+    .brand {
+      padding: 8px 8px 22px;
+      border-bottom: 1px solid var(--line);
+      font-weight: 700;
+    }
+
+    nav {
+      display: grid;
+      gap: 5px;
+      margin-top: 15px;
+    }
+
+    nav a {
+      padding: 10px 11px;
+      border-radius: 5px;
+      color: #d7e2ef;
+      text-decoration: none;
+      font-size: .86rem;
+    }
+
+    nav a.active {
+      color: var(--green);
+      background: #063d36;
+    }
+
+    main {
+      width: 100%;
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 22px clamp(16px, 2vw, 32px) 32px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 5px;
+      font-size: 1.55rem;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    button {
+      border: 1px solid #27624e;
+      border-radius: 6px;
+      padding: 10px 13px;
+      background: #0c3d32;
+      color: var(--text);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #105142;
+    }
+
+    .totals {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 0 0 16px;
+    }
+
+    .total {
+      padding: 16px;
+      border: 1px solid #1c8c65;
+      border-radius: 7px;
+      background: linear-gradient(135deg, #0a2926, #081d20);
+    }
+
+    .total span {
+      display: block;
+      color: var(--muted);
+      font-size: .76rem;
+    }
+
+    .total strong {
+      display: block;
+      margin-top: 5px;
+      color: var(--green);
+      font-size: 1.4rem;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: linear-gradient(135deg, #0a1826, #081521);
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 850px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #132b40;
+      text-align: left;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: .76rem;
+      font-weight: 500;
+    }
+
+    .num {
+      text-align: right;
+    }
+
+    .pos {
+      color: var(--green) !important;
+    }
+
+    .neg {
+      color: var(--red) !important;
+    }
+
+    .notice {
+      padding: 28px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width:960px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        display: none;
+      }
+
+      main {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width:560px) {
+      main {
+        padding: 16px;
+      }
+
+      header {
+        display: block;
+      }
+
+      header button {
+        margin-top: 14px;
+      }
+
+      .totals {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="shell">
+    <aside>
+      <div class="brand">↗ &nbsp; PORTFOLIO</div>
+      <nav><a href="index.html">⌂ &nbsp; Dashboard</a><a href="portfolio.html">▣ &nbsp; Holdings</a><a
+          href="heatmap.html">✧ &nbsp; Heat Map</a><a href="realized-profit.html">▣ &nbsp; Realized</a><a class="active"
+          href="all-transactions.html">↗ &nbsp; Sold Transactions</a></nav>
+    </aside>
+    <main>
+      <header>
+        <div>
+          <h1>Sold Transactions</h1>
+          <p>Closed trades only.</p>
+        </div><button id="exportBtn" type="button">Export CSV</button>
+      </header>
+      <section class="totals">
+        <div class="total"><span>Overall Realised Profit / Loss</span><strong id="overallProfit">—</strong></div>
+        <div class="total"><span>Overall Return</span><strong id="overallReturn">—</strong></div>
+      </section>
+      <section class="panel" id="content">
+        <div class="notice">Loading transactions…</div>
+      </section>
+    </main>
+  </div>
+  <script>
+    (() => {
+      const API_BASE = "https://tiny-art-8473.dobbyop09.workers.dev";
+      const token = sessionStorage.getItem("portfolioAdminToken");
+      const content = document.getElementById("content"), overallProfit = document.getElementById("overallProfit"), overallReturn = document.getElementById("overallReturn"); let rows = [];
+      const escape = value => String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const money = value => Number.isFinite(Number(value)) ? Number(value).toLocaleString("en-IN", { maximumFractionDigits: 2 }) : "—";
+      const qty = trade => Number(trade.quantity) || 1;
+      const profit = trade => (Number(trade.sellPrice) - Number(trade.buyPrice)) * qty(trade);
+      function render() {
+        const invested = rows.reduce((sum, trade) => sum + Number(trade.buyPrice) * qty(trade), 0); const sold = rows.reduce((sum, trade) => sum + Number(trade.sellPrice) * qty(trade), 0); const total = sold - invested; const returnPct = invested ? (total / invested) * 100 : 0; overallProfit.textContent = `${total >= 0 ? '+' : '-'}₹${money(Math.abs(total))}`; overallProfit.className = total >= 0 ? 'pos' : 'neg'; overallReturn.textContent = `${returnPct >= 0 ? '+' : ''}${returnPct.toFixed(2)}%`; overallReturn.className = returnPct >= 0 ? 'pos' : 'neg';
+        if (!rows.length) { overallProfit.textContent = '₹0'; overallProfit.className = 'pos'; overallReturn.textContent = '0.00%'; overallReturn.className = 'pos'; content.innerHTML = '<div class="notice">No closed trades available.</div>'; return; }
+        content.innerHTML = `<table><thead><tr><th>Symbol</th><th class="num">Quantity</th><th>Buy Date</th><th>Sell Date</th><th class="num">Invested Value</th><th class="num">Sold Value</th><th class="num">P&amp;L</th></tr></thead><tbody>${rows.map(t => { const investedValue = Number(t.buyPrice) * qty(t), soldValue = Number(t.sellPrice) * qty(t), pnl = soldValue - investedValue; return `<tr><td><strong>${escape(t.symbol || '—')}</strong></td><td class="num">${qty(t)}</td><td>${escape(t.buyDate || '—')}</td><td>${escape(t.sellDate || '—')}</td><td class="num">₹${money(investedValue)}</td><td class="num">₹${money(soldValue)}</td><td class="num ${pnl >= 0 ? 'pos' : 'neg'}">${pnl >= 0 ? '+' : '-'}₹${money(Math.abs(pnl))}</td></tr>`; }).join('')}</tbody></table>`;
+      }
+      async function load() {
+        if (!token) { content.innerHTML = '<div class="notice">Sign in from the Portfolio page to view transactions.</div>'; return; }
+        try { const response = await fetch(`${API_BASE}/portfolio.json`, { headers: { Authorization: `Bearer ${token}` } }); if (!response.ok) throw new Error(); const data = await response.json(); rows = Array.isArray(data.closedTransactions) ? data.closedTransactions : []; render(); } catch { content.innerHTML = '<div class="notice">Unable to load transactions. Please sign in again from the Portfolio page.</div>'; }
+      }
+      document.getElementById('exportBtn').addEventListener('click', () => { const csv = [['Symbol', 'Quantity', 'Buy Date', 'Sell Date', 'Invested Value', 'Sold Value', 'P&L'], ...rows.map(t => { const investedValue = Number(t.buyPrice) * qty(t), soldValue = Number(t.sellPrice) * qty(t); return [t.symbol || '', qty(t), t.buyDate || '', t.sellDate || '', investedValue, soldValue, soldValue - investedValue]; })].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n'); const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); const link = document.createElement('a'); link.href = url; link.download = 'all-transactions.csv'; link.click(); URL.revokeObjectURL(url); });
+      load();
+    })();
+  </script>
+</body>
+
+</html>
