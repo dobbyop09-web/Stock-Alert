@@ -11,6 +11,13 @@
 <link rel="stylesheet" href="css/components.css">
 
 <style>
+    /* Smooth native crossfade when navigating between pages of this site
+       (supported in Chromium-based browsers; other browsers just do a
+       normal instant navigation, so this is a safe progressive enhancement). */
+    @view-transition {
+        navigation: auto;
+    }
+
     /* ---- Page shell (mirrors layout.css .wrap/.topbar, without the
        dashboard's sidebar-driven fixed-viewport rules) ---- */
 
@@ -617,15 +624,42 @@
 
     /* ---- Holdings dashboard refresh ---- */
     body.portfolio-page { background: var(--bg); }
-    .app-shell { min-height: 100vh; display: grid; grid-template-columns: 188px minmax(0, 1fr); }
-    .app-sidebar { background: var(--panel); border-right: 1px solid var(--line); padding: 24px 12px; display: flex; flex-direction: column; }
-    .brand { color: var(--text); font-size: 13px; font-weight: 700; letter-spacing: .06em; padding: 0 10px 22px; border-bottom: 1px solid var(--line); }
-    .brand-mark { color: #2DD4BF; font-size: 20px; margin-right: 7px; vertical-align: -1px; }
-    .side-nav { display: flex; flex-direction: column; gap: 5px; padding-top: 20px; }
-    .side-nav a { color: var(--muted); text-decoration: none; font-size: 12.5px; padding: 11px 12px; border-radius: 7px; transition: .15s ease; }
-    .side-nav a:hover { color: var(--text); background: rgba(255,255,255,.035); }
-    .side-nav a.active { color: #2DD4BF; background: rgba(45,212,191,.11); }
+    .app-shell { min-height: 100vh; }
     .wrap { max-width: 1560px; padding-top: 22px; position: relative; }
+
+    /* ---- Top page nav: a compact, always-visible tab strip. Simpler and
+       snappier than a toggling drawer for a handful of links. ---- */
+    .page-nav {
+        display: inline-flex;
+        gap: 3px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 4px;
+        margin-bottom: 18px;
+    }
+    .page-nav a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 12.5px;
+        font-weight: 500;
+        padding: 8px 14px;
+        border-radius: 7px;
+        transition: color .15s ease, background-color .15s ease, color .15s ease;
+    }
+    .page-nav a:hover {
+        color: var(--text);
+    }
+    .page-nav a.active {
+        color: #06201d;
+        background: #2DD4BF;
+        font-weight: 600;
+    }
+    @media (max-width: 560px) {
+        .page-nav { display: flex; overflow-x: auto; }
+        .page-nav a { white-space: nowrap; }
+    }
+
     /* Edit is visually part of the summary row, without taking a row of its own. */
     .topbar { position: absolute; top: 22px; right: clamp(12px, 4vw, 32px); z-index: 2; width: 310px; min-height: 0; margin: 0; padding: 0; border: 0; }
     .topbar-left h1 { margin: 0; font-size: 26px; letter-spacing: -.03em; }
@@ -691,8 +725,6 @@
         .insight-panels { display: grid; grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 700px) {
-        .app-shell { grid-template-columns: 1fr; }
-        .app-sidebar { display: none; }
         .topbar-right { width: 100%; justify-content: space-between; }
         .sidebar-account-bar #whoami { display: none !important; }
         .topbar-right .navbar { display: none; }
@@ -706,16 +738,13 @@
 
 <body class="portfolio-page">
     <div class="app-shell">
-        <aside class="app-sidebar" aria-label="Primary navigation">
-            <div class="brand"><span class="brand-mark">↗</span>PORTFOLIO</div>
-            <nav class="side-nav">
-                <a href="index.html">Dashboard</a>
-                <a href="portfolio.html" class="active">Holdings</a>
-                <a href="heatmap.html">Heat Map</a>
-                <a href="realized-profit.html">Realized Profit</a>
-            </nav>
-        </aside>
         <div class="wrap">
+        <nav class="page-nav">
+            <a href="index.html">Dashboard</a>
+            <a href="portfolio.html" class="active">Holdings</a>
+            <a href="heatmap.html">Heat Map</a>
+            <a href="realized-profit.html">Realized Profit</a>
+        </nav>
         <div class="topbar">
             <div class="topbar-left">
                 <h1>Portfolio</h1>
@@ -871,6 +900,13 @@
             <aside class="insights-row side-col" id="insightsRow">
                 <div class="insight-panels" id="insightPanels" style="display:none;">
                     <div class="insight-panel">
+                        <p class="sidebar-title">Allocation by Sector</p>
+                        <div class="donut-panel-body">
+                            <div class="donut-wrap" id="sectorDonutWrap"></div>
+                            <ul class="sector-legend" id="sectorAllocList"></ul>
+                        </div>
+                    </div>
+                    <div class="insight-panel">
                         <p class="sidebar-title">Portfolio Health</p>
                         <div class="health-counts">
                             <div class="health-count profit"><span class="value" id="profitableCount">â€”</span><span class="label">Profitable stocks</span></div>
@@ -884,13 +920,6 @@
                     <div class="insight-panel">
                         <p class="sidebar-title">Top Losers</p>
                         <ul class="insight-list" id="topLosersList"></ul>
-                    </div>
-                    <div class="insight-panel">
-                        <p class="sidebar-title">Allocation by Sector</p>
-                        <div class="donut-panel-body">
-                            <div class="donut-wrap" id="sectorDonutWrap"></div>
-                            <ul class="sector-legend" id="sectorAllocList"></ul>
-                        </div>
                     </div>
                 </div>
             </aside>
@@ -948,7 +977,7 @@
   let closedTransactionsSnapshot = [];
   let saleIndex = null;
   let isEditing = false;
-  let symbolDataMap = {}; // SYMBOL -> { currentPrice, changePercent, sector, screenerUrl }
+  let symbolDataMap = {}; // SYMBOL -> { currentPrice, changePercent, sector, screenerUrl,previousClose }
 
   const thSortSymbol    = document.getElementById("thSortSymbol");
   const thSortChg       = document.getElementById("thSortChg");
@@ -1134,6 +1163,8 @@
           changePercent: item.changePercent,
           sector: item.sheet,
           screenerUrl: item.screenerUrl,
+          previousClose: item.previousClose,
+        
         };
         const opt = document.createElement("option");
         opt.value = item.symbol;
@@ -1573,61 +1604,105 @@
 
   // ---------------- Stat cards ----------------
 
-  function computeStats() {
-    if (!sessionToken || holdings.length === 0) {
-      portfolioStats.style.display = "none";
-      statInvestmentSub.textContent = "";
-      statGainLossSub.textContent = "";
-      statTodayChangeSub.textContent = "";
-      return;
-    }
-    portfolioStats.style.display = "grid";
-
-    let investment = 0, currentValue = 0, todayChange = 0;
-    let gainersCount = 0, losersCount = 0;
-    let best = null;
-
-    holdings.forEach((h) => {
-      const buy = parseFloat(h.buyPrice);
-      const cur = curPriceOf(h);
-      const qty = qtyOf(h);
-      if (isFinite(buy)) investment += buy * qty;
-      if (isFinite(cur)) currentValue += cur * qty;
-
-      const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
-      const chg = symbolData ? parseFloat(symbolData.changePercent) : NaN;
-      if (isFinite(cur) && isFinite(chg)) todayChange += cur * qty * (chg / 100);
-      if (isFinite(chg)) {
-        if (chg > 0) gainersCount++;
-        else if (chg < 0) losersCount++;
-      }
-
-      const pct = profitPct(h.buyPrice, cur);
-      if (isFinite(pct) && (!best || pct > best.pct)) {
-        best = { symbol: h.symbol || "—", pct };
-      }
-    });
-
-    const gainLoss = currentValue - investment;
-    const gainLossPct = investment !== 0 ? (gainLoss / investment) * 100 : 0;
-    const todayChangePct = currentValue !== 0 ? (todayChange / currentValue) * 100 : 0;
-
-    statInvestment.textContent = "₹" + fmtMoney(investment);
-    statInvestment.className = "n";
-    statInvestmentSub.textContent = `Across ${holdings.length} stock${holdings.length === 1 ? "" : "s"}`;
-
-    statCurrentValue.textContent = "₹" + fmtMoney(currentValue);
-    statCurrentValue.className = "n";
-
-    statGainLoss.textContent = `${gainLoss >= 0 ? "+" : ""}₹${fmtMoney(gainLoss)} (${gainLossPct >= 0 ? "+" : ""}${gainLossPct.toFixed(2)}%)`;
-    statGainLoss.className = "n " + (gainLoss >= 0 ? "pos" : "neg");
-    statGainLossSub.textContent = best ? `Best: ${best.symbol} ${best.pct >= 0 ? "+" : ""}${best.pct.toFixed(2)}%` : "";
-
-    statTodayChange.textContent = `${todayChange >= 0 ? "+" : ""}₹${fmtMoney(todayChange)} (${todayChangePct >= 0 ? "+" : ""}${todayChangePct.toFixed(2)}%)`;
-    statTodayChange.className = "n " + (todayChange >= 0 ? "pos" : "neg");
-    statTodayChangeSub.textContent = (gainersCount || losersCount) ? `${gainersCount} up · ${losersCount} down` : "";
+ function computeStats() {
+  if (!sessionToken || holdings.length === 0) {
+    portfolioStats.style.display = "none";
+    statInvestmentSub.textContent = "";
+    statGainLossSub.textContent = "";
+    statTodayChangeSub.textContent = "";
+    return;
   }
 
+  portfolioStats.style.display = "grid";
+
+  let investment = 0;
+  let currentValue = 0;
+
+  let todayChange = 0;
+  let yesterdayValue = 0;
+
+  let gainersCount = 0;
+  let losersCount = 0;
+
+  let best = null;
+
+  holdings.forEach((h) => {
+    const buy = parseFloat(h.buyPrice);
+    const cur = curPriceOf(h);
+    const qty = qtyOf(h);
+
+    if (isFinite(buy))
+      investment += buy * qty;
+
+    if (isFinite(cur))
+      currentValue += cur * qty;
+
+    const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
+
+    if (symbolData) {
+      const prevClose = parseFloat(symbolData.previousClose);
+      const chg = parseFloat(symbolData.changePercent);
+
+      if (isFinite(prevClose) && isFinite(cur)) {
+        todayChange += (cur - prevClose) * qty;
+        yesterdayValue += prevClose * qty;
+      }
+
+      if (isFinite(chg)) {
+        if (chg > 0)
+          gainersCount++;
+        else if (chg < 0)
+          losersCount++;
+      }
+    }
+    console.log(" Yesterday Value: " + yesterdayValue, " Today Change: " + todayChange);
+    const pct = profitPct(buy, cur);
+
+    if (isFinite(pct) && (!best || pct > best.pct)) {
+      best = {
+        symbol: h.symbol || "—",
+        pct
+      };
+    }
+  });
+
+  const gainLoss = currentValue - investment;
+
+  const gainLossPct =
+    investment > 0
+      ? (gainLoss / investment) * 100
+      : 0;
+
+  const todayChangePct =
+    yesterdayValue > 0
+      ? (todayChange / yesterdayValue) * 100
+      : 0;
+
+  statInvestment.textContent = "₹" + fmtMoney(investment);
+  statInvestment.className = "n";
+  statInvestmentSub.textContent =
+    `Across ${holdings.length} stock${holdings.length === 1 ? "" : "s"}`;
+
+  statCurrentValue.textContent = "₹" + fmtMoney(currentValue);
+  statCurrentValue.className = "n";
+
+  statGainLoss.textContent =
+    `${gainLoss >= 0 ? "+" : ""}₹${fmtMoney(gainLoss)} (${gainLossPct >= 0 ? "+" : ""}${gainLossPct.toFixed(2)}%)`;
+  statGainLoss.className =
+    "n " + (gainLoss >= 0 ? "pos" : "neg");
+  statGainLossSub.textContent =
+    best
+      ? `Best: ${best.symbol} ${best.pct >= 0 ? "+" : ""}${best.pct.toFixed(2)}%`
+      : "";
+
+  statTodayChange.textContent =
+    `${todayChange >= 0 ? "+" : ""}₹${fmtMoney(todayChange)} (${todayChangePct >= 0 ? "+" : ""}${todayChangePct.toFixed(2)}%)`;
+  statTodayChange.className =
+    "n " + (todayChange >= 0 ? "pos" : "neg");
+
+  statTodayChangeSub.textContent =
+    `${gainersCount} up · ${losersCount} down`;
+}
   // ---------------- Top Gainers / Losers / Sector Allocation ----------------
 
   const SECTOR_COLORS = ["#2DD4BF", "#F5A623", "#8B5CF6", "#5B9EFF", "#FF5C6C", "#5B6472", "#22C55E", "#EAB308"];
