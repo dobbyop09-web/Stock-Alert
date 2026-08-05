@@ -218,6 +218,17 @@
     flex-shrink: 0;
 }
 
+/* ── Heatmap canvas area (heatmap.html) ── */
+.heatmap-scroll {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+}
+
+.heatmap {
+    flex: 1;
+}
+
 /* ---- Responsive breakpoints ---- */
 @media (max-width: 900px) {
     .page-body {
@@ -236,6 +247,11 @@
 
     .content {
         overflow-y: auto;
+    }
+
+    .heatmap-scroll {
+        height: 70vh;
+        flex: none;
     }
 }
 
