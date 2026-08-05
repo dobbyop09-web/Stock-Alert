@@ -14,84 +14,125 @@
 </head>
 
 <body>
-    <div class="wrap">
-        <div class="topbar">
-            <div>
-                <h1>Stock Dashboard</h1>
-                <p class="sub" id="subline">Loading...</p>
+    <div class="shell">
 
-            </div>
-            <span id="refreshMsg" style="font-size:20px;color:var(--triggered);margin-left:6px;"></span>
-            <nav class="navbar">
-                <a href="index.html" class="active">Dashboard</a>
-                <a href="heatmap.html">Heat Map</a>
-                 <a href="admin.html">Portfolio</a>
-
-            </nav>
-            <div class="ticker-scroll">
-                <div class="ticker" id="indexTicker">
-                    <!-- rendered by JS -->
-                </div>
-            </div>
-
-        </div>
-
-        <div class="layout">
-            <aside class="sidebar">
-                <div class="sidebar-search">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        <!-- ══ Icon sidebar — same as the Portfolio page ══ -->
+        <aside class="sb">
+            <nav class="sb-nav">
+                <a href="index.html" class="sb-link active" data-title="Dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
                     </svg>
-                    <input type="text" id="searchBox" placeholder="Search symbol or sector...">
+                </a>
+                <a href="heatmap.html" class="sb-link" data-title="Heat Map">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 2v20M2 12h20" />
+                    </svg>
+                </a>
+                <a href="admin.html" class="sb-link" data-title="Portfolio">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 3h18v18H3z" />
+                        <path d="M3 9h18M9 21V9" />
+                    </svg>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- ══ Main app column ══ -->
+        <div class="app-main">
+
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>Stock Dashboard</h1>
+                    <p class="sub" id="subline">Loading...</p>
                 </div>
-
-                <p class="sidebar-title">Sectors</p>
-                <ul class="sector-list" id="sectorList"></ul>
-            </aside>
-
-            <main class="main">
-                <div class="stats" id="stats"></div>
-
-                <div class="toolbar">
-                    <button id="refreshBtn">Refresh Now</button>
-                    <button id="loginBtn" disabled>Loading Google Sign-In…</button>
-                    <span id="authStatus"></span>
-                    <button id="sortBtn">Sort by closest to alert</button>
-                    <button id="sortMcBtn">Market Cap ↓</button>
-                </div>
-
-                <div class="showing" id="showingLine"></div>
-
-                <div class="paste" id="pasteBox">
-                    <textarea id="pasteArea"
-                        placeholder="Paste rows copied from Google Sheets (Symbol, Current price, Alert price) — tab or comma separated, one row per line"></textarea>
-                    <div class="row">
-                        <button class="primary" id="importBtn">Import</button>
+ <div class="ticker-scroll">
+                        <div class="ticker" id="indexTicker">
+                            <!-- rendered by JS -->
+                        </div>
                     </div>
-                    <p class="hint">Select your Symbol / Current Price / Alert Price columns in Sheets, copy, then
-                        paste here.</p>
-                </div>
+                <div class="topbar-right">
+                    <span id="refreshMsg"></span>
 
-                <div class="table-scroll">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width:22%">Symbol</th>
-                                <th class="num" style="width:18%">Current</th>
-                                <th id="alertHeader" class="num" style="width:18%">Alert</th>
-                                <th class="num" style="width:16%">Distance</th>
-                                <th style="width:18%">Status</th>
-                                <th style="width:8%">Sector</th>
-                                <th style="width:8%">Edit</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody"></tbody>
-                    </table>
+                   
+
+                    <button id="refreshBtn" class="btn-ghost">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10" />
+                            <polyline points="1 20 1 14 7 14" />
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                        </svg>
+                        Refresh Now
+                    </button>
+                    <button id="loginBtn" class="btn-ghost" disabled>Loading Google Sign-In…</button>
+                    <span id="authStatus"></span>
                 </div>
-                <div class="empty" id="emptyMsg" style="display:none;">No stocks yet. Add a row or paste from your
-                    sheet.</div>
-            </main>
+            </header>
+
+            <div class="content" id="content">
+                <div class="page-body">
+
+                    <aside class="sidebar">
+                        <div class="sidebar-search">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                            <input type="text" id="searchBox" placeholder="Search symbol or sector...">
+                        </div>
+
+                        <p class="sidebar-title">Sectors</p>
+                        <ul class="sector-list" id="sectorList"></ul>
+                    </aside>
+
+                    <main class="content-main">
+                        <div class="stats" id="stats"></div>
+
+                        <div class="paste" id="pasteBox">
+                            <textarea id="pasteArea"
+                                placeholder="Paste rows copied from Google Sheets (Symbol, Current price, Alert price) — tab or comma separated, one row per line"></textarea>
+                            <div class="row">
+                                <button class="btn-primary" id="importBtn">Import</button>
+                            </div>
+                            <p class="hint">Select your Symbol / Current Price / Alert Price columns in Sheets, copy,
+                                then paste here.</p>
+                        </div>
+
+                        <div class="table-panel">
+                            <div class="table-toolbar">
+                                <div class="showing" id="showingLine"></div>
+                                <div class="toolbar">
+                                    <button id="sortBtn" class="btn-ghost">Sort by closest to alert</button>
+                                    <button id="sortMcBtn" class="btn-ghost">Market Cap ↓</button>
+                                </div>
+                            </div>
+
+                            <div class="table-scroll">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th style="width:22%">Symbol</th>
+                                            <th class="num" style="width:18%">Current</th>
+                                            <th id="alertHeader" class="num" style="width:18%">Alert</th>
+                                            <th class="num" style="width:16%">Distance</th>
+                                            <th style="width:18%">Status</th>
+                                            <th style="width:8%">Sector</th>
+                                            <th style="width:8%">Edit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody"></tbody>
+                                </table>
+                            </div>
+                            <div class="empty" id="emptyMsg" style="display:none;">No stocks yet. Add a row or paste
+                                from your sheet.</div>
+                        </div>
+                    </main>
+                </div>
+            </div>
         </div>
     </div>
 

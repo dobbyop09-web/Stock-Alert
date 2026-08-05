@@ -1,14 +1,29 @@
 :root {
-    --bg: #0A0D12;
-    --panel: #12161D;
-    --panel2: #171C24;
-    --line: #232A35;
-    --text: #E6EAF0;
-    --muted: #7A8494;
+    /* Base surfaces — matches admin/portfolio page */
+    --bg: #0b1520;
+    --panel: #0e1d2b;
+    --panel2: #122233;
+    --sb-bg: #07111a;
+
+    /* Borders */
+    --line: rgba(255, 255, 255, .07);
+    --line-strong: rgba(255, 255, 255, .18);
+
+    /* Text */
+    --text: #dce8f4;
+    --text-strong: #edf5ff;
+    --muted: #5a7080;
+    --muted-dim: #4a6075;
+    --muted-dimmer: #3a5060;
+
+    /* Fonts */
     --mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
     --sans: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+
+    /* Status / accent colors */
+    --accent: #2DD4BF;
     --triggered: #FF5C6C;
     --near: #F5A623;
     --watch: #2DD4BF;
-    --far: #5B6472;
+    --far: #5a7080;
 }
