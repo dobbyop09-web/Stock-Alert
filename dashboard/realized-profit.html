@@ -618,8 +618,8 @@
     .panel {
       background: #0e1d2b;
       border: 1px solid rgba(255, 255, 255, .07);
-      border-radius: 8px;
-      padding: 16px;
+      border-radius:16px;
+       padding:22px 18px 20px;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -629,14 +629,16 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin-bottom:10px;
       gap: 10px;
       flex-shrink: 0
     }
 
     .panel-title {
-      font-size: 12px;
-      font-weight: 600;
+        font-size:15px;
+    font-weight:700;
       color: #cfe2f5;
+      margin-bottom: 10px;
       letter-spacing: .01em
     }
 
@@ -672,148 +674,185 @@
       border-radius: 1px
     }
 
-    .time-tabs {
-      display: flex;
-      gap: 2px
-    }
-
-    .time-tab {
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 600;
-      color: #4a6075;
-      cursor: pointer;
-    }
-
-    .time-tab:hover {
-      color: #9fb5c8
-    }
-
-    .time-tab.active {
-      background: rgba(45, 212, 191, .12);
-      color: #2DD4BF
-    }
 
     .chart-wrap {
       position: relative;
       width: 100%;
-      height: 200px;
+      height: 220px;
       flex-shrink: 0
     }
 
     /* ── Sector donut ── */
-    .sector-layout {
-      display: flex;
-      gap: 14px;
-      align-items: flex-start
-    }
+/* ---------- Sector Performance ---------- */
 
-    .donut-wrap {
-      position: relative;
-      flex-shrink: 0;
-      width: 140px;
-      height: 140px
-    }
+.sector-performance{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
 
-    .donut-center {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center
-    }
+.sector-card{
 
-    .dc-val {
-      font-size: 14px;
-      font-weight: 700;
-      color: #edf5ff;
-      line-height: 1.1
-    }
+    display:flex;
+    flex-direction:column;
 
-    .dc-lbl {
-      font-size: 9px;
-      color: #4a6075;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      margin-top: 2px
-    }
+    gap:6px;
 
-    .sector-list {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      min-width: 0
-    }
+    padding:8px 0;
 
-    .sector-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      font-size: 11px
-    }
+    border-bottom:1px solid rgba(255,255,255,.05);
 
-    .sector-name {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      color: #cfe2f5;
-      min-width: 0;
-      flex: 1
-    }
+}
+.sector-card:last-child{
+    border-bottom:none;
+}
+.sector-card:hover{
 
-    .sector-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      flex-shrink: 0
-    }
+    transform:translateX(4px);
 
-    .sector-right {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-      flex-shrink: 0;
-      min-width: 110px
-    }
+}
 
-    .sector-amt {
-      font-family: 'SF Mono', monospace;
-      color: #dce8f4;
-      font-weight: 600;
-      font-size: 10px
-    }
+.sector-info{
 
-    .sector-pct {
-      color: #4a6075;
-      font-size: 10px;
-      min-width: 34px;
-      text-align: right
-    }
+    display:grid;
 
-    .sector-link {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11px;
-      color: #4a6075;
-      padding: 6px 0;
-      border-top: 1px solid rgba(255, 255, 255, .05);
-      margin-top: 4px;
-    }
+    grid-template-columns:
+        1fr
+        70px
+        80px
+        45px;
 
-    .sector-link:hover {
-      color: #2DD4BF
-    }
+    align-items:center;
 
-    .sector-link svg {
-      width: 12px;
-      height: 12px
-    }
+    column-gap:10px;
+
+}
+
+.sector-name{
+    color:#edf5ff;
+    font-size:13px;
+    font-weight:600;
+}
+
+.sector-return{
+    font-size:12px;
+    text-align:right;
+    font-weight:700;
+}
+
+.sector-return.positive{
+    color:#2DD4BF;
+}
+
+.sector-return.negative{
+    color:#FF5C6C;
+}
+
+.sector-bar{
+
+    width:100%;
+
+    height:5px;
+
+    background:#152332;
+
+    border-radius:999px;
+
+    overflow:hidden;
+
+    position:relative;
+}
+
+.sector-bar-fill{
+
+    height:100%;
+
+    border-radius:999px;
+
+    transition:width .8s ease;
+}
+
+.sector-bar-fill.positive{
+
+    background:linear-gradient(
+        90deg,
+        #2DD4BF,
+        #3B82F6
+    );
+
+    box-shadow:
+        0 0 10px rgba(59,130,246,.18);
+}
+
+.sector-bar-fill.negative{
+
+    background:#FF5C6C;
+
+    box-shadow:
+        0 0 8px rgba(255,92,108,.25);
+}
+
+.sector-footer{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    font-size:12px;
+}
+
+.sector-profit{
+
+    font-size:12px;
+    text-align:right;
+
+    font-weight:600;
+}
+
+.sector-profit.positive{
+    color:#dce8f4;
+}
+
+.sector-profit.negative{
+    color:#FF5C6C;
+}
+
+.sector-trades-badge{
+
+    justify-self:end;
+
+    min-width:24px;
+    height:20px;
+
+    padding:0 8px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:999px;
+
+    background:rgba(77,157,255,.12);
+
+    border:1px solid rgba(77,157,255,.20);
+
+    color:#8FC7FF;
+
+    font-size:11px;
+    font-weight:700;
+
+    transition:all .25s ease;
+}
+.sector-card:hover .sector-trades-badge{
+
+    background:rgba(77,157,255,.18);
+
+    border-color:rgba(77,157,255,.35);
+
+    transform:scale(1.05);
+}
 
     /* ── Trades table ── */
     .trades-panel {
@@ -1230,6 +1269,177 @@
       background: rgba(255, 255, 255, .08);
       border-radius: 4px
     }
+    .panel-subtitle{
+    margin-top:4px;
+    font-size:13px;
+    color:var(--muted);
+    font-weight:400;
+}
+.chart-view-toggle{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.chart-view-btn{
+
+    background:transparent;
+    border:1px solid rgba(255,255,255,.08);
+
+    color:#7f94ad;
+
+    padding:5px 12px;
+
+    border-radius:999px;
+
+    font-size:12px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:
+        color .25s ease,
+        background-color .25s ease,
+        border-color .25s ease,
+        transform .15s ease;
+}
+
+.chart-view-btn:hover{
+
+    color:#edf5ff;
+
+    background:rgba(255,255,255,.03);
+
+    border-color:rgba(255,255,255,.12);
+}
+
+.chart-view-btn.active{
+
+    color:#4D9DFF;
+
+    background:rgba(77,157,255,.10);
+
+    border-color:rgba(77,157,255,.45);
+}
+
+.chart-view-btn:active{
+    transform:scale(.96);
+}
+.chart-view-btn::before{
+
+    content:"";
+
+    width:6px;
+    height:6px;
+
+    border-radius:50%;
+
+    background:#4b5d72;
+
+    display:inline-block;
+
+    margin-right:6px;
+
+    transition:background .25s ease;
+}
+
+.chart-view-btn.active::before{
+
+    background:#4D9DFF;
+}
+/* ================= Modal ================= */
+
+.modal-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.55);
+
+    backdrop-filter:blur(8px);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:9999;
+}
+
+.modal-card{
+
+    width:min(720px,90vw);
+
+    max-height:80vh;
+
+    overflow:hidden;
+
+    background:#101A24;
+
+    border:1px solid rgba(255,255,255,.06);
+
+    border-radius:18px;
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.45);
+
+}
+
+.modal-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px 22px;
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+}
+
+.modal-header h3{
+
+    margin:0;
+
+    font-size:18px;
+
+    color:#EDF5FF;
+}
+
+.modal-close{
+
+    border:none;
+
+    background:none;
+
+    color:#8FA3BC;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.modal-close:hover{
+
+    color:#EDF5FF;
+
+}
+
+.modal-body{
+
+    padding:20px;
+
+    overflow-y:auto;
+
+    max-height:65vh;
+
+}
   </style>
 </head>
 
@@ -1321,7 +1531,7 @@
           <div class="fy-dropdown" id="fyDropdown">
 
             <div class="fy-option active" data-value="fy">
-              FY 2025-26
+              FY 2026-27
             </div>
 
             <div class="fy-option" data-value="q1">
@@ -1402,25 +1612,14 @@
             <!-- Chart -->
             <div class="panel">
               <div class="panel-head">
-                <div>
-                  <div class="panel-title">Realised Profit Over Time</div>
-                </div>
-                <div style="display:flex;align-items:center;gap:10px">
-                  <div class="chart-legend">
-                    <span class="chart-legend-item"><span class="chart-legend-dot"
-                        style="background:rgba(45,212,191,.6)"></span>Daily P&amp;L</span>
-                    <span class="chart-legend-item"><span class="chart-legend-line"
-                        style="background:#5B9EFF"></span>Cumulative P&amp;L</span>
-                  </div>
-                  <div class="time-tabs" id="timeTabs">
-                    <button class="time-tab" data-range="7">7D</button>
-                    <button class="time-tab" data-range="30">1M</button>
-                    <button class="time-tab" data-range="90">3M</button>
-                    <button class="time-tab" data-range="180">6M</button>
-                    <button class="time-tab" data-range="365">1Y</button>
-                    <button class="time-tab active" data-range="all">ALL</button>
-                  </div>
-                </div>
+                <div class="panel-title">
+    Monthly Profit Trend
+</div>
+
+                 <div class="chart-view-toggle">
+        <button class="chart-view-btn active" data-view="monthly">Monthly</button>
+        <button class="chart-view-btn" data-view="daily">Daily</button>
+    </div>
               </div>
               <div class="chart-wrap">
                 <canvas id="pnlChart"></canvas>
@@ -1429,7 +1628,7 @@
             <!-- Sector -->
             <div class="panel">
               <div class="panel-head">
-                <span class="panel-title">Realised Profit By Sector</span>
+                <span class="panel-title">Sectors Performance</span>
               </div>
               <div id="sectorBody" class="sector-layout"></div>
             </div>
@@ -1526,6 +1725,27 @@
       </div>
     </div>
   </div>
+  <div id="sectorModal" class="modal-overlay">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <h3>All Sector Performance</h3>
+
+            <button id="closeSectorModal" class="modal-close">
+                ✕
+            </button>
+
+        </div>
+
+        <div id="sectorModalBody" class="modal-body">
+
+        </div>
+
+    </div>
+
+</div>
 
   <script>
     (() => {
@@ -1540,6 +1760,10 @@
       let activeRange = "all";
       let allValid = [];
       let activePeriod = "fy";
+      let chartView = "monthly";
+      let chartData = [];
+      let allSectorEntries = [];
+      let sectorTotalPnl = 0;
 
       /* ── dom ── */
       const sidebar = document.getElementById("sidebar");
@@ -1707,8 +1931,9 @@
       function render() {
         allValid = closedTransactions.map(t => ({ ...t, info: tradeInfo(t), days: holdingDays(t) })).filter(t => isFinite(t.info.pnl));
         const filtered = getFilteredByPeriod(allValid);
+        chartData = filtered;
         renderKPIs(filtered);
-        renderChart(filtered);
+        renderChart(chartData);
         renderSector(filtered);
         renderTrades(filtered);
         renderSummary(filtered);
@@ -1819,12 +2044,62 @@
 
       function renderChart(valid) {
         const filtered = getFilteredByRange(valid, activeRange);
-        const sorted = [...filtered].sort((a, b) => String(a.sellDate || "").localeCompare(String(b.sellDate || "")));
-        const byDate = {};
-        sorted.forEach(t => { const k = t.sellDate || "unknown"; byDate[k] = (byDate[k] || 0) + t.info.pnl; });
-        const entries = Object.entries(byDate).sort((a, b) => a[0].localeCompare(b[0]));
-        const labels = entries.map(([d]) => { const dt = new Date(d); return isNaN(dt) ? d : dt.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "2-digit" }); });
-        const daily = entries.map(([, v]) => v);
+        const sorted = [...filtered].sort(
+    (a, b) => String(a.sellDate || "").localeCompare(String(b.sellDate || ""))
+);
+let grouped = {};
+
+sorted.forEach(t => {
+
+    if (!t.sellDate) return;
+
+    const dt = new Date(t.sellDate);
+
+    let key;
+    let label;
+
+    if (chartView === "daily") {
+
+        key = t.sellDate;
+
+        label = dt.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "2-digit"
+        });
+
+    } else {
+
+        key =
+            dt.getFullYear() +
+            "-" +
+            String(dt.getMonth() + 1).padStart(2, "0");
+
+        label = dt.toLocaleDateString("en-GB", {
+            month: "short",
+            year: "numeric"
+        });
+
+    }
+
+    if (!grouped[key]) {
+
+        grouped[key] = {
+            pnl: 0,
+            label
+        };
+
+    }
+
+    grouped[key].pnl += t.info.pnl;
+
+});
+
+const entries = Object.entries(grouped)
+    .sort((a, b) => a[0].localeCompare(b[0]));
+
+const labels = entries.map(([, v]) => v.label);
+const daily = entries.map(([, v]) => v.pnl);
         let cum = 0; const cumulative = daily.map(v => cum += v);
 
         if (pnlChartInstance) { pnlChartInstance.destroy(); pnlChartInstance = null; }
@@ -1839,7 +2114,7 @@
             labels,
             datasets: [
               {
-                type: "bar", label: "Daily P&L", data: daily,
+                type: "bar", label: "Monthly p&l", data: daily,
                 backgroundColor: daily.map(v => v >= 0 ? "rgba(45,212,191,.55)" : "rgba(255,92,108,.55)"),
                 borderRadius: 2, order: 2,
               },
@@ -1873,54 +2148,115 @@
 
       /* ── Sector ── */
       function renderSector(valid) {
-        const totals = {};
-        valid.forEach(t => {
-          const sd = symbolDataMap[(t.symbol || "").toUpperCase()];
-          const sector = (sd && sd.sheet) || "Other";
-          totals[sector] = (totals[sector] || 0) + t.info.pnl;
-        });
-        const entries = Object.entries(totals).sort((a, b) => b[1] - a[1]);
-        const sum = entries.reduce((s, [, v]) => s + Math.abs(v), 0) || 1;
-        const netPnl = valid.reduce((s, t) => s + t.info.pnl, 0);
-        const container = document.getElementById("sectorBody");
-        if (!entries.length) { container.innerHTML = '<div class="empty-state">No sector data</div>'; return; }
+const totals = {};
 
-        const r = 52, cx = 65, cy = 65, circ = 2 * Math.PI * r;
-        let offset = 0;
-        const segs = entries.map(([, v], i) => {
-          const pct = Math.abs(v) / sum * 100, dash = pct * circ / 100, color = SECTOR_COLORS[i % SECTOR_COLORS.length];
-          const out = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="20" stroke-dasharray="${dash.toFixed(2)} ${(circ - dash).toFixed(2)}" stroke-dashoffset="${(-offset * circ / 100).toFixed(2)}" transform="rotate(-90 ${cx} ${cy})"/>`;
-          offset += pct; return out;
-        }).join("");
+valid.forEach(t => {
 
-        const absNet = Math.abs(netPnl);
-        const netFmt = absNet >= 100000 ? `₹${(absNet / 100000).toFixed(2)}L` : absNet >= 1000 ? `₹${(absNet / 1000).toFixed(1)}K` : `₹${Math.round(absNet)}`;
+    const sd = symbolDataMap[(t.symbol || "").toUpperCase()];
+    const sector = (sd && sd.sheet) || "Other";
 
-        container.innerHTML = `
-      <div class="donut-wrap">
-        <svg viewBox="0 0 130 130" width="140" height="140">
-          <circle cx="65" cy="65" r="52" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="20"/>
-          ${segs}
-        </svg>
-        <div class="donut-center">
-          <span class="dc-val" style="color:${netPnl >= 0 ? "#edf5ff" : "#FF5C6C"}">${netFmt}</span>
-          <span class="dc-lbl">Total</span>
+    if (!totals[sector]) {
+        totals[sector] = {
+            pnl: 0,
+            cost: 0,
+            trades: 0
+        };
+    }
+
+    totals[sector].pnl += t.info.pnl;
+    totals[sector].cost += t.info.cost;
+    totals[sector].trades++;
+
+});
+
+const entries = Object.entries(totals).map(([name, data]) => {
+
+    data.returnPct =
+        data.cost > 0
+            ? (data.pnl / data.cost) * 100
+            : 0;
+
+    return {
+        sector: name,
+        ...data
+    };
+
+});
+
+entries.sort((a, b) => b.pnl - a.pnl);
+allSectorEntries = [...entries];
+
+const topSectors = entries.slice(0, 3);
+const remainingCount = entries.length - topSectors.length;
+
+const totalPnl = entries.reduce(
+    (sum, e) => sum + Math.abs(e.pnl),
+    0
+);
+sectorTotalPnl = totalPnl;
+
+const container = document.getElementById("sectorBody");
+
+if (!entries.length) {
+
+    container.innerHTML =
+        '<div class="empty-state">No sector data</div>';
+
+    return;
+
+}
+container.innerHTML = `
+<div class="sector-performance">
+
+${topSectors.map(sector => {
+
+const contribution = (Math.abs(sector.pnl) / totalPnl) * 100;
+
+    return `
+
+<div class="sector-card">
+
+    <div class="sector-info">
+
+        <div class="sector-name">
+            ${escHtml(sector.sector)}
         </div>
-      </div>
-      <div class="sector-list">
-        ${entries.slice(0, 8).map(([sector, val], i) => `
-          <div class="sector-row">
-            <span class="sector-name"><span class="sector-dot" style="background:${SECTOR_COLORS[i % SECTOR_COLORS.length]}"></span>${escHtml(sector)}</span>
-            <div class="sector-right">
-              <span class="sector-amt" style="color:${val >= 0 ? "#dce8f4" : "#FF5C6C"}">₹${fmtMoney(Math.abs(val))}</span>
-              <span class="sector-pct">${((Math.abs(val) / sum) * 100).toFixed(1)}%</span>
-            </div>
-          </div>`).join("")}
-        <a href="#" class="sector-link" style="margin-top:6px">
-          View sector allocation
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </a>
-      </div>`;
+
+        <div class="sector-return ${sector.returnPct >= 0 ? "positive" : "negative"}">
+            ${sector.returnPct >= 0 ? "+" : ""}${sector.returnPct.toFixed(1)}%
+        </div>
+
+        <div class="sector-profit ${sector.pnl >= 0 ? "positive" : "negative"}">
+            ${sector.pnl >= 0 ? "+" : "-"}₹${fmtMoney(Math.abs(sector.pnl))}
+        </div>
+
+        <div class="sector-trades-badge">
+            ${sector.trades}
+        </div>
+
+    </div>
+
+    <div class="sector-bar">
+
+        <div
+            class="sector-bar-fill ${sector.pnl >= 0 ? "positive" : "negative"}"
+            style="width:${contribution}%">
+        </div>
+
+    </div>
+
+</div>
+
+    `;
+
+}).join("")}
+ ${remainingCount > 0 ? `
+<div class="sector-more">
+    +${remainingCount} more sector${remainingCount > 1 ? "s" : ""}
+</div>
+` : ""}
+</div>
+`;
       }
 
       /* ── Summary ── */
@@ -2010,13 +2346,7 @@
       exportBtn.addEventListener("click", exportCSV);
       searchInput.addEventListener("input", e => { searchQuery = e.target.value; renderTrades(allValid) });
 
-      document.getElementById("timeTabs").addEventListener("click", e => {
-        const btn = e.target.closest(".time-tab"); if (!btn) return;
-        document.querySelectorAll(".time-tab").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        activeRange = btn.dataset.range === "all" ? "all" : parseInt(btn.dataset.range);
-        renderChart(allValid);
-      });
+      
       
       // Open / Close dropdown
 fyFilter.addEventListener("click", (e) => {
@@ -2048,6 +2378,111 @@ fyDropdown.addEventListener("click", (e) => {
     fyDropdown.classList.remove("show");
     render();
 });
+document.querySelectorAll(".chart-view-btn").forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        if (btn.dataset.view === chartView)
+            return;
+
+        chartView = btn.dataset.view;
+
+        document
+            .querySelectorAll(".chart-view-btn")
+            .forEach(b => b.classList.remove("active"));
+
+        btn.classList.add("active");
+
+        renderChart(chartData);
+    });
+
+});
+ document.addEventListener("click", (e) => {
+
+    if (!e.target.closest(".sector-more")) return;
+
+    console.log("Sector More Clicked");
+
+    const modal = document.getElementById("sectorModal");
+
+    console.log(modal);
+
+    if (modal) {
+
+    const body = document.getElementById("sectorModalBody");
+
+    body.innerHTML = allSectorEntries.map(sector => {
+
+        const contribution =
+            sectorTotalPnl > 0
+                ? (Math.abs(sector.pnl) / sectorTotalPnl) * 100
+                : 0;
+
+        return `
+            <div class="sector-card">
+
+                <div class="sector-info">
+
+                    <div class="sector-name">
+                        ${escHtml(sector.sector)}
+                    </div>
+
+                    <div class="sector-return ${sector.returnPct >= 0 ? "positive" : "negative"}">
+                        ${sector.returnPct >= 0 ? "+" : ""}${sector.returnPct.toFixed(1)}%
+                    </div>
+
+                    <div class="sector-profit ${sector.pnl >= 0 ? "positive" : "negative"}">
+                        ${sector.pnl >= 0 ? "+" : "-"}₹${fmtMoney(Math.abs(sector.pnl))}
+                    </div>
+
+                    <div class="sector-trades-badge">
+                        ${sector.trades}
+                    </div>
+
+                </div>
+
+                <div class="sector-bar">
+                    <div
+                        class="sector-bar-fill ${sector.pnl >= 0 ? "positive" : "negative"}"
+                        style="width:${contribution}%">
+                    </div>
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
+
+    modal.style.display = "flex";
+}
+
+});
+const sectorModal = document.getElementById("sectorModal");
+
+const closeSectorModal = document.getElementById("closeSectorModal");
+closeSectorModal.addEventListener("click", () => {
+
+    sectorModal.style.display = "none";
+
+});
+sectorModal.addEventListener("click", (e) => {
+
+    if (e.target === sectorModal) {
+
+        sectorModal.style.display = "none";
+
+    }
+
+});
+document.addEventListener("keydown", (e) => {
+
+    if (e.key === "Escape") {
+
+        sectorModal.style.display = "none";
+
+    }
+
+});
 
       /* ── init ── */
       function init() {
@@ -2059,7 +2494,13 @@ fyDropdown.addEventListener("click", (e) => {
       }
       init();
     })();
+
+  
   </script>
+
+  <!-- ================= Sector Modal ================= -->
+
+
 </body>
 
 </html>
