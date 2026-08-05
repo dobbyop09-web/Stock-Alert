@@ -135,9 +135,9 @@
 }
 
 .tooltip .t-pos {
-    color: #22c55e !important;
+    color: var(--watch) !important;
 }
 
 .tooltip .t-neg {
-    color: #ef4444 !important;
+    color: var(--triggered) !important;
 }
