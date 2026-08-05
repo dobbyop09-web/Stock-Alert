@@ -1,260 +1,357 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sold Transactions</title>
+  <title>Sold Transactions — Portfolio</title>
   <style>
-    :root {
-      color-scheme: dark;
-      --bg: #06121e;
-      --panel: #0a1826;
-      --line: #183249;
-      --text: #edf5ff;
-      --muted: #9eb0c4;
-      --green: #2ce19b;
-      --red: #ff594e;
-    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;font-size:13px;background:#0b1520;color:#dce8f4}
+    a{text-decoration:none;color:inherit}
+    button{font-family:inherit;cursor:pointer;border:none;background:none}
 
-    * {
-      box-sizing: border-box;
-    }
+    /* Shell */
+    .shell{display:flex;height:100vh;overflow:hidden}
 
-    body {
-      margin: 0;
-      font: 14px/1.45 Inter, system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
+    /* Sidebar */
+    .sb{width:60px;flex-shrink:0;background:#07111a;border-right:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;position:relative;z-index:1000}
+    .sb-nav{display:flex;flex-direction:column;padding:12px 0;gap:8px;height:100%}
+    .sb-link{width:44px;height:44px;margin:4px auto;display:flex;align-items:center;justify-content:center;padding:0;gap:0;border-radius:14px;position:relative;color:#7f92a6;transition:background .18s,color .18s,transform .18s,box-shadow .18s,border-color .18s}
+    .sb-link:hover{background:#122233;color:#fff;transform:translateY(-1px)}
+    .sb-link.active{background:rgba(45,212,191,.12);border:1px solid rgba(45,212,191,.18);box-shadow:inset 0 0 0 1px rgba(45,212,191,.04),0 0 16px rgba(45,212,191,.08);color:#2DD4BF}
+    .sb-link svg{width:20px;height:20px;margin:0;display:block}
+    .sb-link::after{content:attr(data-title);position:absolute;left:58px;top:50%;transform:translateY(-50%) translateX(-8px);background:#111c28;color:#fff;font-size:13px;font-weight:500;white-space:nowrap;padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 24px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;z-index:999}
+    .sb-link:hover::after{opacity:1;transform:translateY(-50%) translateX(0)}
+    .sb-link::before{content:"";position:absolute;left:52px;top:50%;width:8px;height:8px;background:#111c28;border-left:1px solid rgba(255,255,255,.08);border-top:1px solid rgba(255,255,255,.08);transform:translateY(-50%) rotate(-45deg);opacity:0;transition:.18s;z-index:998}
+    .sb-link:hover::before{opacity:1}
+    .sb-link.active::before{content:"";position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:22px;border-radius:3px;background:#2DD4BF}
 
-    .shell {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 185px minmax(0, 1fr);
-    }
+    /* Main */
+    .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 
-    aside {
-      padding: 20px 12px;
-      border-right: 1px solid var(--line);
-      background: #071522;
-    }
+    /* Topbar */
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;gap:12px;background:#0b1520}
+    .topbar-title h1{font-size:17px;font-weight:700;color:#edf5ff;letter-spacing:-.01em}
+    .topbar-title p{font-size:11px;color:#5a7080;margin-top:2px}
+    .topbar-right{display:flex;align-items:center;gap:8px}
+    .btn-ghost{display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:6px;border:1px solid rgba(255,255,255,.09);color:#6a8299;font-size:11px;background:rgba(255,255,255,.02)}
+    .btn-ghost:hover{color:#dce8f4;border-color:rgba(255,255,255,.18)}
+    .btn-ghost svg{width:13px;height:13px}
+    .btn-export{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.1);color:#8fa3bc;font-size:12px;font-weight:500;background:rgba(255,255,255,.03)}
+    .btn-export:hover{border-color:rgba(255,255,255,.2);color:#dce8f4}
+    .btn-export svg{width:13px;height:13px}
 
-    .brand {
-      padding: 8px 8px 22px;
-      border-bottom: 1px solid var(--line);
-      font-weight: 700;
-    }
+    /* Content */
+    .content{flex:1;overflow-y:auto;padding:16px 20px 24px;display:flex;flex-direction:column;gap:14px}
+    .content::-webkit-scrollbar{width:5px}
+    .content::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:4px}
 
-    nav {
-      display: grid;
-      gap: 5px;
-      margin-top: 15px;
-    }
+    /* KPI totals */
+    .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    @media(max-width:700px){.kpi-grid{grid-template-columns:1fr}}
+    .kpi-card{background:#0e1d2b;border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:14px 14px 12px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+    .kpi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent,transparent);border-radius:8px 8px 0 0}
+    .kpi-icon-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+    .kpi-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+    .kpi-icon svg{width:14px;height:14px}
+    .kpi-lbl{font-size:10px;color:#4a6075;text-transform:uppercase;letter-spacing:.07em;font-weight:500;margin-bottom:5px;line-height:1.3}
+    .kpi-val{font-size:20px;font-weight:700;color:#edf5ff;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1;margin-bottom:4px}
+    .kpi-val.pos{color:#2DD4BF}
+    .kpi-val.neg{color:#FF5C6C}
 
-    nav a {
-      padding: 10px 11px;
-      border-radius: 5px;
-      color: #d7e2ef;
-      text-decoration: none;
-      font-size: .86rem;
-    }
+    /* Trades table (Panel) */
+    .trades-panel{background:#0e1d2b;border:1px solid rgba(255,255,255,.07);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+    .trades-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);flex-wrap:wrap;flex-shrink:0}
+    .trades-toolbar-left{display:flex;align-items:center;gap:10px}
+    .trades-title{font-size:12px;font-weight:600;color:#cfe2f5}
+    .search-wrap{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:5px;padding:5px 10px}
+    .search-wrap input{background:none;border:none;outline:none;color:#dce8f4;font-size:11px;font-family:inherit;width:130px}
+    .search-wrap input::placeholder{color:#3a5060}
+    .search-wrap svg{width:12px;height:12px;color:#3a5060;flex-shrink:0}
+    .trades-scroll{overflow-x:auto;flex:1;overflow-y:auto}
+    .trades-table{width:100%;border-collapse:collapse;min-width:750px}
+    .trades-table th{padding:8px 12px;font-size:10px;color:#3a5060;font-weight:600;text-transform:uppercase;letter-spacing:.06em;text-align:left;border-bottom:1px solid rgba(255,255,255,.05);background:#0c1822;white-space:nowrap;position:sticky;top:0;z-index:2}
+    .trades-table th.num,.trades-table td.num{text-align:right}
+    .trades-table td{padding:9px 12px;font-size:11px;color:#cfe2f5;border-bottom:1px solid rgba(255,255,255,.04);font-variant-numeric:tabular-nums}
+    .trades-table tbody tr:hover td{background:rgba(255,255,255,.02)}
+    .trades-table tbody tr:last-child td{border-bottom:none}
+    .sym-badge{display:flex;align-items:center;gap:8px}
+    .sym-avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#0B0F11;flex-shrink:0}
+    .badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:16px}
+    .badge.pos{background:rgba(45,212,191,.1);color:#2DD4BF}
+    .badge.neg{background:rgba(255,92,108,.1);color:#FF5C6C}
+    .empty-state{padding:32px 16px;text-align:center;color:#3a5060;font-size:11px}
+    .empty-state h3{font-size:13px;color:#5a7080;margin-bottom:6px;font-weight:600}
+    .footer-note{font-size:10px;color:#2a4055;padding:4px 0;display:flex;align-items:center;gap:6px;flex-shrink:0}
+    .footer-note svg{width:13px;height:13px;color:#2DD4BF;flex-shrink:0}
 
-    nav a.active {
-      color: var(--green);
-      background: #063d36;
-    }
-
-    main {
-      width: 100%;
-      max-width: 1500px;
-      margin: 0 auto;
-      padding: 22px clamp(16px, 2vw, 32px) 32px;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 18px;
-    }
-
-    h1 {
-      margin: 0 0 5px;
-      font-size: 1.55rem;
-    }
-
-    p {
-      margin: 0;
-      color: var(--muted);
-    }
-
-    button {
-      border: 1px solid #27624e;
-      border-radius: 6px;
-      padding: 10px 13px;
-      background: #0c3d32;
-      color: var(--text);
-      font: inherit;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #105142;
-    }
-
-    .totals {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-      margin: 0 0 16px;
-    }
-
-    .total {
-      padding: 16px;
-      border: 1px solid #1c8c65;
-      border-radius: 7px;
-      background: linear-gradient(135deg, #0a2926, #081d20);
-    }
-
-    .total span {
-      display: block;
-      color: var(--muted);
-      font-size: .76rem;
-    }
-
-    .total strong {
-      display: block;
-      margin-top: 5px;
-      color: var(--green);
-      font-size: 1.4rem;
-    }
-
-    .panel {
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      background: linear-gradient(135deg, #0a1826, #081521);
-      overflow: auto;
-    }
-
-    table {
-      width: 100%;
-      min-width: 850px;
-      border-collapse: collapse;
-    }
-
-    th,
-    td {
-      padding: 12px 10px;
-      border-bottom: 1px solid #132b40;
-      text-align: left;
-    }
-
-    th {
-      color: var(--muted);
-      font-size: .76rem;
-      font-weight: 500;
-    }
-
-    .num {
-      text-align: right;
-    }
-
-    .pos {
-      color: var(--green) !important;
-    }
-
-    .neg {
-      color: var(--red) !important;
-    }
-
-    .notice {
-      padding: 28px;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    @media (max-width:960px) {
-      .shell {
-        grid-template-columns: 1fr;
-      }
-
-      aside {
-        display: none;
-      }
-
-      main {
-        padding: 18px;
-      }
-    }
-
-    @media (max-width:560px) {
-      main {
-        padding: 16px;
-      }
-
-      header {
-        display: block;
-      }
-
-      header button {
-        margin-top: 14px;
-      }
-
-      .totals {
-        grid-template-columns: 1fr;
-      }
-    }
+    *::-webkit-scrollbar{width:4px;height:4px}
+    *::-webkit-scrollbar-track{background:transparent}
+    *::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:4px}
   </style>
 </head>
 
 <body>
   <div class="shell">
-    <aside>
-      <div class="brand">↗ &nbsp; PORTFOLIO</div>
-      <nav><a href="index.html">⌂ &nbsp; Dashboard</a><a href="admin.html">▣ &nbsp; Holdings</a><a
-          href="heatmap.html">✧ &nbsp; Heat Map</a><a href="realized-profit.html">▣ &nbsp; Realized</a><a class="active"
-          href="all-transactions.html">↗ &nbsp; Sold Transactions</a></nav>
+
+    <!-- SIDEBAR -->
+    <aside class="sb" id="sidebar">
+      <nav class="sb-nav">
+        <a href="index.html" class="sb-link" data-title="Dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+          </svg>
+        </a>
+        <a href="admin.html" class="sb-link" data-title="Holdings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/>
+          </svg>
+        </a>
+        <a href="heatmap.html" class="sb-link" data-title="Heat Map">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/>
+          </svg>
+        </a>
+        <a href="realized-profit.html" class="sb-link" data-title="Realised P&L">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+            <polyline points="17 6 23 6 23 12"/>
+          </svg>
+        </a>
+        <a href="all-transactions.html" class="sb-link active" data-title="All Trades">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="20" x2="12" y2="10"/>
+            <line x1="18" y1="20" x2="18" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="16"/>
+          </svg>
+        </a>
+      </nav>
     </aside>
-    <main>
-      <header>
-        <div>
-          <h1>Sold Transactions</h1>
-          <p>Closed trades only.</p>
-        </div><button id="exportBtn" type="button">Export CSV</button>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-title">
+            <h1>Sold Transactions</h1>
+            <p>Closed trades only</p>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="btn-export" id="exportBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Export CSV
+          </button>
+        </div>
       </header>
-      <section class="totals">
-        <div class="total"><span>Overall Realised Profit / Loss</span><strong id="overallProfit">—</strong></div>
-        <div class="total"><span>Overall Return</span><strong id="overallReturn">—</strong></div>
-      </section>
-      <section class="panel" id="content">
-        <div class="notice">Loading transactions…</div>
-      </section>
-    </main>
-  </div>
+
+      <!-- Content -->
+      <div class="content" id="content">
+
+        <!-- Totals -->
+        <div class="kpi-grid" id="kpiGrid">
+          <div class="kpi-card" style="--accent:#2DD4BF">
+            <div class="kpi-icon-row">
+              <div class="kpi-lbl">Overall Realised Profit / Loss</div>
+              <div class="kpi-icon" style="background:rgba(45,212,191,.12);color:#2DD4BF">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-val pos" id="overallProfit">—</div>
+          </div>
+          <div class="kpi-card" style="--accent:#5B9EFF">
+            <div class="kpi-icon-row">
+              <div class="kpi-lbl">Overall Return</div>
+              <div class="kpi-icon" style="background:rgba(91,158,255,.1);color:#5B9EFF">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-val pos" id="overallReturn">—</div>
+          </div>
+        </div>
+
+        <!-- Trades panel -->
+        <div class="trades-panel">
+          <div class="trades-toolbar">
+            <div class="trades-toolbar-left">
+              <span class="trades-title">Closed Trades</span>
+              <div class="search-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input type="text" id="searchInput" placeholder="Search symbol…">
+              </div>
+            </div>
+          </div>
+          <div class="trades-scroll" id="tradesScroll">
+            <div class="empty-state">Loading transactions…</div>
+          </div>
+        </div>
+
+        <div class="footer-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span id="footerText">Realised profit includes all closed trades. Data updated EOD.</span>
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /main -->
+  </div><!-- /shell -->
+
   <script>
     (() => {
       const API_BASE = "https://tiny-art-8473.dobbyop09.workers.dev";
       const token = sessionStorage.getItem("portfolioAdminToken");
-      const content = document.getElementById("content"), overallProfit = document.getElementById("overallProfit"), overallReturn = document.getElementById("overallReturn"); let rows = [];
-      const escape = value => String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-      const money = value => Number.isFinite(Number(value)) ? Number(value).toLocaleString("en-IN", { maximumFractionDigits: 2 }) : "—";
+
+      const tradesScroll   = document.getElementById("tradesScroll");
+      const overallProfit  = document.getElementById("overallProfit");
+      const overallReturn  = document.getElementById("overallReturn");
+      const searchInput    = document.getElementById("searchInput");
+      const footerText     = document.getElementById("footerText");
+
+      let rows = [];
+      let searchQuery = "";
+
+      const SECTOR_COLORS = ["#5B9EFF","#FF5C6C","#F5A623","#8B5CF6","#2DD4BF","#22C55E","#EAB308","#EC4899","#14B8A6"];
+
+      function avatarColor(symbol) {
+        const s=(symbol||"?").toUpperCase(); let h=0;
+        for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))>>>0;
+        return SECTOR_COLORS[h%SECTOR_COLORS.length];
+      }
+
+      const escHtml = value => String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      const fmtMoney = value => Number.isFinite(Number(value)) ? Number(value).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2}) : "—";
+      const fmtDate = v => { if(!v) return "—"; const d=new Date(v); if(isNaN(d)) return v; return d.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}); };
       const qty = trade => Number(trade.quantity) || 1;
-      const profit = trade => (Number(trade.sellPrice) - Number(trade.buyPrice)) * qty(trade);
+      const holdingDays = t => { const b=new Date(t.buyDate),s=new Date(t.sellDate); if(isNaN(b)||isNaN(s)) return null; return Math.max(0,Math.round((s-b)/86400000)); };
+
+      function tradeInfo(t) {
+        const q=qty(t), buy=Number(t.buyPrice), sell=Number(t.sellPrice);
+        const cost=buy*q, sold=sell*q, pnl=sold-cost;
+        return { cost, sold, pnl, pct: cost ? (pnl/cost)*100 : NaN };
+      }
+
+      function renderTotals() {
+        const invested = rows.reduce((s,t)=>s+tradeInfo(t).cost,0);
+        const sold = rows.reduce((s,t)=>s+tradeInfo(t).sold,0);
+        const total = sold - invested;
+        const returnPct = invested ? (total/invested)*100 : 0;
+        overallProfit.textContent = `${total>=0?'+':'-'}₹${fmtMoney(Math.abs(total))}`;
+        overallProfit.className = 'kpi-val ' + (total>=0?'pos':'neg');
+        overallReturn.textContent = `${returnPct>=0?'+':''}${returnPct.toFixed(2)}%`;
+        overallReturn.className = 'kpi-val ' + (returnPct>=0?'pos':'neg');
+      }
+
+      function renderTable() {
+        if (!rows.length) {
+          tradesScroll.innerHTML = `<div class="empty-state"><h3>No closed positions yet</h3>Close a holding from the Portfolio page to populate this table.</div>`;
+          return;
+        }
+        const q = searchQuery.toLowerCase();
+        const filtered = q ? rows.filter(t => (t.symbol||"").toLowerCase().includes(q)) : rows;
+        const sorted = [...filtered].sort((a,b)=>String(b.sellDate||"").localeCompare(String(a.sellDate||"")));
+
+        if (!sorted.length) {
+          tradesScroll.innerHTML = `<div class="empty-state"><h3>No matches</h3>Try a different symbol.</div>`;
+          return;
+        }
+
+        tradesScroll.innerHTML = `
+          <table class="trades-table">
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th class="num">Qty</th>
+                <th class="num">Buy Price</th>
+                <th class="num">Sell Price</th>
+                <th>Buy Date</th>
+                <th>Sell Date</th>
+                <th class="num">Holding Period</th>
+                <th class="num">Invested Value</th>
+                <th class="num">Sold Value</th>
+                <th class="num">P&amp;L</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sorted.map(t=>{
+                const info = tradeInfo(t);
+                const cls = info.pnl>=0 ? 'pos' : 'neg';
+                const sign = info.pnl>=0 ? '+' : '-';
+                const days = holdingDays(t);
+                const color = avatarColor(t.symbol);
+                return `<tr>
+                  <td><div class="sym-badge">
+                    <div class="sym-avatar" style="background:${color}">${escHtml((t.symbol||"?").charAt(0).toUpperCase())}</div>
+                    <strong style="font-size:11px">${escHtml(t.symbol||"—")}</strong>
+                  </div></td>
+                  <td class="num">${qty(t)}</td>
+                  <td class="num">₹${fmtMoney(t.buyPrice)}</td>
+                  <td class="num">₹${fmtMoney(t.sellPrice)}</td>
+                  <td>${fmtDate(t.buyDate)}</td>
+                  <td>${fmtDate(t.sellDate)}</td>
+                  <td class="num">${days!==null?days+" Days":"—"}</td>
+                  <td class="num">₹${fmtMoney(info.cost)}</td>
+                  <td class="num">₹${fmtMoney(info.sold)}</td>
+                  <td class="num"><span class="badge ${cls}">${sign}₹${fmtMoney(Math.abs(info.pnl))}</span></td>
+                </tr>`;
+              }).join("")}
+            </tbody>
+          </table>`;
+      }
+
       function render() {
-        const invested = rows.reduce((sum, trade) => sum + Number(trade.buyPrice) * qty(trade), 0); const sold = rows.reduce((sum, trade) => sum + Number(trade.sellPrice) * qty(trade), 0); const total = sold - invested; const returnPct = invested ? (total / invested) * 100 : 0; overallProfit.textContent = `${total >= 0 ? '+' : '-'}₹${money(Math.abs(total))}`; overallProfit.className = total >= 0 ? 'pos' : 'neg'; overallReturn.textContent = `${returnPct >= 0 ? '+' : ''}${returnPct.toFixed(2)}%`; overallReturn.className = returnPct >= 0 ? 'pos' : 'neg';
-        if (!rows.length) { overallProfit.textContent = '₹0'; overallProfit.className = 'pos'; overallReturn.textContent = '0.00%'; overallReturn.className = 'pos'; content.innerHTML = '<div class="notice">No closed trades available.</div>'; return; }
-        content.innerHTML = `<table><thead><tr><th>Symbol</th><th class="num">Quantity</th><th>Buy Date</th><th>Sell Date</th><th class="num">Invested Value</th><th class="num">Sold Value</th><th class="num">P&amp;L</th></tr></thead><tbody>${rows.map(t => { const investedValue = Number(t.buyPrice) * qty(t), soldValue = Number(t.sellPrice) * qty(t), pnl = soldValue - investedValue; return `<tr><td><strong>${escape(t.symbol || '—')}</strong></td><td class="num">${qty(t)}</td><td>${escape(t.buyDate || '—')}</td><td>${escape(t.sellDate || '—')}</td><td class="num">₹${money(investedValue)}</td><td class="num">₹${money(soldValue)}</td><td class="num ${pnl >= 0 ? 'pos' : 'neg'}">${pnl >= 0 ? '+' : '-'}₹${money(Math.abs(pnl))}</td></tr>`; }).join('')}</tbody></table>`;
+        renderTotals();
+        renderTable();
+        footerText.textContent = `Realised profit includes ${rows.length} closed position${rows.length===1?"":"s"}. Data updated EOD.`;
       }
+
       async function load() {
-        if (!token) { content.innerHTML = '<div class="notice">Sign in from the Portfolio page to view transactions.</div>'; return; }
-        try { const response = await fetch(`${API_BASE}/portfolio.json`, { headers: { Authorization: `Bearer ${token}` } }); if (!response.ok) throw new Error(); const data = await response.json(); rows = Array.isArray(data.closedTransactions) ? data.closedTransactions : []; render(); } catch { content.innerHTML = '<div class="notice">Unable to load transactions. Please sign in again from the Portfolio page.</div>'; }
+        if (!token) {
+          tradesScroll.innerHTML = `<div class="empty-state">Sign in from the Portfolio page to view transactions.</div>`;
+          return;
+        }
+        try {
+          const response = await fetch(`${API_BASE}/portfolio.json`, { headers: { Authorization: `Bearer ${token}` } });
+          if (!response.ok) throw new Error();
+          const data = await response.json();
+          rows = Array.isArray(data.closedTransactions) ? data.closedTransactions : [];
+          render();
+        } catch {
+          tradesScroll.innerHTML = `<div class="empty-state">Unable to load transactions. Please sign in again from the Portfolio page.</div>`;
+        }
       }
-      document.getElementById('exportBtn').addEventListener('click', () => { const csv = [['Symbol', 'Quantity', 'Buy Date', 'Sell Date', 'Invested Value', 'Sold Value', 'P&L'], ...rows.map(t => { const investedValue = Number(t.buyPrice) * qty(t), soldValue = Number(t.sellPrice) * qty(t); return [t.symbol || '', qty(t), t.buyDate || '', t.sellDate || '', investedValue, soldValue, soldValue - investedValue]; })].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n'); const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); const link = document.createElement('a'); link.href = url; link.download = 'all-transactions.csv'; link.click(); URL.revokeObjectURL(url); });
+
+      searchInput.addEventListener("input", e => { searchQuery = e.target.value; renderTable(); });
+
+      document.getElementById("exportBtn").addEventListener("click", () => {
+        const csv = [
+          ["Symbol","Quantity","Buy Date","Sell Date","Invested Value","Sold Value","P&L"],
+          ...rows.map(t=>{ const info=tradeInfo(t); return [t.symbol||"",qty(t),t.buyDate||"",t.sellDate||"",info.cost,info.sold,info.pnl]; })
+        ].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
+        const url = URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+        const link = document.createElement("a");
+        link.href = url; link.download = "all-transactions.csv"; link.click();
+        URL.revokeObjectURL(url);
+      });
+
       load();
     })();
   </script>
 </body>
-
 </html>
