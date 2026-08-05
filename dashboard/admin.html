@@ -3,970 +3,736 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="favicon.png">
-<title>Portfolio</title>
-
-<link rel="stylesheet" href="css/variables.css">
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/components.css">
+<title>Holdings — Portfolio</title>
 
 <style>
-    /* Smooth native crossfade when navigating between pages of this site
-       (supported in Chromium-based browsers; other browsers just do a
-       normal instant navigation, so this is a safe progressive enhancement). */
-    @view-transition {
-        navigation: auto;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+        height: 100%;
+        font-family: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+        font-size: 13px;
+        background: #0b1520;
+        color: #dce8f4;
     }
 
-    /* ---- Page shell (mirrors layout.css .wrap/.topbar, without the
-       dashboard's sidebar-driven fixed-viewport rules) ---- */
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
 
-    .wrap {
-        max-width: 1400px;
-        width: 100%;
-        margin: 0 auto;
-        padding: 20px clamp(12px, 4vw, 32px) 40px;
+    /* ── Shell ── */
+    .shell { display: flex; height: 100vh; overflow: hidden; }
+
+    /* ── Sidebar ── */
+    .sb {
+        width: 60px;
+        flex-shrink: 0;
+        background: #07111a;
+        border-right: 1px solid rgba(255,255,255,.06);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        z-index: 1000;
+    }
+    .sb-nav {
+        display: flex;
+        flex-direction: column;
+        padding: 12px 0;
+        gap: 8px;
+        height: 100%;
+    }
+    .sb-link {
+        width: 44px; height: 44px;
+        margin: 4px auto;
+        display: flex; align-items: center; justify-content: center;
+        padding: 0;
+        border-radius: 14px;
+        position: relative;
+        color: #7f92a6;
+        transition: background .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease;
+    }
+    .sb-link:hover { background: #122233; color: #fff; transform: translateY(-1px); }
+    .sb-link.active {
+        background: rgba(45,212,191,.12);
+        border: 1px solid rgba(45,212,191,.18);
+        box-shadow: inset 0 0 0 1px rgba(45,212,191,.04), 0 0 16px rgba(45,212,191,.08);
+        color: #2DD4BF;
+    }
+    .sb-link svg { width: 20px; height: 20px; display: block; }
+
+    /* Tooltip */
+    .sb-link::after {
+        content: attr(data-title);
+        position: absolute;
+        left: 58px; top: 50%;
+        transform: translateY(-50%) translateX(-8px);
+        background: #111c28; color: #fff;
+        font-size: 13px; font-weight: 500;
+        white-space: nowrap;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,.08);
+        box-shadow: 0 8px 24px rgba(0,0,0,.35);
+        opacity: 0; pointer-events: none;
+        transition: opacity .18s ease, transform .18s ease;
+        z-index: 999;
+    }
+    .sb-link:hover::after { opacity: 1; transform: translateY(-50%) translateX(0); }
+    .sb-link::before {
+        content: "";
+        position: absolute;
+        left: 52px; top: 50%;
+        width: 8px; height: 8px;
+        background: #111c28;
+        border-left: 1px solid rgba(255,255,255,.08);
+        border-top: 1px solid rgba(255,255,255,.08);
+        transform: translateY(-50%) rotate(-45deg);
+        opacity: 0; transition: .18s; z-index: 998;
+    }
+    .sb-link:hover::before { opacity: 1; }
+    .sb-link.active::before {
+        content: "";
+        position: absolute;
+        left: -8px; top: 50%;
+        transform: translateY(-50%);
+        width: 3px; height: 22px;
+        border-radius: 3px;
+        background: #2DD4BF;
     }
 
+    /* ── Main ── */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+    /* ── Topbar ── */
     .topbar {
         display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 20px;
-        margin-bottom: 22px;
-        border-bottom: 1px solid var(--line);
-        padding-bottom: 16px;
-        flex-wrap: wrap;
-    }
-
-    .topbar-left {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-    }
-
-    .last-updated-row {
-        display: flex;
         align-items: center;
-        gap: 6px;
+        justify-content: space-between;
+        padding: 12px 20px;
+        border-bottom: 1px solid rgba(255,255,255,.06);
+        flex-shrink: 0;
+        gap: 12px;
+        background: #0b1520;
     }
+    .topbar-title h1 { font-size: 17px; font-weight: 700; color: #edf5ff; letter-spacing: -.01em; }
+    .topbar-title p { font-size: 11px; color: #5a7080; margin-top: 2px; }
+    .topbar-right { display: flex; align-items: center; gap: 8px; }
 
-    .topbar-right {
+    .whoami-chip {
+        display: flex; align-items: center; gap: 6px;
+        padding: 5px 11px; border-radius: 16px;
+        background: rgba(255,255,255,.04);
+        border: 1px solid rgba(255,255,255,.08);
+        color: #8fa3bc; font-size: 11px;
+    }
+    .whoami-dot { width: 6px; height: 6px; border-radius: 50%; background: #2DD4BF; }
+
+    .btn-ghost {
+        display: flex; align-items: center; gap: 6px;
+        padding: 6px 11px; border-radius: 6px;
+        border: 1px solid rgba(255,255,255,.09);
+        color: #6a8299; font-size: 11px;
+        background: rgba(255,255,255,.02);
+    }
+    .btn-ghost:hover { color: #dce8f4; border-color: rgba(255,255,255,.18); }
+    .btn-ghost svg { width: 13px; height: 13px; }
+
+    .btn-primary {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 7px 14px; border-radius: 6px;
+        background: #1B2A2E;
+        border: 1px solid #2DD4BF;
+        color: #2DD4BF; font-size: 12px; font-weight: 600;
+    }
+    .btn-primary:hover { background: rgba(45,212,191,.15); }
+    .btn-primary svg { width: 13px; height: 13px; }
+
+    .btn-edit {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 7px 16px; border-radius: 6px;
+        background: linear-gradient(135deg, #256e70, #318884);
+        border: 1px solid #3b9991;
+        box-shadow: 0 6px 16px rgba(45,141,133,.16);
+        color: #e7fffc; font-size: 12px; font-weight: 600;
+    }
+    .btn-edit:hover { background: linear-gradient(135deg, #2c7e80, #3a9a96); }
+    .btn-edit svg { width: 13px; height: 13px; }
+
+    .btn-cancel {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 7px 12px; border-radius: 6px;
+        border: 1px solid rgba(255,255,255,.1);
+        color: #8fa3bc; font-size: 11px;
+        background: rgba(255,255,255,.03);
+    }
+    .btn-cancel:hover { border-color: rgba(255,255,255,.2); color: #dce8f4; }
+
+    /* ── Content ── */
+    .content {
+        flex: 1; overflow-y: auto;
+        padding: 16px 20px 24px;
+        display: flex; flex-direction: column; gap: 14px;
+    }
+    .content::-webkit-scrollbar { width: 5px; }
+    .content::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 4px; }
+
+    /* ── KPI / Stats row ── */
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+    @media(max-width:1200px) { .kpi-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:600px)  { .kpi-grid { grid-template-columns: 1fr; } }
+
+    .kpi-card {
+        background: #0e1d2b;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 8px;
+        padding: 14px 14px 12px;
+        display: flex; flex-direction: column;
+        position: relative; overflow: hidden;
+    }
+    .kpi-card::after {
+        content: ''; position: absolute;
+        top: 0; left: 0; right: 0; height: 2px;
+        background: var(--accent, transparent);
+        border-radius: 8px 8px 0 0;
+    }
+    .kpi-icon-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .kpi-icon {
+        width: 30px; height: 30px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .kpi-icon svg { width: 14px; height: 14px; }
+    .kpi-lbl {
+        font-size: 10px; color: #4a6075;
+        text-transform: uppercase; letter-spacing: .07em;
+        font-weight: 500; margin-bottom: 5px;
+    }
+    .kpi-val {
+        font-size: 18px; font-weight: 700; color: #edf5ff;
+        letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+        line-height: 1.1; margin-bottom: 4px;
+    }
+    .kpi-val.pos { color: #2DD4BF; }
+    .kpi-val.neg { color: #FF5C6C; }
+    .kpi-note { font-size: 10px; color: #3a5060; margin-top: 2px; }
+    .kpi-note.pos { color: rgba(45,212,191,.75); }
+    .kpi-note.neg { color: rgba(255,92,108,.7); }
+
+    /* ── Page body: table + sidebar ── */
+    .page-body {
+        display: grid;
+        grid-template-columns: minmax(0,1fr) 300px;
+        gap: 14px;
+        align-items: start;
+    }
+    @media(max-width:1100px) { .page-body { grid-template-columns: 1fr; } }
+
+    /* ── Main table panel ── */
+    .table-panel {
+        background: #0e1d2b;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 8px;
+        overflow: hidden;
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
-        gap: 10px;
+    }
+
+    .table-toolbar {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(255,255,255,.05);
+        flex-wrap: wrap; gap: 10px; flex-shrink: 0;
+    }
+    .table-toolbar-title { font-size: 12px; font-weight: 600; color: #cfe2f5; }
+
+    .edit-banner {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 16px;
+        background: rgba(45,212,191,.06);
+        border-bottom: 1px solid rgba(45,212,191,.2);
+        padding: 10px 16px;
         flex-wrap: wrap;
     }
+    .edit-banner-left { display: flex; align-items: center; gap: 10px; }
+    .edit-banner-icon {
+        width: 28px; height: 28px; border-radius: 50%;
+        background: rgba(45,212,191,.15); color: #2DD4BF;
+        display: flex; align-items: center; justify-content: center; flex: none;
+    }
+    .edit-banner-icon svg { width: 13px; height: 13px; }
+    .edit-banner-title { font-size: 13px; font-weight: 600; color: #edf5ff; }
+    .edit-banner-sub { font-size: 11px; color: #4a6075; margin-top: 1px; }
+    .edit-banner-actions { display: flex; gap: 8px; }
 
-    @media (max-width: 560px) {
-        .wrap {
-            padding: 14px 12px 32px;
-        }
+    .table-scroll { overflow-x: auto; overflow-y: auto; height: calc(100vh - 260px); max-height: none; }
+
+    table {
+        width: 100%; border-collapse: collapse;
+        min-width: 900px;
+    }
+    thead th {
+        padding: 10px 12px;
+        font-size: 10px; color: #3a5060;
+        font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
+        text-align: left;
+        border-bottom: 1px solid rgba(255,255,255,.05);
+        background: #0c1822;
+        white-space: nowrap;
+        position: sticky; top: 0; z-index: 2;
+    }
+    thead th.num, tbody td.num { text-align: right; }
+    tbody td {
+        padding: 9px 12px;
+        font-size: 11px; color: #cfe2f5;
+        border-bottom: 1px solid rgba(255,255,255,.04);
+        font-variant-numeric: tabular-nums;
+    }
+    tbody tr:hover td { background: rgba(255,255,255,.02); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    /* Sort buttons */
+    .th-sort {
+        background: transparent; border: none;
+        color: inherit; font: inherit;
+        text-transform: inherit; letter-spacing: inherit;
+        padding: 0; cursor: pointer;
+        display: inline-flex; align-items: center; gap: 4px;
+    }
+    thead th.num .th-sort { justify-content: flex-end; }
+    .th-sort:hover { color: #dce8f4; }
+    .sort-arrow { font-size: 9px; width: 8px; display: inline-block; opacity: .7; }
+    .th-sort.active { color: #2DD4BF; }
+
+    /* Badges */
+    .badge {
+        display: inline-block; font-size: 10px; font-weight: 600;
+        padding: 2px 8px; border-radius: 16px;
+        font-variant-numeric: tabular-nums;
+    }
+    .badge.b-watch  { background: rgba(45,212,191,.1); color: #2DD4BF; }
+    .badge.b-triggered { background: rgba(255,92,108,.1); color: #FF5C6C; }
+    .badge.b-far    { background: rgba(255,255,255,.06); color: #5a7080; }
+
+    /* Stock badge */
+    .sym-badge { display: flex; align-items: center; gap: 8px; }
+    .sym-avatar {
+        width: 22px; height: 22px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 9px; font-weight: 700;
+        color: #0B0F11; flex-shrink: 0;
     }
 
-    /* ---- Small icon-only / icon+text buttons used in the topbar and banners ---- */
+    /* Edit inputs */
+    input.cell {
+        background: rgba(255,255,255,.05);
+        border: 1px solid rgba(255,255,255,.1);
+        border-radius: 4px;
+        padding: 5px 7px;
+        color: #dce8f4; font-size: 11px; font-family: inherit;
+        outline: none; width: 100%;
+    }
+    input.cell:focus { border-color: #2DD4BF; }
+    input.cell.num { text-align: right; }
+    input.cell[data-f="quantity"]::-webkit-outer-spin-button,
+    input.cell[data-f="quantity"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input.cell[data-f="quantity"] { -moz-appearance: textfield; }
 
+    /* Add row button */
+    .add-row-btn {
+        width: calc(100% - 24px);
+        margin: 12px;
+        background: transparent;
+        border: 1px dashed rgba(255,255,255,.12);
+        border-radius: 6px;
+        padding: 10px;
+        color: #3a5060;
+        font-size: 11px;
+        display: none;
+    }
+    .add-row-btn:hover { color: #2DD4BF; border-color: #2DD4BF; }
+
+    /* Remove / sell-date columns */
+    .remove-cell { display: none; width: 80px; }
+    .remove-cell.visible { display: table-cell; }
+    .sell-date-cell { display: none; }
+    .sell-date-cell.visible { display: table-cell; }
+
+    /* Icon button */
     .icon-btn {
         background: transparent;
         border: 1px solid transparent;
-        border-radius: 6px;
-        padding: 6px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        color: var(--muted);
+        border-radius: 5px; padding: 5px 8px;
+        display: inline-flex; align-items: center; justify-content: center;
+        cursor: pointer; color: #5a7080; font-size: 10px;
     }
-    .icon-btn svg {
-        width: 15px;
-        height: 15px;
-    }
-    .icon-btn.danger {
-        color: var(--triggered);
-    }
-    .icon-btn.danger:hover {
-        background: rgba(255, 92, 108, 0.12);
-        border-color: var(--triggered);
-    }
-    .icon-btn.subtle {
-        padding: 2px;
-        color: var(--muted);
-    }
-    .icon-btn.subtle svg {
-        width: 14px;
-        height: 14px;
-    }
-    .icon-btn.subtle:hover {
-        color: var(--text);
-    }
+    .icon-btn svg { width: 13px; height: 13px; }
+    .icon-btn.danger { color: #FF5C6C; }
+    .icon-btn.danger:hover { background: rgba(255,92,108,.1); border-color: rgba(255,92,108,.3); }
+    .icon-btn:hover { color: #dce8f4; }
 
-    .icon-text-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
+    /* Empty state */
+    .empty-state {
+        padding: 32px 16px; text-align: center;
+        color: #3a5060; font-size: 11px;
     }
-    .icon-text-btn svg {
-        width: 14px;
-        height: 14px;
-        flex: none;
-    }
+    .empty-state h3 { font-size: 13px; color: #5a7080; margin-bottom: 6px; font-weight: 600; }
 
-    /* ---- Two-column body: table/editor on the left, insights pinned on
-       the right so Top Gainers/Losers/Sector stay visible while scrolling ---- */
+    /* Status text */
+    .status-ok  { color: #2DD4BF; }
+    .status-err { color: #FF5C6C; }
 
-    .page-body {
-        display: grid;
-        grid-template-columns: 1fr 300px;
-        gap: 20px;
-        align-items: start;
-    }
-
-    .main-col {
-        min-width: 0;
-    }
-
-    @media (max-width: 900px) {
-        .page-body {
-            grid-template-columns: 1fr;
-        }
-        .side-col {
-            position: static !important;
-        }
-    }
-
-    /* ---- Stat cards: icon badge + value/label stack ---- */
-
-    .stat .n.pos { color: var(--watch); }
-    .stat .n.neg { color: var(--triggered); }
-
-    .stats#portfolioStats {
-        gap: 10px;
-    }
-    .stats#portfolioStats .stat {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 16px;
-        min-height: 78px;
-    }
-    .stats#portfolioStats .n {
-        font-size: 19px;
-    }
-    .stats#portfolioStats .l {
-        font-size: 10px;
-    }
-    .stat-icon {
-        width: 38px;
-        height: 38px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex: none;
-    }
-    .stat-icon svg {
-        width: 18px;
-        height: 18px;
-    }
-    .stat-icon.icon-blue   { background: rgba(91, 158, 255, 0.15); color: #5B9EFF; }
-    .stat-icon.icon-purple { background: rgba(139, 92, 246, 0.15); color: #8B5CF6; }
-    .stat-icon.icon-teal   { background: rgba(45, 212, 191, 0.15); color: #2DD4BF; }
-    .stat-icon.icon-orange { background: rgba(245, 166, 35, 0.15); color: #F5A623; }
-    .stat-body {
-        min-width: 0;
-    }
-
-    .stat-sub {
-        font-size: 11px;
-        color: var(--muted);
-        margin-top: 4px;
-    }
-
-    /* ---- Prominent "Edit Portfolio" entry point, right-aligned above the table ---- */
-
-    .edit-entry-row {
-        display: none;
-        justify-content: flex-end;
-        margin-bottom: 14px;
-    }
-
-    .edit-mode-actions {
-        display: none;
-        align-items: center;
-        gap: 8px;
-    }
-
-    /* ---- Edit-mode banner: replaces the entry button while editing ---- */
-
-    .edit-banner {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        background: rgba(45, 212, 191, 0.08);
-        border: 1px solid rgba(45, 212, 191, 0.35);
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin-bottom: 14px;
-        flex-wrap: wrap;
-    }
-    .edit-banner-text {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    .edit-banner-icon {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: rgba(45, 212, 191, 0.18);
-        color: #2DD4BF;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex: none;
-    }
-    .edit-banner-icon svg {
-        width: 15px;
-        height: 15px;
-    }
-    .edit-banner-title {
-        font-weight: 600;
-        color: var(--text);
-        font-size: 13.5px;
-    }
-    .edit-banner #saveStatus {
-        font-size: 11.5px;
-        margin-top: 1px;
-    }
-    .edit-banner-actions {
-        display: flex;
-        gap: 8px;
-    }
-
-    /* ---- Account bar: who's signed in + Edit/Sign out, sitting inline
-       in the topbar row above the stat cards — plain/borderless so it
-       reads as part of the header, not a boxed panel ---- */
-
-    .sidebar-account-bar {
-        display: none; /* JS sets to flex once signed in */
-        align-items: center;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .sidebar-account-bar #whoami {
-        margin: 0;
-        font-size: 11px;
-        white-space: nowrap;
-    }
-
-    .sidebar-account-actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    /* The Edit button's wrapper is reused here from its old sidebar
-       position — inline in the topbar it should hug its button rather
-       than stretch and add its own spacing. */
-    .sidebar-account-actions .edit-entry-row {
-        display: none;
-        margin: 0;
-    }
-
-    .sidebar-account-actions .edit-mode-actions {
-        margin: 0;
-    }
-
-    /* ---- Sidebar: Top Gainers / Top Losers / Sector Allocation, pinned so
-       they stay visible while the table scrolls ---- */
-    .insights-row.side-col {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        position: sticky;
-        top: 20px;
-        max-height: calc(100vh - 40px);
+    /* ── Sidebar panels ── */
+    .side-col {
+        display: flex; flex-direction: column; gap: 12px;
+        position: sticky; top: 16px;
+        max-height: calc(100vh - 130px);
         overflow-y: auto;
     }
+    .side-col::-webkit-scrollbar { width: 3px; }
+    .side-col::-webkit-scrollbar-thumb { background: rgba(255,255,255,.07); border-radius: 3px; }
 
-    .insight-panels {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .insight-panel {
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 6px;
+    .panel {
+        background: #0e1d2b;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 8px;
         padding: 14px;
     }
-
-    .insight-list {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
+    .panel-title {
+        font-size: 12px; font-weight: 600; color: #cfe2f5;
+        letter-spacing: .01em; margin-bottom: 12px;
     }
 
-    .insight-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        font-size: 12.5px;
-    }
-
-    .insight-row .sym {
-        font-family: var(--mono);
-        font-weight: 600;
-        color: var(--text);
-    }
-
-    .insight-row .val {
-        font-family: var(--mono);
-        font-weight: 600;
-    }
-
-    .insight-empty {
-        color: var(--muted);
-        font-size: 12px;
-    }
-
-    /* ---- Sector allocation: donut chart + legend ---- */
-
-    .donut-panel-body {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-    }
-    .donut-wrap {
-        position: relative;
-        flex: none;
-        width: 120px;
-        height: 120px;
-    }
-    .donut-wrap svg {
-        display: block;
-    }
+    /* Donut */
+    .donut-layout { display: flex; align-items: center; gap: 12px; }
+    .donut-wrap { position: relative; flex: none; width: 120px; height: 120px; }
+    .donut-wrap svg { display: block; }
     .donut-center {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        position: absolute; inset: 0;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
-    .donut-count {
-        font-size: 18px;
-        font-weight: 700;
-        color: var(--text);
-        line-height: 1.1;
-    }
-    .donut-label {
-        font-size: 9.5px;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: .04em;
-    }
-    .sector-legend {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        flex: 1;
-        min-width: 0;
-        font-size: 11.5px;
-    }
-    .sector-legend li {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 6px;
-    }
-    .sector-legend .name {
-        display: flex;
-        align-items: center;
-        color: var(--text);
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    .sector-legend .dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        margin-right: 6px;
-        flex: none;
-    }
-    .sector-legend .pct {
-        font-family: var(--mono);
-        color: var(--muted);
-        flex: none;
-    }
+    .dc-val { font-size: 16px; font-weight: 700; color: #edf5ff; line-height: 1.1; }
+    .dc-lbl { font-size: 9px; color: #4a6075; text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
 
-    /* ---- Sortable column headers (Symbol / Chg % / Profit ₹ / Profit %) ---- */
-    .th-sort {
-        background: transparent;
-        border: none;
-        color: inherit;
-        font: inherit;
-        text-transform: inherit;
-        letter-spacing: inherit;
-        padding: 0;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-    }
-    th.num .th-sort {
-        justify-content: flex-end;
-    }
-    .th-sort:hover {
-        color: var(--text);
-    }
-    .sort-arrow {
-        font-size: 9px;
-        width: 8px;
-        display: inline-block;
-        opacity: 0.7;
-    }
-    .th-sort.active {
-        color: #2DD4BF;
-    }
+    .sector-legend { list-style: none; display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
+    .sector-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 11px; }
+    .sector-name { display: flex; align-items: center; color: #cfe2f5; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sector-dot { width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; flex: none; }
+    .sector-pct { font-family: 'SF Mono', monospace; color: #4a6075; font-size: 10px; flex: none; }
 
-    /* ---- Remove/Actions column, only shown while editing ---- */
+    /* Health */
+    .health-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .health-item { padding: 10px 12px; background: rgba(255,255,255,.03); border-radius: 6px; }
+    .health-val { display: block; font-size: 20px; font-weight: 700; line-height: 1; }
+    .health-lbl { display: block; margin-top: 5px; font-size: 9px; color: #4a6075; text-transform: uppercase; letter-spacing: .04em; }
+    .health-item.profit .health-val { color: #2DD4BF; }
+    .health-item.loss   .health-val { color: #FF5C6C; }
 
-    .remove-cell {
+    /* Gainers/Losers */
+    .insight-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .insight-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; }
+    .insight-row .sym { font-family: 'SF Mono', monospace; font-weight: 600; color: #edf5ff; }
+    .insight-row .val { font-family: 'SF Mono', monospace; font-weight: 600; }
+    .insight-empty { color: #3a5060; font-size: 11px; }
+
+    /* ── Auth gate ── */
+    .auth-gate {
         display: none;
-        width: 70px;
+        flex-direction: column; align-items: center; justify-content: center;
+        gap: 14px; padding: 60px 20px; text-align: center;
     }
+    .auth-gate h2 { font-size: 15px; color: #dce8f4; font-weight: 600; }
+    .auth-gate p { font-size: 11px; color: #5a7080; max-width: 260px; }
 
-    .remove-cell.visible {
-        display: table-cell;
-    }
-
-    /* ---- Sell date column, only shown while editing ---- */
-
-    .sell-date-cell {
-        display: none;
-    }
-
-    .sell-date-cell.visible {
-        display: table-cell;
-    }
-
-    /* ---- Scrollable table body with a sticky header (safety net for very
-       large, fully-expanded portfolios) ---- */
-
-    .table-scroll {
-        max-height: 900px;
-        overflow-y: auto;
-    }
-
-    .table-scroll table thead th {
-        position: sticky;
-        top: 0;
-        background: var(--panel);
-        z-index: 1;
-    }
-
-    /* ---- Symbol badge: colored avatar + ticker ---- */
-
-    .stock-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .stock-badge .avatar {
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
-        font-weight: 700;
-        color: #0B0F11;
-        flex: none;
-    }
-
-    /* ---- Add-holding button ---- */
-
-    .add-row-btn {
-        width: 100%;
-        background: transparent;
-        border: 1px dashed var(--line);
-        color: var(--muted);
-        margin-top: 10px;
-    }
-
-    .add-row-btn:hover {
-        color: var(--text);
-        border-color: #2DD4BF;
-    }
-
-    /* ---- Status text ---- */
-
-    .status-ok { color: var(--watch); }
-    .status-err { color: var(--triggered); }
-
-    /* ---- Quantity input: plain number field, no spinner arrows ---- */
-
-    input.cell[data-f="quantity"]::-webkit-outer-spin-button,
-    input.cell[data-f="quantity"]::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    input.cell[data-f="quantity"] {
-        -moz-appearance: textfield;
-    }
-
-    /* ---- Login modal ---- */
-
+    /* ── Modal ── */
     .modal-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.6);
-        align-items: center;
-        justify-content: center;
-        z-index: 100;
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,.65);
+        align-items: center; justify-content: center; z-index: 100;
     }
-
-    .modal-overlay.visible {
-        display: flex;
-    }
-
+    .modal-overlay.visible { display: flex; }
     .modal {
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 24px;
+        background: #0f1c28;
+        border: 1px solid rgba(255,255,255,.1);
+        border-radius: 10px; padding: 22px;
+        width: 100%; max-width: 300px;
+    }
+    .modal h2 { font-size: 14px; font-weight: 700; color: #edf5ff; margin-bottom: 3px; }
+    .modal .hint { font-size: 11px; color: #4a6075; margin-bottom: 14px; }
+    .modal label { display: block; font-size: 9px; color: #4a6075; text-transform: uppercase; letter-spacing: .07em; margin: 10px 0 4px; }
+    .modal input {
         width: 100%;
-        max-width: 320px;
+        background: rgba(255,255,255,.05);
+        border: 1px solid rgba(255,255,255,.1);
+        border-radius: 5px; padding: 8px 10px;
+        color: #dce8f4; font-size: 12px; font-family: inherit; outline: none;
     }
+    .modal input:focus { border-color: #2DD4BF; }
+    .modal-actions { display: flex; gap: 8px; margin-top: 14px; }
+    .modal-actions button { flex: 1; }
+    .error-text { font-size: 10px; color: #FF5C6C; margin-top: 5px; min-height: 14px; }
+    .btn-modal-cancel {
+        padding: 7px; border-radius: 5px;
+        border: 1px solid rgba(255,255,255,.1);
+        color: #8fa3bc; font-size: 11px;
+        background: rgba(255,255,255,.03);
+    }
+    .btn-modal-confirm {
+        padding: 7px; border-radius: 5px;
+        background: #1B2A2E; border: 1px solid #2DD4BF;
+        color: #2DD4BF; font-size: 11px; font-weight: 600;
+    }
+    .btn-modal-confirm:hover { background: rgba(45,212,191,.15); }
 
-    .modal h2 {
-        font-size: 15px;
-        text-transform: none;
-        letter-spacing: normal;
-        color: var(--text);
-        margin: 0 0 4px;
-    }
-
-    .modal .hint {
-        margin: 0 0 16px;
-    }
-
-    .modal label {
-        display: block;
-        font-size: 11px;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: .05em;
-        margin: 12px 0 6px;
-    }
-
-    .modal input.text-control {
-        width: 100%;
-    }
-
-    .modal-actions {
-        display: flex;
-        gap: 8px;
-        margin-top: 18px;
-    }
-
-    .modal-actions button {
-        flex: 1;
-    }
-
-    /* ---- Closed-position / realised profit summary ---- */
-    .realized-summary {
-        margin: 0 0 22px;
-        padding: 18px;
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        background: var(--panel, transparent);
-    }
-    .realized-summary-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: 12px;
-        margin-bottom: 14px;
-    }
-    .realized-summary-head h2 { margin: 0; font-size: 1rem; }
-    .realized-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 12px;
-    }
-    .realized-metric { padding: 10px 12px; border-radius: 8px; background: var(--surface, rgba(255,255,255,.03)); }
-    .realized-metric .value { font-weight: 700; font-size: 1.05rem; }
-    .realized-metric .label { margin-top: 3px; font-size: .78rem; color: var(--muted); }
-    .realized-table { margin-top: 16px; }
-    .realized-table th, .realized-table td { padding: 9px 10px; }
-    @media (max-width: 720px) { .realized-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-
-    /* Closed trades have their own page, keeping this view focused on open holdings. */
-    .portfolio-page #realizedSummary { display: none !important; }
-
-    /* ---- Holdings dashboard refresh ---- */
-    body.portfolio-page { background: var(--bg); }
-    .app-shell { min-height: 100vh; }
-    .wrap { max-width: 1560px; padding-top: 22px; position: relative; }
-
-    /* ---- Top page nav: a compact, always-visible tab strip. Simpler and
-       snappier than a toggling drawer for a handful of links. ---- */
-    .page-nav {
-        display: inline-flex;
-        gap: 3px;
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 4px;
-        margin-bottom: 18px;
-    }
-    .page-nav a {
-        color: var(--muted);
-        text-decoration: none;
-        font-size: 12.5px;
-        font-weight: 500;
-        padding: 8px 14px;
-        border-radius: 7px;
-        transition: color .15s ease, background-color .15s ease, color .15s ease;
-    }
-    .page-nav a:hover {
-        color: var(--text);
-    }
-    .page-nav a.active {
-        color: #06201d;
-        background: #2DD4BF;
-        font-weight: 600;
-    }
-    @media (max-width: 560px) {
-        .page-nav { display: flex; overflow-x: auto; }
-        .page-nav a { white-space: nowrap; }
-    }
-
-    /* Edit is visually part of the summary row, without taking a row of its own. */
-    .topbar { position: absolute; top: 22px; right: clamp(12px, 4vw, 32px); z-index: 2; width: 310px; min-height: 0; margin: 0; padding: 0; border: 0; }
-    .topbar-left h1 { margin: 0; font-size: 26px; letter-spacing: -.03em; }
-    .topbar-left .sub { margin: 4px 0 0; }
-    .topbar-right { flex-direction: row; align-items: center; gap: 10px; }
-    .topbar-right .navbar { display: none; }
-    .topbar-left { display: none !important; }
-    .topbar-right { margin-left: auto; }
-    .sidebar-account-actions { gap: 9px; }
-    .sidebar-account-bar { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); display: grid; grid-template-columns: 25px minmax(0, 1fr); column-gap: 9px; row-gap: 10px; }
-    .sidebar-account-bar::before { display: none !important; }
-    .sidebar-account-bar #whoami { max-width: 132px; overflow: hidden; text-overflow: ellipsis; }
-    #profileAvatarBtn { grid-column: 1; grid-row: 1; width: 25px; height: 25px; padding: 0; border-radius: 50%; background: rgba(45,212,191,.16); border: 1px solid rgba(45,212,191,.35); color: #2DD4BF; font-size: 11px; font-weight: 700; cursor: pointer; }
-    .sidebar-account-bar #whoami { grid-column: 2; grid-row: 1; align-self: center; max-width: none; }
-    .sidebar-account-actions { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
-    .sidebar-account-actions .edit-entry-row, .sidebar-account-actions .edit-mode-actions { width: 100%; }
-    .sidebar-account-actions .edit-mode-actions { flex-direction: column; }
-    .sidebar-account-actions button { width: 100%; justify-content: center; }
-    #quickAddBtn { display: none !important; }
-    #logoutBtn { display: none !important; }
-    .sidebar-account-bar.profile-menu-open #logoutBtn { display: inline-flex !important; }
-    .sidebar-account-actions .primary, #quickAddBtn {
-        background: linear-gradient(135deg, #256e70, #318884);
-        border-color: #3b9991;
-        box-shadow: 0 6px 16px rgba(45, 141, 133, .16);
-    }
-    #editBtn { min-height: 38px; padding-inline: 15px; color: #e7fffc; }
-    #quickAddBtn { white-space: nowrap; }
-    /* Reserve room for either Edit or the wider Cancel / Save Changes group. */
-    .stats#portfolioStats { grid-template-columns: repeat(5, minmax(0, 1fr)); width: 100%; margin-bottom: 18px; }
-    .stats#portfolioStats .stat { min-height: 92px; border-radius: 10px; background: var(--panel); }
-    .stats#portfolioStats .sidebar-account-bar { min-height: 92px; align-content: center; }
-    .stats#portfolioStats .n { font-size: 18px; }
-    .page-body { grid-template-columns: minmax(0, 1fr) 310px; gap: 18px; }
-    .main-col { background: var(--panel); border: 1px solid var(--line); border-radius: 11px; overflow: hidden; }
-    .table-scroll { height: calc(100vh - 150px); max-height: none; }
-    .table-scroll table { min-width: 1020px; }
-    .table-scroll table thead th { background: #0c2231; padding-top: 13px; padding-bottom: 13px; }
-    .table-scroll table tbody tr { transition: background .15s ease; }
-    .table-scroll table tbody tr:hover { background: rgba(45,212,191,.045); }
-    .add-row-btn { width: calc(100% - 24px); margin: 12px; border-radius: 8px; padding: 11px; }
-    .empty { margin: 18px; }
-    .insights-row.side-col { gap: 14px; }
-    .insights-row.side-col { margin-top: 0; }
-    .insight-panels { gap: 14px; }
-    .insight-panel { border-radius: 10px; padding: 16px; background: var(--panel); }
-    .insight-panel .sidebar-title { color: var(--text); font-size: 13px; margin-bottom: 13px; }
-    .health-counts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .health-count { border-radius: 8px; padding: 11px 10px; background: rgba(255,255,255,.025); }
-    .health-count .value { display: block; font-size: 20px; font-weight: 700; line-height: 1; }
-    .health-count .label { display: block; margin-top: 6px; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
-    .health-count.profit .value { color: var(--watch); }
-    .health-count.loss .value { color: var(--triggered); }
-    .donut-panel-body { gap: 10px; }
-    .donut-wrap { width: 112px; height: 112px; }
-    .edit-banner { margin: 12px; border-radius: 8px; }
-    @media (max-width: 1100px) {
-        .topbar { position: static; width: auto; justify-content: flex-end; margin-bottom: 10px; }
-        .stats#portfolioStats { grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
-        .page-body { grid-template-columns: 1fr; }
-        .insights-row.side-col { position: static; max-height: none; }
-        .insights-row.side-col { margin-top: 0; }
-        .insight-panels { display: grid; grid-template-columns: repeat(3, 1fr); }
-    }
-    @media (max-width: 700px) {
-        .topbar-right { width: 100%; justify-content: space-between; }
-        .sidebar-account-bar #whoami { display: none !important; }
-        .topbar-right .navbar { display: none; }
-        .stats#portfolioStats { grid-template-columns: 1fr; }
-        .table-scroll { height: calc(100vh - 145px); }
-        .insight-panels { grid-template-columns: 1fr; }
-        #quickAddBtn { font-size: 12px; }
-    }
+    *::-webkit-scrollbar { width: 4px; height: 4px; }
+    *::-webkit-scrollbar-track { background: transparent; }
+    *::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 4px; }
 </style>
 </head>
 
-<body class="portfolio-page">
-    <div class="app-shell">
-        <div class="wrap">
-        <nav class="page-nav">
-            <a href="index.html">Dashboard</a>
-            <a href="portfolio.html" class="active">Holdings</a>
-            <a href="heatmap.html">Heat Map</a>
-            <a href="realized-profit.html">Realized Profit</a>
+<body>
+<div class="shell">
+
+    <!-- ══ SIDEBAR ══ -->
+    <aside class="sb">
+        <nav class="sb-nav">
+            <a href="index.html" class="sb-link" data-title="Dashboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                    <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                </svg>
+            </a>
+                        <a href="heatmap.html" class="sb-link" data-title="Heat Map">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/>
+                </svg>
+            </a>
+            <a href="portfolio.html" class="sb-link active" data-title="Holdings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/>
+                </svg>
+            </a>
+
+            <a href="realized-profit.html" class="sb-link" data-title="Realised P&L">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                    <polyline points="17 6 23 6 23 12"/>
+                </svg>
+            </a>
         </nav>
-        <div class="topbar">
-            <div class="topbar-left">
-                <h1>Portfolio</h1>
-                <p class="sub last-updated-row">
-                    <span id="lastUpdated">Loading...</span>
-                    <button class="icon-btn subtle" id="refreshBtn" title="Refresh">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                    </button>
-                </p>
-            </div>
+    </aside>
 
+    <!-- ══ MAIN ══ -->
+    <div class="main">
+
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-title">
+                <h1>Holdings</h1>
+                <p id="lastUpdated">Loading…</p>
+            </div>
             <div class="topbar-right">
-                <nav class="navbar">
-                    <a href="index.html">Dashboard</a>
-                    <a href="heatmap.html">Heat Map</a>
-                    <a href="portfolio.html" class="active">Portfolio</a>
-                    <a href="realized-profit.html">Realized Profit</a>
-                </nav>
-                <div class="sidebar-account-bar" id="sidebarAccountBar">
-                    <button id="profileAvatarBtn" type="button" title="Profile menu" aria-label="Open profile menu">P</button>
-                    <span class="hint" id="whoami" style="display:none;"></span>
-                    <div class="sidebar-account-actions">
-                        <div class="edit-entry-row" id="editEntryBar">
-                            <button class="primary icon-text-btn" id="editBtn">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                                Edit
-                            </button>
-                        </div>
-                        <div class="edit-mode-actions" id="editModeActions" style="display:none;">
-                            <button id="cancelBtn">Cancel</button>
-                            <button class="primary icon-text-btn" id="saveBtn">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                                Save Changes
-                            </button>
-                        </div>
-                        <button class="icon-text-btn" id="logoutBtn" style="display:none;">
-                            Sign out
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                        </button>
-                    </div>
+                <div class="whoami-chip" id="whoamiChip" style="display:none">
+                    <div class="whoami-dot"></div>
+                    <span id="whoamiText"></span>
                 </div>
-                <button class="primary icon-text-btn" id="quickAddBtn" type="button" style="display:none;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                    Add Holding
+                <button class="btn-ghost" id="refreshBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                    </svg>
+                    Refresh
                 </button>
-                <button id="signInBtn" style="display:none;">Sign in</button>
+                <!-- Edit mode buttons -->
+                <div id="editEntryBar">
+                    <button class="btn-edit" id="editBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+                <div id="editModeActions" style="display:none; display:none; align-items:center; gap:8px;">
+                    <button class="btn-cancel" id="cancelBtn">Cancel</button>
+                    <button class="btn-primary" id="saveBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/>
+                            <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+                        </svg>
+                        Save Changes
+                    </button>
+                </div>
+                <button class="btn-ghost" id="signInBtn" style="display:none">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                        <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+                    </svg>
+                    Sign in
+                </button>
+                <button class="btn-ghost" id="signOutBtn" style="display:none">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                    Sign out
+                </button>
             </div>
-        </div>
+        </header>
 
-        <div class="stats" id="portfolioStats" style="display:none;">
-            <div class="stat">
-                <div class="stat-icon icon-blue">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-                </div>
-                <div class="stat-body">
-                    <div class="n" id="statInvestment">—</div>
-                    <div class="l">Total Investment</div>
-                    <div class="stat-sub" id="statInvestmentSub"></div>
-                </div>
-            </div>
-            <div class="stat">
-                <div class="stat-icon icon-purple">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
-                </div>
-                <div class="stat-body">
-                    <div class="n" id="statCurrentValue">—</div>
-                    <div class="l">Current Value</div>
-                </div>
-            </div>
-            <div class="stat">
-                <div class="stat-icon icon-teal">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-                </div>
-                <div class="stat-body">
-                    <div class="n" id="statGainLoss">—</div>
-                    <div class="l">Total Gain / Loss</div>
-                    <div class="stat-sub" id="statGainLossSub"></div>
-                </div>
-            </div>
-            <div class="stat">
-                <div class="stat-icon icon-orange">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
-                </div>
-                <div class="stat-body">
-                    <div class="n" id="statTodayChange">—</div>
-                    <div class="l">Today's Change</div>
-                    <div class="stat-sub" id="statTodayChangeSub"></div>
-                </div>
-            </div>
-        </div>
+        <!-- Content -->
+        <div class="content" id="content">
 
-        <section class="realized-summary" id="realizedSummary" style="display:none;" aria-labelledby="realizedHeading">
-            <div class="realized-summary-head">
-                <h2 id="realizedHeading">Realized Profit Summary</h2>
-                <span class="hint" id="realizedCount"></span>
+            <!-- Auth gate -->
+            <div class="auth-gate" id="authGate">
+                <div style="width:48px;height:48px;border-radius:50%;background:rgba(45,212,191,.1);display:flex;align-items:center;justify-content:center">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                </div>
+                <h2>Sign in to view your holdings</h2>
+                <p>Admin access required to view and edit your portfolio.</p>
+                <button class="btn-primary" id="authGateSignIn">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                        <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+                    </svg>
+                    Sign in
+                </button>
             </div>
-            <div class="realized-grid">
-                <div class="realized-metric"><div class="value" id="realizedTotal">—</div><div class="label">Realized Profit / Loss</div></div>
-                <div class="realized-metric"><div class="value" id="realizedReturn">—</div><div class="label">Return on Closed Positions</div></div>
-                <div class="realized-metric"><div class="value" id="realizedWins">—</div><div class="label">Winning / Losing Trades</div></div>
-                <div class="realized-metric"><div class="value" id="realizedHoldingPeriod">—</div><div class="label">Average Holding Period</div></div>
-            </div>
-            <div class="table-scroll realized-table">
-                <table>
-                    <thead><tr><th>Symbol</th><th class="num">Qty</th><th class="num">Buy ₹</th><th class="num">Sell ₹</th><th class="num">Profit ₹</th><th class="num">Return</th><th>Sold</th><th>Term</th></tr></thead>
-                    <tbody id="realizedTbody"></tbody>
-                </table>
-            </div>
-        </section>
 
-        <div class="page-body" id="pageBody">
-            <div class="main-col">
-                <div class="edit-banner" id="bottomBar" style="display:none;">
-                    <div class="edit-banner-text">
-                        <span class="edit-banner-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                        </span>
-                        <div>
-                            <div class="edit-banner-title">Editing Portfolio</div>
-                            <div class="hint" id="saveStatus">You have unsaved changes</div>
+            <!-- Dashboard -->
+            <div id="dashboard" style="display:none; flex-direction:column; gap:14px">
+
+                <!-- KPI row -->
+                <div class="kpi-grid" id="kpiGrid"></div>
+
+                <!-- Page body -->
+                <div class="page-body">
+
+                    <!-- Main table -->
+                    <div class="table-panel">
+                        <!-- Edit banner -->
+                        <div class="edit-banner" id="editBanner" style="display:none">
+                            <div class="edit-banner-left">
+                                <div class="edit-banner-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="edit-banner-title">Editing Portfolio</div>
+                                    <div class="edit-banner-sub" id="saveStatus">You have unsaved changes</div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="table-scroll" id="tableView">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width:11%"><button class="th-sort" id="thSortSymbol" data-field="symbol">Symbol<span class="sort-arrow"></span></button></th>
-                                <th class="num" style="width:6%">Qty</th>
-                                <th class="num" style="width:9%">Buy Price</th>
-                                <th class="num" style="width:9%" id="curPriceHeaderCell">Current Price</th>
-                                <th class="num" style="width:7%" id="chgHeaderCell"><button class="th-sort" id="thSortChg" data-field="chg">Chg %<span class="sort-arrow"></span></button></th>
-                                <th class="num" style="width:9%"><button class="th-sort" id="thSortProfitRs" data-field="profitRs">Profit ₹<span class="sort-arrow"></span></button></th>
-                                <th class="num" style="width:8%"><button class="th-sort" id="thSortProfitPct" data-field="profitPct">Profit %<span class="sort-arrow"></span></button></th>
-                                <th class="num" style="width:8%">Target ₹</th>
-                                <th class="num" style="width:8%">Target %</th>
-                                <th style="width:9%">Buy Date</th>
-                                <th class="sell-date-cell" id="sellDateHeaderCell" style="width:9%">Sale</th>
-                                <th class="remove-cell" id="removeHeaderCell">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody"></tbody>
-                    </table>
-                </div>
-                <div class="empty" id="emptyMsg" style="display:none;">No holdings yet.</div>
-
-                <button class="add-row-btn" id="addRowBtn" style="display:none;">+ Add holding</button>
-
-                <datalist id="symbolList"></datalist>
-            </div>
-
-            <aside class="insights-row side-col" id="insightsRow">
-                <div class="insight-panels" id="insightPanels" style="display:none;">
-                    <div class="insight-panel">
-                        <p class="sidebar-title">Allocation by Sector</p>
-                        <div class="donut-panel-body">
-                            <div class="donut-wrap" id="sectorDonutWrap"></div>
-                            <ul class="sector-legend" id="sectorAllocList"></ul>
+                        <!-- Table toolbar -->
+                        <div class="table-toolbar">
+                            <span class="table-toolbar-title">Open Positions</span>
                         </div>
-                    </div>
-                    <div class="insight-panel">
-                        <p class="sidebar-title">Portfolio Health</p>
-                        <div class="health-counts">
-                            <div class="health-count profit"><span class="value" id="profitableCount">â€”</span><span class="label">Profitable stocks</span></div>
-                            <div class="health-count loss"><span class="value" id="lossMakingCount">â€”</span><span class="label">Loss-making stocks</span></div>
+
+                        <div class="table-scroll" id="tableView">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width:12%"><button class="th-sort" id="thSortSymbol" data-field="symbol">Symbol <span class="sort-arrow"></span></button></th>
+                                        <th class="num" style="width:6%">Qty</th>
+                                        <th class="num" style="width:9%">Buy Price</th>
+                                        <th class="num" style="width:9%" id="curPriceHeaderCell">Current Price</th>
+                                        <th class="num" style="width:7%" id="chgHeaderCell"><button class="th-sort" id="thSortChg" data-field="chg">Chg % <span class="sort-arrow"></span></button></th>
+                                        <th class="num" style="width:9%"><button class="th-sort" id="thSortProfitRs" data-field="profitRs">Profit ₹ <span class="sort-arrow"></span></button></th>
+                                        <th class="num" style="width:8%"><button class="th-sort" id="thSortProfitPct" data-field="profitPct">Profit % <span class="sort-arrow"></span></button></th>
+                                        <th class="num" style="width:8%">Target ₹</th>
+                                        <th class="num" style="width:8%">Target %</th>
+                                        <th style="width:9%">Buy Date</th>
+                                        <th class="sell-date-cell" id="sellDateHeaderCell" style="width:8%">Sale</th>
+                                        <th class="remove-cell" id="removeHeaderCell">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody"></tbody>
+                            </table>
                         </div>
+
+                        <div class="empty-state" id="emptyMsg" style="display:none">
+                            <h3>No holdings yet</h3>
+                            Add a holding to get started.
+                        </div>
+
+                        <button class="add-row-btn" id="addRowBtn">+ Add holding</button>
+
+                        <datalist id="symbolList"></datalist>
                     </div>
-                    <div class="insight-panel">
-                        <p class="sidebar-title">Top Gainers</p>
-                        <ul class="insight-list" id="topGainersList"></ul>
-                    </div>
-                    <div class="insight-panel">
-                        <p class="sidebar-title">Top Losers</p>
-                        <ul class="insight-list" id="topLosersList"></ul>
-                    </div>
+
+                    <!-- Sidebar -->
+                    <aside class="side-col" id="sideCol">
+                        <div class="panel" id="sectorPanel">
+                            <div class="panel-title">Allocation by Sector</div>
+                            <div class="donut-layout">
+                                <div class="donut-wrap" id="sectorDonutWrap"></div>
+                                <ul class="sector-legend" id="sectorAllocList"></ul>
+                            </div>
+                        </div>
+                        <div class="panel" id="healthPanel">
+                            <div class="panel-title">Portfolio Health</div>
+                            <div class="health-grid">
+                                <div class="health-item profit"><span class="health-val" id="profitableCount">—</span><span class="health-lbl">Profitable</span></div>
+                                <div class="health-item loss"><span class="health-val" id="lossMakingCount">—</span><span class="health-lbl">Loss-making</span></div>
+                            </div>
+                        </div>
+                        <div class="panel" id="gainersPanel">
+                            <div class="panel-title">Top Gainers</div>
+                            <ul class="insight-list" id="topGainersList"></ul>
+                        </div>
+                        <div class="panel" id="losersPanel">
+                            <div class="panel-title">Top Losers</div>
+                            <ul class="insight-list" id="topLosersList"></ul>
+                        </div>
+                    </aside>
                 </div>
-            </aside>
-        </div>
+            </div><!-- /dashboard -->
+        </div><!-- /content -->
+    </div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- Login modal -->
+<div class="modal-overlay" id="loginModal">
+    <div class="modal">
+        <h2>Sign in</h2>
+        <p class="hint">Admin access required.</p>
+        <label for="username">Username</label>
+        <input type="text" id="username" autocomplete="username" placeholder="username">
+        <label for="password">Password</label>
+        <input type="password" id="password" autocomplete="current-password" placeholder="••••••••">
+        <div class="error-text" id="loginError"></div>
+        <div class="modal-actions">
+            <button class="btn-modal-cancel" id="loginCancelBtn">Cancel</button>
+            <button class="btn-modal-confirm" id="loginSubmitBtn">Sign in</button>
         </div>
     </div>
+</div>
 
-    <!-- Login modal -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal">
-            <h2>Sign in to edit</h2>
-            <p class="hint">Admin access required.</p>
-
-            <label for="username">Username</label>
-            <input type="text" id="username" class="text-control" autocomplete="username">
-
-            <label for="password">Password</label>
-            <input type="password" id="password" class="text-control" autocomplete="current-password">
-
-            <p class="hint" id="loginError" style="color:var(--triggered);"></p>
-
-            <div class="modal-actions">
-                <button id="loginCancelBtn">Cancel</button>
-                <button class="primary" id="loginSubmitBtn">Sign in</button>
-            </div>
+<!-- Sale modal -->
+<div class="modal-overlay" id="saleModal">
+    <div class="modal">
+        <h2>Close position</h2>
+        <p class="hint" id="salePositionLabel"></p>
+        <label for="salePrice">Sell price</label>
+        <input type="number" step="any" min="0" id="salePrice" placeholder="0.00">
+        <label for="saleDate">Sell date</label>
+        <input type="date" id="saleDate">
+        <div class="error-text" id="saleError"></div>
+        <div class="modal-actions">
+            <button class="btn-modal-cancel" id="saleCancelBtn">Cancel</button>
+            <button class="btn-modal-confirm" id="saleConfirmBtn">Close position</button>
         </div>
     </div>
-
-    <div class="modal-overlay" id="saleModal">
-        <div class="modal">
-            <h2>Close position</h2>
-            <p class="hint" id="salePositionLabel"></p>
-            <label for="salePrice">Sell price</label>
-            <input type="number" step="any" min="0" id="salePrice" class="text-control" placeholder="0.00">
-            <label for="saleDate">Sell date</label>
-            <input type="date" id="saleDate" class="text-control">
-            <p class="hint" id="saleError" style="color:var(--triggered);"></p>
-            <div class="modal-actions">
-                <button id="saleCancelBtn">Cancel</button>
-                <button class="primary" id="saleConfirmBtn">Close position</button>
-            </div>
-        </div>
-    </div>
+</div>
 
 <script>
 (() => {
   const API_BASE = "https://tiny-art-8473.dobbyop09.workers.dev";
+  const TOKEN_KEY = "portfolioAdminToken";
 
   const ICON_TRASH = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
 
@@ -977,177 +743,103 @@
   let closedTransactionsSnapshot = [];
   let saleIndex = null;
   let isEditing = false;
-  let symbolDataMap = {}; // SYMBOL -> { currentPrice, changePercent, sector, screenerUrl,previousClose }
+  let symbolDataMap = {};
 
-  const thSortSymbol    = document.getElementById("thSortSymbol");
-  const thSortChg       = document.getElementById("thSortChg");
-  const thSortProfitRs  = document.getElementById("thSortProfitRs");
-  const thSortProfitPct = document.getElementById("thSortProfitPct");
-  let sortField = null;   // "symbol" | "chg" | "profitRs" | "profitPct" | null
-  let sortDir   = "asc";  // "asc" | "desc"
+  const thSortSymbol   = document.getElementById("thSortSymbol");
+  const thSortChg      = document.getElementById("thSortChg");
+  const thSortProfitRs = document.getElementById("thSortProfitRs");
+  const thSortProfitPct= document.getElementById("thSortProfitPct");
+  let sortField = null;
+  let sortDir = "asc";
 
-  const signInBtn       = document.getElementById("signInBtn");
-  const editBtn         = document.getElementById("editBtn");
-  const quickAddBtn     = document.getElementById("quickAddBtn");
-  const editEntryBar    = document.getElementById("editEntryBar");
-  const editModeActions = document.getElementById("editModeActions");
-  const sidebarAccountBar = document.getElementById("sidebarAccountBar");
-  const profileAvatarBtn = document.getElementById("profileAvatarBtn");
-  const cancelBtn       = document.getElementById("cancelBtn");
-  const logoutBtn       = document.getElementById("logoutBtn");
-  const refreshBtn      = document.getElementById("refreshBtn");
-  const whoami          = document.getElementById("whoami");
-  const tbody            = document.getElementById("tbody");
-  const emptyMsg         = document.getElementById("emptyMsg");
-  const addRowBtn        = document.getElementById("addRowBtn");
-  const removeHeaderCell = document.getElementById("removeHeaderCell");
-  const sellDateHeaderCell = document.getElementById("sellDateHeaderCell");
-  const curPriceHeaderCell = document.getElementById("curPriceHeaderCell");
-  const chgHeaderCell      = document.getElementById("chgHeaderCell");
-  const bottomBar        = document.getElementById("bottomBar");
-  const saveStatus       = document.getElementById("saveStatus");
+  const authGate          = document.getElementById("authGate");
+  const dashboard         = document.getElementById("dashboard");
+  const whoamiChip        = document.getElementById("whoamiChip");
+  const whoamiText        = document.getElementById("whoamiText");
+  const signInBtn         = document.getElementById("signInBtn");
+  const signOutBtn        = document.getElementById("signOutBtn");
+  const refreshBtn        = document.getElementById("refreshBtn");
+  const editBtn           = document.getElementById("editBtn");
+  const editEntryBar      = document.getElementById("editEntryBar");
+  const editModeActions   = document.getElementById("editModeActions");
+  const cancelBtn         = document.getElementById("cancelBtn");
+  const saveBtn           = document.getElementById("saveBtn");
+  const editBanner        = document.getElementById("editBanner");
+  const saveStatus        = document.getElementById("saveStatus");
+  const tbody             = document.getElementById("tbody");
+  const emptyMsg          = document.getElementById("emptyMsg");
+  const addRowBtn         = document.getElementById("addRowBtn");
+  const removeHeaderCell  = document.getElementById("removeHeaderCell");
+  const sellDateHeaderCell= document.getElementById("sellDateHeaderCell");
+  const curPriceHeaderCell= document.getElementById("curPriceHeaderCell");
+  const chgHeaderCell     = document.getElementById("chgHeaderCell");
   const tableView         = document.getElementById("tableView");
   const lastUpdatedEl     = document.getElementById("lastUpdated");
-  const portfolioStats    = document.getElementById("portfolioStats");
-  const statInvestment    = document.getElementById("statInvestment");
-  const statInvestmentSub = document.getElementById("statInvestmentSub");
-  const statCurrentValue  = document.getElementById("statCurrentValue");
-  const statGainLoss      = document.getElementById("statGainLoss");
-  const statGainLossSub   = document.getElementById("statGainLossSub");
-  const statTodayChange   = document.getElementById("statTodayChange");
-  const statTodayChangeSub = document.getElementById("statTodayChangeSub");
-  const insightPanels     = document.getElementById("insightPanels");
+  const kpiGrid           = document.getElementById("kpiGrid");
   const profitableCount   = document.getElementById("profitableCount");
   const lossMakingCount   = document.getElementById("lossMakingCount");
   const topGainersList    = document.getElementById("topGainersList");
   const topLosersList     = document.getElementById("topLosersList");
   const sectorAllocList   = document.getElementById("sectorAllocList");
   const sectorDonutWrap   = document.getElementById("sectorDonutWrap");
-  const realizedSummary   = document.getElementById("realizedSummary");
-  const realizedCount     = document.getElementById("realizedCount");
-  const realizedTotal     = document.getElementById("realizedTotal");
-  const realizedReturn    = document.getElementById("realizedReturn");
-  const realizedWins      = document.getElementById("realizedWins");
-  const realizedHoldingPeriod = document.getElementById("realizedHoldingPeriod");
-  const realizedTbody     = document.getElementById("realizedTbody");
-
-  const loginModal    = document.getElementById("loginModal");
-  const loginError    = document.getElementById("loginError");
-  const usernameInput = document.getElementById("username");
-  const passwordInput = document.getElementById("password");
-  const saleModal     = document.getElementById("saleModal");
+  const loginModal        = document.getElementById("loginModal");
+  const loginError        = document.getElementById("loginError");
+  const usernameInput     = document.getElementById("username");
+  const passwordInput     = document.getElementById("password");
+  const saleModal         = document.getElementById("saleModal");
   const salePositionLabel = document.getElementById("salePositionLabel");
-  const salePriceInput = document.getElementById("salePrice");
-  const saleDateInput  = document.getElementById("saleDate");
-  const saleError      = document.getElementById("saleError");
+  const salePriceInput    = document.getElementById("salePrice");
+  const saleDateInput     = document.getElementById("saleDate");
+  const saleError         = document.getElementById("saleError");
 
-  // ---------------- Token storage (survives page refresh) ----------------
-
-  const TOKEN_KEY = "portfolioAdminToken";
-
-  function saveToken(token) {
-    try { sessionStorage.setItem(TOKEN_KEY, token); } catch (e) { /* ignore */ }
-  }
-  function readStoredToken() {
-    try { return sessionStorage.getItem(TOKEN_KEY); } catch (e) { return null; }
-  }
-  function clearStoredToken() {
-    try { sessionStorage.removeItem(TOKEN_KEY); } catch (e) { /* ignore */ }
-  }
-  function decodeTokenPayload(token) {
-    try {
-      const b64payload = token.split(".")[0];
-      const json = atob(b64payload.replace(/-/g, "+").replace(/_/g, "/"));
-      return JSON.parse(json);
-    } catch (e) {
-      return null;
-    }
+  // Token
+  const saveToken  = t => { try { sessionStorage.setItem(TOKEN_KEY, t); } catch(e){} };
+  const readToken  = () => { try { return sessionStorage.getItem(TOKEN_KEY); } catch(e){ return null; } };
+  const clearToken = () => { try { sessionStorage.removeItem(TOKEN_KEY); } catch(e){} };
+  function decodePayload(token) {
+    try { return JSON.parse(atob(token.split(".")[0].replace(/-/g,"+").replace(/_/g,"/"))); } catch(e){ return null; }
   }
 
-  // ---------------- Auth UI state ----------------
-
+  // Auth UI
   function updateAuthUI(loggedIn, username) {
-    signInBtn.style.display   = loggedIn ? "none" : "inline-block";
-    logoutBtn.style.display   = loggedIn ? "inline-flex" : "none";
-    sidebarAccountBar.style.display = loggedIn ? "grid" : "none";
-    sidebarAccountBar.classList.remove("profile-menu-open");
-    editEntryBar.style.display = (loggedIn && !isEditing) ? "flex" : "none";
-    quickAddBtn.style.display = loggedIn ? "inline-flex" : "none";
-    if (loggedIn) {
-      whoami.textContent = `Signed in as ${username}`;
-      whoami.style.display = "inline";
-    } else {
-      whoami.style.display = "none";
-    }
+    signInBtn.style.display   = loggedIn ? "none" : "flex";
+    signOutBtn.style.display  = loggedIn ? "flex" : "none";
+    whoamiChip.style.display  = loggedIn ? "flex" : "none";
+    editEntryBar.style.display= (loggedIn && !isEditing) ? "block" : "none";
+    if (loggedIn) whoamiText.textContent = username;
+    authGate.style.display    = loggedIn ? "none" : "flex";
+    dashboard.style.display   = loggedIn ? "flex" : "none";
   }
 
-  function showSignedOutPlaceholder() {
-    tableView.style.display = "none";
-    emptyMsg.style.display = "block";
-    emptyMsg.textContent = "Sign in to view your portfolio.";
-    addRowBtn.style.display = "none";
-    bottomBar.style.display = "none";
-    lastUpdatedEl.textContent = "";
-    portfolioStats.style.display = "none";
-    insightPanels.style.display = "none";
-    realizedSummary.style.display = "none";
-  }
-
-  function handleAuthExpired() {
-    clearStoredToken();
-    sessionToken = null;
-    isEditing = false;
-    removeHeaderCell.classList.remove("visible");
-    sellDateHeaderCell.classList.remove("visible");
-    curPriceHeaderCell.style.display = "";
-    chgHeaderCell.style.display = "";
-    addRowBtn.style.display = "none";
-    bottomBar.style.display = "none";
-    editModeActions.style.display = "none";
+  function handleExpired() {
+    clearToken(); sessionToken = null; isEditing = false;
+    exitEditModeCleanup();
     updateAuthUI(false);
-    showSignedOutPlaceholder();
     openLoginModal();
   }
 
-  // ---------------- Load (requires auth) ----------------
-
+  // Load
   async function loadPortfolio() {
-    if (!sessionToken) {
-      showSignedOutPlaceholder();
-      return;
-    }
-    lastUpdatedEl.textContent = "Loading...";
+    if (!sessionToken) return;
+    lastUpdatedEl.textContent = "Loading…";
     try {
-      const res = await fetch(`${API_BASE}/portfolio.json`, {
-        headers: { "Authorization": `Bearer ${sessionToken}` },
-      });
-      if (res.status === 401) {
-        handleAuthExpired();
-        return;
-      }
+      const res = await fetch(`${API_BASE}/portfolio.json`, { headers: { Authorization: `Bearer ${sessionToken}` } });
+      if (res.status === 401) { handleExpired(); return; }
       if (res.status === 404) {
-        holdings = [];
-        closedTransactions = [];
+        holdings = []; closedTransactions = [];
         lastUpdatedEl.textContent = "No data yet";
       } else if (res.ok) {
         const data = await res.json();
         holdings = Array.isArray(data.holdings) ? data.holdings : [];
         closedTransactions = Array.isArray(data.closedTransactions) ? data.closedTransactions : [];
         lastUpdatedEl.textContent = data.lastUpdated
-          ? "Last updated " + new Date(data.lastUpdated).toLocaleString()
-          : "";
-      } else {
-        throw new Error("Failed to load");
-      }
+          ? "Last updated " + new Date(data.lastUpdated).toLocaleString() : "";
+      } else { throw new Error("Failed"); }
       holdingsSnapshot = JSON.parse(JSON.stringify(holdings));
       closedTransactionsSnapshot = JSON.parse(JSON.stringify(closedTransactions));
       renderTable();
-    } catch (err) {
-      lastUpdatedEl.textContent = "Failed to load portfolio";
-    }
+    } catch(e) { lastUpdatedEl.textContent = "Failed to load portfolio"; }
   }
-
-  // ---------------- Symbol search (from dashboard-data.json) ----------------
 
   async function loadSymbolList() {
     try {
@@ -1156,91 +848,48 @@
       const data = await res.json();
       const list = document.getElementById("symbolList");
       list.innerHTML = "";
-      (Array.isArray(data) ? data : []).forEach((item) => {
+      (Array.isArray(data) ? data : []).forEach(item => {
         if (!item.symbol) return;
         symbolDataMap[item.symbol.toUpperCase()] = {
-          currentPrice: item.currentPrice,
-          changePercent: item.changePercent,
-          sector: item.sheet,
-          screenerUrl: item.screenerUrl,
-          previousClose: item.previousClose,
-        
+          currentPrice: item.currentPrice, changePercent: item.changePercent,
+          sector: item.sheet, screenerUrl: item.screenerUrl, previousClose: item.previousClose,
         };
-        const opt = document.createElement("option");
-        opt.value = item.symbol;
-        list.appendChild(opt);
+        const opt = document.createElement("option"); opt.value = item.symbol; list.appendChild(opt);
       });
-    } catch (err) {
-      // Autocomplete just won't be available — not fatal.
-    }
+    } catch(e) {}
     renderTable();
   }
 
-  // ---------------- Edit gating / login ----------------
-
+  // Login modal
   function openLoginModal() {
-    loginError.textContent = "";
-    usernameInput.value = "";
-    passwordInput.value = "";
-    loginModal.classList.add("visible");
-    usernameInput.focus();
+    loginError.textContent = ""; usernameInput.value = ""; passwordInput.value = "";
+    loginModal.classList.add("visible"); usernameInput.focus();
   }
-
-  function closeLoginModal() {
-    loginModal.classList.remove("visible");
-  }
+  function closeLoginModal() { loginModal.classList.remove("visible"); }
 
   async function submitLogin() {
     loginError.textContent = "";
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value;
-
-    if (!username || !password) {
-      loginError.textContent = "Enter username and password.";
-      return;
-    }
-
+    const u = usernameInput.value.trim(), p = passwordInput.value;
+    if (!u || !p) { loginError.textContent = "Enter username and password."; return; }
     const btn = document.getElementById("loginSubmitBtn");
-    btn.disabled = true;
-    btn.textContent = "Signing in...";
-
+    btn.disabled = true; btn.textContent = "Signing in…";
     try {
-      const res = await fetch(`${API_BASE}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!res.ok) {
-        loginError.textContent = "Invalid username or password.";
-        return;
-      }
-
+      const res = await fetch(`${API_BASE}/login`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u,password:p}) });
+      if (!res.ok) { loginError.textContent = "Invalid username or password."; return; }
       const data = await res.json();
-      sessionToken = data.token;
-      saveToken(data.token);
-      const uname = data.username || username;
-      updateAuthUI(true, uname);
-
-      closeLoginModal();
-      await loadPortfolio();
-    } catch (err) {
-      loginError.textContent = "Could not reach the server. Try again.";
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Sign in";
-    }
+      sessionToken = data.token; saveToken(data.token);
+      updateAuthUI(true, data.username || u);
+      closeLoginModal(); await loadPortfolio();
+    } catch(e) { loginError.textContent = "Could not reach server. Try again."; }
+    finally { btn.disabled = false; btn.textContent = "Sign in"; }
   }
 
+  // Edit mode
   function enterEditMode() {
-    if (!sessionToken) {
-      openLoginModal();
-      return;
-    }
+    if (!sessionToken) { openLoginModal(); return; }
     isEditing = true;
     holdingsSnapshot = JSON.parse(JSON.stringify(holdings));
     closedTransactionsSnapshot = JSON.parse(JSON.stringify(closedTransactions));
-
     editEntryBar.style.display = "none";
     editModeActions.style.display = "flex";
     addRowBtn.style.display = "block";
@@ -1248,11 +897,21 @@
     sellDateHeaderCell.classList.add("visible");
     curPriceHeaderCell.style.display = "none";
     chgHeaderCell.style.display = "none";
-    bottomBar.style.display = "flex";
+    editBanner.style.display = "flex";
     saveStatus.textContent = "You have unsaved changes";
-    saveStatus.className = "hint";
-
+    saveStatus.className = "edit-banner-sub";
     renderTable();
+  }
+
+  function exitEditModeCleanup() {
+    editEntryBar.style.display = sessionToken ? "block" : "none";
+    editModeActions.style.display = "none";
+    addRowBtn.style.display = "none";
+    removeHeaderCell.classList.remove("visible");
+    sellDateHeaderCell.classList.remove("visible");
+    curPriceHeaderCell.style.display = "";
+    chgHeaderCell.style.display = "";
+    editBanner.style.display = "none";
   }
 
   function exitEditMode(discard) {
@@ -1261,18 +920,7 @@
       holdings = JSON.parse(JSON.stringify(holdingsSnapshot));
       closedTransactions = JSON.parse(JSON.stringify(closedTransactionsSnapshot));
     }
-
-    editEntryBar.style.display = sessionToken ? "flex" : "none";
-    editModeActions.style.display = "none";
-    addRowBtn.style.display = "none";
-    removeHeaderCell.classList.remove("visible");
-    sellDateHeaderCell.classList.remove("visible");
-    curPriceHeaderCell.style.display = "";
-    chgHeaderCell.style.display = "";
-    bottomBar.style.display = "none";
-    saveStatus.textContent = "";
-    saveStatus.className = "hint";
-
+    exitEditModeCleanup();
     renderTable();
   }
 
@@ -1288,252 +936,169 @@
 
   function logout() {
     if (isEditing && isDirty() && !confirm("Discard unsaved changes and sign out?")) return;
-    clearStoredToken();
-    sessionToken = null;
-    isEditing = false;
-    removeHeaderCell.classList.remove("visible");
-    sellDateHeaderCell.classList.remove("visible");
-    curPriceHeaderCell.style.display = "";
-    chgHeaderCell.style.display = "";
-    addRowBtn.style.display = "none";
-    bottomBar.style.display = "none";
-    editModeActions.style.display = "none";
-    holdings = [];
-    closedTransactions = [];
+    clearToken(); sessionToken = null; isEditing = false;
+    holdings = []; closedTransactions = [];
+    exitEditModeCleanup();
     updateAuthUI(false);
-    showSignedOutPlaceholder();
   }
 
-  // ---------------- Save ----------------
-
+  // Save
   async function savePortfolio() {
-    saveStatus.textContent = "Saving...";
-    saveStatus.className = "hint";
-
-    const payload = {
-      holdings,
-      closedTransactions,
-      lastUpdated: new Date().toISOString(),
-    };
-
+    saveStatus.textContent = "Saving…";
+    const payload = { holdings, closedTransactions, lastUpdated: new Date().toISOString() };
     try {
       const res = await fetch(`${API_BASE}/portfolio.json`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${sessionToken}`,
-        },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${sessionToken}` },
         body: JSON.stringify(payload),
       });
-
-      if (res.status === 401) {
-        saveStatus.textContent = "Session expired — sign in again.";
-        saveStatus.className = "hint status-err";
-        handleAuthExpired();
-        return;
-      }
-
+      if (res.status === 401) { saveStatus.textContent = "Session expired."; handleExpired(); return; }
       if (!res.ok) throw new Error("Save failed");
-
       holdingsSnapshot = JSON.parse(JSON.stringify(holdings));
       closedTransactionsSnapshot = JSON.parse(JSON.stringify(closedTransactions));
       saveStatus.textContent = "Saved — " + new Date().toLocaleTimeString();
-      saveStatus.className = "hint status-ok";
+      saveStatus.className = "edit-banner-sub status-ok";
       lastUpdatedEl.textContent = "Last updated " + new Date(payload.lastUpdated).toLocaleString();
-    } catch (err) {
+    } catch(e) {
       saveStatus.textContent = "Save failed. Try again.";
-      saveStatus.className = "hint status-err";
+      saveStatus.className = "edit-banner-sub status-err";
     }
   }
 
-  // ---------------- Sorting ----------------
+  // Sorting
+  const SECTOR_COLORS = ["#2DD4BF","#F5A623","#8B5CF6","#5B9EFF","#FF5C6C","#5B6472","#22C55E","#EAB308"];
 
-  function profitPct(buyPrice, currentPrice) {
-    const b = parseFloat(buyPrice);
-    const c = parseFloat(currentPrice);
-    if (!isFinite(b) || b === 0 || !isFinite(c)) return -Infinity;
-    return ((c - b) / b) * 100;
+  function avatarColor(symbol) {
+    const s = (symbol||"?").toUpperCase(); let h=0;
+    for (let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))>>>0;
+    return SECTOR_COLORS[h % SECTOR_COLORS.length];
   }
 
+  function qtyOf(h) { const q=parseFloat(h.quantity); return isFinite(q)&&q>0?q:1; }
+  function curPriceOf(h) {
+    const sd = symbolDataMap[(h.symbol||"").toUpperCase()];
+    const c = sd ? parseFloat(sd.currentPrice) : NaN; return c;
+  }
+  function profitPct(buy, cur) {
+    const b=parseFloat(buy),c=parseFloat(cur);
+    if (!isFinite(b)||b===0||!isFinite(c)) return -Infinity;
+    return ((c-b)/b)*100;
+  }
   function chgOf(h) {
-    const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
-    const chg = symbolData ? parseFloat(symbolData.changePercent) : NaN;
-    return isFinite(chg) ? chg : -Infinity;
+    const sd=symbolDataMap[(h.symbol||"").toUpperCase()];
+    const chg=sd?parseFloat(sd.changePercent):NaN; return isFinite(chg)?chg:-Infinity;
   }
-
   function profitRsOf(h) {
-    const b = parseFloat(h.buyPrice);
-    const c = curPriceOf(h);
-    if (!isFinite(b) || !isFinite(c)) return -Infinity;
-    return (c - b) * qtyOf(h);
+    const b=parseFloat(h.buyPrice),c=curPriceOf(h);
+    if (!isFinite(b)||!isFinite(c)) return -Infinity;
+    return (c-b)*qtyOf(h);
   }
 
   function applySort() {
     if (!sortField) return;
-    holdings.sort((a, b) => {
-      if (sortField === "symbol") {
-        const va = (a.symbol || "").toUpperCase();
-        const vb = (b.symbol || "").toUpperCase();
-        if (va < vb) return sortDir === "asc" ? -1 : 1;
-        if (va > vb) return sortDir === "asc" ? 1 : -1;
-        return 0;
+    holdings.sort((a,b) => {
+      if (sortField==="symbol") {
+        const va=(a.symbol||"").toUpperCase(), vb=(b.symbol||"").toUpperCase();
+        if (va<vb) return sortDir==="asc"?-1:1;
+        if (va>vb) return sortDir==="asc"?1:-1; return 0;
       }
-      let va, vb;
-      if (sortField === "chg") {
-        va = chgOf(a); vb = chgOf(b);
-      } else if (sortField === "profitRs") {
-        va = profitRsOf(a); vb = profitRsOf(b);
-      } else {
-        va = profitPct(a.buyPrice, curPriceOf(a)); vb = profitPct(b.buyPrice, curPriceOf(b));
-      }
-      return sortDir === "asc" ? va - vb : vb - va;
+      let va,vb;
+      if (sortField==="chg") { va=chgOf(a);vb=chgOf(b); }
+      else if (sortField==="profitRs") { va=profitRsOf(a);vb=profitRsOf(b); }
+      else { va=profitPct(a.buyPrice,curPriceOf(a));vb=profitPct(b.buyPrice,curPriceOf(b)); }
+      return sortDir==="asc"?va-vb:vb-va;
     });
   }
 
-  const sortHeaderMap = { symbol: thSortSymbol, chg: thSortChg, profitRs: thSortProfitRs, profitPct: thSortProfitPct };
-
+  const sortHeaderMap = {symbol:thSortSymbol,chg:thSortChg,profitRs:thSortProfitRs,profitPct:thSortProfitPct};
   function updateSortIndicators() {
-    Object.entries(sortHeaderMap).forEach(([field, el]) => {
+    Object.entries(sortHeaderMap).forEach(([field,el]) => {
       if (!el) return;
-      const arrow = el.querySelector(".sort-arrow");
-      if (sortField === field) {
-        el.classList.add("active");
-        arrow.textContent = sortDir === "asc" ? "▲" : "▼";
-      } else {
-        el.classList.remove("active");
-        arrow.textContent = "";
-      }
+      const arrow=el.querySelector(".sort-arrow");
+      if (sortField===field) { el.classList.add("active"); arrow.textContent=sortDir==="asc"?"▲":"▼"; }
+      else { el.classList.remove("active"); arrow.textContent=""; }
     });
   }
-
   function sortHoldings(field) {
-    if (sortField === field) {
-      sortDir = sortDir === "asc" ? "desc" : "asc";
-    } else {
-      sortField = field;
-      sortDir = field === "symbol" ? "asc" : "desc";
-    }
-    applySort();
-    updateSortIndicators();
-    renderTable();
+    if (sortField===field) { sortDir=sortDir==="asc"?"desc":"asc"; }
+    else { sortField=field; sortDir=field==="symbol"?"asc":"desc"; }
+    applySort(); updateSortIndicators(); renderTable();
   }
-
-  Object.values(sortHeaderMap).forEach((el) => {
+  Object.values(sortHeaderMap).forEach(el => {
     if (el) el.addEventListener("click", () => sortHoldings(el.getAttribute("data-field")));
   });
 
-  // ---------------- Table rendering ----------------
-
-  function qtyOf(h) {
-    const q = parseFloat(h.quantity);
-    return isFinite(q) && q > 0 ? q : 1;
-  }
-
-  // Current price ALWAYS comes from dashboard-data.json (symbolDataMap),
-  // never from the value stored in portfolio.json — the dashboard feed is
-  // refreshed regularly, the saved portfolio value can be stale.
-  function curPriceOf(h) {
-    const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
-    const c = symbolData ? parseFloat(symbolData.currentPrice) : NaN;
-    return c;
-  }
-
-  function profitInfo(buyPrice, currentPrice) {
-    const b = parseFloat(buyPrice);
-    const c = parseFloat(currentPrice);
-    if (!isFinite(b) || b === 0 || !isFinite(c)) {
-      return { text: "—", cls: "b-far" };
-    }
-    const pct = ((c - b) / b) * 100;
-    const cls = pct > 0 ? "b-watch" : pct < 0 ? "b-triggered" : "b-far";
-    const sign = pct > 0 ? "+" : "";
-    return { text: `${sign}${pct.toFixed(2)}%`, cls };
-  }
-
+  // Helpers
   function fmtMoney(v) {
-    const n = parseFloat(v);
-    return isFinite(n) ? n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "—";
+    const n=parseFloat(v); return isFinite(n)?n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}):"—";
   }
-
   function fmtDate(v) {
-    if (!v) return "—";
-    const d = new Date(v);
-    if (isNaN(d)) return v;
-    const opts = { day: "numeric", month: "short" };
-    if (d.getFullYear() !== new Date().getFullYear()) opts.year = "numeric";
-    return d.toLocaleDateString("en-GB", opts);
+    if (!v) return "—"; const d=new Date(v); if (isNaN(d)) return v;
+    const opts={day:"numeric",month:"short"};
+    if (d.getFullYear()!==new Date().getFullYear()) opts.year="numeric";
+    return d.toLocaleDateString("en-GB",opts);
   }
-
   function changeBadge(pct) {
-    const n = parseFloat(pct);
-    if (!isFinite(n)) return `<span class="badge b-far">—</span>`;
-    const cls = n > 0 ? "b-watch" : n < 0 ? "b-triggered" : "b-far";
-    const sign = n > 0 ? "+" : "";
+    const n=parseFloat(pct); if (!isFinite(n)) return `<span class="badge b-far">—</span>`;
+    const cls=n>0?"b-watch":n<0?"b-triggered":"b-far"; const sign=n>0?"+":"";
     return `<span class="badge ${cls}">${sign}${n.toFixed(2)}%</span>`;
   }
-
-  // Profit in ₹ scales with quantity, not just per-share price.
-  function profitRupeesBadge(buyPrice, currentPrice, quantity) {
-    const b = parseFloat(buyPrice);
-    const c = parseFloat(currentPrice);
-    if (!isFinite(b) || !isFinite(c)) return `<span class="badge b-far">—</span>`;
-    const qty = isFinite(parseFloat(quantity)) && parseFloat(quantity) > 0 ? parseFloat(quantity) : 1;
-    const diff = (c - b) * qty;
-    const cls = diff > 0 ? "b-watch" : diff < 0 ? "b-triggered" : "b-far";
-    const sign = diff > 0 ? "+" : "";
+  function profitInfo(buy, cur) {
+    const b=parseFloat(buy),c=parseFloat(cur);
+    if (!isFinite(b)||b===0||!isFinite(c)) return {text:"—",cls:"b-far"};
+    const pct=((c-b)/b)*100; const cls=pct>0?"b-watch":pct<0?"b-triggered":"b-far";
+    const sign=pct>0?"+":""; return {text:`${sign}${pct.toFixed(2)}%`,cls};
+  }
+  function profitRupeesBadge(buy,cur,qty) {
+    const b=parseFloat(buy),c=parseFloat(cur); if (!isFinite(b)||!isFinite(c)) return `<span class="badge b-far">—</span>`;
+    const q=isFinite(parseFloat(qty))&&parseFloat(qty)>0?parseFloat(qty):1;
+    const diff=(c-b)*q; const cls=diff>0?"b-watch":diff<0?"b-triggered":"b-far"; const sign=diff>0?"+":"";
     return `<span class="badge ${cls}">${sign}${fmtMoney(diff)}</span>`;
   }
+  function numOrBlank(v) { return (v===undefined||v===null||v==="")?"":v; }
+  function escAttr(s) { return String(s).replace(/"/g,"&quot;"); }
+  function escHtml(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
+  // Render table
   function renderTable() {
     tbody.innerHTML = "";
-
-    computeStats();
+    computeKPIs();
     renderInsights();
-    renderRealizedSummary();
 
-    if (holdings.length === 0) {
-      tableView.style.display = "none";
-      emptyMsg.style.display = "block";
-      emptyMsg.textContent = isEditing ? "No holdings yet. Add one below." : "No holdings yet.";
+    if (holdings.length===0) {
+      tableView.style.display="none"; emptyMsg.style.display="block";
+      emptyMsg.querySelector("h3").textContent = isEditing?"No holdings yet":"No holdings yet";
       return;
     }
+    tableView.style.display="block"; emptyMsg.style.display="none";
 
-    tableView.style.display = "block";
-    emptyMsg.style.display = "none";
-
-    holdings.forEach((h, i) => {
-      const tr = document.createElement("tr");
-      const curPrice = curPriceOf(h);
-      const profit = profitInfo(h.buyPrice, curPrice);
-      const profitBadge = `<span class="badge ${profit.cls}">${profit.text}</span>`;
-      const profitRsBadge = profitRupeesBadge(h.buyPrice, curPrice, h.quantity);
-      const targetPct = profitInfo(h.buyPrice, h.targetAmount);
-      const targetPctBadge = `<span class="badge ${targetPct.cls}">${targetPct.text}</span>`;
-      const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
-      const chgBadge = changeBadge(symbolData ? symbolData.changePercent : undefined);
+    holdings.forEach((h,i) => {
+      const tr=document.createElement("tr");
+      const curPrice=curPriceOf(h);
+      const profit=profitInfo(h.buyPrice,curPrice);
+      const profitBadge=`<span class="badge ${profit.cls}">${profit.text}</span>`;
+      const profitRsBadge=profitRupeesBadge(h.buyPrice,curPrice,h.quantity);
+      const targetPct=profitInfo(h.buyPrice,h.targetAmount);
+      const targetPctBadge=`<span class="badge ${targetPct.cls}">${targetPct.text}</span>`;
+      const sd=symbolDataMap[(h.symbol||"").toUpperCase()];
+      const chgBadge=changeBadge(sd?sd.changePercent:undefined);
 
       if (isEditing) {
         tr.innerHTML = `
-          <td><input type="text" class="cell" list="symbolList" value="${escapeAttr(h.symbol ?? "")}" data-i="${i}" data-f="symbol" placeholder="AAPL"></td>
+          <td><input type="text" class="cell" list="symbolList" value="${escAttr(h.symbol??'')}" data-i="${i}" data-f="symbol" placeholder="SYMBOL"></td>
           <td><input type="number" step="any" min="0" class="cell num" value="${numOrBlank(h.quantity)}" data-i="${i}" data-f="quantity" placeholder="1"></td>
           <td><input type="number" step="any" class="cell num" value="${numOrBlank(h.buyPrice)}" data-i="${i}" data-f="buyPrice" placeholder="0.00"></td>
           <td class="num profit-rs-cell">${profitRsBadge}</td>
           <td class="num profit-cell">${profitBadge}</td>
           <td><input type="number" step="any" class="cell num" value="${numOrBlank(h.targetAmount)}" data-i="${i}" data-f="targetAmount" placeholder="0.00"></td>
           <td class="num target-pct-cell">${targetPctBadge}</td>
-          <td><input type="date" class="cell" value="${escapeAttr(h.buyDate ?? "")}" data-i="${i}" data-f="buyDate"></td>
-          <td class="sell-date-cell visible"><button class="icon-btn" data-sell="${i}" title="Close position" aria-label="Close position">Sell</button></td>
-          <td class="remove-cell visible"><button class="icon-btn danger" data-remove="${i}" title="Remove" aria-label="Remove">${ICON_TRASH}</button></td>
-        `;
+          <td><input type="date" class="cell" value="${escAttr(h.buyDate??'')}" data-i="${i}" data-f="buyDate"></td>
+          <td class="sell-date-cell visible"><button class="icon-btn" data-sell="${i}" title="Close position">Sell</button></td>
+          <td class="remove-cell visible"><button class="icon-btn danger" data-remove="${i}" title="Remove">${ICON_TRASH}</button></td>`;
       } else {
         tr.innerHTML = `
-          <td>
-            <span class="stock-badge">
-              <span class="avatar" style="background:${avatarColor(h.symbol)}">${escapeHtml((h.symbol || "?").charAt(0).toUpperCase())}</span>
-              <a class="stock-link">${escapeHtml(h.symbol || "—")}</a>
-            </span>
-          </td>
-          <td class="num">${escapeHtml(String(qtyOf(h)))}</td>
+          <td><div class="sym-badge"><div class="sym-avatar" style="background:${avatarColor(h.symbol)}">${escHtml((h.symbol||"?").charAt(0).toUpperCase())}</div><span style="font-weight:600;font-size:11px">${escHtml(h.symbol||"—")}</span></div></td>
+          <td class="num">${escHtml(String(qtyOf(h)))}</td>
           <td class="num">${fmtMoney(h.buyPrice)}</td>
           <td class="num current-price-cell">${fmtMoney(curPrice)}</td>
           <td class="num chg-cell">${chgBadge}</td>
@@ -1541,456 +1106,224 @@
           <td class="num profit-cell">${profitBadge}</td>
           <td class="num">${fmtMoney(h.targetAmount)}</td>
           <td class="num target-pct-cell">${targetPctBadge}</td>
-          <td>${fmtDate(h.buyDate)}</td>
-        `;
+          <td>${fmtDate(h.buyDate)}</td>`;
       }
       tbody.appendChild(tr);
     });
   }
 
-  // Closed positions are never valued from the live dashboard feed. Their
-  // result is always derived from the prices captured when the trade closed.
-  function realizedInfo(t) {
-    const qty = qtyOf(t);
-    const buy = parseFloat(t.buyPrice);
-    const sell = parseFloat(t.sellPrice);
-    if (!isFinite(buy) || !isFinite(sell)) return { profit: NaN, pct: NaN, cost: NaN };
-    const cost = buy * qty;
-    const profit = (sell - buy) * qty;
-    return { profit, pct: cost ? (profit / cost) * 100 : NaN, cost };
-  }
-
-  function holdingDays(t) {
-    const buy = new Date(t.buyDate);
-    const sell = new Date(t.sellDate);
-    if (isNaN(buy) || isNaN(sell)) return null;
-    return Math.max(0, Math.round((sell - buy) / 86400000));
-  }
-
-  function renderRealizedSummary() {
-    if (!sessionToken || closedTransactions.length === 0) {
-      realizedSummary.style.display = "none";
-      return;
-    }
-    realizedSummary.style.display = "block";
-    let totalProfit = 0, totalCost = 0, wins = 0, losses = 0, daysTotal = 0, daysCount = 0;
-    closedTransactions.forEach((t) => {
-      const info = realizedInfo(t);
-      if (isFinite(info.profit)) {
-        totalProfit += info.profit;
-        totalCost += info.cost;
-        if (info.profit > 0) wins++;
-        else if (info.profit < 0) losses++;
+  // KPIs
+  function computeKPIs() {
+    if (!sessionToken||holdings.length===0) { kpiGrid.innerHTML=""; return; }
+    let investment=0,currentValue=0,todayChange=0,yesterdayValue=0,gainers=0,losers=0,best=null;
+    holdings.forEach(h => {
+      const buy=parseFloat(h.buyPrice),cur=curPriceOf(h),qty=qtyOf(h);
+      if (isFinite(buy)) investment+=buy*qty;
+      if (isFinite(cur)) currentValue+=cur*qty;
+      const sd=symbolDataMap[(h.symbol||"").toUpperCase()];
+      if (sd) {
+        const prev=parseFloat(sd.previousClose),chg=parseFloat(sd.changePercent);
+        if (isFinite(prev)&&isFinite(cur)) { todayChange+=(cur-prev)*qty; yesterdayValue+=prev*qty; }
+        if (isFinite(chg)) { if(chg>0)gainers++;else if(chg<0)losers++; }
       }
-      const days = holdingDays(t);
-      if (days !== null) { daysTotal += days; daysCount++; }
+      const pct=profitPct(buy,cur);
+      if (isFinite(pct)&&(!best||pct>best.pct)) best={symbol:h.symbol||"—",pct};
     });
-    const returnPct = totalCost ? (totalProfit / totalCost) * 100 : NaN;
-    realizedCount.textContent = `${closedTransactions.length} closed transaction${closedTransactions.length === 1 ? "" : "s"}`;
-    realizedTotal.textContent = `${totalProfit >= 0 ? "+" : ""}₹${fmtMoney(totalProfit)}`;
-    realizedTotal.className = "value " + (totalProfit >= 0 ? "pos" : "neg");
-    realizedReturn.textContent = isFinite(returnPct) ? `${returnPct >= 0 ? "+" : ""}${returnPct.toFixed(2)}%` : "—";
-    realizedReturn.className = "value " + (returnPct >= 0 ? "pos" : "neg");
-    realizedWins.textContent = `${wins} win${wins === 1 ? "" : "s"} / ${losses} loss${losses === 1 ? "" : "es"}`;
-    realizedHoldingPeriod.textContent = daysCount ? `${Math.round(daysTotal / daysCount)} days` : "—";
-    realizedTbody.innerHTML = [...closedTransactions].sort((a, b) => String(b.sellDate || "").localeCompare(String(a.sellDate || ""))).map((t) => {
-      const info = realizedInfo(t);
-      const days = holdingDays(t);
-      const cls = info.profit > 0 ? "b-watch" : info.profit < 0 ? "b-triggered" : "b-far";
-      const term = days === null ? "—" : (days > 365 ? "Long-term" : "Short-term");
-      return `<tr><td>${escapeHtml(t.symbol || "—")}</td><td class="num">${escapeHtml(String(qtyOf(t)))}</td><td class="num">₹${fmtMoney(t.buyPrice)}</td><td class="num">₹${fmtMoney(t.sellPrice)}</td><td class="num"><span class="badge ${cls}">${info.profit >= 0 ? "+" : ""}${fmtMoney(info.profit)}</span></td><td class="num"><span class="badge ${cls}">${isFinite(info.pct) ? `${info.pct >= 0 ? "+" : ""}${info.pct.toFixed(2)}%` : "—"}</span></td><td>${fmtDate(t.sellDate)}</td><td>${term}</td></tr>`;
-    }).join("");
+    const gainLoss=currentValue-investment;
+    const gainLossPct=investment>0?(gainLoss/investment)*100:0;
+    const todayChangePct=yesterdayValue>0?(todayChange/yesterdayValue)*100:0;
+
+    const cards = [
+      { lbl:"Total Investment", val:`₹${fmtMoney(investment)}`, cls:"",
+        note:`Across ${holdings.length} stock${holdings.length===1?"":"s"}`, noteCls:"",
+        accent:"#5B9EFF", iconBg:"rgba(91,158,255,.12)",
+        icon:'<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>'
+      },
+      { lbl:"Current Value", val:`₹${fmtMoney(currentValue)}`, cls:"",
+        note:"Live market data", noteCls:"",
+        accent:"#8B5CF6", iconBg:"rgba(139,92,246,.12)",
+        icon:'<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>'
+      },
+      { lbl:"Total Gain / Loss",
+        val:`${gainLoss>=0?"+":""}₹${fmtMoney(gainLoss)} (${gainLossPct>=0?"+":""}${gainLossPct.toFixed(2)}%)`,
+        cls:gainLoss>=0?"pos":"neg",
+        note:best?`Best: ${best.symbol} ${best.pct>=0?"+":""}${best.pct.toFixed(2)}%`:"—",
+        noteCls:gainLoss>=0?"pos":"neg",
+        accent:"#2DD4BF", iconBg:"rgba(45,212,191,.12)",
+        icon:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>'
+      },
+      { lbl:"Today's Change",
+        val:`${todayChange>=0?"+":""}₹${fmtMoney(todayChange)} (${todayChangePct>=0?"+":""}${todayChangePct.toFixed(2)}%)`,
+        cls:todayChange>=0?"pos":"neg",
+        note:`${gainers} up · ${losers} down`, noteCls:"",
+        accent:"#F5A623", iconBg:"rgba(245,166,35,.12)",
+        icon:'<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>'
+      },
+    ];
+
+    kpiGrid.innerHTML = cards.map(k=>`
+      <div class="kpi-card" style="--accent:${k.accent}">
+        <div class="kpi-icon-row">
+          <div class="kpi-lbl">${k.lbl}</div>
+          <div class="kpi-icon" style="background:${k.iconBg};color:${k.accent}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${k.icon}</svg>
+          </div>
+        </div>
+        <div class="kpi-val ${k.cls}">${k.val}</div>
+        <div class="kpi-note ${k.noteCls}">${k.note}</div>
+      </div>`).join("");
   }
 
-  // ---------------- Stat cards ----------------
-
- function computeStats() {
-  if (!sessionToken || holdings.length === 0) {
-    portfolioStats.style.display = "none";
-    statInvestmentSub.textContent = "";
-    statGainLossSub.textContent = "";
-    statTodayChangeSub.textContent = "";
-    return;
-  }
-
-  portfolioStats.style.display = "grid";
-
-  let investment = 0;
-  let currentValue = 0;
-
-  let todayChange = 0;
-  let yesterdayValue = 0;
-
-  let gainersCount = 0;
-  let losersCount = 0;
-
-  let best = null;
-
-  holdings.forEach((h) => {
-    const buy = parseFloat(h.buyPrice);
-    const cur = curPriceOf(h);
-    const qty = qtyOf(h);
-
-    if (isFinite(buy))
-      investment += buy * qty;
-
-    if (isFinite(cur))
-      currentValue += cur * qty;
-
-    const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
-
-    if (symbolData) {
-      const prevClose = parseFloat(symbolData.previousClose);
-      const chg = parseFloat(symbolData.changePercent);
-
-      if (isFinite(prevClose) && isFinite(cur)) {
-        todayChange += (cur - prevClose) * qty;
-        yesterdayValue += prevClose * qty;
-      }
-
-      if (isFinite(chg)) {
-        if (chg > 0)
-          gainersCount++;
-        else if (chg < 0)
-          losersCount++;
-      }
-    }
-    console.log(" Yesterday Value: " + yesterdayValue, " Today Change: " + todayChange);
-    const pct = profitPct(buy, cur);
-
-    if (isFinite(pct) && (!best || pct > best.pct)) {
-      best = {
-        symbol: h.symbol || "—",
-        pct
-      };
-    }
-  });
-
-  const gainLoss = currentValue - investment;
-
-  const gainLossPct =
-    investment > 0
-      ? (gainLoss / investment) * 100
-      : 0;
-
-  const todayChangePct =
-    yesterdayValue > 0
-      ? (todayChange / yesterdayValue) * 100
-      : 0;
-
-  statInvestment.textContent = "₹" + fmtMoney(investment);
-  statInvestment.className = "n";
-  statInvestmentSub.textContent =
-    `Across ${holdings.length} stock${holdings.length === 1 ? "" : "s"}`;
-
-  statCurrentValue.textContent = "₹" + fmtMoney(currentValue);
-  statCurrentValue.className = "n";
-
-  statGainLoss.textContent =
-    `${gainLoss >= 0 ? "+" : ""}₹${fmtMoney(gainLoss)} (${gainLossPct >= 0 ? "+" : ""}${gainLossPct.toFixed(2)}%)`;
-  statGainLoss.className =
-    "n " + (gainLoss >= 0 ? "pos" : "neg");
-  statGainLossSub.textContent =
-    best
-      ? `Best: ${best.symbol} ${best.pct >= 0 ? "+" : ""}${best.pct.toFixed(2)}%`
-      : "";
-
-  statTodayChange.textContent =
-    `${todayChange >= 0 ? "+" : ""}₹${fmtMoney(todayChange)} (${todayChangePct >= 0 ? "+" : ""}${todayChangePct.toFixed(2)}%)`;
-  statTodayChange.className =
-    "n " + (todayChange >= 0 ? "pos" : "neg");
-
-  statTodayChangeSub.textContent =
-    `${gainersCount} up · ${losersCount} down`;
-}
-  // ---------------- Top Gainers / Losers / Sector Allocation ----------------
-
-  const SECTOR_COLORS = ["#2DD4BF", "#F5A623", "#8B5CF6", "#5B9EFF", "#FF5C6C", "#5B6472", "#22C55E", "#EAB308"];
-
-  function avatarColor(symbol) {
-    const s = (symbol || "?").toUpperCase();
-    let hash = 0;
-    for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) >>> 0;
-    return SECTOR_COLORS[hash % SECTOR_COLORS.length];
-  }
-
+  // Insights
   function buildDonutSVG(entries, total) {
-    const size = 120, radius = 42, cx = 60, cy = 60, circumference = 2 * Math.PI * radius;
-    let offset = 0;
-    const segments = entries.map(([sector, value], idx) => {
-      const pct = value / total;
-      const dash = pct * circumference;
-      const color = SECTOR_COLORS[idx % SECTOR_COLORS.length];
-      const seg = `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${color}" stroke-width="16" stroke-dasharray="${dash.toFixed(2)} ${(circumference - dash).toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 ${cx} ${cy})"></circle>`;
-      offset += dash;
-      return seg;
+    const size=120,radius=42,cx=60,cy=60,circ=2*Math.PI*radius;
+    let offset=0;
+    const segs=entries.map(([,val],idx)=>{
+      const pct=val/total,dash=pct*circ;
+      const color=SECTOR_COLORS[idx%SECTOR_COLORS.length];
+      const seg=`<circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${color}" stroke-width="16" stroke-dasharray="${dash.toFixed(2)} ${(circ-dash).toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 ${cx} ${cy})"/>`;
+      offset+=dash; return seg;
     }).join("");
-    return `<svg viewBox="0 0 ${size} ${size}" width="120" height="120">${segments}</svg>`;
+    return `<svg viewBox="0 0 ${size} ${size}" width="120" height="120"><circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="16"/>${segs}</svg>`;
   }
 
   function renderInsights() {
-    if (!sessionToken || holdings.length === 0) {
-      insightPanels.style.display = "none";
-      return;
+    if (!sessionToken||holdings.length===0) {
+      profitableCount.textContent="—"; lossMakingCount.textContent="—";
+      topGainersList.innerHTML=""; topLosersList.innerHTML=""; return;
     }
-    insightPanels.style.display = "flex";
-
-    let profitable = 0, lossMaking = 0;
-    holdings.forEach((h) => {
-      const buy = parseFloat(h.buyPrice);
-      const current = curPriceOf(h);
-      if (!isFinite(buy) || !isFinite(current)) return;
-      if (current > buy) profitable++;
-      else if (current < buy) lossMaking++;
+    let profitable=0,lossMaking=0;
+    holdings.forEach(h => {
+      const buy=parseFloat(h.buyPrice),cur=curPriceOf(h);
+      if (!isFinite(buy)||!isFinite(cur)) return;
+      if (cur>buy) profitable++;else if(cur<buy) lossMaking++;
     });
-    profitableCount.textContent = profitable;
-    lossMakingCount.textContent = lossMaking;
+    profitableCount.textContent=profitable; lossMakingCount.textContent=lossMaking;
 
-    const withChange = holdings
-      .map((h) => {
-        const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
-        const chg = symbolData ? parseFloat(symbolData.changePercent) : NaN;
-        return { symbol: h.symbol || "—", chg };
-      })
-      .filter((x) => isFinite(x.chg));
+    const withChange=holdings.map(h=>{
+      const sd=symbolDataMap[(h.symbol||"").toUpperCase()];
+      const chg=sd?parseFloat(sd.changePercent):NaN;
+      return {symbol:h.symbol||"—",chg};
+    }).filter(x=>isFinite(x.chg));
 
-    const gainers = [...withChange].sort((a, b) => b.chg - a.chg).slice(0, 3);
-    const losers = [...withChange].sort((a, b) => a.chg - b.chg).slice(0, 3);
+    const gainers=[...withChange].sort((a,b)=>b.chg-a.chg).slice(0,3);
+    const losers=[...withChange].sort((a,b)=>a.chg-b.chg).slice(0,3);
 
-    topGainersList.innerHTML = gainers.length
-      ? gainers.map((g) => `
-          <li class="insight-row">
-            <span class="sym">${escapeHtml(g.symbol)}</span>
-            <span class="val" style="color:var(--watch)">+${g.chg.toFixed(2)}%</span>
-          </li>`).join("")
-      : `<li class="insight-empty">No change data available.</li>`;
+    topGainersList.innerHTML=gainers.length
+      ?gainers.map(g=>`<li class="insight-row"><span class="sym">${escHtml(g.symbol)}</span><span class="val" style="color:#2DD4BF">+${g.chg.toFixed(2)}%</span></li>`).join("")
+      :`<li class="insight-empty">No data available.</li>`;
 
-    topLosersList.innerHTML = losers.length
-      ? losers.map((l) => `
-          <li class="insight-row">
-            <span class="sym">${escapeHtml(l.symbol)}</span>
-            <span class="val" style="color:var(--triggered)">${l.chg.toFixed(2)}%</span>
-          </li>`).join("")
-      : `<li class="insight-empty">No change data available.</li>`;
+    topLosersList.innerHTML=losers.length
+      ?losers.map(l=>`<li class="insight-row"><span class="sym">${escHtml(l.symbol)}</span><span class="val" style="color:#FF5C6C">${l.chg.toFixed(2)}%</span></li>`).join("")
+      :`<li class="insight-empty">No data available.</li>`;
 
-    // Sector allocation, weighted by current value (price × quantity) —
-    // using the live dashboard price, not portfolio.json's stored value.
-    const sectorTotals = {};
-    let total = 0;
-    holdings.forEach((h) => {
-      const cur = curPriceOf(h);
-      if (!isFinite(cur)) return;
-      const value = cur * qtyOf(h);
-      const symbolData = symbolDataMap[(h.symbol || "").toUpperCase()];
-      const sector = (symbolData && symbolData.sector) || "Other";
-      sectorTotals[sector] = (sectorTotals[sector] || 0) + value;
-      total += value;
+    const sectorTotals={};let total=0;
+    holdings.forEach(h=>{
+      const cur=curPriceOf(h); if (!isFinite(cur)) return;
+      const value=cur*qtyOf(h);
+      const sd=symbolDataMap[(h.symbol||"").toUpperCase()];
+      const sector=(sd&&sd.sector)||"Other";
+      sectorTotals[sector]=(sectorTotals[sector]||0)+value; total+=value;
     });
-
-    const sectorEntries = Object.entries(sectorTotals).sort((a, b) => b[1] - a[1]);
-
-    if (sectorEntries.length && total > 0) {
-      sectorDonutWrap.innerHTML = buildDonutSVG(sectorEntries, total)
-        + `<div class="donut-center"><span class="donut-count">${holdings.length}</span><span class="donut-label">Stocks</span></div>`;
-      sectorAllocList.innerHTML = sectorEntries.map(([sector, value], idx) => {
-        const pct = (value / total) * 100;
-        const color = SECTOR_COLORS[idx % SECTOR_COLORS.length];
-        return `
-          <li>
-            <span class="name"><span class="dot" style="background:${color}"></span>${escapeHtml(sector)}</span>
-            <span class="pct">${pct.toFixed(1)}%</span>
-          </li>`;
+    const sectorEntries=Object.entries(sectorTotals).sort((a,b)=>b[1]-a[1]);
+    if (sectorEntries.length&&total>0) {
+      sectorDonutWrap.innerHTML=buildDonutSVG(sectorEntries,total)
+        +`<div class="donut-center"><span class="dc-val">${holdings.length}</span><span class="dc-lbl">Stocks</span></div>`;
+      sectorAllocList.innerHTML=sectorEntries.map(([sector,value],idx)=>{
+        const pct=(value/total)*100; const color=SECTOR_COLORS[idx%SECTOR_COLORS.length];
+        return `<li class="sector-row"><span class="sector-name"><span class="sector-dot" style="background:${color}"></span>${escHtml(sector)}</span><span class="sector-pct">${pct.toFixed(1)}%</span></li>`;
       }).join("");
     } else {
-      sectorDonutWrap.innerHTML = "";
-      sectorAllocList.innerHTML = `<li class="insight-empty">No sector data available.</li>`;
+      sectorDonutWrap.innerHTML="";
+      sectorAllocList.innerHTML=`<li class="insight-empty">No sector data.</li>`;
     }
   }
 
-  function numOrBlank(v) {
-    return (v === undefined || v === null || v === "") ? "" : v;
-  }
-  function escapeAttr(str) {
-    return String(str).replace(/"/g, "&quot;");
-  }
-  function escapeHtml(str) {
-    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
-
-  tbody.addEventListener("input", (e) => {
+  // Tbody events
+  tbody.addEventListener("input", e => {
     if (!isEditing) return;
-    const target = e.target;
-    const i = target.getAttribute("data-i");
-    const f = target.getAttribute("data-f");
-    if (i === null || !f) return;
-
-    const idx = parseInt(i, 10);
-    let val = target.value;
-
-    if (f === "buyPrice" || f === "targetAmount" || f === "quantity") {
-      holdings[idx][f] = val === "" ? "" : parseFloat(val);
-    } else {
-      holdings[idx][f] = val;
+    const target=e.target, i=target.getAttribute("data-i"), f=target.getAttribute("data-f");
+    if (i===null||!f) return;
+    const idx=parseInt(i,10); let val=target.value;
+    if (f==="buyPrice"||f==="targetAmount"||f==="quantity") holdings[idx][f]=val===""?"":parseFloat(val);
+    else holdings[idx][f]=val;
+    const row=target.closest("tr");
+    if (f==="buyPrice"||f==="symbol") {
+      const profit=profitInfo(holdings[idx].buyPrice,curPriceOf(holdings[idx]));
+      const cell=row.querySelector(".profit-cell"); cell.innerHTML=`<span class="badge ${profit.cls}">${profit.text}</span>`;
     }
-
-    const row = target.closest("tr");
-
-    if (f === "symbol") {
-      const match = symbolDataMap[val.trim().toUpperCase()];
-      if (match !== undefined) {
-        const chgCell = row.querySelector(".chg-cell");
-        if (chgCell) chgCell.innerHTML = changeBadge(match.changePercent);
-      }
+    if (f==="buyPrice"||f==="symbol"||f==="quantity") {
+      const rsCell=row.querySelector(".profit-rs-cell");
+      if (rsCell) rsCell.innerHTML=profitRupeesBadge(holdings[idx].buyPrice,curPriceOf(holdings[idx]),holdings[idx].quantity);
     }
-
-    if (f === "buyPrice" || f === "symbol") {
-      const profit = profitInfo(holdings[idx].buyPrice, curPriceOf(holdings[idx]));
-      const cell = row.querySelector(".profit-cell");
-      cell.innerHTML = `<span class="badge ${profit.cls}">${profit.text}</span>`;
+    if (f==="buyPrice"||f==="targetAmount") {
+      const tCell=row.querySelector(".target-pct-cell");
+      if (tCell) { const tp=profitInfo(holdings[idx].buyPrice,holdings[idx].targetAmount); tCell.innerHTML=`<span class="badge ${tp.cls}">${tp.text}</span>`; }
     }
-
-    if (f === "buyPrice" || f === "symbol" || f === "quantity") {
-      const rsCell = row.querySelector(".profit-rs-cell");
-      if (rsCell) rsCell.innerHTML = profitRupeesBadge(holdings[idx].buyPrice, curPriceOf(holdings[idx]), holdings[idx].quantity);
-    }
-
-    if (f === "buyPrice" || f === "targetAmount") {
-      const targetCell = row.querySelector(".target-pct-cell");
-      if (targetCell) {
-        const targetPct = profitInfo(holdings[idx].buyPrice, holdings[idx].targetAmount);
-        targetCell.innerHTML = `<span class="badge ${targetPct.cls}">${targetPct.text}</span>`;
-      }
-    }
-
-    computeStats();
-
-    if (saveStatus.className === "hint") {
-      saveStatus.textContent = isDirty() ? "You have unsaved changes" : "No changes yet";
-    }
+    computeKPIs();
+    saveStatus.textContent=isDirty()?"You have unsaved changes":"No changes";
+    saveStatus.className="edit-banner-sub";
   });
 
-  tbody.addEventListener("click", (e) => {
+  tbody.addEventListener("click", e => {
     if (!isEditing) return;
-    const sellBtn = e.target.closest("[data-sell]");
-    if (sellBtn) {
-      openSaleModal(parseInt(sellBtn.getAttribute("data-sell"), 10));
-      return;
-    }
-    const removeBtn = e.target.closest("[data-remove]");
-    if (removeBtn) {
-      holdings.splice(parseInt(removeBtn.getAttribute("data-remove"), 10), 1);
-      renderTable();
-    }
+    const sellBtn=e.target.closest("[data-sell]");
+    if (sellBtn) { openSaleModal(parseInt(sellBtn.getAttribute("data-sell"),10)); return; }
+    const removeBtn=e.target.closest("[data-remove]");
+    if (removeBtn) { holdings.splice(parseInt(removeBtn.getAttribute("data-remove"),10),1); renderTable(); }
   });
 
   addRowBtn.addEventListener("click", () => {
-    holdings.push({ symbol: "", quantity: 1, buyPrice: "", buyDate: "", targetAmount: "" });
+    holdings.push({symbol:"",quantity:1,buyPrice:"",buyDate:"",targetAmount:""});
     renderTable();
-    const inputs = tbody.querySelectorAll('input[data-f="symbol"]');
-    if (inputs.length) inputs[inputs.length - 1].focus();
+    const inputs=tbody.querySelectorAll('input[data-f="symbol"]');
+    if (inputs.length) inputs[inputs.length-1].focus();
   });
 
+  // Sale modal
   function openSaleModal(index) {
-    const h = holdings[index];
-    if (!h) return;
-    saleIndex = index;
-    saleError.textContent = "";
-    salePositionLabel.textContent = `${h.symbol || "This holding"} · ${qtyOf(h)} share${qtyOf(h) === 1 ? "" : "s"}`;
-    salePriceInput.value = "";
-    saleDateInput.value = new Date().toISOString().slice(0, 10);
-    saleModal.classList.add("visible");
-    salePriceInput.focus();
+    const h=holdings[index]; if (!h) return;
+    saleIndex=index; saleError.textContent="";
+    salePositionLabel.textContent=`${h.symbol||"This holding"} · ${qtyOf(h)} share${qtyOf(h)===1?"":"s"}`;
+    salePriceInput.value=""; saleDateInput.value=new Date().toISOString().slice(0,10);
+    saleModal.classList.add("visible"); salePriceInput.focus();
   }
-
-  function closeSaleModal() {
-    saleModal.classList.remove("visible");
-    saleIndex = null;
-  }
-
+  function closeSaleModal() { saleModal.classList.remove("visible"); saleIndex=null; }
   function confirmSale() {
-    const sellPrice = parseFloat(salePriceInput.value);
-    const sellDate = saleDateInput.value;
-    const h = holdings[saleIndex];
-    if (!h || !isFinite(sellPrice) || sellPrice < 0 || !sellDate) {
-      saleError.textContent = "Enter a valid sell price and sell date.";
-      return;
-    }
-    closedTransactions.push({
-      symbol: h.symbol || "",
-      quantity: qtyOf(h),
-      buyPrice: h.buyPrice,
-      buyDate: h.buyDate || "",
-      sellPrice,
-      sellDate,
-    });
-    holdings.splice(saleIndex, 1);
-    closeSaleModal();
-    renderTable();
-    if (saveStatus.className === "hint") saveStatus.textContent = "You have unsaved changes";
+    const sellPrice=parseFloat(salePriceInput.value),sellDate=saleDateInput.value,h=holdings[saleIndex];
+    if (!h||!isFinite(sellPrice)||sellPrice<0||!sellDate) { saleError.textContent="Enter valid sell price and date."; return; }
+    closedTransactions.push({symbol:h.symbol||"",quantity:qtyOf(h),buyPrice:h.buyPrice,buyDate:h.buyDate||"",sellPrice,sellDate});
+    holdings.splice(saleIndex,1); closeSaleModal(); renderTable();
+    saveStatus.textContent="You have unsaved changes"; saveStatus.className="edit-banner-sub";
   }
 
-  // ---------------- Wire up ----------------
-
+  // Wire up
   signInBtn.addEventListener("click", openLoginModal);
+  document.getElementById("authGateSignIn").addEventListener("click", openLoginModal);
+  signOutBtn.addEventListener("click", logout);
   editBtn.addEventListener("click", enterEditMode);
-  quickAddBtn.addEventListener("click", () => {
-    if (!sessionToken) {
-      openLoginModal();
-      return;
-    }
-    if (!isEditing) enterEditMode();
-    holdings.push({ symbol: "", quantity: 1, buyPrice: "", buyDate: "", targetAmount: "" });
-    renderTable();
-    const inputs = tbody.querySelectorAll('input[data-f="symbol"]');
-    if (inputs.length) inputs[inputs.length - 1].focus();
-  });
   cancelBtn.addEventListener("click", cancelEdit);
-  logoutBtn.addEventListener("click", logout);
-  profileAvatarBtn.addEventListener("click", () => {
-    if (sessionToken) sidebarAccountBar.classList.toggle("profile-menu-open");
-  });
+  saveBtn.addEventListener("click", savePortfolio);
   refreshBtn.addEventListener("click", () => loadPortfolio());
-  document.getElementById("saveBtn").addEventListener("click", savePortfolio);
-
   document.getElementById("loginCancelBtn").addEventListener("click", closeLoginModal);
   document.getElementById("loginSubmitBtn").addEventListener("click", submitLogin);
   document.getElementById("saleCancelBtn").addEventListener("click", closeSaleModal);
   document.getElementById("saleConfirmBtn").addEventListener("click", confirmSale);
-  passwordInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") submitLogin();
-  });
-  loginModal.addEventListener("click", (e) => {
-    if (e.target === loginModal) closeLoginModal();
-  });
-  saleModal.addEventListener("click", (e) => {
-    if (e.target === saleModal) closeSaleModal();
-  });
+  passwordInput.addEventListener("keydown", e => { if (e.key==="Enter") submitLogin(); });
+  loginModal.addEventListener("click", e => { if (e.target===loginModal) closeLoginModal(); });
+  saleModal.addEventListener("click", e => { if (e.target===saleModal) closeSaleModal(); });
 
-  // ---------------- Startup: restore session or prompt login ----------------
-
+  // Init
   function init() {
-    const token = readStoredToken();
-    const payload = token ? decodeTokenPayload(token) : null;
-    const stillValid = payload && payload.exp > Math.floor(Date.now() / 1000);
-
-    if (stillValid) {
-      sessionToken = token;
-      updateAuthUI(true, payload.u);
-      loadPortfolio();
-    } else {
-      if (token) clearStoredToken();
-      updateAuthUI(false);
-      showSignedOutPlaceholder();
-      openLoginModal();
-    }
+    const token=readToken();
+    const payload=token?decodePayload(token):null;
+    const ok=payload&&payload.exp>Math.floor(Date.now()/1000);
+    if (ok) { sessionToken=token; updateAuthUI(true,payload.u); loadPortfolio(); }
+    else { if (token) clearToken(); updateAuthUI(false); openLoginModal(); }
     loadSymbolList();
   }
-
-  // The account controls are the fifth summary card, keeping the top row unified.
-  portfolioStats.appendChild(sidebarAccountBar);
   init();
 })();
 </script>
-
 </body>
 </html>
