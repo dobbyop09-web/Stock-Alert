@@ -20,6 +20,15 @@ export function renderTicker(indices) {
     // duplicate once so translateX(-50%) loops seamlessly
     const singlePass = indices.map(itemHtml).join('');
     el.innerHTML = singlePass + singlePass;
+
+    // Fixed 25s duration made the loop feel uneven depending on how many
+    // indices load. Derive duration from actual content width instead, so
+    // scroll speed stays constant (~40px/s) no matter the item count.
+    requestAnimationFrame(() => {
+        const singlePassWidth = el.scrollWidth / 2;
+        const PIXELS_PER_SECOND = 40;
+        el.style.animationDuration = `${(singlePassWidth / PIXELS_PER_SECOND).toFixed(2)}s`;
+    });
 }
 
 async function loadIndices() {

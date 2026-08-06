@@ -130,25 +130,33 @@
 /* ── Topbar ── */
 .topbar {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
+    flex-direction: column;
+    gap: 10px;
     padding: 12px 20px;
     border-bottom: 1px solid var(--line);
     background: var(--bg);
     flex-shrink: 0;
+}
+
+.topbar-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
     flex-wrap: wrap;
 }
 
 .topbar-title {
     min-width: 0;
+    flex-shrink: 0;
 }
 
 .topbar-right {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
 }
 
 /* ── Scrollable content area ── */

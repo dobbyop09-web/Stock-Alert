@@ -17,8 +17,14 @@ export function editAlert(symbol, btn) {
             <input id="edit-fib-${symbol}" class="edit-cell" value="${stock.fib ?? ''}">
         </div>
     `;
-
-    row.cells[6].innerHTML = `<button onclick="saveAlert('${symbol}')">💾</button>`;
+row.cells[6].innerHTML = `
+    <button class="icon-btn save" onclick="saveAlert('${symbol}')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z" />
+            <path d="M17 21v-8H7v8M7 3v5h8" />
+        </svg>
+    </button>
+`;
 }
 
 async function findRow(sheetName, symbol) {
