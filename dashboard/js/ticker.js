@@ -7,7 +7,6 @@ export function renderTicker(indices) {
         const arrow = isUp ? '▲' : '▼';
         const sign = isUp ? '+' : '';
         return `
-
             <a class="ticker-item" href="${row.screenerUrl}" target="_blank" rel="noopener noreferrer">
                 <span class="ticker-name">${row.name}</span>
                 <span class="ticker-last">${row.last.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
