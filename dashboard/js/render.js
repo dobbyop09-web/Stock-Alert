@@ -11,19 +11,34 @@ const DEFAULT_STYLE = { color: "var(--far)", badge: "b-far" };
 
 function rowHtml(r) {
     const { color, badge } = STATUS_STYLE[r.status] || DEFAULT_STYLE;
+    const chg = r.changePercent;
+    const chgUp = chg >= 0;
+    const changeHtml = (chg === undefined || chg === null) ? "" :
+        `<span class="change-pct ${chgUp ? "up" : "down"}">${chgUp ? "+" : ""}${chg.toFixed(2)}%</span>`;
 
     return `
         <tr>
             <td>
                 <a href="${r.screenerUrl}" target="_blank" class="stock-link">${r.symbol}</a>
             </td>
-            <td class="num">${r.currentPrice}</td>
+            <td class="num">
+                <div class="price-cell">
+                    <span class="price">${r.currentPrice}</span>
+                    ${changeHtml}
+                </div>
+            </td>
             <td class="num alertCell">${r.alertPrice}</td>
             <td class="num" style="color:${color};font-weight:bold">${fmtPct(r.distance)}</td>
             <td><span class="badge ${badge}">${r.status}</span></td>
             <td>${r.sheet}</td>
-            <td><button onclick="editAlert('${r.symbol}',this)">✏️</button></td>
-        </tr>
+             <td>
+    <button class="icon-btn" onclick="editAlert('${r.symbol}',this)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+        </svg>
+    </button>
+</td>
+        </tr> 
     `;
 }
 

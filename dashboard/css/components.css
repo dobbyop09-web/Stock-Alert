@@ -320,6 +320,25 @@ tbody tr:hover td {
     text-align: right;
     font-variant-numeric: tabular-nums;
 }
+.price-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.35;
+}
+
+.change-pct {
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.change-pct.up {
+    color: var(--watch);
+}
+
+.change-pct.down {
+    color: var(--triggered);
+}
 
 .dist {
     font-weight: 600;
@@ -509,6 +528,35 @@ textarea {
         padding: 6px 6px;
     }
 }
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, .09);
+    background: rgba(255, 255, 255, .02);
+    color: var(--muted);
+    font-size: 12px;
+    transition: .15s;
+}
+
+.icon-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(45, 212, 191, .08);
+}
+
+.icon-btn.save {
+    color: var(--watch);
+}
+
+.icon-btn.save:hover {
+    border-color: var(--watch);
+    background: rgba(45, 212, 191, .12);
+}
 
 /* ── Index ticker ── */
 .ticker-scroll {
@@ -516,7 +564,7 @@ textarea {
     white-space: nowrap;
     position: relative;
     cursor: grab;
-    max-width: 380px;
+    width: 100%;
 
     -webkit-mask-image: linear-gradient(to right,
             transparent 0,
@@ -540,6 +588,7 @@ textarea {
     gap: 24px;
     padding: 6px 0;
     animation: ticker-marquee 25s linear infinite;
+    will-change: transform;
 }
 
 .ticker-scroll:hover .ticker {
