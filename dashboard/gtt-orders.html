@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GTT Orders — Portfolio</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;font-size:13px;background:#0b1520;color:#dce8f4}
+    a{text-decoration:none;color:inherit}
+    button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+    .shell{display:flex;height:100vh;overflow:hidden}
+
+    /* ── Sidebar ── */
+    .sb{width:60px;flex-shrink:0;background:#07111a;border-right:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;position:relative;z-index:1000}
+    .sb-nav{display:flex;flex-direction:column;padding:12px 0;gap:8px;height:100%}
+    .sb-link{width:44px;height:44px;margin:4px auto;display:flex;align-items:center;justify-content:center;border-radius:14px;position:relative;color:#7f92a6;transition:background .18s,color .18s,transform .18s,box-shadow .18s}
+    .sb-link:hover{background:#122233;color:#fff;transform:translateY(-1px)}
+    .sb-link.active{background:rgba(45,212,191,.12);border:1px solid rgba(45,212,191,.18);box-shadow:inset 0 0 0 1px rgba(45,212,191,.04),0 0 16px rgba(45,212,191,.08);color:#2DD4BF}
+    .sb-link svg{width:20px;height:20px;display:block}
+    .sb-link::after{content:attr(data-title);position:absolute;left:58px;top:50%;transform:translateY(-50%) translateX(-8px);background:#111c28;color:#fff;font-size:13px;font-weight:500;white-space:nowrap;padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 24px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;z-index:999}
+    .sb-link:hover::after{opacity:1;transform:translateY(-50%) translateX(0)}
+    .sb-link::before{content:"";position:absolute;left:52px;top:50%;width:8px;height:8px;background:#111c28;border-left:1px solid rgba(255,255,255,.08);border-top:1px solid rgba(255,255,255,.08);transform:translateY(-50%) rotate(-45deg);opacity:0;transition:.18s;z-index:998}
+    .sb-link:hover::before{opacity:1}
+    .sb-link.active::before{content:"";position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:22px;border-radius:3px;background:#2DD4BF}
+    .sb-spacer{flex:1}
+
+    /* ── Main ── */
+    .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+    /* ── Topbar ── */
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;gap:12px;background:#0b1520}
+    .topbar-title h1{font-size:17px;font-weight:700;color:#edf5ff;letter-spacing:-.01em}
+    .topbar-title p{font-size:11px;color:#5a7080;margin-top:2px}
+    .topbar-right{display:flex;align-items:center;gap:8px}
+    .whoami-chip{display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#8fa3bc;font-size:11px}
+    .whoami-dot{width:6px;height:6px;border-radius:50%;background:#2DD4BF}
+    .btn-ghost{display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:6px;border:1px solid rgba(255,255,255,.09);color:#6a8299;font-size:11px;background:rgba(255,255,255,.02);transition:.18s}
+    .btn-ghost:hover{color:#dce8f4;border-color:rgba(255,255,255,.18)}
+    .btn-ghost svg{width:13px;height:13px}
+    .btn-create-gtt{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;background:rgba(45,212,191,.1);border:1px solid rgba(45,212,191,.35);color:#2DD4BF;font-size:12px;font-weight:600;transition:.18s}
+    .btn-create-gtt:hover{background:rgba(45,212,191,.18);border-color:#2DD4BF}
+    .btn-create-gtt svg{width:14px;height:14px}
+
+    /* ── Content ── */
+    .content{flex:1;overflow-y:auto;padding:16px 20px 24px;display:flex;flex-direction:column;gap:14px}
+    .content::-webkit-scrollbar{width:5px}
+    .content::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:4px}
+
+    /* ── KPI Cards ── */
+    .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+    @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:700px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+    .kpi-card{background:#0e1d2b;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px 18px 14px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden;transition:border-color .2s}
+    .kpi-card:hover{border-color:rgba(255,255,255,.12)}
+    .kpi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent,transparent);border-radius:12px 12px 0 0}
+    .kpi-icon-row{display:flex;align-items:center;justify-content:space-between}
+    .kpi-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+    .kpi-icon svg{width:15px;height:15px}
+    .kpi-lbl{font-size:10px;color:#4a6075;text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+    .kpi-val{font-size:22px;font-weight:800;color:#edf5ff;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+    .kpi-val.teal{color:#2DD4BF}.kpi-val.amber{color:#F5A623}.kpi-val.blue{color:#5B9EFF}.kpi-val.red{color:#FF5C6C}
+    .kpi-note{font-size:11px;font-weight:500}
+    .kpi-note.teal{color:rgba(45,212,191,.8)}.kpi-note.amber{color:rgba(245,166,35,.85)}.kpi-note.blue{color:rgba(91,158,255,.85)}.kpi-note.red{color:rgba(255,92,108,.8)}.kpi-note.muted{color:#4a6075}
+
+    /* ── Tabs ── */
+    .tabs-bar{display:flex;align-items:center;gap:4px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:0}
+    .tab-btn{display:flex;align-items:center;gap:7px;padding:10px 16px;font-size:13px;font-weight:500;color:#5a7080;border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer;transition:.18s;background:none;border-left:none;border-right:none;border-top:none}
+    .tab-btn:hover{color:#cfe2f5}
+    .tab-btn.active{color:#2DD4BF;border-bottom-color:#2DD4BF;font-weight:600}
+    .tab-count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;font-size:11px;font-weight:700;background:rgba(255,255,255,.07);color:#6a8299}
+    .tab-btn.active .tab-count{background:rgba(45,212,191,.15);color:#2DD4BF}
+
+    /* ── Toolbar ── */
+    .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .search-wrap{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:7px 12px;min-width:220px}
+    .search-wrap input{background:none;border:none;outline:none;color:#dce8f4;font-size:12px;font-family:inherit;width:100%}
+    .search-wrap input::placeholder{color:#3a5060}
+    .search-wrap svg{width:13px;height:13px;color:#3a5060;flex-shrink:0}
+    .filter-select{appearance:none;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:7px 30px 7px 12px;color:#9fb5c8;font-size:12px;font-family:inherit;cursor:pointer;outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235a7080' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;transition:.18s}
+    .filter-select:hover{border-color:rgba(255,255,255,.15);color:#dce8f4}
+    .btn-reset{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:#6a8299;font-size:12px;transition:.18s}
+    .btn-reset:hover{border-color:rgba(255,255,255,.18);color:#dce8f4}
+    .btn-reset svg{width:13px;height:13px}
+    .toolbar-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
+    #bulkDeleteBtn{color:#ff6b78;border-color:rgba(255,92,108,.25);background:rgba(255,92,108,.06)}
+    #bulkDeleteBtn:hover{background:rgba(255,92,108,.12);border-color:rgba(255,92,108,.4)}
+    #selectedCount{font-size:12px;color:#8fa3bc;white-space:nowrap}
+
+    /* ── Table ── */
+    .table-panel{background:#0e1d2b;border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden}
+    .table-scroll{overflow-x:auto}
+    .gtt-table{width:100%;border-collapse:collapse;min-width:900px}
+    .gtt-table th{padding:10px 14px;font-size:10px;color:#3a5060;font-weight:600;text-transform:uppercase;letter-spacing:.07em;text-align:left;border-bottom:1px solid rgba(255,255,255,.06);background:#0c1822;white-space:nowrap;position:sticky;top:0;z-index:2}
+    .gtt-table td{padding:12px 14px;font-size:12px;color:#cfe2f5;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+    .gtt-table tbody tr:hover td{background:rgba(255,255,255,.02)}
+    .gtt-table tbody tr:last-child td{border-bottom:none}
+    .gtt-table th.right,.gtt-table td.right{text-align:right}
+    .gtt-table th.center,.gtt-table td.center{text-align:center}
+    .bulk-select-header{width:42px;text-align:center}
+    .bulk-select-cell{width:42px;text-align:center}
+    .bulk-select-header input,
+    .bulk-select-cell input{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1px solid rgba(143,163,188,.45);border-radius:4px;background:rgba(255,255,255,.03);cursor:pointer;position:relative;vertical-align:middle;transition:background .15s ease,border-color .15s ease,box-shadow .15s ease}
+    .bulk-select-header input:hover,
+    .bulk-select-cell input:hover{border-color:rgba(91,158,255,.7)}
+    .bulk-select-header input:checked,
+    .bulk-select-cell input:checked{background:#5B9EFF;border-color:#5B9EFF}
+    .bulk-select-header input:checked::after,
+    .bulk-select-cell input:checked::after{content:"";position:absolute;left:4px;top:1px;width:5px;height:9px;border:solid #ffffff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+    #bulkDeleteBtn{cursor:pointer}
+    #bulkDeleteBtn:disabled{opacity:.45;cursor:not-allowed}
+
+    .sym-cell{display:flex;flex-direction:column;gap:2px}
+    .sym-name{font-size:13px;font-weight:700;color:#EDF5FF}
+    .sym-exch{font-size:10px;color:#3a5060;font-weight:500}
+    .type-pill{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700}
+    .type-pill.buy{color:#2DD4BF}.type-pill.sell{color:#FF5C6C}
+    .order-sub{font-size:10px;color:#4a6075;margin-top:1px}
+    .cond-cell{display:flex;flex-direction:column;gap:2px}
+    .cond-op{font-size:11px;color:#9fb5c8}
+    .cond-price{font-size:12px;font-weight:600;color:#dce8f4;font-variant-numeric:tabular-nums}
+    .target-cell{display:flex;flex-direction:column;gap:2px}
+    .target-label{font-size:10px;color:#4a6075}
+    .target-price{font-size:12px;font-weight:600;color:#dce8f4;font-variant-numeric:tabular-nums}
+    .qty-cell{display:flex;flex-direction:column;gap:2px}
+    .qty-num{font-size:12px;font-weight:600;color:#EDF5FF;font-variant-numeric:tabular-nums}
+    .qty-type{font-size:10px;color:#4a6075}
+
+    .status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+    .status-badge::before{content:"";width:5px;height:5px;border-radius:50%;flex-shrink:0}
+    .status-badge.active{background:rgba(45,212,191,.1);color:#2DD4BF;border:1px solid rgba(45,212,191,.2)}
+    .status-badge.active::before{background:#2DD4BF;box-shadow:0 0 5px rgba(45,212,191,.6)}
+    .status-badge.triggered{background:rgba(91,158,255,.1);color:#5B9EFF;border:1px solid rgba(91,158,255,.2)}
+    .status-badge.triggered::before{background:#5B9EFF}
+    .status-badge.cancelled{background:rgba(255,255,255,.05);color:#6a8299;border:1px solid rgba(255,255,255,.08)}
+    .status-badge.cancelled::before{background:#6a8299}
+
+    .date-cell{display:flex;flex-direction:column;gap:2px}
+    .date-main{font-size:11px;color:#9fb5c8;font-variant-numeric:tabular-nums}
+    .date-time{font-size:10px;color:#4a6075;font-variant-numeric:tabular-nums}
+    .action-cell{display:flex;align-items:center;gap:6px;justify-content:flex-end}
+    .btn-close-gtt{padding:5px 14px;border-radius:6px;font-size:11px;font-weight:600;border:1px solid rgba(255,92,108,.4);color:#FF5C6C;background:rgba(255,92,108,.07);transition:.18s;white-space:nowrap}
+    .btn-close-gtt:hover{background:rgba(255,92,108,.15);border-color:#FF5C6C}
+    .btn-more{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#4a6075;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);transition:.18s}
+    .btn-more:hover{color:#dce8f4;border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.06)}
+    .btn-more svg{width:14px;height:14px}
+
+    .empty-state{padding:48px 20px;text-align:center}
+    .empty-icon{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+    .empty-icon svg{width:22px;height:22px;color:#3a5060}
+    .empty-state h3{font-size:14px;color:#6a8299;font-weight:600;margin-bottom:5px}
+    .empty-state p{font-size:11px;color:#3a5060;max-width:280px;margin:0 auto}
+
+    /* ── How it works ── */
+    .how-it-works{background:#0e1d2b;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:20px 24px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center}
+    .hiw-left h4{font-size:13px;font-weight:700;color:#cfe2f5}
+    .hiw-steps{display:flex;align-items:flex-start;gap:28px}
+    .hiw-step{display:flex;align-items:flex-start;gap:10px}
+    .hiw-step-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .hiw-step-icon svg{width:17px;height:17px}
+    .hiw-step-title{font-size:12px;font-weight:600;color:#cfe2f5;margin-bottom:2px}
+    .hiw-step-desc{font-size:10px;color:#4a6075;line-height:1.4;max-width:140px}
+    .hiw-step-divider{width:28px;height:1px;background:rgba(255,255,255,.08);margin-top:18px;flex-shrink:0}
+    .hiw-cta{background:linear-gradient(135deg,rgba(45,212,191,.08),rgba(91,158,255,.06));border:1px solid rgba(45,212,191,.15);border-radius:10px;padding:14px 20px;display:flex;align-items:center;gap:14px;min-width:240px}
+    .hiw-cta-icon{font-size:28px;flex-shrink:0}
+    .hiw-cta-text h5{font-size:12px;font-weight:700;color:#2DD4BF;margin-bottom:3px}
+    .hiw-cta-text p{font-size:10px;color:#4a6275;line-height:1.4}
+
+    /* ── Footer ── */
+    .footer-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-top:1px solid rgba(255,255,255,.05);background:#07111a;flex-shrink:0;font-size:10px;color:#2a4055}
+    .footer-bar a{color:#5B9EFF}
+    .footer-bar svg{width:12px;height:12px;color:#2DD4BF;flex-shrink:0}
+
+    /* ── Auth gate ── */
+    .auth-gate{display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:80px 20px;text-align:center}
+    .auth-gate h2{font-size:15px;color:#dce8f4;font-weight:600}
+    .auth-gate p{font-size:11px;color:#5a7080;max-width:260px}
+    .btn-primary{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:6px;background:#1B2A2E;border:1px solid #2DD4BF;color:#2DD4BF;font-size:12px;font-weight:600}
+    .btn-primary:hover{background:rgba(45,212,191,.15)}
+
+    /* ══ MODALS ══ */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;z-index:9999}
+    .modal-overlay.show{display:flex}
+
+    /* Login */
+    .login-card{background:#0f1c28;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:24px;width:100%;max-width:310px}
+    .login-card h2{font-size:15px;font-weight:700;color:#edf5ff;margin-bottom:3px}
+    .login-card .hint{font-size:11px;color:#4a6075;margin-bottom:16px}
+    .login-card label{display:block;font-size:10px;color:#4a6075;text-transform:uppercase;letter-spacing:.07em;margin:10px 0 4px}
+    .login-card input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px 11px;color:#dce8f4;font-size:12px;font-family:inherit;outline:none}
+    .login-card input:focus{border-color:#2DD4BF}
+    .error-text{font-size:10px;color:#FF5C6C;margin-top:5px;min-height:14px}
+    .modal-actions{display:flex;gap:8px;margin-top:14px}
+    .modal-actions button{flex:1;padding:8px;border-radius:6px;font-size:12px;font-weight:600}
+    .btn-cancel-m{border:1px solid rgba(255,255,255,.1);color:#8fa3bc;background:rgba(255,255,255,.03)}
+    .btn-confirm-m{background:#1B2A2E;border:1px solid #2DD4BF;color:#2DD4BF}
+    .btn-confirm-m:hover{background:rgba(45,212,191,.15)}
+    .btn-confirm-m:disabled{opacity:.5;cursor:not-allowed}
+
+    /* GTT Action modal */
+    .gtt-action-card{background:#0f1c28;border:1px solid rgba(255,255,255,.1);border-radius:16px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.55)}
+    .gtt-action-header{padding:18px 20px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .gtt-action-title{font-size:16px;font-weight:700;color:#EDF5FF;margin-bottom:2px}
+    .gtt-action-subtitle{font-size:11px;color:#4a6275}
+    .gtt-modal-close{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#6a8299;font-size:15px;cursor:pointer;transition:.18s;flex-shrink:0}
+    .gtt-modal-close:hover{color:#EDF5FF;background:rgba(255,255,255,.09)}
+    .gtt-summary-box{margin:16px 20px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px 20px}
+    .gtt-summary-lbl{font-size:9px;color:#3a5060;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:3px}
+    .gtt-summary-val{font-size:13px;font-weight:600;color:#dce8f4;font-variant-numeric:tabular-nums}
+    .gtt-summary-val.buy{color:#2DD4BF}.gtt-summary-val.sell{color:#FF5C6C}
+    .gtt-action-options{padding:4px 20px 20px;display:flex;flex-direction:column;gap:10px}
+    .gtt-action-option{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);cursor:pointer;transition:.2s;text-align:left;width:100%}
+    .gtt-action-option:hover{border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.04);transform:translateY(-1px)}
+    .gtt-action-option.danger:hover{border-color:rgba(255,92,108,.35);background:rgba(255,92,108,.05)}
+    .gtt-action-option.success:hover{border-color:rgba(45,212,191,.35);background:rgba(45,212,191,.05)}
+    .gtt-option-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .gtt-option-icon svg{width:16px;height:16px}
+    .gtt-option-icon.cancel-icon{background:rgba(255,92,108,.1);color:#FF5C6C}
+    .gtt-option-icon.trigger-icon{background:rgba(45,212,191,.1);color:#2DD4BF}
+    .gtt-option-icon.holdings-icon{background:rgba(91,158,255,.1);color:#5B9EFF}
+    .gtt-option-title{font-size:13px;font-weight:700;color:#EDF5FF;margin-bottom:3px}
+    .gtt-option-desc{font-size:11px;color:#4a6275;line-height:1.4}
+    .gtt-option-arrow{margin-left:auto;color:#3a5060;font-size:18px;align-self:center;flex-shrink:0;transition:.18s}
+    .gtt-action-option:hover .gtt-option-arrow{color:#9fb5c8;transform:translateX(2px)}
+    .gtt-confirm-body{padding:0 20px 20px;display:flex;flex-direction:column;gap:14px}
+    .gtt-confirm-msg{font-size:12px;color:#8fa3bc;line-height:1.6}
+    .gtt-confirm-msg strong{color:#EDF5FF}
+    .gtt-confirm-actions{display:flex;gap:8px}
+    .gtt-confirm-actions button{flex:1;padding:9px 12px;border-radius:8px;font-size:12px;font-weight:600;transition:.18s}
+    .btn-back{border:1px solid rgba(255,255,255,.1);color:#8fa3bc;background:rgba(255,255,255,.03)}
+    .btn-back:hover{border-color:rgba(255,255,255,.2);color:#dce8f4}
+    .btn-confirm-cancel{background:rgba(255,92,108,.1);border:1px solid rgba(255,92,108,.35);color:#FF5C6C}
+    .btn-confirm-cancel:hover{background:rgba(255,92,108,.18)}
+    .btn-confirm-trigger{background:rgba(45,212,191,.1);border:1px solid rgba(45,212,191,.35);color:#2DD4BF}
+    .btn-confirm-trigger:hover{background:rgba(45,212,191,.18)}
+    .btn-confirm-holdings{background:rgba(91,158,255,.1);border:1px solid rgba(91,158,255,.35);color:#5B9EFF}
+    .btn-confirm-holdings:hover{background:rgba(91,158,255,.18)}
+    .btn-confirm-cancel:disabled,.btn-confirm-trigger:disabled,.btn-confirm-holdings:disabled{opacity:.5;cursor:not-allowed}
+
+    /* ══ CREATE GTT MODAL ══ */
+    .create-gtt-card{background:#0f1c28;border:1px solid rgba(255,255,255,.1);border-radius:16px;width:100%;max-width:480px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.55);max-height:90vh;overflow-y:auto}
+    .create-gtt-header{padding:18px 20px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;position:sticky;top:0;background:#0f1c28;z-index:2}
+    .create-gtt-title{font-size:16px;font-weight:700;color:#EDF5FF;margin-bottom:2px}
+    .create-gtt-subtitle{font-size:11px;color:#4a6275}
+    .create-gtt-body{padding:20px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .form-group{display:flex;flex-direction:column;gap:5px}
+    .form-group.span2{grid-column:span 2}
+    .form-label{font-size:10px;color:#4a6075;text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+    .form-input{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 12px;color:#dce8f4;font-size:12px;font-family:inherit;outline:none;width:100%;transition:.18s}
+    .form-input:focus{border-color:#2DD4BF;background:rgba(45,212,191,.04)}
+    .form-input::placeholder{color:#3a5060}
+    .form-select{appearance:none;background:rgba(255,255,255,.05) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235a7080' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 32px 9px 12px;color:#dce8f4;font-size:12px;font-family:inherit;outline:none;width:100%;cursor:pointer;transition:.18s}
+    .form-select:focus{border-color:#2DD4BF}
+    .type-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.1)}
+    .type-toggle button{flex:1;padding:8px 12px;font-size:12px;font-weight:600;background:rgba(255,255,255,.03);color:#6a8299;border:none;cursor:pointer;transition:.18s}
+    .type-toggle button.active-buy{background:rgba(45,212,191,.15);color:#2DD4BF}
+    .type-toggle button.active-sell{background:rgba(255,92,108,.15);color:#FF5C6C}
+    .gtt-preview{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:12px 14px;margin-top:4px;font-size:11px;color:#5a7080;line-height:1.7}
+    .gtt-preview strong{color:#cfe2f5}
+    .gtt-preview .preview-cond{color:#F5A623}
+    .gtt-preview .preview-action{color:#2DD4BF}
+    .create-gtt-footer{padding:0 20px 20px;display:flex;gap:10px}
+    .create-gtt-footer button{flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:600;transition:.18s}
+    .btn-gtt-cancel{border:1px solid rgba(255,255,255,.1);color:#8fa3bc;background:rgba(255,255,255,.03)}
+    .btn-gtt-cancel:hover{border-color:rgba(255,255,255,.2);color:#dce8f4}
+    .btn-gtt-submit{background:rgba(45,212,191,.12);border:1px solid rgba(45,212,191,.4);color:#2DD4BF}
+    .btn-gtt-submit:hover{background:rgba(45,212,191,.2);border-color:#2DD4BF}
+    .btn-gtt-submit:disabled{opacity:.4;cursor:not-allowed}
+    .form-error{font-size:10px;color:#FF5C6C;min-height:14px;margin-top:2px}
+    .form-divider{grid-column:span 2;border:none;border-top:1px solid rgba(255,255,255,.06);margin:4px 0}
+
+    /* ── Symbol suggestions ── */
+    .symbol-search-wrapper{position:relative}
+    .symbol-suggestions{position:absolute;top:calc(100% + 4px);left:0;right:0;display:none;max-height:240px;overflow-y:auto;background:#111923;border:1px solid rgba(255,255,255,.08);border-radius:8px;box-shadow:0 12px 30px rgba(0,0,0,.35);z-index:1000}
+    .symbol-suggestion{padding:9px 12px;font-size:13px;color:#d7e0eb;cursor:pointer;transition:background .12s ease;display:flex;align-items:center;gap:6px}
+    .symbol-suggestion:hover{background:rgba(91,158,255,.10)}
+    .symbol-suggestion-symbol{font-weight:600;color:#f1f5f9}
+    .symbol-suggestion-sheet{font-size:11px;color:#7f91a8}
+    .symbol-suggestion-price{margin-left:auto;font-size:11px;color:#2DD4BF;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+    /* ── Toast ── */
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#111c28;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 20px;display:flex;align-items:center;gap:10px;font-size:12px;color:#dce8f4;box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:10000;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;min-width:280px}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+    .toast-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .toast-icon svg{width:12px;height:12px}
+    .toast-icon.success{background:rgba(45,212,191,.15);color:#2DD4BF}
+    .toast-icon.info{background:rgba(91,158,255,.15);color:#5B9EFF}
+    .toast-icon.warning{background:rgba(245,166,35,.15);color:#F5A623}
+    .toast-icon.error{background:rgba(255,92,108,.15);color:#FF5C6C}
+
+    /* ── Bulk Delete Confirm Modal ── */
+    .bulk-delete-modal{width:420px;max-width:calc(100vw - 32px);background:#111923;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.45);animation:bulkDeleteModalIn .18s ease-out}
+    @keyframes bulkDeleteModalIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+    .bulk-delete-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(255,92,108,.10);border:1px solid rgba(255,92,108,.20);color:#ff6b78;margin-bottom:16px}
+    .bulk-delete-icon svg{width:20px;height:20px}
+    .bulk-delete-content h3{margin:0 0 8px;font-size:17px;font-weight:600;color:#f1f5f9}
+    .bulk-delete-content p{margin:0;font-size:13px;line-height:1.5;color:#9aa9bc}
+    .bulk-delete-warning{display:block;margin-top:8px;font-size:12px;color:#ff7b86}
+    .bulk-delete-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}
+    .bulk-delete-confirm-btn{border:1px solid rgba(255,92,108,.35);background:rgba(255,92,108,.12);color:#ff6b78;padding:8px 16px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;transition:background .15s ease,border-color .15s ease}
+    .bulk-delete-confirm-btn:hover{background:rgba(255,92,108,.20);border-color:rgba(255,92,108,.55)}
+
+    /* loading spinner */
+    .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.15);border-top-color:#2DD4BF;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading-row td{text-align:center;padding:32px;color:#4a6075;font-size:12px}
+
+    *::-webkit-scrollbar{width:4px;height:4px}
+    *::-webkit-scrollbar-track{background:transparent}
+    *::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:4px}
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sb">
+    <nav class="sb-nav">
+      <a href="index.html" class="sb-link" data-title="Dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        </svg>
+      </a>
+       <a href="heatmap.html" class="sb-link" data-title="Heat Map">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/>
+        </svg>
+      </a>
+      <a href="admin.html" class="sb-link" data-title="Holdings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/>
+        </svg>
+      </a>
+     
+      <a href="realized-profit.html" class="sb-link" data-title="Realised P&L">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+          <polyline points="17 6 23 6 23 12"/>
+        </svg>
+      </a>
+      <a href="gtt-orders.html" class="sb-link active" data-title="GTT Orders">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 20V10M12 20V4M6 20v-6"/>
+          <circle cx="18" cy="7" r="2" fill="currentColor" stroke="none"/>
+        </svg>
+      </a>
+      <a href="all-transactions.html" class="sb-link" data-title="All Trades">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="20" x2="12" y2="10"/>
+          <line x1="18" y1="20" x2="18" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="16"/>
+        </svg>
+      </a>
+      
+      <div class="sb-spacer"></div>
+      <a href="settings.html" class="sb-link" data-title="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+        </svg>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">
+          <h1>GTT Orders</h1>
+          <p>Good Till Triggered orders you've placed</p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="whoami-chip" id="whoamiChip" style="display:none">
+          <div class="whoami-dot"></div>
+          <span id="whoamiText"></span>
+        </div>
+        <button class="btn-ghost" id="refreshBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+          </svg>
+          Refresh
+        </button>
+        <button class="btn-create-gtt" id="createGttBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Create New GTT
+        </button>
+        <button class="btn-ghost" id="signInBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+            <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+          </svg>
+          Sign in
+        </button>
+        <button class="btn-ghost" id="signOutBtn" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Sign out
+        </button>
+      </div>
+    </header>
+
+    <div class="content" id="content">
+      <!-- Auth gate -->
+      <div class="auth-gate" id="authGate">
+        <div style="width:48px;height:48px;border-radius:50%;background:rgba(45,212,191,.1);display:flex;align-items:center;justify-content:center">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <h2>Sign in to view your GTT Orders</h2>
+        <p>Access and manage your Good Till Triggered orders and automated trade rules.</p>
+        <button class="btn-primary" id="authGateSignIn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+            <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+          </svg>
+          Sign in
+        </button>
+      </div>
+
+      <!-- Dashboard -->
+      <div id="dashboard" style="display:none;flex-direction:column;gap:16px">
+        <div class="kpi-grid" id="kpiGrid"></div>
+
+        <div class="table-panel">
+          <div style="padding:0 16px;border-bottom:1px solid rgba(255,255,255,.06)">
+            <div class="tabs-bar" id="tabsBar">
+              <button class="tab-btn active" data-tab="Active">Active Orders <span class="tab-count" id="countActive">0</span></button>
+              <button class="tab-btn" data-tab="Triggered">Triggered Orders <span class="tab-count" id="countTriggered">0</span></button>
+              <button class="tab-btn" data-tab="Cancelled">Cancelled Orders <span class="tab-count" id="countCancelled">0</span></button>
+            </div>
+          </div>
+
+          <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05)">
+            <div class="toolbar">
+              <div class="search-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input type="text" id="searchInput" placeholder="Search by symbol or type…">
+              </div>
+              <select class="filter-select" id="filterType">
+                <option value="">All Types</option>
+                <option value="Buy">Buy</option>
+                <option value="Sell">Sell</option>
+              </select>
+              <select class="filter-select" id="filterOrder">
+                <option value="">All Status</option>
+                <option value="Limit">Limit</option>
+                <option value="Stoploss">Stoploss</option>
+              </select>
+              <select class="filter-select" id="filterSegment">
+                <option value="">All Segments</option>
+                <option value="NSE">NSE</option>
+                <option value="BSE">BSE</option>
+              </select>
+              <div class="toolbar-actions">
+                <button class="btn-reset" id="resetBtn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="1 4 1 10 7 10"/>
+                    <path d="M3.51 15a9 9 0 1 0 .49-3.5"/>
+                  </svg>
+                  Reset
+                </button>
+                <button class="btn-reset" id="bulkDeleteBtn" style="display:none;">Bulk Delete</button>
+                <span id="selectedCount" style="display:none;">0 selected</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-scroll">
+            <table class="gtt-table">
+              <thead>
+                <tr>
+                  <th id="bulkSelectHeader" class="bulk-select-header" style="display:none;">
+                    <input type="checkbox" id="selectAllBulk">
+                  </th>
+                  <th>SYMBOL</th>
+                  <th>TYPE</th>
+                  <th>CONDITION</th>
+                  <th>TARGET</th>
+                  <th>QTY / TRADE</th>
+                  <th class="center">STATUS</th>
+                  <th>CREATED ON</th>
+                  <th class="right">ACTION</th>
+                </tr>
+              </thead>
+              <tbody id="gttTbody"></tbody>
+            </table>
+            <div class="empty-state" id="gttEmpty" style="display:none">
+              <div class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 20V10M12 20V4M6 20v-6"/><circle cx="18" cy="7" r="2"/>
+                </svg>
+              </div>
+              <h3 id="emptyTitle">No orders in this tab</h3>
+              <p id="emptyDesc">There are no GTT orders matching your filters here.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- How it works -->
+        <div class="how-it-works">
+          <div class="hiw-left"><h4>How it works</h4></div>
+          <div class="hiw-steps">
+            <div class="hiw-step">
+              <div class="hiw-step-icon" style="background:rgba(45,212,191,.1)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="2">
+                  <path d="M18 20V10M12 20V4M6 20v-6"/><circle cx="18" cy="7" r="2" fill="#2DD4BF" stroke="none"/>
+                </svg>
+              </div>
+              <div>
+                <div class="hiw-step-title">Create GTT Order</div>
+                <div class="hiw-step-desc">Set your trigger condition, target price &amp; quantity.</div>
+              </div>
+            </div>
+            <div class="hiw-step-divider"></div>
+            <div class="hiw-step">
+              <div class="hiw-step-icon" style="background:rgba(91,158,255,.1)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#5B9EFF" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+              </div>
+              <div>
+                <div class="hiw-step-title">Order Gets Triggered</div>
+                <div class="hiw-step-desc">When the condition is met, the order is placed.</div>
+              </div>
+            </div>
+            <div class="hiw-step-divider"></div>
+            <div class="hiw-step">
+              <div class="hiw-step-icon" style="background:rgba(245,166,35,.1)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+              </div>
+              <div>
+                <div class="hiw-step-title">Moves to Transactions</div>
+                <div class="hiw-step-desc">Triggered orders appear in your portfolio or transactions.</div>
+              </div>
+            </div>
+          </div>
+          <div class="hiw-cta">
+            <div class="hiw-cta-icon">🔔</div>
+            <div class="hiw-cta-text">
+              <h5>Create smarter alerts</h5>
+              <p>Use GTT to automate your trades and never miss an opportunity.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <div style="display:flex;align-items:center;gap:6px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        GTT orders are valid until triggered, expired or manually closed by you.
+      </div>
+      <a href="#">Learn more about GTT Orders →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LOGIN MODAL ══ -->
+<div class="modal-overlay" id="loginModal">
+  <div class="login-card">
+    <h2>Sign in</h2>
+    <p class="hint">Admin access required to manage GTT orders.</p>
+    <label>Username</label>
+    <input type="text" id="loginUsername" autocomplete="username" placeholder="username">
+    <label>Password</label>
+    <input type="password" id="loginPassword" autocomplete="current-password" placeholder="••••••••">
+    <div class="error-text" id="loginError"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel-m" id="loginCancelBtn">Cancel</button>
+      <button class="btn-confirm-m" id="loginSubmitBtn">Sign in</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GTT ACTION MODAL ══ -->
+<div class="modal-overlay" id="gttActionModal">
+  <div class="gtt-action-card">
+    <div class="gtt-action-header">
+      <div>
+        <div class="gtt-action-title" id="gttModalTitle">Close GTT Order</div>
+        <div class="gtt-action-subtitle" id="gttModalSubtitle">Choose what to do with this order</div>
+      </div>
+      <button class="gtt-modal-close" id="gttModalClose">✕</button>
+    </div>
+    <div class="gtt-summary-box" id="gttSummaryBox"></div>
+    <div id="gttStepChoose" class="gtt-action-options"></div>
+    <div id="gttStepConfirm" class="gtt-confirm-body" style="display:none">
+      <div class="gtt-confirm-msg" id="gttConfirmMsg"></div>
+      <div class="gtt-confirm-actions" id="gttConfirmActions"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CREATE GTT MODAL ══ -->
+<div class="modal-overlay" id="createGttModal">
+  <div class="create-gtt-card">
+    <div class="create-gtt-header">
+      <div>
+        <div class="create-gtt-title">Create GTT Order</div>
+        <div class="create-gtt-subtitle">Set up an automated trade rule that triggers when conditions are met</div>
+      </div>
+      <button class="gtt-modal-close" id="createGttClose">✕</button>
+    </div>
+
+    <div class="create-gtt-body">
+      <div class="form-group" style="margin-bottom:16px">
+        <div class="form-label">Order Type</div>
+        <div class="type-toggle">
+          <button id="toggleBuy" class="active-buy" onclick="setGttType('Buy')">▲ Buy</button>
+          <button id="toggleSell" onclick="setGttType('Sell')">▼ Sell</button>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Symbol *</label>
+          <div class="symbol-search-wrapper">
+            <input type="text" id="gttSymbol" class="form-input" placeholder="e.g. RELIANCE" autocomplete="off" style="text-transform:uppercase">
+            <div id="gttSymbolSuggestions" class="symbol-suggestions"></div>
+          </div>
+          <div class="form-error" id="errSymbol"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Exchange *</label>
+          <select id="gttExchange" class="form-select" onchange="updatePreview()">
+            <option value="NSE">NSE</option>
+            <option value="BSE">BSE</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Order Sub-type *</label>
+          <select id="gttOrderType" class="form-select" onchange="updateConditionLabel()">
+            <option value="Limit">Limit</option>
+            <option value="Stoploss">Stoploss</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Trade Type</label>
+          <select id="gttTradeType" class="form-select">
+            <option value="Delivery">Delivery</option>
+            <option value="Intraday">Intraday</option>
+          </select>
+        </div>
+
+        <hr class="form-divider">
+
+        <div class="form-group">
+          <label class="form-label" id="condLabel">Trigger Price (≥) *</label>
+          <input type="number" id="gttCondPrice" class="form-input" placeholder="0.00" step="0.01" min="0" oninput="updatePreview()">
+          <div class="form-error" id="errCondPrice"></div>
+        </div>
+
+        <div class="form-group" id="targetPriceGroup">
+          <label class="form-label">Target / Limit Price</label>
+          <input type="number" id="gttTargetPrice" class="form-input" placeholder="0.00 (optional)" step="0.01" min="0" oninput="updatePreview()">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Quantity *</label>
+          <input type="number" id="gttQuantity" class="form-input" placeholder="1" step="1" min="1" oninput="updatePreview()">
+          <div class="form-error" id="errQuantity"></div>
+        </div>
+
+        <div class="form-group" id="buyPriceGroup">
+          <label class="form-label" id="buyPriceLabel">Buy Price (for records)</label>
+          <input type="number" id="gttBuyPrice" class="form-input" placeholder="Avg. buy price" step="0.01" min="0">
+        </div>
+
+        <div class="form-group span2">
+          <label class="form-label">Order Preview</label>
+          <div class="gtt-preview" id="gttPreview">Fill in the details above to see a preview of your GTT order.</div>
+        </div>
+
+        <div class="form-group span2">
+          <div class="form-error" id="errGlobal"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="create-gtt-footer">
+      <button class="btn-gtt-cancel" id="createGttCancelBtn">Cancel</button>
+      <button class="btn-gtt-submit" id="createGttSubmitBtn">
+        <span id="createGttBtnText">Create GTT Order</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="toast-icon success" id="toastIcon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  </div>
+  <span id="toastMsg">Done!</span>
+</div>
+
+<!-- ══ BULK DELETE CONFIRM MODAL ══ -->
+<div class="modal-overlay" id="bulkDeleteConfirmModal">
+  <div class="bulk-delete-modal">
+    <div class="bulk-delete-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="3 6 5 6 21 6"></polyline>
+        <path d="M19 6l-1 14H6L5 6"></path>
+        <path d="M10 11v6"></path>
+        <path d="M14 11v6"></path>
+        <path d="M9 6V4h6v2"></path>
+      </svg>
+    </div>
+    <div class="bulk-delete-content">
+      <h3 id="bulkDeleteConfirmTitle">Delete orders?</h3>
+      <p id="bulkDeleteConfirmText">Are you sure you want to delete the selected orders?</p>
+      <span class="bulk-delete-warning">This action cannot be undone.</span>
+    </div>
+    <div class="bulk-delete-actions">
+      <button type="button" id="bulkDeleteCancelBtn" class="btn-reset">Cancel</button>
+      <button type="button" id="bulkDeleteConfirmBtn" class="bulk-delete-confirm-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const API_BASE  = "https://tiny-art-8473.dobbyop09.workers.dev";
+  const TOKEN_KEY = "portfolioAdminToken";
+
+  let sessionToken  = null;
+  let gttOrders     = [];
+  let activeTab     = "Active";
+  let dashboardData = [];
+  let searchQ       = "";
+  let filterType    = "";
+  let filterOrder   = "";
+  let filterSeg     = "";
+  let currentOrder  = null;
+  let gttType       = "Buy";
+  let bulkDeleteMode = false;
+  let selectedOrders = new Set(); // unified set for both Cancelled & Triggered tabs
+
+  /* ── DOM refs ── */
+  const dashboard      = document.getElementById("dashboard");
+  const authGate       = document.getElementById("authGate");
+  const whoamiChip     = document.getElementById("whoamiChip");
+  const whoamiText     = document.getElementById("whoamiText");
+  const signInBtn      = document.getElementById("signInBtn");
+  const signOutBtn     = document.getElementById("signOutBtn");
+  const loginModal     = document.getElementById("loginModal");
+  const loginError     = document.getElementById("loginError");
+  const loginUsername  = document.getElementById("loginUsername");
+  const loginPassword  = document.getElementById("loginPassword");
+  const gttActionModal = document.getElementById("gttActionModal");
+  const createGttModal = document.getElementById("createGttModal");
+
+  /* ── Token helpers ── */
+  const saveToken  = t => { try { sessionStorage.setItem(TOKEN_KEY, t); } catch(e){} };
+  const readToken  = ()  => { try { return sessionStorage.getItem(TOKEN_KEY); } catch(e){ return null; } };
+  const clearToken = ()  => { try { sessionStorage.removeItem(TOKEN_KEY); } catch(e){} };
+  function decodePayload(tok) {
+    try { return JSON.parse(atob(tok.split(".")[0].replace(/-/g,"+").replace(/_/g,"/"))); } catch(e){ return null; }
+  }
+
+  /* ── Auth UI ── */
+  function updateAuthUI(loggedIn, username) {
+    signInBtn.style.display  = loggedIn ? "none" : "flex";
+    signOutBtn.style.display = loggedIn ? "flex" : "none";
+    whoamiChip.style.display = loggedIn ? "flex" : "none";
+    if (loggedIn) whoamiText.textContent = username;
+    authGate.style.display  = loggedIn ? "none" : "flex";
+    dashboard.style.display = loggedIn ? "flex" : "none";
+  }
+
+  /* ══════════════════════════════════════
+     DATA LOADING
+  ══════════════════════════════════════ */
+  async function loadData() {
+    if (!sessionToken) return;
+    const tbody = document.getElementById("gttTbody");
+    tbody.innerHTML = `<tr class="loading-row"><td colspan="9"><div class="spinner" style="margin:0 auto"></div></td></tr>`;
+    document.getElementById("gttEmpty").style.display = "none";
+
+    try {
+      const res = await fetch(`${API_BASE}/gtt-orders`, {
+        headers: { Authorization: `Bearer ${sessionToken}` }
+      });
+      if (res.status === 401) { handleExpired(); return; }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      gttOrders = Array.isArray(data.gttOrders) ? data.gttOrders
+                : Array.isArray(data)            ? data
+                : [];
+    } catch(e) {
+      showToast("Failed to load GTT orders. Please refresh.", "error");
+      tbody.innerHTML = "";
+      document.getElementById("gttEmpty").style.display = "block";
+      document.getElementById("emptyTitle").textContent = "Failed to load";
+      document.getElementById("emptyDesc").textContent  = "Could not fetch GTT orders from server.";
+      return;
+    }
+    render();
+  }
+
+  async function loadDashboardSymbols() {
+    try {
+      const res = await fetch(`${API_BASE}/dashboard-data`, {
+        headers: { Authorization: `Bearer ${sessionToken}` }
+      });
+      if (res.status === 401) { handleExpired(); return; }
+      if (!res.ok) throw new Error("Failed to load dashboard data");
+      dashboardData = await res.json();
+      if (!Array.isArray(dashboardData)) dashboardData = [];
+    } catch(e) {
+      console.error("Failed to load dashboard symbols:", e);
+      dashboardData = [];
+    }
+  }
+
+  async function mutatePortfolio(mutationFn) {
+    const getRes = await fetch(`${API_BASE}/portfolio.json`, {
+      headers: { Authorization: `Bearer ${sessionToken}` }
+    });
+    let portfolio = { holdings: [], closedTransactions: [] };
+    if (getRes.ok) {
+      const raw = await getRes.json();
+      portfolio.holdings           = Array.isArray(raw.holdings)           ? raw.holdings           : [];
+      portfolio.closedTransactions = Array.isArray(raw.closedTransactions) ? raw.closedTransactions : [];
+    } else if (getRes.status !== 404) {
+      if (getRes.status === 401) { handleExpired(); return false; }
+      throw new Error(`Portfolio GET failed: ${getRes.status}`);
+    }
+    mutationFn(portfolio);
+    portfolio.lastUpdated = new Date().toISOString();
+    const putRes = await fetch(`${API_BASE}/portfolio.json`, {
+      method:  "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${sessionToken}` },
+      body:    JSON.stringify(portfolio)
+    });
+    if (putRes.status === 401) { handleExpired(); return false; }
+    if (!putRes.ok) throw new Error(`Portfolio PUT failed: ${putRes.status}`);
+    return true;
+  }
+
+  async function patchGttStatus(orderId, status, extraFields = {}) {
+    const res = await fetch(`${API_BASE}/gtt-orders/${orderId}`, {
+      method:  "PATCH",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${sessionToken}` },
+      body:    JSON.stringify({ status, ...extraFields })
+    });
+    if (res.status === 401) { handleExpired(); return false; }
+    return res.ok;
+  }
+
+  async function deleteGttOrder(orderId) {
+    const res = await fetch(`${API_BASE}/gtt-orders/${orderId}`, {
+      method:  "DELETE",
+      headers: { Authorization: `Bearer ${sessionToken}` }
+    });
+    if (res.status === 401) { handleExpired(); return false; }
+    return res.ok;
+  }
+
+  async function bulkDeleteGttOrders(orderIds) {
+    const res = await fetch(`${API_BASE}/gtt-orders`, {
+      method:  "DELETE",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${sessionToken}` },
+      body:    JSON.stringify({ ids: orderIds })
+    });
+    if (res.status === 401) { handleExpired(); return false; }
+    return res.ok;
+  }
+
+  async function postGttOrder(payload) {
+    const res = await fetch(`${API_BASE}/gtt-orders`, {
+      method:  "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${sessionToken}` },
+      body:    JSON.stringify(payload)
+    });
+    if (res.status === 401) { handleExpired(); return null; }
+    if (!res.ok) return null;
+    return await res.json();
+  }
+
+  function handleExpired() {
+    clearToken(); sessionToken = null; gttOrders = [];
+    updateAuthUI(false, "");
+    openLoginModal();
+  }
+
+  /* ── Helpers ── */
+  function todayISO() { return new Date().toISOString().slice(0, 10); }
+  function nowISO()   { return new Date().toISOString(); }
+
+  function fmtPrice(v) {
+    if (v === null || v === undefined || v === "") return "—";
+    return parseFloat(v).toLocaleString("en-IN", { minimumFractionDigits:2, maximumFractionDigits:2 });
+  }
+  function fmtDateTime(iso) {
+    if (!iso) return { date:"—", time:"—" };
+    const d = new Date(iso);
+    return {
+      date: d.toLocaleDateString("en-IN",  { day:"2-digit", month:"short", year:"numeric" }),
+      time: d.toLocaleTimeString("en-IN",  { hour:"2-digit", minute:"2-digit", hour12:true }).toUpperCase()
+    };
+  }
+  function esc(s) {
+    return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  /* ── Filtering ── */
+  function getFiltered() {
+    return gttOrders.filter(o => {
+      if (o.status !== activeTab) return false;
+      const q = searchQ.toLowerCase();
+      if (q && !(o.symbol||"").toLowerCase().includes(q) && !(o.type||"").toLowerCase().includes(q)) return false;
+      if (filterType  && o.type      !== filterType)  return false;
+      if (filterOrder && o.orderType !== filterOrder)  return false;
+      if (filterSeg   && o.exchange  !== filterSeg)    return false;
+      return true;
+    });
+  }
+
+  /* ── Bulk selection UI ── */
+  function isBulkTab() {
+    return activeTab === "Cancelled" || activeTab === "Triggered";
+  }
+
+  function updateBulkSelectionUI() {
+    const count      = selectedOrders.size;
+    const deleteBtn  = document.getElementById("bulkDeleteBtn");
+    const countEl    = document.getElementById("selectedCount");
+
+    if (bulkDeleteMode) {
+      deleteBtn.disabled  = count === 0;
+      countEl.style.display = "inline";
+      countEl.textContent   = `${count} selected`;
+    } else {
+      countEl.style.display = "none";
+    }
+
+    const selectAll  = document.getElementById("selectAllBulk");
+    if (!selectAll) return;
+    const tabOrders  = gttOrders.filter(o => o.status === activeTab);
+    selectAll.checked       = tabOrders.length > 0 && tabOrders.every(o => selectedOrders.has(o.id));
+    selectAll.indeterminate = count > 0 && !tabOrders.every(o => selectedOrders.has(o.id)) && tabOrders.some(o => selectedOrders.has(o.id));
+  }
+
+  /* ══════════════════════════════════════
+     SYMBOL SUGGESTIONS
+  ══════════════════════════════════════ */
+  function handleGttSymbolInput() {
+    const input       = document.getElementById("gttSymbol");
+    const suggestions = document.getElementById("gttSymbolSuggestions");
+    const query       = input.value.trim().toUpperCase();
+
+    updatePreview();
+
+    if (!query) {
+      suggestions.innerHTML    = "";
+      suggestions.style.display = "none";
+      return;
+    }
+
+    const matches = dashboardData
+      .filter(item => (item.symbol || "").toUpperCase().includes(query))
+      .slice(0, 8);
+
+    if (!matches.length) {
+      suggestions.innerHTML    = "";
+      suggestions.style.display = "none";
+      return;
+    }
+
+    suggestions.innerHTML = matches.map(item => {
+      const symbol = item.symbol || "";
+      const sheet  = item.sheet        || "";
+      const price  = item.currentPrice != null
+        ? "₹" + parseFloat(item.currentPrice).toLocaleString("en-IN", { minimumFractionDigits: 2 })
+        : "";
+      return `<div class="symbol-suggestion" data-symbol="${esc(symbol)}">
+        <span class="symbol-suggestion-symbol">${esc(symbol)}</span>
+        ${sheet ? `<span class="symbol-suggestion-sheet">${esc(sheet)}</span>` : ""}
+        ${price ? `<span class="symbol-suggestion-price">${esc(price)}</span>` : ""}
+      </div>`;
+    }).join("");
+
+    suggestions.style.display = "block";
+  }
+
+  document.getElementById("gttSymbol").addEventListener("input", handleGttSymbolInput);
+
+  document.getElementById("gttSymbolSuggestions").addEventListener("mousedown", e => {
+    e.preventDefault();
+  });
+
+  document.getElementById("gttSymbolSuggestions").addEventListener("click", e => {
+    const item = e.target.closest(".symbol-suggestion");
+    if (!item) return;
+    document.getElementById("gttSymbol").value             = item.dataset.symbol;
+    document.getElementById("gttSymbolSuggestions").style.display = "none";
+    updatePreview();
+  });
+
+  document.getElementById("gttSymbol").addEventListener("blur", () => {
+    setTimeout(() => {
+      document.getElementById("gttSymbolSuggestions").style.display = "none";
+    }, 150);
+  });
+
+  /* ══════════════════════════════════════
+     RENDER
+  ══════════════════════════════════════ */
+  function render() {
+    renderKPIs();
+    renderCounts();
+    renderTable();
+  }
+
+  function renderKPIs() {
+    const active    = gttOrders.filter(o => o.status === "Active");
+    const triggered = gttOrders.filter(o => o.status === "Triggered");
+    const total     = gttOrders.length;
+    const activeRate = total ? ((active.length / total)*100).toFixed(1) : "0";
+    const today = new Date().toDateString();
+    const triggeredToday = triggered.filter(o => o.triggeredOn && new Date(o.triggeredOn).toDateString() === today).length;
+    const totalVal = active.reduce((sum,o) => {
+      const price = o.targetPrice || o.conditionPrice;
+      return sum + (parseFloat(price)||0) * (parseInt(o.quantity)||0);
+    }, 0);
+
+    const kpis = [
+      { lbl:"Total GTT Orders",  val:total,           noteCls:"teal",  note:`${active.length} active`,    accent:"#2DD4BF", iconBg:"rgba(45,212,191,.1)",   valCls:"",
+        icon:'<path d="M18 20V10M12 20V4M6 20v-6"/><circle cx="18" cy="7" r="2" fill="currentColor" stroke="none"/>' },
+      { lbl:"Active Orders",     val:active.length,   noteCls:"teal",  note:`${activeRate}% of total`,   accent:"#2DD4BF", iconBg:"rgba(45,212,191,.1)",   valCls:"teal",
+        icon:'<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>' },
+      { lbl:"Triggered Today",   val:triggeredToday,  noteCls:"amber", note:"Today",                     accent:"#F5A623", iconBg:"rgba(245,166,35,.1)",  valCls:"amber",
+        icon:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>' },
+      { lbl:"Total Triggered",   val:triggered.length,noteCls:"blue",  note:"All time",                  accent:"#5B9EFF", iconBg:"rgba(91,158,255,.1)",  valCls:"blue",
+        icon:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>' },
+      { lbl:"Active Value",      val:"₹ "+totalVal.toLocaleString("en-IN",{maximumFractionDigits:0}), noteCls:"muted", note:"Across active orders", accent:"#8B5CF6", iconBg:"rgba(139,92,246,.1)", valCls:"",
+        icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>' },
+    ];
+
+    document.getElementById("kpiGrid").innerHTML = kpis.map(k => `
+      <div class="kpi-card" style="--accent:${k.accent}">
+        <div class="kpi-icon-row">
+          <div class="kpi-lbl">${k.lbl}</div>
+          <div class="kpi-icon" style="background:${k.iconBg};color:${k.accent}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${k.icon}</svg>
+          </div>
+        </div>
+        <div class="kpi-val ${k.valCls}">${k.val}</div>
+        <div class="kpi-note ${k.noteCls}">${k.note}</div>
+      </div>`).join("");
+  }
+
+  function renderCounts() {
+    document.getElementById("countActive").textContent    = gttOrders.filter(o=>o.status==="Active").length;
+    document.getElementById("countTriggered").textContent = gttOrders.filter(o=>o.status==="Triggered").length;
+    document.getElementById("countCancelled").textContent = gttOrders.filter(o=>o.status==="Cancelled").length;
+  }
+
+  function renderTable() {
+    const filtered = getFiltered();
+    const tbody    = document.getElementById("gttTbody");
+    const empty    = document.getElementById("gttEmpty");
+
+    if (!filtered.length) {
+      tbody.innerHTML = "";
+      empty.style.display = "block";
+      document.getElementById("emptyTitle").textContent = "No orders in this tab";
+      document.getElementById("emptyDesc").textContent  = "There are no GTT orders matching your filters here.";
+      return;
+    }
+    empty.style.display = "none";
+
+    tbody.innerHTML = filtered.map(o => {
+      const dt          = fmtDateTime(o.createdOn);
+      const statusCls   = (o.status||"").toLowerCase();
+      const typeCls     = (o.type||"").toLowerCase();
+      const isActive    = o.status === "Active";
+      const isTriggered = o.status === "Triggered";
+      const isCancelled = o.status === "Cancelled";
+      const isBulkRow   = (isCancelled || isTriggered) && bulkDeleteMode;
+
+      const selectCell = isBulkRow
+        ? `<td class="bulk-select-cell">
+             <input type="checkbox" class="bulk-checkbox" data-id="${esc(o.id)}"
+               ${selectedOrders.has(o.id) ? "checked" : ""}>
+           </td>`
+        : (bulkDeleteMode ? `<td class="bulk-select-cell"></td>` : "");
+
+      let dateCell = "";
+      if (isTriggered && o.triggeredOn) {
+        const td = fmtDateTime(o.triggeredOn);
+        dateCell = `<span class="date-main" style="color:#5B9EFF">${td.date}</span><span class="date-time" style="color:#3a5b80">Triggered ${td.time}</span>`;
+      } else {
+        dateCell = `<span class="date-main">${dt.date}</span><span class="date-time">${dt.time}</span>`;
+      }
+      if (isCancelled && o.cancelledOn) {
+        const cd = fmtDateTime(o.cancelledOn);
+        dateCell += `<span class="date-time" style="color:#FF5C6C;margin-top:1px">Cancelled ${cd.date}</span>`;
+      }
+
+      let actionCell = "";
+      if (isActive)    actionCell = `<button class="btn-close-gtt" data-id="${esc(o.id)}">Close GTT</button>`;
+      if (isTriggered) actionCell = `<button class="btn-close-gtt" style="border-color:rgba(91,158,255,.4);color:#5B9EFF;background:rgba(91,158,255,.07);" data-id="${esc(o.id)}">Finalise</button>`;
+      if (isCancelled) actionCell = `<button class="btn-close-gtt" style="border-color:rgba(255,255,255,.1);color:#6a8299;background:rgba(255,255,255,.03);cursor:default;opacity:.7;" disabled>View Details</button>`;
+
+      return `<tr data-id="${esc(o.id)}">
+        ${selectCell}
+        <td><div class="sym-cell"><span class="sym-name">${esc(o.symbol)}</span><span class="sym-exch">${esc(o.exchange)}</span></div></td>
+        <td><div class="type-pill ${typeCls}">${esc(o.type)}</div><div class="order-sub">${esc(o.orderType)}</div></td>
+        <td><div class="cond-cell"><span class="cond-op">${esc(o.condition)}</span><span class="cond-price">₹ ${fmtPrice(o.conditionPrice)}</span></div></td>
+        <td><div class="target-cell"><span class="target-label">${esc(o.target||"")}</span><span class="target-price">${o.targetPrice ? "₹ "+fmtPrice(o.targetPrice) : "—"}</span></div></td>
+        <td><div class="qty-cell"><span class="qty-num">${o.quantity}</span><span class="qty-type">${esc(o.tradeType)}</span></div></td>
+        <td class="center"><span class="status-badge ${statusCls}">${esc(o.status)}</span></td>
+        <td><div class="date-cell">${dateCell}</div></td>
+        <td class="right">
+          <div class="action-cell">
+            ${actionCell}
+            ${isCancelled ? "" : `<button class="btn-more" data-id="${esc(o.id)}" title="More options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button>`}
+          </div>
+        </td>
+      </tr>`;
+    }).join("");
+
+    updateBulkSelectionUI();
+  }
+
+  /* ══════════════════════════════════════
+     GTT ACTION MODAL
+  ══════════════════════════════════════ */
+  function openGttActionModal(orderId) {
+    currentOrder = gttOrders.find(o => o.id === orderId);
+    if (!currentOrder) return;
+
+    document.getElementById("gttStepChoose").style.display  = "flex";
+    document.getElementById("gttStepConfirm").style.display = "none";
+    document.getElementById("gttModalTitle").textContent    = `Close GTT — ${currentOrder.symbol}`;
+    document.getElementById("gttModalSubtitle").textContent = `${currentOrder.type} · ${currentOrder.orderType} · ${currentOrder.exchange}`;
+
+    document.getElementById("gttSummaryBox").innerHTML = `
+      <div><div class="gtt-summary-lbl">Type</div><div class="gtt-summary-val ${(currentOrder.type||"").toLowerCase()}">${currentOrder.type} (${currentOrder.orderType})</div></div>
+      <div><div class="gtt-summary-lbl">Condition</div><div class="gtt-summary-val">${currentOrder.condition} ₹${fmtPrice(currentOrder.conditionPrice)}</div></div>
+      <div><div class="gtt-summary-lbl">Target</div><div class="gtt-summary-val">${currentOrder.targetPrice ? "₹"+fmtPrice(currentOrder.targetPrice) : "Market Price"}</div></div>
+      <div><div class="gtt-summary-lbl">Quantity</div><div class="gtt-summary-val">${currentOrder.quantity} shares (${currentOrder.tradeType})</div></div>`;
+
+    const chooseEl = document.getElementById("gttStepChoose");
+    chooseEl.innerHTML = "";
+
+    if (currentOrder.status === "Cancelled") {
+      chooseEl.innerHTML = `
+        <div style="padding:8px 4px 12px;text-align:center">
+          <div style="font-size:13px;font-weight:600;color:#8fa3bc;margin-bottom:5px">Order Cancelled</div>
+          <div style="font-size:11px;color:#4a6275;line-height:1.5">This GTT order was cancelled on ${fmtDateTime(currentOrder.cancelledOn).date} and is no longer active.</div>
+        </div>`;
+    } else if (currentOrder.type === "Sell") {
+      chooseEl.innerHTML = buildSellOptions();
+    } else {
+      chooseEl.innerHTML = buildBuyOptions();
+    }
+
+    gttActionModal.classList.add("show");
+  }
+
+  function buildBuyOptions() {
+    const canCancel = currentOrder.status === "Active";
+    const cancelBtn = canCancel ? `
+      <button class="gtt-action-option danger" data-action="cancel">
+        <div class="gtt-option-icon cancel-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        </div>
+        <div class="gtt-option-body">
+          <div class="gtt-option-title">Cancel GTT Order</div>
+          <div class="gtt-option-desc">Remove this order permanently. The trigger will no longer be monitored.</div>
+        </div>
+        <div class="gtt-option-arrow">›</div>
+      </button>` : "";
+    return `
+      ${canCancel ? `<div style="padding:0 4px 4px;font-size:11px;color:#4a6275">This is a Buy GTT. Choose an action:</div>`
+                  : `<div style="padding:0 4px 4px;font-size:11px;color:#4a6275">This buy order has been triggered. Finalise it:</div>`}
+      ${cancelBtn}
+      <button class="gtt-action-option success" data-action="trigger-buy">
+        <div class="gtt-option-icon holdings-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <div class="gtt-option-body">
+          <div class="gtt-option-title">Move to Holdings</div>
+          <div class="gtt-option-desc">Add ${currentOrder.quantity} shares of ${currentOrder.symbol} to your holdings at ₹${fmtPrice(currentOrder.conditionPrice)}. Buy date set to today.</div>
+        </div>
+        <div class="gtt-option-arrow">›</div>
+      </button>`;
+  }
+
+  function buildSellOptions() {
+    const canCancel = currentOrder.status === "Active";
+    const cancelBtn = canCancel ? `
+      <button class="gtt-action-option danger" data-action="cancel">
+        <div class="gtt-option-icon cancel-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        </div>
+        <div class="gtt-option-body">
+          <div class="gtt-option-title">Cancel GTT Order</div>
+          <div class="gtt-option-desc">Remove this order permanently.</div>
+        </div>
+        <div class="gtt-option-arrow">›</div>
+      </button>` : "";
+    return `
+      ${canCancel ? `<div style="padding:0 4px 4px;font-size:11px;color:#4a6275">This is a Sell GTT. Choose an action:</div>`
+                  : `<div style="padding:0 4px 4px;font-size:11px;color:#4a6275">This sell order has been triggered. Finalise it:</div>`}
+      ${cancelBtn}
+      <button class="gtt-action-option success" data-action="trigger-sell">
+        <div class="gtt-option-icon trigger-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+        <div class="gtt-option-body">
+          <div class="gtt-option-title">Move to Closed Transactions</div>
+          <div class="gtt-option-desc">Record ${currentOrder.quantity} shares of ${currentOrder.symbol} sold at ₹${fmtPrice(currentOrder.conditionPrice)} as a realised trade. Sell date set to today.</div>
+        </div>
+        <div class="gtt-option-arrow">›</div>
+      </button>`;
+  }
+
+  function showConfirmStep(action) {
+    document.getElementById("gttStepChoose").style.display  = "none";
+    document.getElementById("gttStepConfirm").style.display = "flex";
+
+    const msgEl     = document.getElementById("gttConfirmMsg");
+    const actionsEl = document.getElementById("gttConfirmActions");
+    let msg = "", primaryBtn = "", primaryCls = "";
+
+    if (action === "cancel") {
+      msg = `Are you sure you want to <strong>cancel</strong> the GTT order for <strong>${currentOrder.symbol}</strong>?
+             This will permanently remove the ${currentOrder.type} trigger at ₹${fmtPrice(currentOrder.conditionPrice)} and cannot be undone.`;
+      primaryCls = "btn-confirm-cancel"; primaryBtn = "Yes, Cancel Order";
+    } else if (action === "trigger-sell") {
+      msg = `Mark this <strong>${currentOrder.symbol}</strong> Sell GTT as triggered?
+             This will add a <strong>Closed Transaction</strong>: ${currentOrder.quantity} shares sold at ₹${fmtPrice(currentOrder.conditionPrice)} with sell date set to <strong>today</strong>.`;
+      primaryCls = "btn-confirm-trigger"; primaryBtn = "Yes, Move to Transactions";
+    } else if (action === "trigger-buy") {
+      msg = `Mark this <strong>${currentOrder.symbol}</strong> Buy GTT as triggered?
+             This will add <strong>${currentOrder.quantity} shares</strong> at ₹${fmtPrice(currentOrder.conditionPrice)} to your <strong>Holdings</strong> with buy date set to <strong>today</strong>.`;
+      primaryCls = "btn-confirm-holdings"; primaryBtn = "Yes, Add to Holdings";
+    }
+
+    msgEl.innerHTML = msg;
+    actionsEl.innerHTML = `
+      <button class="btn-back" id="confirmBack">← Back</button>
+      <button class="${primaryCls}" id="confirmDo">${primaryBtn}</button>`;
+
+    document.getElementById("confirmBack").addEventListener("click", () => {
+      document.getElementById("gttStepChoose").style.display  = "flex";
+      document.getElementById("gttStepConfirm").style.display = "none";
+    });
+    document.getElementById("confirmDo").addEventListener("click", () => executeAction(action));
+  }
+
+  async function executeAction(action) {
+    const btn = document.getElementById("confirmDo");
+    btn.disabled = true;
+    btn.textContent = "Processing…";
+    const orderId = currentOrder.id;
+
+    try {
+      if (action === "cancel") {
+        let ok = await patchGttStatus(orderId, "Cancelled", { cancelledOn: nowISO() });
+        if (!ok) ok = await deleteGttOrder(orderId);
+        if (!ok) throw new Error("Failed to cancel");
+        const o = gttOrders.find(o=>o.id===orderId);
+        if (o) { o.status = "Cancelled"; o.cancelledOn = nowISO(); }
+        closeGttModal();
+        showToast("GTT order cancelled successfully.", "warning");
+
+      } else if (action === "trigger-sell") {
+        const sellPrice = parseFloat(currentOrder.conditionPrice);
+        const buyPrice  = parseFloat(currentOrder.buyPrice || 0);
+        await mutatePortfolio(p => {
+          p.closedTransactions.push({
+            symbol:    currentOrder.symbol,
+            quantity:  parseInt(currentOrder.quantity) || 1,
+            buyPrice:  isFinite(buyPrice) ? buyPrice : null,
+            buyDate:   currentOrder.buyDate || "",
+            sellPrice: isFinite(sellPrice) ? sellPrice : 0,
+            sellDate:  todayISO()
+          });
+        });
+        await patchGttStatus(orderId, "Triggered", { triggeredOn: nowISO() });
+        const o = gttOrders.find(o=>o.id===orderId);
+        if (o) { o.status = "Triggered"; o.triggeredOn = nowISO(); }
+        closeGttModal();
+        showToast(`${currentOrder.symbol} sell recorded in Closed Transactions.`, "success");
+
+      } else if (action === "trigger-buy") {
+        const buyPrice = parseFloat(currentOrder.conditionPrice);
+        await mutatePortfolio(p => {
+          p.holdings.push({
+            symbol:       currentOrder.symbol,
+            quantity:     parseInt(currentOrder.quantity) || 1,
+            buyPrice:     isFinite(buyPrice) ? buyPrice : 0,
+            buyDate:      todayISO(),
+            targetAmount: currentOrder.targetPrice ? parseFloat(currentOrder.targetPrice) : ""
+          });
+        });
+        await patchGttStatus(orderId, "Triggered", { triggeredOn: nowISO() });
+        const o = gttOrders.find(o=>o.id===orderId);
+        if (o) { o.status = "Triggered"; o.triggeredOn = nowISO(); }
+        const symbol   = currentOrder.symbol;
+        const quantity = currentOrder.quantity;
+        closeGttModal();
+        showToast(`${symbol}: ${quantity} shares added to Holdings.`, "info");
+      }
+
+      render();
+    } catch(e) {
+      btn.disabled = false;
+      btn.textContent = "Retry";
+      showToast(`Error: ${e.message}`, "error");
+    }
+  }
+
+  function closeGttModal() {
+    gttActionModal.classList.remove("show");
+    currentOrder = null;
+  }
+
+  /* ══════════════════════════════════════
+     CREATE GTT MODAL
+  ══════════════════════════════════════ */
+  window.setGttType = function(type) {
+    gttType = type;
+    document.getElementById("toggleBuy").className  = type === "Buy"  ? "active-buy"  : "";
+    document.getElementById("toggleSell").className = type === "Sell" ? "active-sell" : "";
+    updateConditionLabel();
+    updatePreview();
+    document.getElementById("buyPriceGroup").style.display = type === "Sell" ? "flex" : "none";
+    document.getElementById("buyPriceLabel").textContent   = "Original Buy Price (for P&L)";
+  };
+
+  window.updateConditionLabel = function() {
+    const orderType = document.getElementById("gttOrderType").value;
+    const lbl = document.getElementById("condLabel");
+    if (gttType === "Buy") {
+      lbl.textContent = "Trigger Price (≤) *";
+    } else {
+      lbl.textContent = orderType === "Stoploss" ? "Trigger Price (≤) *" : "Trigger Price (≥) *";
+    }
+    updatePreview();
+  };
+
+  window.updatePreview = function() {
+    const symbol      = (document.getElementById("gttSymbol").value||"").toUpperCase() || "SYMBOL";
+    const exchange    = document.getElementById("gttExchange").value;
+    const orderType   = document.getElementById("gttOrderType").value;
+    const condPrice   = document.getElementById("gttCondPrice").value;
+    const targetPrice = document.getElementById("gttTargetPrice").value;
+    const qty         = document.getElementById("gttQuantity").value;
+
+    const isBuy    = gttType === "Buy";
+    const op       = isBuy ? "≤" : "≥";
+    const condStr  = condPrice   ? `₹${parseFloat(condPrice).toLocaleString("en-IN",{minimumFractionDigits:2})}`   : "₹?";
+    const targetStr= targetPrice ? `₹${parseFloat(targetPrice).toLocaleString("en-IN",{minimumFractionDigits:2})}` : "Market Price";
+    const action   = isBuy ? "BUY" : "SELL";
+
+    document.getElementById("gttPreview").innerHTML =
+      `When <strong>${symbol}</strong> (${exchange}) last price <span class="preview-cond">${op} ${condStr}</span>, 
+       place a <strong>${orderType}</strong> <span class="preview-action">${action}</span> order 
+       for <strong>${qty||"?"} shares</strong> at ${targetStr}.`;
+  };
+
+  function openCreateGttModal() {
+    if (!sessionToken) { openLoginModal(); return; }
+    document.getElementById("gttSymbol").value         = "";
+    document.getElementById("gttExchange").value       = "NSE";
+    document.getElementById("gttOrderType").value      = "Limit";
+    document.getElementById("gttTradeType").value      = "Delivery";
+    document.getElementById("gttCondPrice").value      = "";
+    document.getElementById("gttTargetPrice").value    = "";
+    document.getElementById("gttQuantity").value       = "";
+    document.getElementById("gttBuyPrice").value       = "";
+    document.getElementById("gttSymbolSuggestions").style.display = "none";
+    document.getElementById("errSymbol").textContent   = "";
+    document.getElementById("errCondPrice").textContent= "";
+    document.getElementById("errQuantity").textContent = "";
+    document.getElementById("errGlobal").textContent   = "";
+    document.getElementById("createGttBtnText").textContent = "Create GTT Order";
+    document.getElementById("createGttSubmitBtn").disabled  = false;
+    setGttType("Buy");
+    updatePreview();
+    createGttModal.classList.add("show");
+    setTimeout(() => document.getElementById("gttSymbol").focus(), 100);
+  }
+
+  function closeCreateGttModal() {
+    createGttModal.classList.remove("show");
+    document.getElementById("gttSymbolSuggestions").style.display = "none";
+  }
+
+  async function submitCreateGtt() {
+    let valid = true;
+    const symbol      = (document.getElementById("gttSymbol").value||"").trim().toUpperCase();
+    const exchange    = document.getElementById("gttExchange").value;
+    const orderType   = document.getElementById("gttOrderType").value;
+    const tradeType   = document.getElementById("gttTradeType").value;
+    const condPrice   = parseFloat(document.getElementById("gttCondPrice").value);
+    const targetVal   = document.getElementById("gttTargetPrice").value;
+    const targetPrice = targetVal ? parseFloat(targetVal) : null;
+    const qty         = parseInt(document.getElementById("gttQuantity").value);
+    const buyPrice    = parseFloat(document.getElementById("gttBuyPrice").value) || null;
+
+    document.getElementById("errSymbol").textContent    = "";
+    document.getElementById("errCondPrice").textContent = "";
+    document.getElementById("errQuantity").textContent  = "";
+    document.getElementById("errGlobal").textContent    = "";
+
+    if (!symbol)                              { document.getElementById("errSymbol").textContent    = "Symbol is required";           valid = false; }
+    if (!isFinite(condPrice) || condPrice<=0) { document.getElementById("errCondPrice").textContent = "Enter a valid trigger price";  valid = false; }
+    if (!isFinite(qty) || qty < 1)           { document.getElementById("errQuantity").textContent  = "Enter a valid quantity (≥ 1)"; valid = false; }
+    if (!valid) return;
+
+    const isBuy = gttType === "Buy";
+    const condition = isBuy ? "Last Price ≤"
+                    : (orderType === "Stoploss" ? "Last Price ≤" : "Last Price ≥");
+
+    const payload = {
+      symbol, exchange,
+      type:           gttType,
+      orderType,      tradeType,
+      condition,
+      conditionPrice: condPrice,
+      target:         targetPrice ? "Limit Price" : "Market Price",
+      targetPrice,
+      quantity:       qty,
+      buyPrice,
+      status:         "Active",
+      createdOn:      nowISO()
+    };
+
+    const btn = document.getElementById("createGttSubmitBtn");
+    btn.disabled = true;
+    document.getElementById("createGttBtnText").textContent = "Creating…";
+
+    try {
+      const result = await postGttOrder(payload);
+      if (!result) throw new Error("Server returned an error");
+      const newOrder = result.gttOrder || result;
+      if (newOrder && newOrder.id) {
+        gttOrders.unshift(newOrder);
+      } else {
+        gttOrders.unshift({ ...payload, id: "TMP_" + Date.now() });
+      }
+      closeCreateGttModal();
+      activeTab = "Active";
+      document.querySelectorAll(".tab-btn").forEach(b => {
+        b.classList.toggle("active", b.dataset.tab === "Active");
+      });
+      render();
+      showToast(`GTT order for ${symbol} created successfully.`, "success");
+    } catch(e) {
+      document.getElementById("errGlobal").textContent = `Failed to create GTT: ${e.message}`;
+      btn.disabled = false;
+      document.getElementById("createGttBtnText").textContent = "Create GTT Order";
+    }
+  }
+
+  /* ── Toast ── */
+  function showToast(msg, type = "success") {
+    const toast     = document.getElementById("toast");
+    const toastMsg  = document.getElementById("toastMsg");
+    const toastIcon = document.getElementById("toastIcon");
+    toastMsg.textContent = msg;
+    toastIcon.className  = `toast-icon ${type}`;
+    const icons = {
+      success: '<polyline points="20 6 9 17 4 12"/>',
+      info:    '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',
+      warning: '<polygon points="10.29 3.86 1.82 18 22.18 18 13.71 3.86 10.29 3.86"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+      error:   '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>'
+    };
+    toastIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">${icons[type]||icons.success}</svg>`;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 3500);
+  }
+
+  /* ── Login ── */
+  function openLoginModal() {
+    loginError.textContent = ""; loginUsername.value = ""; loginPassword.value = "";
+    loginModal.classList.add("show"); loginUsername.focus();
+  }
+  function closeLoginModal() { loginModal.classList.remove("show"); }
+
+  async function submitLogin() {
+    loginError.textContent = "";
+    const u = loginUsername.value.trim(), p = loginPassword.value;
+    if (!u || !p) { loginError.textContent = "Enter username and password."; return; }
+    const btn = document.getElementById("loginSubmitBtn");
+    btn.disabled = true; btn.textContent = "Signing in…";
+    try {
+      const res = await fetch(`${API_BASE}/login`, {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ username: u, password: p })
+      });
+      if (!res.ok) { loginError.textContent = "Invalid credentials."; return; }
+      const data = await res.json();
+      sessionToken = data.token; saveToken(data.token);
+      updateAuthUI(true, data.username || u);
+      closeLoginModal();
+      await Promise.all([loadDashboardSymbols(), loadData()]);
+    } catch(e) {
+      loginError.textContent = "Could not reach server.";
+    } finally {
+      btn.disabled = false; btn.textContent = "Sign in";
+    }
+  }
+
+  function logout() {
+    clearToken(); sessionToken = null; gttOrders = []; dashboardData = [];
+    updateAuthUI(false, "");
+  }
+
+  /* ── Reset bulk mode helpers ── */
+  function exitBulkMode() {
+    bulkDeleteMode = false;
+    selectedOrders.clear();
+    const btn = document.getElementById("bulkDeleteBtn");
+    btn.textContent = "Bulk Delete";
+    btn.disabled    = false;
+    document.getElementById("bulkSelectHeader").style.display = "none";
+    document.getElementById("selectedCount").style.display = "none";
+  }
+
+  /* ══════════════════════════════════════
+     WIRE-UPS
+  ══════════════════════════════════════ */
+  signInBtn.addEventListener("click", openLoginModal);
+  document.getElementById("authGateSignIn").addEventListener("click", openLoginModal);
+  signOutBtn.addEventListener("click", logout);
+  document.getElementById("refreshBtn").addEventListener("click", loadData);
+
+  /* ── Bulk Delete confirm modal ── */
+  document.getElementById("bulkDeleteCancelBtn").addEventListener("click", () => {
+    document.getElementById("bulkDeleteConfirmModal").classList.remove("show");
+  });
+
+  document.getElementById("bulkDeleteConfirmModal").addEventListener("click", e => {
+    if (e.target === document.getElementById("bulkDeleteConfirmModal")) {
+      document.getElementById("bulkDeleteConfirmModal").classList.remove("show");
+    }
+  });
+
+  document.getElementById("bulkDeleteConfirmBtn").addEventListener("click", async () => {
+    const confirmBtn = document.getElementById("bulkDeleteConfirmBtn");
+    const modal      = document.getElementById("bulkDeleteConfirmModal");
+    const ids        = [...selectedOrders];
+    if (!ids.length) { modal.classList.remove("show"); return; }
+
+    confirmBtn.disabled    = true;
+    confirmBtn.textContent = "Deleting...";
+    try {
+      const success = await bulkDeleteGttOrders(ids);
+      if (!success) throw new Error("Failed to delete orders");
+      gttOrders = gttOrders.filter(o => !selectedOrders.has(o.id));
+      exitBulkMode();
+      modal.classList.remove("show");
+      renderTable();
+      renderCounts();
+      renderKPIs();
+      updateBulkSelectionUI();
+      showToast(`${ids.length} order${ids.length === 1 ? "" : "s"} deleted successfully.`, "success");
+    } catch(e) {
+      showToast(e.message || "Failed to delete orders.", "error");
+    } finally {
+      confirmBtn.disabled    = false;
+      confirmBtn.textContent = "Delete";
+    }
+  });
+
+  /* ── Bulk Delete button ── */
+  document.getElementById("bulkDeleteBtn").addEventListener("click", () => {
+    if (!bulkDeleteMode) {
+      // Enter bulk mode
+      bulkDeleteMode = true;
+      const btn = document.getElementById("bulkDeleteBtn");
+      btn.textContent = "Delete Selected";
+      btn.disabled    = true; // nothing selected yet
+      document.getElementById("bulkSelectHeader").style.display = "table-cell";
+      renderTable();
+      updateBulkSelectionUI();
+      return;
+    }
+    // Already in bulk mode — open confirm modal
+    if (!selectedOrders.size) return;
+    const count    = selectedOrders.size;
+    const tabLabel = activeTab === "Triggered" ? "triggered" : "cancelled";
+    document.getElementById("bulkDeleteConfirmTitle").textContent = `Delete ${tabLabel} orders?`;
+    document.getElementById("bulkDeleteConfirmText").textContent  =
+      `Are you sure you want to delete ${count} ${tabLabel} order${count === 1 ? "" : "s"}?`;
+    document.getElementById("bulkDeleteConfirmModal").classList.add("show");
+  });
+
+  /* ── Tabs ── */
+  document.getElementById("tabsBar").addEventListener("click", e => {
+    const btn = e.target.closest(".tab-btn");
+    if (!btn) return;
+    activeTab = btn.dataset.tab;
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b === btn));
+
+    // Show bulk delete button on Cancelled and Triggered tabs only
+    const showBulk = activeTab === "Cancelled" || activeTab === "Triggered";
+    document.getElementById("bulkDeleteBtn").style.display = showBulk ? "inline-flex" : "none";
+
+    // Reset bulk mode on tab switch
+    if (bulkDeleteMode) {
+      exitBulkMode();
+    }
+    renderTable();
+  });
+
+  // Search + filters
+  document.getElementById("searchInput").addEventListener("input",    e => { searchQ     = e.target.value; renderTable(); });
+  document.getElementById("filterType").addEventListener("change",    e => { filterType  = e.target.value; renderTable(); });
+  document.getElementById("filterOrder").addEventListener("change",   e => { filterOrder = e.target.value; renderTable(); });
+  document.getElementById("filterSegment").addEventListener("change", e => { filterSeg   = e.target.value; renderTable(); });
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    searchQ = ""; filterType = ""; filterOrder = ""; filterSeg = "";
+    ["searchInput","filterType","filterOrder","filterSegment"].forEach(id => document.getElementById(id).value = "");
+    renderTable();
+  });
+
+  /* ── Select All checkbox (unified for Cancelled & Triggered) ── */
+  document.getElementById("selectAllBulk").addEventListener("change", e => {
+    if (!bulkDeleteMode) return;
+    const checked = e.target.checked;
+    gttOrders
+      .filter(o => o.status === activeTab)
+      .forEach(o => {
+        if (checked) selectedOrders.add(o.id);
+        else         selectedOrders.delete(o.id);
+      });
+    renderTable();
+    updateBulkSelectionUI();
+  });
+
+  /* ── Table row delegation ── */
+  document.getElementById("gttTbody").addEventListener("click", e => {
+    const checkbox = e.target.closest(".bulk-checkbox");
+    if (checkbox) {
+      const id = checkbox.dataset.id;
+      if (checkbox.checked) selectedOrders.add(id);
+      else                  selectedOrders.delete(id);
+      updateBulkSelectionUI();
+      return;
+    }
+
+    const closeBtn = e.target.closest(".btn-close-gtt");
+    const moreBtn  = e.target.closest(".btn-more");
+    if (closeBtn && !closeBtn.disabled) openGttActionModal(closeBtn.dataset.id);
+    if (moreBtn)                        openGttActionModal(moreBtn.dataset.id);
+  });
+
+  // Action modal
+  document.getElementById("gttModalClose").addEventListener("click", closeGttModal);
+  gttActionModal.addEventListener("click", e => { if (e.target === gttActionModal) closeGttModal(); });
+  document.getElementById("gttStepChoose").addEventListener("click", e => {
+    const opt = e.target.closest(".gtt-action-option");
+    if (opt) showConfirmStep(opt.dataset.action);
+  });
+
+  // Create GTT modal
+  document.getElementById("createGttBtn").addEventListener("click", openCreateGttModal);
+  document.getElementById("createGttClose").addEventListener("click", closeCreateGttModal);
+  document.getElementById("createGttCancelBtn").addEventListener("click", closeCreateGttModal);
+  document.getElementById("createGttSubmitBtn").addEventListener("click", submitCreateGtt);
+  createGttModal.addEventListener("click", e => { if (e.target === createGttModal) closeCreateGttModal(); });
+
+  // Escape key
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") { closeGttModal(); closeLoginModal(); closeCreateGttModal(); }
+  });
+
+  /* ══════════════════════════════════════
+     INIT
+  ══════════════════════════════════════ */
+  async function init() {
+    const token   = readToken();
+    const payload = token ? decodePayload(token) : null;
+    const ok      = payload && payload.exp > Math.floor(Date.now() / 1000);
+    if (ok) {
+      sessionToken = token;
+      updateAuthUI(true, payload.u);
+      await Promise.all([loadDashboardSymbols(), loadData()]);
+    } else {
+      if (token) clearToken();
+      updateAuthUI(false, "");
+      openLoginModal();
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
