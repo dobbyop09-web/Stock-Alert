@@ -175,20 +175,38 @@
     .content::-webkit-scrollbar { width: 5px; }
     .content::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 4px; }
 
-    /* ── KPI / Stats row ── */
+    /* ── KPI / Stats row ──
+       Fixed layout: 4 equal stat cards + a wider FII/DII card, all on one row.
+       Uses flexbox with explicit basis so cards never jump to a second line
+       until the viewport is genuinely too narrow — matching the reference design. */
     .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        display: flex;
+        flex-wrap: nowrap;
         gap: 10px;
+        align-items: stretch;
     }
-    @media(max-width:1200px) { .kpi-grid { grid-template-columns: repeat(2,1fr); } }
-    @media(max-width:600px)  { .kpi-grid { grid-template-columns: 1fr; } }
+    .kpi-grid > .kpi-card {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+    .kpi-grid > .fii-card {
+        flex: 1.35 1 0;
+        min-width: 0;
+    }
+    @media (max-width: 900px) {
+        .kpi-grid { flex-wrap: wrap; }
+        .kpi-grid > .kpi-card { flex: 1 1 calc(50% - 5px); }
+        .kpi-grid > .fii-card  { flex: 1 1 100%; order: 5; }
+    }
+    @media (max-width: 480px) {
+        .kpi-grid > .kpi-card { flex: 1 1 100%; }
+    }
 
     .kpi-card {
         background: #0e1d2b;
         border: 1px solid rgba(255,255,255,.07);
         border-radius: 8px;
-        padding: 14px 14px 12px;
+        padding: 12px 14px 10px;
         display: flex; flex-direction: column;
         position: relative; overflow: hidden;
     }
@@ -198,7 +216,7 @@
         background: var(--accent, transparent);
         border-radius: 8px 8px 0 0;
     }
-    .kpi-icon-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .kpi-icon-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
     .kpi-icon {
         width: 30px; height: 30px; border-radius: 8px;
         display: flex; align-items: center; justify-content: center;
@@ -208,17 +226,124 @@
         font-size: 10px; color: #4a6075;
         text-transform: uppercase; letter-spacing: .07em;
         font-weight: 500; margin-bottom: 5px;
+        white-space: nowrap;
     }
     .kpi-val {
         font-size: 18px; font-weight: 700; color: #edf5ff;
         letter-spacing: -.02em; font-variant-numeric: tabular-nums;
         line-height: 1.1; margin-bottom: 4px;
+        white-space: nowrap;
     }
     .kpi-val.pos { color: #2DD4BF; }
     .kpi-val.neg { color: #FF5C6C; }
-    .kpi-note { font-size: 10px; color: #3a5060; margin-top: 2px; }
+    .kpi-note { font-size: 10px; color: #3a5060; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .kpi-note.pos { color: rgba(45,212,191,.75); }
     .kpi-note.neg { color: rgba(255,92,108,.7); }
+
+    /* ── FII/DII card specific styles ── */
+    .fii-card {
+        background: #0e1d2b;
+        border: 1px solid rgba(255,82,100,.22);
+        border-radius: 8px;
+        padding: 12px 14px 10px;
+        display: flex; flex-direction: column;
+        position: relative; overflow: hidden;
+        --accent: #FF5C6C;
+    }
+    .fii-card::after {
+        content: ''; position: absolute;
+        top: 0; left: 0; right: 0; height: 2px;
+        background: linear-gradient(90deg, #FF5C6C, #f5a623);
+        border-radius: 8px 8px 0 0;
+    }
+    .fii-header {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: 6px;
+        gap: 8px;
+    }
+    .fii-lbl {
+        font-size: 10px; color: #4a6075;
+        text-transform: uppercase; letter-spacing: .07em;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    .fii-date-badge {
+        font-size: 9px; color: #3a5060;
+        background: rgba(255,255,255,.04);
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 10px; padding: 2px 7px;
+        letter-spacing: .03em;
+        white-space: nowrap;
+    }
+    .fii-icon {
+        width: 30px; height: 30px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(255,92,108,.1); color: #FF5C6C; flex-shrink: 0;
+    }
+    .fii-icon svg { width: 14px; height: 14px; }
+
+    /* Side-by-side row: FII/FPI | divider | DII */
+    .fii-rows {
+        display: flex; flex-direction: row;
+        gap: 0; flex: 1;
+        min-width: 0;
+    }
+    .fii-row {
+        flex: 1;
+        min-width: 0;
+        display: flex; flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        padding: 6px 10px;
+        background: rgba(255,255,255,.03);
+        border-radius: 6px;
+    }
+    .fii-row + .fii-row {
+        margin-left: 6px;
+    }
+    .fii-row-left { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+    .fii-cat-dot {
+        width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+    }
+    .fii-cat-name {
+        font-size: 10px; font-weight: 600; color: #8fa3bc;
+        letter-spacing: .04em; text-transform: uppercase;
+        white-space: nowrap;
+    }
+    .fii-net-val {
+        font-size: 15px; font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -.02em; line-height: 1;
+        white-space: nowrap;
+    }
+    .fii-net-val.buy { color: #2DD4BF; }
+    .fii-net-val.sell { color: #FF5C6C; }
+    .fii-sub-row {
+        display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+    }
+    .fii-sub {
+        font-size: 9px; color: #3a5060;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
+    .fii-sub span { color: #4a6075; }
+    .fii-trend {
+        font-size: 9px; font-weight: 600;
+        padding: 1px 5px; border-radius: 8px;
+        white-space: nowrap;
+    }
+    .fii-trend.buy { background: rgba(45,212,191,.1); color: #2DD4BF; }
+    .fii-trend.sell { background: rgba(255,92,108,.1); color: #FF5C6C; }
+    .fii-loading {
+        font-size: 11px; color: #3a5060;
+        text-align: center; padding: 8px 0; flex: 1;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .fii-error {
+        font-size: 11px; color: #FF5C6C;
+        text-align: center; padding: 4px 0; flex: 1;
+        display: flex; align-items: center; justify-content: center;
+    }
 
     /* ── Page body: table + sidebar ── */
     .page-body {
@@ -503,7 +628,7 @@
                     <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
                 </svg>
             </a>
-                        <a href="heatmap.html" class="sb-link" data-title="Heat Map">
+            <a href="heatmap.html" class="sb-link" data-title="Heat Map">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/>
                 </svg>
@@ -513,19 +638,18 @@
                     <path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/>
                 </svg>
             </a>
-
             <a href="realized-profit.html" class="sb-link" data-title="Realised P&L">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
                     <polyline points="17 6 23 6 23 12"/>
                 </svg>
             </a>
-                  <a href="gtt-orders.html" class="sb-link active" data-title="GTT Orders">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M18 20V10M12 20V4M6 20v-6"/>
-          <circle cx="18" cy="7" r="2" fill="currentColor" stroke="none"/>
-        </svg>
-      </a>
+            <a href="gtt-orders.html" class="sb-link active" data-title="GTT Orders">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 20V10M12 20V4M6 20v-6"/>
+                    <circle cx="18" cy="7" r="2" fill="currentColor" stroke="none"/>
+                </svg>
+            </a>
         </nav>
     </aside>
 
@@ -550,7 +674,6 @@
                     </svg>
                     Refresh
                 </button>
-                <!-- Edit mode buttons -->
                 <div id="editEntryBar">
                     <button class="btn-edit" id="editBtn">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -559,7 +682,7 @@
                         Edit
                     </button>
                 </div>
-                <div id="editModeActions" style="display:none; display:none; align-items:center; gap:8px;">
+                <div id="editModeActions" style="display:none; align-items:center; gap:8px;">
                     <button class="btn-cancel" id="cancelBtn">Cancel</button>
                     <button class="btn-primary" id="saveBtn">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -610,8 +733,16 @@
             <!-- Dashboard -->
             <div id="dashboard" style="display:none; flex-direction:column; gap:14px">
 
-                <!-- KPI row -->
-                <div class="kpi-grid" id="kpiGrid"></div>
+                <!-- KPI row (4 standard cards + FII/DII card) -->
+                <div class="kpi-grid" id="kpiGrid">
+                    <!-- FII/DII card — always visible, no auth required -->
+                    <div class="fii-card" id="fiiCard">
+                        <span id="fiiDateBadge" style="display:none"></span>
+                        <div id="fiiBody" style="flex:1;display:flex;min-height:0">
+                            <div class="fii-rows"><div class="fii-loading">Loading…</div></div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Page body -->
                 <div class="page-body">
@@ -742,6 +873,10 @@
 
   const ICON_TRASH = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
 
+  // Category colors for FII/DII
+  const FII_COLOR  = "#FF5C6C";
+  const DII_COLOR  = "#2DD4BF";
+
   let sessionToken = null;
   let holdings = [];
   let closedTransactions = [];
@@ -797,6 +932,72 @@
   const salePriceInput    = document.getElementById("salePrice");
   const saleDateInput     = document.getElementById("saleDate");
   const saleError         = document.getElementById("saleError");
+  const fiiBody           = document.getElementById("fiiBody");
+  const fiiDateBadge      = document.getElementById("fiiDateBadge");
+
+  // ── FII/DII Data ──────────────────────────────────────────────────
+  function fmtCr(v) {
+    const n = parseFloat(v);
+    if (!isFinite(n)) return "—";
+    const sign = n >= 0 ? "+" : "";
+    return sign + "₹" + Math.abs(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " Cr";
+  }
+
+  function renderFiiCard(data) {
+    if (!data || data.length === 0) {
+      fiiBody.innerHTML = `<div class="fii-rows"><div class="fii-error">No data available</div></div>`;
+      return;
+    }
+
+    // Set date badge from first entry
+    if (data[0] && data[0].date) {
+      fiiDateBadge.textContent = data[0].date;
+    }
+
+    // Order: FII/FPI first, then DII
+    const ordered = [...data].sort((a, b) => {
+      const order = { "FII/FPI": 0, "DII": 1 };
+      return (order[a.category] ?? 99) - (order[b.category] ?? 99);
+    });
+
+    fiiBody.innerHTML = `<div class="fii-rows" style="flex:1">${ordered.map(entry => {
+      const net = parseFloat(entry.netValue);
+      const isBuy = net >= 0;
+      const color = entry.category === "FII/FPI" ? FII_COLOR : DII_COLOR;
+      const netCls = isBuy ? "buy" : "sell";
+      const trendLabel = isBuy ? "▲ Buy" : "▼ Sell";
+      const trendCls   = isBuy ? "buy" : "sell";
+      const buy  = parseFloat(entry.buyValue);
+      const sell = parseFloat(entry.sellValue);
+
+      return `
+        <div class="fii-row">
+          <div class="fii-row-left">
+            <div class="fii-cat-dot" style="background:${color}"></div>
+            <div class="fii-cat-name">${escHtml(entry.category)}</div>
+          </div>
+          <div class="fii-net-val ${netCls}">${fmtCr(entry.netValue)}</div>
+          <div class="fii-sub-row">
+            <span class="fii-sub"><span>B</span> ${isFinite(buy) ? buy.toLocaleString("en-IN", {minimumFractionDigits:2,maximumFractionDigits:2}) : "—"}</span>
+            <span class="fii-sub"><span>S</span> ${isFinite(sell) ? sell.toLocaleString("en-IN", {minimumFractionDigits:2,maximumFractionDigits:2}) : "—"}</span>
+            <span class="fii-trend ${trendCls}">${trendLabel}</span>
+          </div>
+        </div>`;
+    }).join("")}</div>`;
+  }
+
+  async function loadFiiData() {
+    fiiBody.innerHTML = `<div class="fii-rows"><div class="fii-loading">Loading…</div></div>`;
+    fiiDateBadge.textContent = "—";
+    try {
+      const res = await fetch(`${API_BASE}/fii-data`);
+      if (!res.ok) throw new Error("Failed");
+      const data = await res.json();
+      renderFiiCard(Array.isArray(data) ? data : []);
+    } catch(e) {
+      fiiBody.innerHTML = `<div class="fii-rows"><div class="fii-error">Could not load flow data</div></div>`;
+    }
+  }
 
   // Token
   const saveToken  = t => { try { sessionStorage.setItem(TOKEN_KEY, t); } catch(e){} };
@@ -1118,9 +1319,16 @@
     });
   }
 
-  // KPIs
+  // KPIs — injects the 4 standard cards BEFORE the FII card
   function computeKPIs() {
-    if (!sessionToken||holdings.length===0) { kpiGrid.innerHTML=""; return; }
+    // Remove previously inserted standard cards (all children except last = fii card)
+    const fiiCard = document.getElementById("fiiCard");
+    while (kpiGrid.firstChild && kpiGrid.firstChild !== fiiCard) {
+      kpiGrid.removeChild(kpiGrid.firstChild);
+    }
+
+    if (!sessionToken||holdings.length===0) return;
+
     let investment=0,currentValue=0,todayChange=0,yesterdayValue=0,gainers=0,losers=0,best=null;
     holdings.forEach(h => {
       const buy=parseFloat(h.buyPrice),cur=curPriceOf(h),qty=qtyOf(h);
@@ -1140,15 +1348,12 @@
     const todayChangePct=yesterdayValue>0?(todayChange/yesterdayValue)*100:0;
 
     const cards = [
-      { lbl:"Total Investment", val:`₹${fmtMoney(investment)}`, cls:"",
-        note:`Across ${holdings.length} stock${holdings.length===1?"":"s"}`, noteCls:"",
-        accent:"#5B9EFF", iconBg:"rgba(91,158,255,.12)",
-        icon:'<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>'
-      },
-      { lbl:"Current Value", val:`₹${fmtMoney(currentValue)}`, cls:"",
-        note:"Live market data", noteCls:"",
-        accent:"#8B5CF6", iconBg:"rgba(139,92,246,.12)",
-        icon:'<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>'
+      { lbl:"Today's Change",
+        val:`${todayChange>=0?"+":""}₹${fmtMoney(todayChange)} (${todayChangePct>=0?"+":""}${todayChangePct.toFixed(2)}%)`,
+        cls:todayChange>=0?"pos":"neg",
+        note:`${gainers} up · ${losers} down`, noteCls:"",
+        accent:"#F5A623", iconBg:"rgba(245,166,35,.12)",
+        icon:'<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>'
       },
       { lbl:"Total Gain / Loss",
         val:`${gainLoss>=0?"+":""}₹${fmtMoney(gainLoss)} (${gainLossPct>=0?"+":""}${gainLossPct.toFixed(2)}%)`,
@@ -1158,17 +1363,24 @@
         accent:"#2DD4BF", iconBg:"rgba(45,212,191,.12)",
         icon:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>'
       },
-      { lbl:"Today's Change",
-        val:`${todayChange>=0?"+":""}₹${fmtMoney(todayChange)} (${todayChangePct>=0?"+":""}${todayChangePct.toFixed(2)}%)`,
-        cls:todayChange>=0?"pos":"neg",
-        note:`${gainers} up · ${losers} down`, noteCls:"",
-        accent:"#F5A623", iconBg:"rgba(245,166,35,.12)",
-        icon:'<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>'
+      { lbl:"Current Value", val:`₹${fmtMoney(currentValue)}`, cls:"",
+        note:"Live market data", noteCls:"",
+        accent:"#8B5CF6", iconBg:"rgba(139,92,246,.12)",
+        icon:'<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>'
+      },
+      { lbl:"Total Investment", val:`₹${fmtMoney(investment)}`, cls:"",
+        note:`Across ${holdings.length} stock${holdings.length===1?"":"s"}`, noteCls:"",
+        accent:"#5B9EFF", iconBg:"rgba(91,158,255,.12)",
+        icon:'<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>'
       },
     ];
 
-    kpiGrid.innerHTML = cards.map(k=>`
-      <div class="kpi-card" style="--accent:${k.accent}">
+    // Insert the 4 standard cards, in order, before the FII card
+    cards.forEach(k => {
+      const div = document.createElement("div");
+      div.className = "kpi-card";
+      div.style.cssText = `--accent:${k.accent}`;
+      div.innerHTML = `
         <div class="kpi-icon-row">
           <div class="kpi-lbl">${k.lbl}</div>
           <div class="kpi-icon" style="background:${k.iconBg};color:${k.accent}">
@@ -1176,8 +1388,9 @@
           </div>
         </div>
         <div class="kpi-val ${k.cls}">${k.val}</div>
-        <div class="kpi-note ${k.noteCls}">${k.note}</div>
-      </div>`).join("");
+        <div class="kpi-note ${k.noteCls}">${k.note}</div>`;
+      kpiGrid.insertBefore(div, fiiCard);
+    });
   }
 
   // Insights
@@ -1310,7 +1523,7 @@
   editBtn.addEventListener("click", enterEditMode);
   cancelBtn.addEventListener("click", cancelEdit);
   saveBtn.addEventListener("click", savePortfolio);
-  refreshBtn.addEventListener("click", () => loadPortfolio());
+  refreshBtn.addEventListener("click", () => { loadPortfolio(); loadFiiData(); });
   document.getElementById("loginCancelBtn").addEventListener("click", closeLoginModal);
   document.getElementById("loginSubmitBtn").addEventListener("click", submitLogin);
   document.getElementById("saleCancelBtn").addEventListener("click", closeSaleModal);
@@ -1327,6 +1540,7 @@
     if (ok) { sessionToken=token; updateAuthUI(true,payload.u); loadPortfolio(); }
     else { if (token) clearToken(); updateAuthUI(false); openLoginModal(); }
     loadSymbolList();
+    loadFiiData(); // load FII/DII data independently of auth
   }
   init();
 })();

@@ -1,0 +1,106 @@
+[
+  {
+    "date": "07-Aug-2026",
+    "fii": {
+      "buyValue": 12941.31,
+      "sellValue": 12461.07,
+      "netValue": 480.24
+    },
+    "dii": {
+      "buyValue": 15679.58,
+      "sellValue": 15444.02,
+      "netValue": 235.56
+    }
+  },
+  {
+    "date": "06-Aug-2026",
+    "fii": {
+      "buyValue": 16161.35,
+      "sellValue": 16179.21,
+      "netValue": -17.86
+    },
+    "dii": {
+      "buyValue": 19723.68,
+      "sellValue": 15710.08,
+      "netValue": 4013.60
+    }
+  },
+  {
+    "date": "05-Aug-2026",
+    "fii": {
+      "buyValue": 15940.50,
+      "sellValue": 16883.92,
+      "netValue": -943.42
+    },
+    "dii": {
+      "buyValue": 19353.43,
+      "sellValue": 16470.26,
+      "netValue": 2883.17
+    }
+  },
+  {
+    "date": "04-Aug-2026",
+    "fii": {
+      "buyValue": 15630.45,
+      "sellValue": 13183.98,
+      "netValue": 2446.47
+    },
+    "dii": {
+      "buyValue": 15241.39,
+      "sellValue": 16177.53,
+      "netValue": -936.14
+    }
+  },
+  {
+    "date": "03-Aug-2026",
+    "fii": {
+      "buyValue": 12621.89,
+      "sellValue": 11699.63,
+      "netValue": 922.26
+    },
+    "dii": {
+      "buyValue": 18325.97,
+      "sellValue": 16754.79,
+      "netValue": 1571.18
+    }
+  },
+  {
+    "date": "31-Jul-2026",
+    "fii": {
+      "buyValue": 19045.51,
+      "sellValue": 18768.03,
+      "netValue": 277.48
+    },
+    "dii": {
+      "buyValue": 19885.80,
+      "sellValue": 17625.43,
+      "netValue": 2260.37
+    }
+  },
+  {
+    "date": "30-Jul-2026",
+    "fii": {
+      "buyValue": 17431.96,
+      "sellValue": 13808.45,
+      "netValue": 3623.51
+    },
+    "dii": {
+      "buyValue": 17979.63,
+      "sellValue": 19843.66,
+      "netValue": -1864.03
+    }
+  },
+  {
+    "date": "29-Jul-2026",
+    "fii": {
+      "buyValue": 17358.31,
+      "sellValue": 14376.44,
+      "netValue": 2981.87
+    },
+    "dii": {
+      "buyValue": 18176.22,
+      "sellValue": 17178.20,
+      "netValue": 998.02
+    }
+  }
+]
