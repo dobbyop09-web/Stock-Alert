@@ -74,13 +74,33 @@
 
     /* ── Toolbar ── */
     .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-    .search-wrap{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:7px 12px;min-width:220px}
+    .search-wrap{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:7px 12px;min-width:220px;height:34px}
     .search-wrap input{background:none;border:none;outline:none;color:#dce8f4;font-size:12px;font-family:inherit;width:100%}
     .search-wrap input::placeholder{color:#3a5060}
     .search-wrap svg{width:13px;height:13px;color:#3a5060;flex-shrink:0}
-    .filter-select{appearance:none;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:7px 30px 7px 12px;color:#9fb5c8;font-size:12px;font-family:inherit;cursor:pointer;outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235a7080' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;transition:.18s}
-    .filter-select:hover{border-color:rgba(255,255,255,.15);color:#dce8f4}
-    .btn-reset{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:#6a8299;font-size:12px;transition:.18s}
+
+    /* ── Custom Dropdown ── */
+    .custom-dropdown{position:relative;display:inline-block}
+    .custom-dropdown-trigger{display:flex;align-items:center;gap:8px;height:34px;padding:0 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;color:#9fb5c8;font-size:12px;font-family:inherit;cursor:pointer;transition:border-color .18s,background .18s,color .18s;white-space:nowrap;user-select:none;min-width:110px}
+    .custom-dropdown-trigger:hover{border-color:rgba(255,255,255,.18);color:#dce8f4;background:rgba(255,255,255,.06)}
+    .custom-dropdown-trigger.open{border-color:rgba(45,212,191,.45);background:rgba(45,212,191,.05);color:#dce8f4}
+    .custom-dropdown-trigger.has-value{border-color:rgba(45,212,191,.3);color:#2DD4BF}
+    .custom-dropdown-trigger.has-value:hover{border-color:rgba(45,212,191,.55)}
+    .custom-dropdown-label{flex:1}
+    .custom-dropdown-chevron{width:14px;height:14px;flex-shrink:0;opacity:.5;transition:transform .2s,opacity .2s}
+    .custom-dropdown-trigger.open .custom-dropdown-chevron{transform:rotate(180deg);opacity:.8}
+    .custom-dropdown-trigger.has-value .custom-dropdown-chevron{opacity:.7}
+    .custom-dropdown-menu{position:absolute;top:calc(100% + 5px);left:0;min-width:100%;background:#111923;border:1px solid rgba(255,255,255,.1);border-radius:9px;box-shadow:0 12px 32px rgba(0,0,0,.45),0 2px 8px rgba(0,0,0,.2);z-index:500;overflow:hidden;animation:ddFadeIn .14s ease-out;padding:4px}
+    @keyframes ddFadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+    .custom-dropdown-option{display:flex;align-items:center;gap:8px;padding:8px 11px;font-size:12px;color:#9fb5c8;border-radius:6px;cursor:pointer;transition:background .12s,color .12s;white-space:nowrap}
+    .custom-dropdown-option:hover{background:rgba(255,255,255,.07);color:#dce8f4}
+    .custom-dropdown-option.selected{color:#2DD4BF;background:rgba(45,212,191,.08)}
+    .custom-dropdown-option .dd-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+    .custom-dropdown-option.selected .dd-check{opacity:1}
+    .dd-check{width:14px;height:14px;margin-left:auto;flex-shrink:0;opacity:0;color:#2DD4BF}
+    .custom-dropdown-option.selected .dd-check{opacity:1}
+
+    .btn-reset{display:flex;align-items:center;gap:6px;padding:7px 14px;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:#6a8299;font-size:12px;transition:.18s}
     .btn-reset:hover{border-color:rgba(255,255,255,.18);color:#dce8f4}
     .btn-reset svg{width:13px;height:13px}
     .toolbar-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
@@ -91,7 +111,7 @@
     /* ── Table ── */
     .table-panel{background:#0e1d2b;border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden}
     .table-scroll{overflow-x:auto}
-    .gtt-table{width:100%;border-collapse:collapse;min-width:900px}
+    .gtt-table{width:100%;border-collapse:collapse;min-width:1020px}
     .gtt-table th{padding:10px 14px;font-size:10px;color:#3a5060;font-weight:600;text-transform:uppercase;letter-spacing:.07em;text-align:left;border-bottom:1px solid rgba(255,255,255,.06);background:#0c1822;white-space:nowrap;position:sticky;top:0;z-index:2}
     .gtt-table td{padding:12px 14px;font-size:12px;color:#cfe2f5;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
     .gtt-table tbody tr:hover td{background:rgba(255,255,255,.02)}
@@ -136,6 +156,11 @@
     .qty-cell{display:flex;flex-direction:column;gap:2px}
     .qty-num{font-size:12px;font-weight:600;color:#EDF5FF;font-variant-numeric:tabular-nums}
     .qty-type{font-size:10px;color:#4a6075}
+
+    /* ── Amount cell ── */
+    .amount-cell{display:flex;flex-direction:column;gap:2px;text-align:right}
+    .amount-val{font-size:12px;font-weight:700;color:#EDF5FF;font-variant-numeric:tabular-nums}
+    .amount-breakdown{font-size:10px;color:#4a6075;font-variant-numeric:tabular-nums}
 
     .status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
     .status-badge::before{content:"";width:5px;height:5px;border-radius:50%;flex-shrink:0}
@@ -344,7 +369,6 @@
           <path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/>
         </svg>
       </a>
-     
       <a href="realized-profit.html" class="sb-link" data-title="Realised P&L">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
@@ -364,7 +388,6 @@
           <line x1="6" y1="20" x2="6" y2="16"/>
         </svg>
       </a>
-      
       <div class="sb-spacer"></div>
       <a href="settings.html" class="sb-link" data-title="Settings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -459,21 +482,79 @@
                 </svg>
                 <input type="text" id="searchInput" placeholder="Search by symbol or type…">
               </div>
-              <select class="filter-select" id="filterType">
-                <option value="">All Types</option>
-                <option value="Buy">Buy</option>
-                <option value="Sell">Sell</option>
-              </select>
-              <select class="filter-select" id="filterOrder">
-                <option value="">All Status</option>
-                <option value="Limit">Limit</option>
-                <option value="Stoploss">Stoploss</option>
-              </select>
-              <select class="filter-select" id="filterSegment">
-                <option value="">All Segments</option>
-                <option value="NSE">NSE</option>
-                <option value="BSE">BSE</option>
-              </select>
+
+              <!-- Custom dropdown: Type -->
+              <div class="custom-dropdown" id="ddType">
+                <div class="custom-dropdown-trigger" id="ddTypeTrigger">
+                  <span class="custom-dropdown-label" id="ddTypeLabel">All Types</span>
+                  <svg class="custom-dropdown-chevron" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                    <path d="M1 1l4 4 4-4"/>
+                  </svg>
+                </div>
+                <div class="custom-dropdown-menu" id="ddTypeMenu" style="display:none">
+                  <div class="custom-dropdown-option selected" data-value="">
+                    All Types
+                    <svg class="dd-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 8 6.5 11.5 13 5"/></svg>
+                  </div>
+                  <div class="custom-dropdown-option" data-value="Buy">
+                    Buy
+                    <svg class="dd-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 8 6.5 11.5 13 5"/></svg>
+                  </div>
+                  <div class="custom-dropdown-option" data-value="Sell">
+                    Sell
+                    <svg class="dd-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 8 6.5 11.5 13 5"/></svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Custom dropdown: Status/Order type -->
+              <div class="custom-dropdown" id="ddOrder">
+                <div class="custom-dropdown-trigger" id="ddOrderTrigger">
+                  <span class="custom-dropdown-label" id="ddOrderLabel">All Status</span>
+                  <svg class="custom-dropdown-chevron" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                    <path d="M1 1l4 4 4-4"/>
+                  </svg>
+                </div>
+                <div class="custom-dropdown-menu" id="ddOrderMenu" style="display:none">
+                  <div class="custom-dropdown-option selected" data-value="">
+                    All Status
+                    <svg class="dd-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 8 6.5 11.5 13 5"/></svg>
+                  </div>
+                  <div class="custom-dropdown-option" data-value="Limit">
+                    Limit
+                    <svg class="dd-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 8 6.5 11.5 13 5"/></svg>
+                  </div>
+                  <div class="custom-dropdown-option" data-value="Stoploss">
+                    Stoploss
+                    <svg class="dd-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 8 6.5 11.5 13 5"/></svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Custom dropdown: Segment -->
+              <div class="custom-dropdown" id="ddSeg">
+                <div class="custom-dropdown-trigger" id="ddSegTrigger">
+                  <span class="custom-dropdown-label" id="ddSegLabel">All Segments</span>
+                  <svg class="custom-dropdown-chevron" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                    <path d="M1 1l4 4 4-4"/>
+                  </svg>
+                </div>
+                <div class="custom-dropdown-menu" id="ddSegMenu" style="display:none">
+                  <div class="custom-dropdown-option selected" data-value="">
+                    All Segments
+                    <svg class="dd-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 8 6.5 11.5 13 5"/></svg>
+                  </div>
+                  <div class="custom-dropdown-option" data-value="NSE">
+                    NSE
+                    <svg class="dd-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 8 6.5 11.5 13 5"/></svg>
+                  </div>
+                  <div class="custom-dropdown-option" data-value="BSE">
+                    BSE
+                    <svg class="dd-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 8 6.5 11.5 13 5"/></svg>
+                  </div>
+                </div>
+              </div>
+
               <div class="toolbar-actions">
                 <button class="btn-reset" id="resetBtn">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -501,6 +582,7 @@
                   <th>CMP</th>
                   <th class="center" id="thToTrigger" style="cursor:pointer;user-select:none">TO TRIGGER <span id="toTriggerSortIcon" style="display:inline-block;margin-left:3px;opacity:.5">↕</span></th>
                   <th>QTY / TRADE</th>
+                  <th class="right">AMOUNT</th>
                   <th class="center">STATUS</th>
                   <th>CREATED ON</th>
                   <th class="right">ACTION</th>
@@ -786,8 +868,8 @@
   let editingOrder  = null;
   let gttType       = "Buy";
   let bulkDeleteMode = false;
-  let selectedOrders = new Set(); // unified set for both Cancelled & Triggered tabs
-  let sortToTrigger  = null; // null | 'asc' | 'desc' — sort by proximity to trigger
+  let selectedOrders = new Set();
+  let sortToTrigger  = null;
 
   /* ── DOM refs ── */
   const dashboard      = document.getElementById("dashboard");
@@ -803,6 +885,67 @@
   const gttActionModal = document.getElementById("gttActionModal");
   const createGttModal = document.getElementById("createGttModal");
   const editGttModal   = document.getElementById("editGttModal");
+
+  /* ══════════════════════════════════════
+     CUSTOM DROPDOWN COMPONENT
+  ══════════════════════════════════════ */
+  function initCustomDropdown(cfg) {
+    // cfg: { triggerId, menuId, labelId, wrapperId, onChange }
+    const trigger = document.getElementById(cfg.triggerId);
+    const menu    = document.getElementById(cfg.menuId);
+    const labelEl = document.getElementById(cfg.labelId);
+    let currentVal = "";
+
+    trigger.addEventListener("click", e => {
+      e.stopPropagation();
+      const isOpen = menu.style.display === "block";
+      // Close all other menus
+      document.querySelectorAll(".custom-dropdown-menu").forEach(m => { m.style.display = "none"; });
+      document.querySelectorAll(".custom-dropdown-trigger").forEach(t => { t.classList.remove("open"); });
+      if (!isOpen) {
+        menu.style.display = "block";
+        trigger.classList.add("open");
+      }
+    });
+
+    menu.addEventListener("click", e => {
+      const opt = e.target.closest(".custom-dropdown-option");
+      if (!opt) return;
+      const val = opt.dataset.value;
+      currentVal = val;
+      // Update label
+      labelEl.textContent = opt.textContent.trim().replace(/[\u2713✓]/g, "").trim();
+      // Update selected state
+      menu.querySelectorAll(".custom-dropdown-option").forEach(o => o.classList.remove("selected"));
+      opt.classList.add("selected");
+      // Has-value styling
+      if (val) trigger.classList.add("has-value");
+      else     trigger.classList.remove("has-value");
+      // Close
+      menu.style.display = "none";
+      trigger.classList.remove("open");
+      cfg.onChange(val);
+    });
+
+    return {
+      reset() {
+        currentVal = "";
+        labelEl.textContent = menu.querySelector("[data-value='']").textContent.trim().replace(/[\u2713✓]/g, "").trim();
+        menu.querySelectorAll(".custom-dropdown-option").forEach(o => {
+          o.classList.toggle("selected", o.dataset.value === "");
+        });
+        trigger.classList.remove("has-value");
+        cfg.onChange("");
+      },
+      getValue() { return currentVal; }
+    };
+  }
+
+  // Close dropdowns on outside click
+  document.addEventListener("click", () => {
+    document.querySelectorAll(".custom-dropdown-menu").forEach(m => { m.style.display = "none"; });
+    document.querySelectorAll(".custom-dropdown-trigger").forEach(t => { t.classList.remove("open"); });
+  });
 
   /* ── Token helpers ── */
   const saveToken  = t => { try { sessionStorage.setItem(TOKEN_KEY, t); } catch(e){} };
@@ -828,7 +971,7 @@
   async function loadData() {
     if (!sessionToken) return;
     const tbody = document.getElementById("gttTbody");
-    tbody.innerHTML = `<tr class="loading-row"><td colspan="10"><div class="spinner" style="margin:0 auto"></div></td></tr>`;
+    tbody.innerHTML = `<tr class="loading-row"><td colspan="11"><div class="spinner" style="margin:0 auto"></div></td></tr>`;
     document.getElementById("gttEmpty").style.display = "none";
 
     try {
@@ -968,6 +1111,28 @@
     return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   }
 
+  /* ── Amount calculation ── */
+  function calcAmount(o) {
+    const price = parseFloat(o.conditionPrice);
+    const qty   = parseInt(o.quantity);
+    if (!isFinite(price) || price <= 0 || !isFinite(qty) || qty < 1) return null;
+    return price * qty;
+  }
+
+  function buildAmountCell(o) {
+    const amount = calcAmount(o);
+    if (amount === null) {
+      return `<div class="amount-cell"><span class="amount-val" style="color:#4a6075">—</span></div>`;
+    }
+    const formatted = amount.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const qty        = parseInt(o.quantity);
+    const price      = parseFloat(o.conditionPrice);
+    return `<div class="amount-cell">
+      <span class="amount-val">₹ ${formatted}</span>
+      <span class="amount-breakdown">${qty} × ₹${fmtPrice(price)}</span>
+    </div>`;
+  }
+
   /* ── CMP lookup (from dashboard-data API) ── */
   function getCmpForSymbol(symbol) {
     if (!symbol || !Array.isArray(dashboardData)) return null;
@@ -975,8 +1140,6 @@
     return dashboardData.find(d => (d.symbol || "").toUpperCase() === target) || null;
   }
 
-  /* Numeric proximity-to-trigger value used both for the badge and for sorting.
-     Returns null when there's no CMP or no valid trigger price to compare against. */
   function getDiffPercentValue(o) {
     const match = getCmpForSymbol(o.symbol);
     if (!match) return null;
@@ -987,7 +1150,6 @@
     return Math.abs(((trigger - cmp) / cmp) * 100);
   }
 
-  /* Build the CMP + "distance to trigger" cell markup for a GTT order row */
   function buildCmpAndDiffCells(o) {
     const match = getCmpForSymbol(o.symbol);
     const cmp   = match ? parseFloat(match.currentPrice) : NaN;
@@ -1037,7 +1199,7 @@
         const da = getDiffPercentValue(a);
         const db = getDiffPercentValue(b);
         if (da === null && db === null) return 0;
-        if (da === null) return 1;   // orders with no CMP data always sort last
+        if (da === null) return 1;
         if (db === null) return -1;
         return sortToTrigger === "asc" ? da - db : db - da;
       });
@@ -1210,6 +1372,7 @@
       const isBulkRow   = (isCancelled || isTriggered) && bulkDeleteMode;
 
       const { cmpHtml, diffHtml } = buildCmpAndDiffCells(o);
+      const amountHtml = buildAmountCell(o);
 
       const selectCell = isBulkRow
         ? `<td class="bulk-select-cell">
@@ -1249,6 +1412,7 @@
         <td>${cmpHtml}</td>
         <td class="center">${diffHtml}</td>
         <td><div class="qty-cell"><span class="qty-num">${o.quantity}</span><span class="qty-type">${esc(o.tradeType)}</span></div></td>
+        <td class="right">${amountHtml}</td>
         <td class="center"><span class="status-badge ${statusCls}">${esc(o.status)}</span></td>
         <td><div class="date-cell">${dateCell}</div></td>
         <td class="right">
@@ -1461,7 +1625,7 @@
   }
 
   /* ══════════════════════════════════════
-     EDIT GTT MODAL (trigger price & quantity only)
+     EDIT GTT MODAL
   ══════════════════════════════════════ */
   function openEditGttModal(orderId) {
     const o = gttOrders.find(x => x.id === orderId);
@@ -1723,6 +1887,9 @@
     document.getElementById("selectedCount").style.display = "none";
   }
 
+  /* ── Dropdown instances ── */
+  let ddTypeInst, ddOrderInst, ddSegInst;
+
   /* ══════════════════════════════════════
      WIRE-UPS
   ══════════════════════════════════════ */
@@ -1733,14 +1900,12 @@
     Promise.all([loadDashboardSymbols(), loadData()]);
   });
 
-  /* ── Login modal (these were previously unwired — sign-in wouldn't submit/cancel) ── */
   document.getElementById("loginCancelBtn").addEventListener("click", closeLoginModal);
   document.getElementById("loginSubmitBtn").addEventListener("click", submitLogin);
   loginModal.addEventListener("click", e => { if (e.target === loginModal) closeLoginModal(); });
   loginUsername.addEventListener("keydown", e => { if (e.key === "Enter") submitLogin(); });
   loginPassword.addEventListener("keydown", e => { if (e.key === "Enter") submitLogin(); });
 
-  /* ── Edit GTT modal ── */
   document.getElementById("editGttCancelBtn").addEventListener("click", closeEditGttModal);
   document.getElementById("editGttSaveBtn").addEventListener("click", saveEditGtt);
   editGttModal.addEventListener("click", e => { if (e.target === editGttModal) closeEditGttModal(); });
@@ -1798,17 +1963,15 @@
   /* ── Bulk Delete button ── */
   document.getElementById("bulkDeleteBtn").addEventListener("click", () => {
     if (!bulkDeleteMode) {
-      // Enter bulk mode
       bulkDeleteMode = true;
       const btn = document.getElementById("bulkDeleteBtn");
       btn.textContent = "Delete Selected";
-      btn.disabled    = true; // nothing selected yet
+      btn.disabled    = true;
       document.getElementById("bulkSelectHeader").style.display = "table-cell";
       renderTable();
       updateBulkSelectionUI();
       return;
     }
-    // Already in bulk mode — open confirm modal
     if (!selectedOrders.size) return;
     const count    = selectedOrders.size;
     const tabLabel = activeTab === "Triggered" ? "triggered" : "cancelled";
@@ -1825,29 +1988,28 @@
     activeTab = btn.dataset.tab;
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b === btn));
 
-    // Show bulk delete button on Cancelled and Triggered tabs only
     const showBulk = activeTab === "Cancelled" || activeTab === "Triggered";
     document.getElementById("bulkDeleteBtn").style.display = showBulk ? "inline-flex" : "none";
 
-    // Reset bulk mode on tab switch
-    if (bulkDeleteMode) {
-      exitBulkMode();
-    }
+    if (bulkDeleteMode) exitBulkMode();
     renderTable();
   });
 
-  // Search + filters
-  document.getElementById("searchInput").addEventListener("input",    e => { searchQ     = e.target.value; renderTable(); });
-  document.getElementById("filterType").addEventListener("change",    e => { filterType  = e.target.value; renderTable(); });
-  document.getElementById("filterOrder").addEventListener("change",   e => { filterOrder = e.target.value; renderTable(); });
-  document.getElementById("filterSegment").addEventListener("change", e => { filterSeg   = e.target.value; renderTable(); });
+  // Search
+  document.getElementById("searchInput").addEventListener("input", e => { searchQ = e.target.value; renderTable(); });
+
+  // Reset
   document.getElementById("resetBtn").addEventListener("click", () => {
-    searchQ = ""; filterType = ""; filterOrder = ""; filterSeg = "";
-    ["searchInput","filterType","filterOrder","filterSegment"].forEach(id => document.getElementById(id).value = "");
+    searchQ = "";
+    document.getElementById("searchInput").value = "";
+    if (ddTypeInst)  ddTypeInst.reset();
+    if (ddOrderInst) ddOrderInst.reset();
+    if (ddSegInst)   ddSegInst.reset();
+    filterType = ""; filterOrder = ""; filterSeg = "";
     renderTable();
   });
 
-  /* ── Select All checkbox (unified for Cancelled & Triggered) ── */
+  /* ── Select All checkbox ── */
   document.getElementById("selectAllBulk").addEventListener("change", e => {
     if (!bulkDeleteMode) return;
     const checked = e.target.checked;
@@ -1905,6 +2067,20 @@
      INIT
   ══════════════════════════════════════ */
   async function init() {
+    // Init custom dropdowns
+    ddTypeInst = initCustomDropdown({
+      triggerId: "ddTypeTrigger", menuId: "ddTypeMenu", labelId: "ddTypeLabel",
+      onChange: val => { filterType = val; renderTable(); }
+    });
+    ddOrderInst = initCustomDropdown({
+      triggerId: "ddOrderTrigger", menuId: "ddOrderMenu", labelId: "ddOrderLabel",
+      onChange: val => { filterOrder = val; renderTable(); }
+    });
+    ddSegInst = initCustomDropdown({
+      triggerId: "ddSegTrigger", menuId: "ddSegMenu", labelId: "ddSegLabel",
+      onChange: val => { filterSeg = val; renderTable(); }
+    });
+
     const token   = readToken();
     const payload = token ? decodePayload(token) : null;
     const ok      = payload && payload.exp > Math.floor(Date.now() / 1000);
