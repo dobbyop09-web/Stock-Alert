@@ -1,5 +1,6 @@
 package com.dobby.price_alert.client;
 
+import com.dobby.price_alert.dto.nse.FiiDataDto;
 import com.dobby.price_alert.dto.nse.IndexData;
 import com.dobby.price_alert.dto.nse.IndexResponseData;
 import com.dobby.price_alert.dto.nse.NseResponse;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
+import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import java.net.URI;
@@ -31,6 +33,8 @@ public class NSEClient {
 
     @Value("${nse.index.baseurl}")
     private String baseIndexUrl;
+
+    private String baseFiiUrl = "https://www.nseindia.com/api/fiidiiTradeReact";
 
     private volatile boolean sessionWarm = false;
 
@@ -139,6 +143,25 @@ public class NSEClient {
             log.error("Could not get the index data {}: {}", body, e.getMessage());
             throw new RuntimeException("Bad JSON from NSE for Market Index Data", e);
         }
+
+    }
+    public List<FiiDataDto> getFiiData(){
+        if(!sessionWarm){
+            warmSession();
+        }
+        URI uri = UriComponentsBuilder.fromUriString(baseFiiUrl).build().toUri();
+        String refer = UriComponentsBuilder.fromUriString("https://www.nseindia.com/reports/fii-dii").build().encode().toUriString();
+        String body = getWithSessionRetry(uri, refer);
+        if (body == null || body.isBlank()) {
+            throw new RuntimeException("Empty response from NSE for Fii Dii");
+        }
+        try{
+            return objectMapper.readValue(body, new TypeReference<List<FiiDataDto>>() {});
+        } catch (Exception e){
+            log.error("Could not get the Fii Dii data {}: {}", body, e.getMessage());
+            throw new RuntimeException("Bad JSON from NSE for Fii Dii", e);
+        }
+
 
     }
 }
