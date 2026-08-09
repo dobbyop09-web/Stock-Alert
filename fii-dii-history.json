@@ -64,6 +64,7 @@
       "netValue": 1571.18
     }
   },
+  
   {
     "date": "31-Jul-2026",
     "fii": {
@@ -101,6 +102,266 @@
       "buyValue": 18176.22,
       "sellValue": 17178.20,
       "netValue": 998.02
+    }
+  },
+  {
+    "date": "28-Jul-2026",
+    "fii": {
+      "buyValue": 17530.97,
+      "sellValue": 16775.64,
+      "netValue": 755.33
+    },
+    "dii": {
+      "buyValue": 18256.88,
+      "sellValue": 16592.72,
+      "netValue": 1664.16
+    }
+  },
+  {
+    "date": "27-Jul-2026",
+    "fii": {
+      "buyValue": 11695.95,
+      "sellValue": 13384.18,
+      "netValue": -1688.23
+    },
+    "dii": {
+      "buyValue": 15937.10,
+      "sellValue": 13607.96,
+      "netValue": 2329.14
+    }
+  },
+  {
+    "date": "24-Jul-2026",
+    "fii": {
+      "buyValue": 11123.86,
+      "sellValue": 15016.63,
+      "netValue": -3892.77
+    },
+    "dii": {
+      "buyValue": 18959.43,
+      "sellValue": 13505.88,
+      "netValue": 5453.55
+    }
+  },
+  {
+    "date": "23-Jul-2026",
+    "fii": {
+      "buyValue": 11472.08,
+      "sellValue": 14471.31,
+      "netValue": -2999.23
+    },
+    "dii": {
+      "buyValue": 16575.30,
+      "sellValue": 13628.16,
+      "netValue": 2947.14
+    }
+  },
+  {
+    "date": "22-Jul-2026",
+    "fii": {
+      "buyValue": 12889.82,
+      "sellValue": 13709.02,
+      "netValue": -819.20
+    },
+    "dii": {
+      "buyValue": 13665.69,
+      "sellValue": 14083.95,
+      "netValue": -418.26
+    }
+  },
+  {
+    "date": "21-Jul-2026",
+    "fii": {
+      "buyValue": 16327.88,
+      "sellValue": 14677.72,
+      "netValue": 1650.16
+    },
+    "dii": {
+      "buyValue": 14638.54,
+      "sellValue": 15295.42,
+      "netValue": -656.88
+    }
+  },
+  {
+    "date": "20-Jul-2026",
+    "fii": {
+      "buyValue": 13312.67,
+      "sellValue": 14433.71,
+      "netValue": -1121.04
+    },
+    "dii": {
+      "buyValue": 16187.84,
+      "sellValue": 14875.81,
+      "netValue": 1312.03
+    }
+  },
+  {
+    "date": "17-Jul-2026",
+    "fii": {
+      "buyValue": 14393.77,
+      "sellValue": 14770.18,
+      "netValue": -376.41
+    },
+    "dii": {
+      "buyValue": 17180.08,
+      "sellValue": 16162.19,
+      "netValue": 1017.89
+    }
+  },
+  {
+    "date": "16-Jul-2026",
+    "fii": {
+      "buyValue": 13576.08,
+      "sellValue": 17781.64,
+      "netValue": -4205.56
+    },
+    "dii": {
+      "buyValue": 19236.80,
+      "sellValue": 16250.39,
+      "netValue": 2986.41
+    }
+  },
+  {
+    "date": "15-Jul-2026",
+    "fii": {
+      "buyValue": 13207.46,
+      "sellValue": 13943.29,
+      "netValue": -735.83
+    },
+    "dii": {
+      "buyValue": 16226.42,
+      "sellValue": 15521.49,
+      "netValue": 704.93
+    }
+  },
+  {
+    "date": "14-Jul-2026",
+    "fii": {
+      "buyValue": 12763.43,
+      "sellValue": 13503.12,
+      "netValue": -739.69
+    },
+    "dii": {
+      "buyValue": 20420.87,
+      "sellValue": 17493.16,
+      "netValue": 2927.71
+    }
+  },
+  {
+    "date": "13-Jul-2026",
+    "fii": {
+      "buyValue": 10386.48,
+      "sellValue": 13448.75,
+      "netValue": -3062.27
+    },
+    "dii": {
+      "buyValue": 17393.46,
+      "sellValue": 15221.76,
+      "netValue": 2171.70
+    }
+  },
+  {
+    "date": "10-Jul-2026",
+    "fii": {
+      "buyValue": 15318.07,
+      "sellValue": 12714.35,
+      "netValue": 2603.72
+    },
+    "dii": {
+      "buyValue": 17171.75,
+      "sellValue": 15152.07,
+      "netValue": 2019.68
+    }
+  },
+  {
+    "date": "09-Jul-2026",
+    "fii": {
+      "buyValue": 14388.41,
+      "sellValue": 14921.27,
+      "netValue": -532.86
+    },
+    "dii": {
+      "buyValue": 18302.87,
+      "sellValue": 16245.08,
+      "netValue": 2057.79
+    }
+  },
+  {
+    "date": "08-Jul-2026",
+    "fii": {
+      "buyValue": 17463.95,
+      "sellValue": 15501.15,
+      "netValue": 1962.80
+    },
+    "dii": {
+      "buyValue": 19165.13,
+      "sellValue": 18374.97,
+      "netValue": 790.16
+    }
+  },
+  {
+    "date": "07-Jul-2026",
+    "fii": {
+      "buyValue": 18414.01,
+      "sellValue": 18020.82,
+      "netValue": 393.19
+    },
+    "dii": {
+      "buyValue": 18897.44,
+      "sellValue": 19280.87,
+      "netValue": -383.43
+    }
+  },
+  {
+    "date": "06-Jul-2026",
+    "fii": {
+      "buyValue": 11686.10,
+      "sellValue": 11443.07,
+      "netValue": 243.03
+    },
+    "dii": {
+      "buyValue": 19727.56,
+      "sellValue": 15936.14,
+      "netValue": 3791.42
+    }
+  },
+  {
+    "date": "03-Jul-2026",
+    "fii": {
+      "buyValue": 13337.33,
+      "sellValue": 11982.00,
+      "netValue": 1355.33
+    },
+    "dii": {
+      "buyValue": 18676.35,
+      "sellValue": 20630.24,
+      "netValue": -1953.89
+    }
+  },
+  {
+    "date": "02-Jul-2026",
+    "fii": {
+      "buyValue": 14018.40,
+      "sellValue": 14330.22,
+      "netValue": -311.82
+    },
+    "dii": {
+      "buyValue": 17391.61,
+      "sellValue": 15607.21,
+      "netValue": 1784.40
+    }
+  },
+  {
+    "date": "01-Jul-2026",
+    "fii": {
+      "buyValue": 11623.31,
+      "sellValue": 12763.81,
+      "netValue": -1140.50
+    },
+    "dii": {
+      "buyValue": 17136.57,
+      "sellValue": 13977.33,
+      "netValue": 3159.24
     }
   }
 ]

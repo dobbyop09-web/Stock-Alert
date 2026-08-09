@@ -249,6 +249,13 @@
         display: flex; flex-direction: column;
         position: relative; overflow: hidden;
         --accent: #FF5C6C;
+        cursor: pointer;
+        transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+    }
+    .fii-card:hover {
+        border-color: rgba(255,82,100,.45);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(0,0,0,.25);
     }
     .fii-card::after {
         content: ''; position: absolute;
@@ -281,6 +288,16 @@
         background: rgba(255,92,108,.1); color: #FF5C6C; flex-shrink: 0;
     }
     .fii-icon svg { width: 14px; height: 14px; }
+
+    .fii-expand-hint {
+        position: absolute;
+        top: 8px; right: 10px;
+        font-size: 9px; color: #3a5060;
+        display: flex; align-items: center; gap: 3px;
+        opacity: 0; transition: opacity .18s ease;
+    }
+    .fii-card:hover .fii-expand-hint { opacity: 1; }
+    .fii-expand-hint svg { width: 10px; height: 10px; }
 
     /* Side-by-side row: FII/FPI | divider | DII */
     .fii-rows {
@@ -613,6 +630,173 @@
     *::-webkit-scrollbar { width: 4px; height: 4px; }
     *::-webkit-scrollbar-track { background: transparent; }
     *::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 4px; }
+
+    /* ── FII/DII History Modal ── */
+    .fh-overlay {
+        display: none;
+        position: fixed; inset: 0;
+        background: rgba(5,10,16,.55);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        align-items: center; justify-content: center;
+        z-index: 200;
+        padding: 20px;
+    }
+    .fh-overlay.visible { display: flex; }
+    .fh-modal {
+        background: #0e1a26;
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 14px;
+        width: 100%; max-width: 760px;
+        max-height: 88vh;
+        display: flex; flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 24px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.02);
+        animation: fhPop .22s cubic-bezier(.2,.9,.3,1);
+    }
+    @keyframes fhPop {
+        from { opacity: 0; transform: translateY(10px) scale(.98); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .fh-head {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 16px 18px;
+        border-bottom: 1px solid rgba(255,255,255,.06);
+        flex-shrink: 0;
+        gap: 10px;
+    }
+    .fh-head-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .fh-head-icon {
+        width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0;
+        background: linear-gradient(135deg, rgba(255,92,108,.16), rgba(245,166,35,.12));
+        border: 1px solid rgba(255,92,108,.25);
+        display: flex; align-items: center; justify-content: center; color: #FF5C6C;
+    }
+    .fh-head-icon svg { width: 16px; height: 16px; }
+    .fh-head-title { font-size: 14px; font-weight: 700; color: #edf5ff; letter-spacing: -.01em; }
+    .fh-head-sub { font-size: 11px; color: #4a6075; margin-top: 1px; }
+    .fh-close {
+        width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        color: #5a7080; border: 1px solid rgba(255,255,255,.08);
+        background: rgba(255,255,255,.02);
+    }
+    .fh-close:hover { color: #dce8f4; border-color: rgba(255,255,255,.18); }
+    .fh-close svg { width: 14px; height: 14px; }
+
+    .fh-toolbar {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 12px 18px;
+        border-bottom: 1px solid rgba(255,255,255,.05);
+        flex-wrap: wrap; gap: 10px; flex-shrink: 0;
+    }
+    .fh-filters {
+        display: flex; align-items: center; gap: 4px;
+        background: rgba(255,255,255,.03);
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 8px; padding: 3px;
+    }
+    .fh-filter-btn {
+        padding: 6px 13px; border-radius: 6px;
+        font-size: 11px; font-weight: 600; color: #5a7080;
+        transition: background .15s ease, color .15s ease;
+    }
+    .fh-filter-btn:hover { color: #cfe2f5; }
+    .fh-filter-btn.active { background: rgba(45,212,191,.14); color: #2DD4BF; }
+
+    .fh-legend { display: flex; align-items: center; gap: 14px; }
+    .fh-legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #8fa3bc; font-weight: 600; }
+    .fh-legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+    .fh-body { flex: 1; overflow-y: auto; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 16px; }
+    .fh-body::-webkit-scrollbar { width: 5px; }
+    .fh-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 4px; }
+
+    .fh-summary-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .fh-summary-card {
+        flex: 1 1 0; min-width: 130px;
+        background: rgba(255,255,255,.03);
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 9px; padding: 10px 12px;
+    }
+    .fh-summary-lbl { font-size: 9px; color: #4a6075; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; margin-bottom: 5px; }
+    .fh-summary-val { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+    .fh-summary-val.buy { color: #2DD4BF; }
+    .fh-summary-val.sell { color: #FF5C6C; }
+
+    .fh-chart-wrap {
+        background: rgba(255,255,255,.02);
+        border: 1px solid rgba(255,255,255,.05);
+        border-radius: 10px;
+        padding: 14px 10px 6px;
+    }
+    .fh-chart-wrap svg { display: block; width: 100%; height: auto; overflow: visible; }
+    .fh-bar-fii { fill: #FF5C6C; }
+    .fh-bar-dii { fill: #2DD4BF; }
+    .fh-axis-line { stroke: rgba(255,255,255,.08); stroke-width: 1; }
+    .fh-zero-line { stroke: rgba(255,255,255,.16); stroke-width: 1; stroke-dasharray: 3 3; }
+    .fh-tick-label { font-size: 8.5px; fill: #3a5060; font-family: inherit; }
+    .fh-bar-group { cursor: pointer; }
+    .fh-bar-group:hover rect { opacity: .82; }
+
+    .fh-tooltip {
+        position: fixed;
+        pointer-events: none;
+        background: #111f2c;
+        border: 1px solid rgba(255,255,255,.1);
+        border-radius: 7px;
+        padding: 7px 10px;
+        font-size: 10px;
+        color: #dce8f4;
+        box-shadow: 0 8px 20px rgba(0,0,0,.4);
+        opacity: 0; transition: opacity .1s ease;
+        z-index: 9999;
+        white-space: nowrap;
+        min-width: 148px;
+    }
+    .fh-tooltip.visible { opacity: 1; }
+    .fh-tooltip-date { font-weight: 700; color: #edf5ff; margin-bottom: 4px; }
+    .fh-tooltip-row { display: flex; align-items: center; gap: 6px; justify-content: space-between; }
+    .fh-tooltip-row + .fh-tooltip-row { margin-top: 2px; }
+    .fh-tooltip-dot { width: 6px; height: 6px; border-radius: 2px; flex-shrink: 0; }
+
+    .fh-table-wrap {
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 9px;
+        overflow: hidden;
+    }
+    .fh-table { width: 100%; border-collapse: collapse; }
+    .fh-table thead th {
+        padding: 8px 12px; font-size: 9px; color: #3a5060;
+        text-transform: uppercase; letter-spacing: .06em; font-weight: 600;
+        text-align: right; background: rgba(255,255,255,.03);
+        border-bottom: 1px solid rgba(255,255,255,.06);
+        white-space: nowrap;
+    }
+    .fh-table thead th:first-child { text-align: left; }
+    .fh-table tbody td {
+        padding: 7px 12px; font-size: 10.5px; color: #cfe2f5;
+        text-align: right; border-bottom: 1px solid rgba(255,255,255,.03);
+        font-variant-numeric: tabular-nums; white-space: nowrap;
+    }
+    .fh-table tbody td:first-child { text-align: left; color: #8fa3bc; font-weight: 600; }
+    .fh-table tbody tr:last-child td { border-bottom: none; }
+    .fh-table tbody tr:hover td { background: rgba(255,255,255,.02); }
+    .fh-val-pos { color: #2DD4BF; }
+    .fh-val-neg { color: #FF5C6C; }
+
+    .fh-loading, .fh-error, .fh-empty {
+        text-align: center; padding: 40px 0; color: #3a5060; font-size: 12px;
+    }
+    .fh-error { color: #FF5C6C; }
+    .fh-spinner {
+        width: 22px; height: 22px; margin: 0 auto 10px;
+        border: 2px solid rgba(255,255,255,.08);
+        border-top-color: #2DD4BF;
+        border-radius: 50%;
+        animation: fhSpin .7s linear infinite;
+    }
+    @keyframes fhSpin { to { transform: rotate(360deg); } }
 </style>
 </head>
 
@@ -736,8 +920,12 @@
                 <!-- KPI row (4 standard cards + FII/DII card) -->
                 <div class="kpi-grid" id="kpiGrid">
                     <!-- FII/DII card — always visible, no auth required -->
-                    <div class="fii-card" id="fiiCard">
+                    <div class="fii-card" id="fiiCard" role="button" tabindex="0" aria-label="Open FII/DII flow history">
                         <span id="fiiDateBadge" style="display:none"></span>
+                        <div class="fii-expand-hint">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+                            History
+                        </div>
                         <div id="fiiBody" style="flex:1;display:flex;min-height:0">
                             <div class="fii-rows"><div class="fii-loading">Loading…</div></div>
                         </div>
@@ -866,6 +1054,40 @@
     </div>
 </div>
 
+<!-- FII/DII History modal -->
+<div class="fh-overlay" id="fhOverlay">
+    <div class="fh-modal" role="dialog" aria-modal="true" aria-labelledby="fhTitle">
+        <div class="fh-head">
+            <div class="fh-head-left">
+                <div class="fh-head-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                </div>
+                <div>
+                    <div class="fh-head-title" id="fhTitle">FII / DII Flow History</div>
+                    <div class="fh-head-sub" id="fhSub">Institutional cash flows, NSE + BSE combined</div>
+                </div>
+            </div>
+            <button class="fh-close" id="fhCloseBtn" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="fh-toolbar">
+            <div class="fh-filters" id="fhFilters">
+                <button class="fh-filter-btn active" data-range="daily">Daily</button>
+                <button class="fh-filter-btn" data-range="weekly">Weekly</button>
+                <button class="fh-filter-btn" data-range="monthly">Monthly</button>
+            </div>
+            <div class="fh-legend">
+                <div class="fh-legend-item"><span class="fh-legend-dot" style="background:#FF5C6C"></span>FII/FPI</div>
+                <div class="fh-legend-item"><span class="fh-legend-dot" style="background:#2DD4BF"></span>DII</div>
+            </div>
+        </div>
+        <div class="fh-body" id="fhBody">
+            <div class="fh-loading"><div class="fh-spinner"></div>Loading flow history…</div>
+        </div>
+    </div>
+</div>
+
 <script>
 (() => {
   const API_BASE = "https://tiny-art-8473.dobbyop09.workers.dev";
@@ -933,9 +1155,10 @@
   const saleDateInput     = document.getElementById("saleDate");
   const saleError         = document.getElementById("saleError");
   const fiiBody           = document.getElementById("fiiBody");
+  const fiiCard           = document.getElementById("fiiCard");
   const fiiDateBadge      = document.getElementById("fiiDateBadge");
 
-  // ── FII/DII Data ──────────────────────────────────────────────────
+  // ── FII/DII Data (KPI card) ─────────────────────────────────────
   function fmtCr(v) {
     const n = parseFloat(v);
     if (!isFinite(n)) return "—";
@@ -998,6 +1221,291 @@
       fiiBody.innerHTML = `<div class="fii-rows"><div class="fii-error">Could not load flow data</div></div>`;
     }
   }
+
+  // ── FII/DII History Modal ───────────────────────────────────────
+  const fhOverlay   = document.getElementById("fhOverlay");
+  const fhBody       = document.getElementById("fhBody");
+  const fhSub        = document.getElementById("fhSub");
+  const fhCloseBtn   = document.getElementById("fhCloseBtn");
+  const fhFilters    = document.getElementById("fhFilters");
+
+  let fhRawData = null;      // raw history array from API
+  let fhRange = "daily";     // daily | weekly | monthly
+  let fhLoaded = false;
+
+  function parseHistDate(s) {
+    // "07-Aug-2026" -> Date
+    if (!s) return null;
+    const d = new Date(s.replace(/-/g, " "));
+    return isNaN(d) ? null : d;
+  }
+
+  function isoWeekKey(d) {
+    const dt = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const day = (dt.getUTCDay() + 6) % 7; // Mon=0
+    dt.setUTCDate(dt.getUTCDate() - day + 3);
+    const firstThu = new Date(Date.UTC(dt.getUTCFullYear(), 0, 4));
+    const week = 1 + Math.round(((dt - firstThu) / 86400000 - 3 + ((firstThu.getUTCDay() + 6) % 7)) / 7);
+    return `${dt.getUTCFullYear()}-W${String(week).padStart(2, "0")}`;
+  }
+
+  function aggregate(rows, range) {
+    // rows: [{date, fii:{buyValue,sellValue,netValue}, dii:{...}}], sorted desc by date in source
+    const asc = [...rows].sort((a, b) => (parseHistDate(a.date) || 0) - (parseHistDate(b.date) || 0));
+    if (range === "daily") return asc;
+
+    const buckets = new Map();
+    asc.forEach(r => {
+      const d = parseHistDate(r.date);
+      if (!d) return;
+      let key, label;
+      if (range === "weekly") {
+        key = isoWeekKey(d);
+        label = key;
+      } else {
+        key = `${d.getFullYear()}-${d.getMonth()}`;
+        label = d.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+      }
+      if (!buckets.has(key)) {
+        buckets.set(key, {
+          date: label,
+          sortKey: d.getTime(),
+          fii: { buyValue: 0, sellValue: 0, netValue: 0 },
+          dii: { buyValue: 0, sellValue: 0, netValue: 0 },
+        });
+      }
+      const b = buckets.get(key);
+      ["fii", "dii"].forEach(k => {
+        b[k].buyValue += parseFloat(r[k]?.buyValue) || 0;
+        b[k].sellValue += parseFloat(r[k]?.sellValue) || 0;
+        b[k].netValue += parseFloat(r[k]?.netValue) || 0;
+      });
+    });
+    return [...buckets.values()].sort((a, b) => a.sortKey - b.sortKey);
+  }
+
+  function fhFmt(n, decimals) {
+    if (!isFinite(n)) return "—";
+    return n.toLocaleString("en-IN", { minimumFractionDigits: decimals ?? 2, maximumFractionDigits: decimals ?? 2 });
+  }
+  function fhFmtSigned(n) {
+    if (!isFinite(n)) return "—";
+    return (n >= 0 ? "+" : "") + fhFmt(n);
+  }
+
+  function renderFhSummary(rows) {
+    let fiiNet = 0, diiNet = 0, fiiBuy = 0, fiiSell = 0, diiBuy = 0, diiSell = 0;
+    rows.forEach(r => {
+      fiiNet += parseFloat(r.fii?.netValue) || 0;
+      diiNet += parseFloat(r.dii?.netValue) || 0;
+      fiiBuy += parseFloat(r.fii?.buyValue) || 0;
+      fiiSell += parseFloat(r.fii?.sellValue) || 0;
+      diiBuy += parseFloat(r.dii?.buyValue) || 0;
+      diiSell += parseFloat(r.dii?.sellValue) || 0;
+    });
+    return `
+      <div class="fh-summary-row">
+        <div class="fh-summary-card">
+          <div class="fh-summary-lbl">FII/FPI Net (₹ Cr)</div>
+          <div class="fh-summary-val ${fiiNet >= 0 ? "buy" : "sell"}">${fhFmtSigned(fiiNet)}</div>
+        </div>
+        <div class="fh-summary-card">
+          <div class="fh-summary-lbl">DII Net (₹ Cr)</div>
+          <div class="fh-summary-val ${diiNet >= 0 ? "buy" : "sell"}">${fhFmtSigned(diiNet)}</div>
+        </div>
+        <div class="fh-summary-card">
+          <div class="fh-summary-lbl">FII Buy / Sell (₹ Cr)</div>
+          <div class="fh-summary-val" style="color:#cfe2f5">${fhFmt(fiiBuy,0)} / ${fhFmt(fiiSell,0)}</div>
+        </div>
+        <div class="fh-summary-card">
+          <div class="fh-summary-lbl">DII Buy / Sell (₹ Cr)</div>
+          <div class="fh-summary-val" style="color:#cfe2f5">${fhFmt(diiBuy,0)} / ${fhFmt(diiSell,0)}</div>
+        </div>
+      </div>`;
+  }
+
+  function renderFhChart(rows) {
+    const W = 700, H = 220, padL = 8, padR = 8, padT = 10, padB = 22;
+    const plotW = W - padL - padR;
+    const n = rows.length;
+    const groupW = plotW / n;
+    const barW = Math.max(3, Math.min(16, groupW * 0.32));
+
+    let maxAbs = 1;
+    rows.forEach(r => {
+      maxAbs = Math.max(maxAbs, Math.abs(parseFloat(r.fii?.netValue) || 0), Math.abs(parseFloat(r.dii?.netValue) || 0));
+    });
+    maxAbs *= 1.15;
+    const zeroY = padT + (H - padT - padB) / 2;
+    const halfH = (H - padT - padB) / 2;
+    const scale = v => (v / maxAbs) * halfH;
+
+    // choose label step so labels don't collide
+    const maxLabels = 10;
+    const step = Math.max(1, Math.ceil(n / maxLabels));
+
+    let bars = "";
+    let labels = "";
+    rows.forEach((r, i) => {
+      const cx = padL + groupW * i + groupW / 2;
+      const fiiV = parseFloat(r.fii?.netValue) || 0;
+      const diiV = parseFloat(r.dii?.netValue) || 0;
+      const fiiH = Math.abs(scale(fiiV));
+      const diiH = Math.abs(scale(diiV));
+      const fiiY = fiiV >= 0 ? zeroY - fiiH : zeroY;
+      const diiY = diiV >= 0 ? zeroY - diiH : zeroY;
+      const x1 = cx - barW - 1.5;
+      const x2 = cx + 1.5;
+
+      bars += `<g class="fh-bar-group" data-idx="${i}">
+        <rect x="${x1.toFixed(1)}" y="${fiiY.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(fiiH,1).toFixed(1)}" rx="1.5" class="fh-bar-fii"></rect>
+        <rect x="${x2.toFixed(1)}" y="${diiY.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(diiH,1).toFixed(1)}" rx="1.5" class="fh-bar-dii"></rect>
+        <rect x="${(cx-groupW/2).toFixed(1)}" y="${padT}" width="${groupW.toFixed(1)}" height="${(H-padT-padB).toFixed(1)}" fill="transparent"></rect>
+      </g>`;
+
+      if (i % step === 0 || i === n - 1) {
+        const lbl = fhRange === "daily"
+          ? (r.date || "").replace(/-\d{4}$/, "")
+          : (r.date || "");
+        labels += `<text x="${cx.toFixed(1)}" y="${H - 6}" class="fh-tick-label" text-anchor="middle">${escHtml(lbl)}</text>`;
+      }
+    });
+
+    return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+      <line x1="${padL}" y1="${zeroY}" x2="${W-padR}" y2="${zeroY}" class="fh-zero-line"></line>
+      <line x1="${padL}" y1="${H-padB+0.5}" x2="${W-padR}" y2="${H-padB+0.5}" class="fh-axis-line"></line>
+      ${bars}
+      ${labels}
+    </svg>`;
+  }
+
+  function renderFhTable(rows) {
+    const rev = [...rows].reverse(); // most recent first
+    return `<div class="fh-table-wrap"><table class="fh-table">
+      <thead><tr>
+        <th>Period</th>
+        <th>FII Net</th>
+        <th>FII Buy</th>
+        <th>FII Sell</th>
+        <th>DII Net</th>
+        <th>DII Buy</th>
+        <th>DII Sell</th>
+      </tr></thead>
+      <tbody>
+        ${rev.map(r => {
+          const fn = parseFloat(r.fii?.netValue) || 0, dn = parseFloat(r.dii?.netValue) || 0;
+          return `<tr>
+            <td>${escHtml(r.date || "—")}</td>
+            <td class="${fn >= 0 ? "fh-val-pos" : "fh-val-neg"}">${fhFmtSigned(fn)}</td>
+            <td>${fhFmt(r.fii?.buyValue,0)}</td>
+            <td>${fhFmt(r.fii?.sellValue,0)}</td>
+            <td class="${dn >= 0 ? "fh-val-pos" : "fh-val-neg"}">${fhFmtSigned(dn)}</td>
+            <td>${fhFmt(r.dii?.buyValue,0)}</td>
+            <td>${fhFmt(r.dii?.sellValue,0)}</td>
+          </tr>`;
+        }).join("")}
+      </tbody>
+    </table></div>`;
+  }
+
+  function fhDataStartLabel() {
+    if (!fhRawData || fhRawData.length === 0) return null;
+    let earliest = null;
+    fhRawData.forEach(r => {
+      const d = parseHistDate(r.date);
+      if (d && (!earliest || d < earliest)) earliest = d;
+    });
+    if (!earliest) return null;
+    return earliest.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  }
+
+  function renderFhModal() {
+    if (!fhRawData || fhRawData.length === 0) {
+      fhBody.innerHTML = `<div class="fh-empty">No history data available.</div>`;
+      return;
+    }
+    const rows = aggregate(fhRawData, fhRange);
+    const unit = fhRange === "daily" ? "trading day" : fhRange === "weekly" ? "week" : "month";
+    const startLabel = fhDataStartLabel();
+    fhSub.textContent = `${rows.length} ${unit}${rows.length === 1 ? "" : "s"}${startLabel ? " · Data since " + startLabel : ""}`;
+    fhBody.innerHTML = renderFhSummary(rows) + `<div class="fh-chart-wrap">${renderFhChart(rows)}</div>` + renderFhTable(rows);
+    wireFhTooltips(rows);
+  }
+
+  function wireFhTooltips(rows) {
+    const svg = fhBody.querySelector(".fh-chart-wrap svg");
+    if (!svg) return;
+    let tip = document.getElementById("fhTooltip");
+    if (!tip) {
+      tip = document.createElement("div");
+      tip.className = "fh-tooltip";
+      tip.id = "fhTooltip";
+      document.querySelector(".fh-modal").appendChild(tip);
+    }
+    svg.querySelectorAll(".fh-bar-group").forEach(g => {
+      const idx = parseInt(g.getAttribute("data-idx"), 10);
+      const r = rows[idx];
+      if (!r) return;
+      g.addEventListener("mousemove", e => {
+        const fn = parseFloat(r.fii?.netValue) || 0, dn = parseFloat(r.dii?.netValue) || 0;
+        const fb = parseFloat(r.fii?.buyValue) || 0, fs = parseFloat(r.fii?.sellValue) || 0;
+        const db = parseFloat(r.dii?.buyValue) || 0, ds = parseFloat(r.dii?.sellValue) || 0;
+        tip.innerHTML = `
+          <div class="fh-tooltip-date">${escHtml(r.date || "")}</div>
+          <div class="fh-tooltip-row"><span class="fh-tooltip-dot" style="background:#FF5C6C"></span>FII Net <b style="margin-left:auto">${fhFmtSigned(fn)}</b></div>
+          <div class="fh-tooltip-row" style="padding-left:12px;color:#7f92a6">Buy <span style="margin-left:auto">${fhFmt(fb,0)}</span></div>
+          <div class="fh-tooltip-row" style="padding-left:12px;color:#7f92a6">Sell <span style="margin-left:auto">${fhFmt(fs,0)}</span></div>
+          <div class="fh-tooltip-row" style="margin-top:5px"><span class="fh-tooltip-dot" style="background:#2DD4BF"></span>DII Net <b style="margin-left:auto">${fhFmtSigned(dn)}</b></div>
+          <div class="fh-tooltip-row" style="padding-left:12px;color:#7f92a6">Buy <span style="margin-left:auto">${fhFmt(db,0)}</span></div>
+          <div class="fh-tooltip-row" style="padding-left:12px;color:#7f92a6">Sell <span style="margin-left:auto">${fhFmt(ds,0)}</span></div>`;
+        tip.style.left = (e.clientX + 14) + "px";
+        tip.style.top = (e.clientY + 14) + "px";
+        tip.classList.add("visible");
+      });
+      g.addEventListener("mouseleave", () => tip.classList.remove("visible"));
+    });
+  }
+
+  async function loadFhHistory() {
+    fhBody.innerHTML = `<div class="fh-loading"><div class="fh-spinner"></div>Loading flow history…</div>`;
+    try {
+      const res = await fetch(`${API_BASE}/fii-dii-history`);
+      if (!res.ok) throw new Error("Failed");
+      const data = await res.json();
+      fhRawData = Array.isArray(data) ? data : [];
+      fhLoaded = true;
+      renderFhModal();
+    } catch (e) {
+      fhBody.innerHTML = `<div class="fh-error">Could not load flow history. Please try again.</div>`;
+    }
+  }
+
+  function openFhModal() {
+    fhOverlay.classList.add("visible");
+    document.body.style.overflow = "hidden";
+    if (!fhLoaded) loadFhHistory();
+    else renderFhModal();
+  }
+  function closeFhModal() {
+    fhOverlay.classList.remove("visible");
+    document.body.style.overflow = "";
+    const tip = document.getElementById("fhTooltip");
+    if (tip) tip.classList.remove("visible");
+  }
+
+  fiiCard.addEventListener("click", openFhModal);
+  fiiCard.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openFhModal(); } });
+  fhCloseBtn.addEventListener("click", closeFhModal);
+  fhOverlay.addEventListener("click", e => { if (e.target === fhOverlay) closeFhModal(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && fhOverlay.classList.contains("visible")) closeFhModal(); });
+  fhFilters.addEventListener("click", e => {
+    const btn = e.target.closest(".fh-filter-btn");
+    if (!btn) return;
+    fhFilters.querySelectorAll(".fh-filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    fhRange = btn.getAttribute("data-range");
+    renderFhModal();
+  });
 
   // Token
   const saveToken  = t => { try { sessionStorage.setItem(TOKEN_KEY, t); } catch(e){} };
@@ -1322,8 +1830,8 @@
   // KPIs — injects the 4 standard cards BEFORE the FII card
   function computeKPIs() {
     // Remove previously inserted standard cards (all children except last = fii card)
-    const fiiCard = document.getElementById("fiiCard");
-    while (kpiGrid.firstChild && kpiGrid.firstChild !== fiiCard) {
+    const fiiCardEl = document.getElementById("fiiCard");
+    while (kpiGrid.firstChild && kpiGrid.firstChild !== fiiCardEl) {
       kpiGrid.removeChild(kpiGrid.firstChild);
     }
 
@@ -1389,7 +1897,7 @@
         </div>
         <div class="kpi-val ${k.cls}">${k.val}</div>
         <div class="kpi-note ${k.noteCls}">${k.note}</div>`;
-      kpiGrid.insertBefore(div, fiiCard);
+      kpiGrid.insertBefore(div, fiiCardEl);
     });
   }
 
@@ -1523,7 +2031,7 @@
   editBtn.addEventListener("click", enterEditMode);
   cancelBtn.addEventListener("click", cancelEdit);
   saveBtn.addEventListener("click", savePortfolio);
-  refreshBtn.addEventListener("click", () => { loadPortfolio(); loadFiiData(); });
+  refreshBtn.addEventListener("click", () => { loadPortfolio(); loadFiiData(); if (fhOverlay.classList.contains("visible")) loadFhHistory(); });
   document.getElementById("loginCancelBtn").addEventListener("click", closeLoginModal);
   document.getElementById("loginSubmitBtn").addEventListener("click", submitLogin);
   document.getElementById("saleCancelBtn").addEventListener("click", closeSaleModal);
