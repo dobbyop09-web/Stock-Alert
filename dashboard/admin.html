@@ -189,13 +189,23 @@
         flex: 1 1 0;
         min-width: 0;
     }
+    /* Total Investment / Current Value: narrower so Today's Change (with the
+       NIFTY 50 snippet) has room and never overlaps. */
+    /* .kpi-grid > .kpi-card:nth-child(1),
+    .kpi-grid > .kpi-card:nth-child(2) {
+        flex: 0.7 1 0;
+    }
+    .kpi-grid > .kpi-card.has-index {
+        flex: 1.2 1 0;
+    } */
     .kpi-grid > .fii-card {
         flex: 1.35 1 0;
         min-width: 0;
     }
     @media (max-width: 900px) {
         .kpi-grid { flex-wrap: wrap; }
-        .kpi-grid > .kpi-card { flex: 1 1 calc(50% - 5px); }
+        .kpi-grid > .kpi-card:not(.has-index):not(.fii-card) { flex: 1 1 calc(50% - 5px); }
+        .kpi-grid > .kpi-card.has-index { flex: 1 1 100%; }
         .kpi-grid > .fii-card  { flex: 1 1 100%; order: 5; }
     }
     @media (max-width: 480px) {
@@ -239,6 +249,15 @@
     .kpi-note { font-size: 10px; color: #3a5060; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .kpi-note.pos { color: rgba(45,212,191,.75); }
     .kpi-note.neg { color: rgba(255,92,108,.7); }
+
+    /* Total Investment / Current Value are narrower now — let their value
+       text shrink/ellipsize instead of forcing the card wider. */
+    .kpi-grid > .kpi-card:nth-child(1) .kpi-val,
+    .kpi-grid > .kpi-card:nth-child(2) .kpi-val {
+        font-size: 16px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
     /* ── FII/DII card specific styles ── */
     .fii-card {
@@ -629,11 +648,18 @@
 
     /* ── Today's Change card: inline index snippet ── */
     .kpi-card.has-index { flex-direction: row; align-items: stretch; gap: 0; }
-    .kpi-card.has-index .kpi-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-    .kpi-index-divider { width: 1px; background: rgba(255,255,255,.08); margin: 2px 12px; flex-shrink: 0; }
+    .kpi-card.has-index .kpi-main { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
+    /* Allow the value line to wrap so it doesn't force the card wider */
+    .kpi-card.has-index .kpi-val {
+        white-space: normal;
+        word-break: break-word;
+        font-size: 15px;
+        line-height: 1.25;
+    }
+    .kpi-index-divider { width: 1px; background: rgba(255,255,255,.08); margin: 2px 8px; flex-shrink: 0; }
     .kpi-index-snip {
         flex-shrink: 0; display: flex; flex-direction: column; justify-content: center;
-        gap: 4px; cursor: pointer; padding: 2px 4px 2px 0; min-width: 74px;
+        gap: 4px; cursor: pointer; padding: 2px 4px 2px 0; min-width: 72px; max-width: 100px;
     }
     .kpi-index-snip:hover .kpi-index-name { color: #cfe2f5; }
     .kpi-index-name {
