@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Market Watchlist</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    font-family: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 13px;
+    background: #0b1520;
+    color: #dce8f4;
+  }
+
+  a { text-decoration: none; color: inherit; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+  .shell { display: flex; height: 100vh; overflow: hidden; }
+
+  .sb {
+    width: 60px; flex-shrink: 0;
+    background: #07111a;
+    border-right: 1px solid rgba(255,255,255,.06);
+    display: flex; flex-direction: column;
+    position: relative; z-index: 1000;
+  }
+  .sb-nav { display: flex; flex-direction: column; padding: 12px 0; gap: 8px; height: 100%; }
+  .sb-link {
+    width: 44px; height: 44px; margin: 4px auto;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 14px; position: relative; color: #7f92a6;
+    transition: background .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease;
+  }
+  .sb-link:hover { background: #122233; color: #fff; transform: translateY(-1px); }
+  .sb-link.active {
+    background: rgba(45,212,191,.12); border: 1px solid rgba(45,212,191,.18);
+    box-shadow: inset 0 0 0 1px rgba(45,212,191,.04), 0 0 16px rgba(45,212,191,.08);
+    color: #2DD4BF;
+  }
+  .sb-link svg { width: 20px; height: 20px; display: block; }
+  .sb-link::after {
+    content: attr(data-title); position: absolute; left: 58px; top: 50%;
+    transform: translateY(-50%) translateX(-8px);
+    background: #111c28; color: #fff; font-size: 13px; font-weight: 500;
+    white-space: nowrap; padding: 8px 12px; border-radius: 8px;
+    border: 1px solid rgba(255,255,255,.08); box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    opacity: 0; pointer-events: none; transition: opacity .18s ease, transform .18s ease; z-index: 999;
+  }
+  .sb-link:hover::after { opacity: 1; transform: translateY(-50%) translateX(0); }
+  .sb-link::before {
+    content: ""; position: absolute; left: 52px; top: 50%;
+    width: 8px; height: 8px; background: #111c28;
+    border-left: 1px solid rgba(255,255,255,.08); border-top: 1px solid rgba(255,255,255,.08);
+    transform: translateY(-50%) rotate(-45deg); opacity: 0; transition: .18s; z-index: 998;
+  }
+  .sb-link:hover::before { opacity: 1; }
+  .sb-link.active::before {
+    content: ""; position: absolute; left: -8px; top: 50%;
+    transform: translateY(-50%); width: 3px; height: 22px;
+    border-radius: 3px; background: #2DD4BF;
+  }
+
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,.06);
+    flex-shrink: 0; gap: 12px; background: #0b1520;
+  }
+  .topbar-title h1 { font-size: 17px; font-weight: 700; color: #edf5ff; letter-spacing: -.01em; }
+  .topbar-title p { font-size: 11px; color: #5a7080; margin-top: 2px; }
+  .topbar-right { display: flex; align-items: center; gap: 8px; }
+
+  .btn-ghost {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 11px; border-radius: 6px;
+    border: 1px solid rgba(255,255,255,.09);
+    color: #6a8299; font-size: 11px; background: rgba(255,255,255,.02);
+  }
+  .btn-ghost:hover { color: #dce8f4; border-color: rgba(255,255,255,.18); }
+  .btn-ghost svg { width: 13px; height: 13px; }
+
+  .auto-refresh-wrap { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #6a8299; }
+  .toggle { position: relative; width: 34px; height: 19px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,.1); border-radius: 19px; cursor: pointer; transition: .2s;
+  }
+  .toggle-slider::before {
+    content: ''; position: absolute; width: 13px; height: 13px;
+    left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s;
+  }
+  .toggle input:checked + .toggle-slider { background: #2DD4BF; }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(15px); }
+
+  .content { flex: 1; overflow-y: auto; padding: 16px 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+  .content::-webkit-scrollbar { width: 5px; }
+  .content::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 4px; }
+
+  /* ── Summary Cards ── */
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1.2fr 1fr; gap: 10px; }
+  .scard {
+    background: #0e1d2b; border: 1px solid rgba(255,255,255,.07);
+    border-radius: 8px; padding: 14px 16px;
+    position: relative; overflow: hidden;
+  }
+  .scard::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--accent, transparent); border-radius: 8px 8px 0 0;
+  }
+  .scard-label { font-size: 10px; font-weight: 600; color: #4a6075; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; }
+  .scard-icon {
+    position: absolute; top: 12px; right: 12px;
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .scard-icon svg { width: 13px; height: 13px; }
+  .scard-val { font-size: 22px; font-weight: 700; color: #edf5ff; letter-spacing: -.02em; line-height: 1.1; margin-bottom: 3px; }
+  .scard-change { font-size: 12px; font-weight: 600; }
+  .pos { color: #2DD4BF; }
+  .neg { color: #FF5C6C; }
+
+  .adv-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; margin: 6px 0; }
+  .adv-item .adv-num { font-size: 20px; font-weight: 700; }
+  .adv-item .adv-lbl { font-size: 10px; color: #4a6075; margin-top: 1px; }
+  .adv-bar { height: 3px; border-radius: 4px; background: rgba(255,255,255,.06); display: flex; gap: 2px; overflow: hidden; margin-top: 4px; }
+  .adv-bar-g { background: #2DD4BF; border-radius: 4px; transition: width .4s; }
+  .adv-bar-r { background: #FF5C6C; border-radius: 4px; transition: width .4s; }
+  .adv-bar-n { background: #3a5060; border-radius: 4px; flex: 1; }
+
+  .sentiment-label { font-size: 15px; font-weight: 700; margin: 4px 0 2px; }
+  .sentiment-sub { font-size: 10px; color: #5a7080; }
+  .meter-wrap { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); }
+
+  /* ── Table ── */
+  .table-panel {
+    background: #0e1d2b; border: 1px solid rgba(255,255,255,.07);
+    border-radius: 8px; overflow: hidden;
+  }
+  .table-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,.05);
+  }
+  .table-toolbar-title { font-size: 12px; font-weight: 600; color: #cfe2f5; }
+  .table-scroll { overflow-x: auto; }
+  .tbl { width: 100%; border-collapse: collapse; min-width: 860px; }
+  .tbl thead th {
+    padding: 9px 12px; font-size: 10px; color: #3a5060; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .06em;
+    text-align: right; border-bottom: 1px solid rgba(255,255,255,.05);
+    background: #0c1822; white-space: nowrap;
+    position: sticky; top: 0; z-index: 2;
+  }
+  .tbl thead th:nth-child(1),
+  .tbl thead th:nth-child(2),
+  .tbl thead th:nth-child(3) { text-align: left; }
+  .tbl tbody td {
+    padding: 10px 12px; font-size: 11px; color: #cfe2f5;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+    text-align: right; font-variant-numeric: tabular-nums;
+  }
+  .tbl tbody td:nth-child(1),
+  .tbl tbody td:nth-child(2),
+  .tbl tbody td:nth-child(3) { text-align: left; }
+  .tbl tbody tr:last-child td { border-bottom: none; }
+  .tbl tbody tr { cursor: pointer; transition: background .12s; }
+  .tbl tbody tr:hover td { background: rgba(255,255,255,.02); }
+  .tbl tbody tr.selected td { background: rgba(45,212,191,.05); }
+  .tbl tbody tr.selected { border-left: 2px solid #2DD4BF; }
+
+  .row-num { color: #3a5060; font-size: 11px; }
+  .star-btn { background: none; border: none; cursor: pointer; color: #3a5060; font-size: 14px; transition: color .15s; padding: 0 2px; }
+  .star-btn.starred { color: #F5A623; }
+  .star-btn:hover { color: #F5A623; }
+
+  .badge {
+    display: inline-block; padding: 2px 7px; border-radius: 12px;
+    font-size: 10px; font-weight: 600;
+  }
+  .badge.pos { background: rgba(45,212,191,.1); color: #2DD4BF; border: 1px solid rgba(45,212,191,.2); }
+  .badge.neg { background: rgba(255,92,108,.1); color: #FF5C6C; border: 1px solid rgba(255,92,108,.2); }
+  .neutral { color: #5a7080; }
+
+  /* ── Sortable column headers ── */
+  .sort-th {
+    cursor: pointer; user-select: none;
+    display: inline-flex; align-items: center; gap: 4px;
+    justify-content: flex-end; width: 100%;
+  }
+  .sort-th:hover { color: #cfe2f5; }
+  .sort-th.active { color: #2DD4BF; }
+  .sort-arrow { font-size: 9px; width: 8px; opacity: .8; }
+
+  /* ── Colored period badges ── */
+  .period-badge {
+    display: inline-block; padding: 2px 7px; border-radius: 12px;
+    font-size: 10px; font-weight: 600;
+  }
+  .period-badge.pos { background: rgba(45,212,191,.1); color: #2DD4BF; border: 1px solid rgba(45,212,191,.15); }
+  .period-badge.neg { background: rgba(255,92,108,.1); color: #FF5C6C; border: 1px solid rgba(255,92,108,.15); }
+  .period-badge.flat { background: rgba(255,255,255,.05); color: #5a7080; border: 1px solid rgba(255,255,255,.08); }
+
+  /* ── Performance footer ── */
+  .perf-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .perf-card {
+    background: #0e1d2b; border: 1px solid rgba(255,255,255,.07);
+    border-radius: 8px; padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .perf-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .perf-label { font-size: 10px; color: #5a7080; margin-bottom: 2px; font-weight: 500; }
+  .perf-val { font-size: 16px; font-weight: 700; }
+  .perf-date { font-size: 10px; color: #3a5060; margin-top: 1px; }
+
+  /* Loading skeleton */
+  .skeleton-row td { opacity: .4; }
+  @keyframes pulse { 0%,100%{opacity:.3} 50%{opacity:.6} }
+  .loading-row td { animation: pulse 1.2s ease-in-out infinite; background: rgba(255,255,255,.03); }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<aside class="sb">
+  <nav class="sb-nav">
+    <a href="index.html" class="sb-link" data-title="Dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+        <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+      </svg>
+    </a>
+     <a href="watchlist.html" class="sb-link active" data-title="Market Watchlist">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 3v18h18"/><path d="M7 12l4-4 3 3 4-6"/>
+      </svg>
+    </a>
+    <a href="heatmap.html" class="sb-link" data-title="Heat Map">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/>
+      </svg>
+    </a>
+    <a href="portfolio.html" class="sb-link" data-title="Holdings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/>
+      </svg>
+    </a>
+    <a href="realized-profit.html" class="sb-link" data-title="Realised P&L">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+        <polyline points="17 6 23 6 23 12"/>
+      </svg>
+    </a>
+    <a href="gtt-orders.html" class="sb-link" data-title="GTT Orders">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 20V10M12 20V4M6 20v-6"/>
+        <circle cx="18" cy="7" r="2" fill="currentColor" stroke="none"/>
+      </svg>
+    </a>
+   
+  </nav>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-title">
+      <h1>Market Watchlist</h1>
+      <p>Track and analyze major market indices</p>
+    </div>
+    <div class="topbar-right">
+      <div class="auto-refresh-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px">
+          <circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>
+        </svg>
+        Auto Refresh
+        <label class="toggle">
+          <input type="checkbox" id="autoRefreshToggle" checked/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <button class="btn-ghost" id="refreshBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+        </svg>
+        Refresh
+      </button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+      <!-- Card 1: NIFTY 50 — always pinned, never changes on row click -->
+      <div class="scard" style="--accent:#FF5C6C">
+        <div class="scard-label" id="card1-label">NIFTY 50</div>
+        <div class="scard-icon" style="background:rgba(255,92,108,.1);color:#FF5C6C" id="card1-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/>
+            <polyline points="17 18 23 18 23 12"/>
+          </svg>
+        </div>
+        <div class="scard-val neg" id="card1-val">—</div>
+        <div class="scard-change neg" id="card1-change">Loading…</div>
+      </div>
+
+      <!-- Card 2: Selected index — changes on row click -->
+      <div class="scard" style="--accent:#2DD4BF">
+        <div class="scard-label" id="card2-label">—</div>
+        <div class="scard-icon" style="background:rgba(45,212,191,.1);color:#2DD4BF" id="card2-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+            <polyline points="17 6 23 6 23 12"/>
+          </svg>
+        </div>
+        <div class="scard-val" id="card2-val">—</div>
+        <div class="scard-change" id="card2-change">Loading…</div>
+      </div>
+
+      <!-- Card 3: Advances / Declines -->
+      <div class="scard" style="--accent:#8B5CF6">
+        <div class="scard-label">
+          Advances / Declines
+          <span id="adv-index-tag" style="color:#2DD4BF;font-weight:700;margin-left:4px;"></span>
+        </div>
+        <div class="adv-grid">
+          <div class="adv-item">
+            <div class="adv-num pos" id="adv-num">—</div>
+            <div class="adv-lbl">Advances</div>
+          </div>
+          <div class="adv-item">
+            <div class="adv-num neg" id="dec-num">—</div>
+            <div class="adv-lbl">Declines</div>
+          </div>
+          <div class="adv-item">
+            <div class="adv-num neutral" id="unch-num">—</div>
+            <div class="adv-lbl">Unchanged</div>
+          </div>
+        </div>
+        <div class="adv-bar">
+          <div class="adv-bar-g" id="adv-bar-g" style="width:50%"></div>
+          <div class="adv-bar-r" id="adv-bar-r" style="width:50%"></div>
+          <div class="adv-bar-n" id="adv-bar-n" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Card 4: Market Sentiment -->
+      <div class="scard" style="--accent:#F5A623; position:relative; overflow:hidden;">
+        <div class="scard-label">Market Sentiment</div>
+        <div class="sentiment-label" id="sentiment-label" style="color:#F5A623;">—</div>
+        <div class="sentiment-sub" id="sentiment-sub">Loading…</div>
+        <div class="meter-wrap">
+          <svg width="84" height="50" viewBox="0 0 84 50">
+            <defs>
+              <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#FF5C6C"/>
+                <stop offset="50%" stop-color="#F5A623"/>
+                <stop offset="100%" stop-color="#2DD4BF"/>
+              </linearGradient>
+            </defs>
+            <path d="M8 46 A 34 34 0 0 1 76 46" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="8" stroke-linecap="round"/>
+            <path d="M8 46 A 34 34 0 0 1 76 46" fill="none" stroke="url(#gaugeGrad)" stroke-width="8" stroke-linecap="round"/>
+            <line id="gauge-needle" x1="42" y1="46" x2="42" y2="18"
+              stroke="white" stroke-width="2" stroke-linecap="round"
+              transform="rotate(0, 42, 46)"/>
+            <circle cx="42" cy="46" r="3" fill="white"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-panel">
+      <div class="table-toolbar">
+        <span class="table-toolbar-title">Market Indices</span>
+        <span style="font-size:10px;color:#3a5060;">Click a row to update stats · Click column headers to sort</span>
+      </div>
+      <div class="table-scroll">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="width:32px">#</th>
+              <th style="width:28px"></th>
+              <th>Index</th>
+              <th>Last</th>
+              <th>Change</th>
+              <th>Change %</th>
+              <th>Prev. Close</th>
+              <th data-sort="w1"><span class="sort-th" id="th-w1">1W % <span class="sort-arrow"></span></span></th>
+              <th data-sort="m1"><span class="sort-th" id="th-m1">1M % <span class="sort-arrow"></span></span></th>
+              <th data-sort="y1"><span class="sort-th" id="th-y1">1Y % <span class="sort-arrow"></span></span></th>
+              <th>P/E</th>
+              <th>P/B</th>
+            </tr>
+          </thead>
+          <tbody id="tbl-body">
+            <tr class="loading-row"><td colspan="12" style="text-align:center;padding:24px;color:#3a5060;font-size:11px;">Loading indices…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Performance Footer -->
+    <div class="perf-grid">
+      <div class="perf-card">
+        <div class="perf-icon" style="background:rgba(139,92,246,.12);">📅</div>
+        <div>
+          <div class="perf-label">1 Week Performance</div>
+          <div class="perf-val pos" id="perf-1w">—</div>
+          <div class="perf-date">vs last week</div>
+        </div>
+      </div>
+      <div class="perf-card">
+        <div class="perf-icon" style="background:rgba(45,212,191,.1);">📅</div>
+        <div>
+          <div class="perf-label">1 Month Performance</div>
+          <div class="perf-val pos" id="perf-1m">—</div>
+          <div class="perf-date">vs last month</div>
+        </div>
+      </div>
+      <div class="perf-card">
+        <div class="perf-icon" style="background:rgba(245,166,35,.1);">📅</div>
+        <div>
+          <div class="perf-label">1 Year Performance</div>
+          <div class="perf-val pos" id="perf-1y">—</div>
+          <div class="perf-date">vs last year</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+const API_URL = 'https://tiny-art-8473.dobbyop09.workers.dev/dashboard-indices';
+
+let INDICES = [];
+let selectedId = null;   // the row the user last clicked (drives card 2 + advances/sentiment/perf)
+let nifty50Id  = null;   // always drives card 1
+const starred  = new Set();
+
+// Sort state
+let sortField = null;   // 'w1' | 'm1' | 'y1'
+let sortDir   = 'desc';
+
+function fmt(n) {
+  return Math.abs(parseFloat(n)).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function fmtPct(n) {
+  return (parseFloat(n) >= 0 ? '+' : '') + parseFloat(n).toFixed(2) + '%';
+}
+function cls(n) { return parseFloat(n) >= 0 ? 'pos' : 'neg'; }
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function periodBadge(n) {
+  const v = parseFloat(n);
+  const c = Math.abs(v) < 0.05 ? 'flat' : v >= 0 ? 'pos' : 'neg';
+  return `<span class="period-badge ${c}">${fmtPct(n)}</span>`;
+}
+
+function mapIndex(raw, id) {
+  const pct = parseFloat(raw.percentChange) || 0;
+  let sentiment, sentimentColor, needle, sentimentSub;
+  if      (pct >=  1)   { sentiment='Bullish'; sentimentColor='#2DD4BF'; needle= 55; sentimentSub='Strong buying interest'; }
+  else if (pct >=  0.2) { sentiment='Bullish'; sentimentColor='#2DD4BF'; needle= 35; sentimentSub='Momentum is positive'; }
+  else if (pct >  -0.2) { sentiment='Neutral'; sentimentColor='#F5A623'; needle=  0; sentimentSub='Consolidation phase'; }
+  else if (pct >  -1)   { sentiment='Bearish'; sentimentColor='#FF5C6C'; needle=-35; sentimentSub='Selling pressure visible'; }
+  else                  { sentiment='Bearish'; sentimentColor='#FF5C6C'; needle=-55; sentimentSub='Weak institutional demand'; }
+
+  return {
+    id,
+    name:       raw.name        || '—',
+    screenerUrl:raw.screenerUrl || null,
+    last:       parseFloat(raw.last)          || 0,
+    change:     parseFloat(raw.variation)     || 0,
+    changePct:  pct,
+    prevClose:  parseFloat(raw.previousClose) || 0,
+    w1:         parseFloat(raw.oneWeekChange) || 0,
+    m1:         parseFloat(raw.oneMonthChange)|| 0,
+    y1:         parseFloat(raw.oneYearChange) || 0,
+    pe:         raw.pe  ?? '—',
+    pb:         raw.pb  ?? '—',
+    advances:   parseInt(raw.advances)  || 0,
+    declines:   parseInt(raw.declines)  || 0,
+    unchanged:  parseInt(raw.unchanged) || 0,
+    sentiment, sentimentColor, needle, sentimentSub,
+  };
+}
+
+async function fetchIndices() {
+  try {
+    const res = await fetch(`${API_URL}?t=${Date.now()}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const raw = await res.json();
+    INDICES = (Array.isArray(raw) ? raw : []).map((item, i) => mapIndex(item, i + 1));
+
+    // Pin card 1 to NIFTY 50 (first occurrence)
+    const n50 = INDICES.find(ix => ix.name.toUpperCase().includes('NIFTY 50'));
+    nifty50Id = n50 ? n50.id : (INDICES[0]?.id ?? 1);
+    updateCard1(nifty50Id);
+
+    // Card 2: keep selection if it still exists, else fall back to first non-nifty50
+    const stillExists = selectedId && INDICES.find(ix => ix.id === selectedId);
+    const fallback = INDICES.find(ix => ix.id !== nifty50Id) || INDICES[0];
+    selectIndex(stillExists ? selectedId : fallback?.id, false);
+
+    renderTable();
+  } catch (e) {
+    console.error('Failed to fetch indices:', e);
+    document.getElementById('tbl-body').innerHTML =
+      `<tr><td colspan="12" style="text-align:center;color:#FF5C6C;padding:24px;font-size:12px;">Could not load market indices. Please try again.</td></tr>`;
+  }
+}
+
+// ── Card 1 always shows NIFTY 50 ──────────────────────────────────
+function updateCard1(id) {
+  const idx = INDICES.find(i => i.id === id);
+  if (!idx) return;
+  document.getElementById('card1-label').textContent = idx.name;
+  const v1 = document.getElementById('card1-val');
+  v1.textContent = fmt(idx.last);
+  v1.className = 'scard-val ' + cls(idx.changePct);
+  const c1 = document.getElementById('card1-change');
+  const sign = idx.change >= 0 ? '+' : '';
+  c1.textContent = sign + fmt(idx.change) + ' (' + fmtPct(idx.changePct) + ')';
+  c1.className = 'scard-change ' + cls(idx.changePct);
+  const iconEl = document.getElementById('card1-icon');
+  const up = idx.changePct >= 0;
+  iconEl.style.background = up ? 'rgba(45,212,191,.1)' : 'rgba(255,92,108,.1)';
+  iconEl.style.color = up ? '#2DD4BF' : '#FF5C6C';
+  iconEl.innerHTML = up
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>`;
+}
+
+// ── Card 2 + advances/sentiment/perf track the clicked row ────────
+function selectIndex(id, rerender) {
+  if (!id) return;
+  selectedId = id;
+  const idx = INDICES.find(i => i.id === id);
+  if (!idx) return;
+
+  // Card 2
+  document.getElementById('card2-label').textContent = idx.name;
+  const v2 = document.getElementById('card2-val');
+  v2.textContent = fmt(idx.last);
+  v2.className = 'scard-val ' + cls(idx.changePct);
+  const c2 = document.getElementById('card2-change');
+  const sign = idx.change >= 0 ? '+' : '';
+  c2.textContent = sign + fmt(idx.change) + ' (' + fmtPct(idx.changePct) + ')';
+  c2.className = 'scard-change ' + cls(idx.changePct);
+  const icon2 = document.getElementById('card2-icon');
+  const up2 = idx.changePct >= 0;
+  icon2.style.background = up2 ? 'rgba(45,212,191,.1)' : 'rgba(255,92,108,.1)';
+  icon2.style.color = up2 ? '#2DD4BF' : '#FF5C6C';
+  icon2.innerHTML = up2
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>`;
+
+  // Advances / declines
+  document.getElementById('adv-index-tag').textContent = '· ' + idx.name;
+  document.getElementById('adv-num').textContent = idx.advances;
+  document.getElementById('dec-num').textContent = idx.declines;
+  document.getElementById('unch-num').textContent = idx.unchanged;
+  const total = (idx.advances + idx.declines + idx.unchanged) || 1;
+  document.getElementById('adv-bar-g').style.width = (idx.advances / total * 100) + '%';
+  document.getElementById('adv-bar-r').style.width = (idx.declines / total * 100) + '%';
+  document.getElementById('adv-bar-n').style.width = (idx.unchanged / total * 100) + '%';
+
+  // Sentiment
+  const sl = document.getElementById('sentiment-label');
+  sl.textContent = idx.sentiment;
+  sl.style.color = idx.sentimentColor;
+  document.getElementById('sentiment-sub').textContent = idx.sentimentSub;
+  document.getElementById('gauge-needle').setAttribute('transform', `rotate(${idx.needle}, 42, 46)`);
+
+  // Performance
+  ['1w','1m','1y'].forEach(k => {
+    const field = k.replace('1','').startsWith('w') ? 'w1' : k.replace('1','').startsWith('m') ? 'm1' : 'y1';
+    const el = document.getElementById(`perf-${k}`);
+    el.textContent = fmtPct(idx[field]);
+    el.className = 'perf-val ' + cls(idx[field]);
+  });
+
+  if (rerender !== false) renderTable();
+}
+
+// ── Sorting ───────────────────────────────────────────────────────
+function sortedIndices() {
+  if (!sortField) return [...INDICES];
+  return [...INDICES].sort((a, b) => {
+    const va = a[sortField], vb = b[sortField];
+    return sortDir === 'asc' ? va - vb : vb - va;
+  });
+}
+
+function updateSortUI() {
+  ['w1','m1','y1'].forEach(f => {
+    const el = document.getElementById(`th-${f}`);
+    if (!el) return;
+    const arrow = el.querySelector('.sort-arrow');
+    if (sortField === f) {
+      el.classList.add('active');
+      arrow.textContent = sortDir === 'asc' ? '▲' : '▼';
+    } else {
+      el.classList.remove('active');
+      arrow.textContent = '';
+    }
+  });
+}
+
+document.querySelectorAll('th[data-sort]').forEach(th => {
+  th.style.cursor = 'pointer';
+  th.addEventListener('click', () => {
+    const f = th.getAttribute('data-sort');
+    if (sortField === f) {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortField = f;
+      sortDir = 'desc';
+    }
+    updateSortUI();
+    renderTable();
+  });
+});
+
+// ── Render table ──────────────────────────────────────────────────
+function renderTable() {
+  const tbody = document.getElementById('tbl-body');
+  tbody.innerHTML = '';
+  sortedIndices().forEach((idx, i) => {
+    const sel = idx.id === selectedId;
+    const tr = document.createElement('tr');
+    if (sel) tr.classList.add('selected');
+    const chgCls = cls(idx.changePct);
+    const pSign = idx.change >= 0 ? '+' : '';
+    tr.innerHTML = `
+      <td class="row-num">${i + 1}</td>
+      <td><button class="star-btn ${starred.has(idx.id) ? 'starred' : ''}" data-id="${idx.id}">★</button></td>
+      <td style="font-weight:600;font-size:12px;color:#edf5ff;">${escHtml(idx.name)}</td>
+      <td style="color:#edf5ff;font-weight:600">${fmt(idx.last)}</td>
+      <td class="${chgCls}">${pSign}${fmt(idx.change)}</td>
+      <td><span class="badge ${chgCls}">${fmtPct(idx.changePct)}</span></td>
+      <td class="neutral">${fmt(idx.prevClose)}</td>
+      <td>${periodBadge(idx.w1)}</td>
+      <td>${periodBadge(idx.m1)}</td>
+      <td>${periodBadge(idx.y1)}</td>
+      <td class="neutral">${idx.pe}</td>
+      <td class="neutral">${idx.pb}</td>
+    `;
+    tr.addEventListener('click', e => {
+      if (e.target.classList.contains('star-btn')) return;
+      selectIndex(idx.id);
+    });
+    tbody.appendChild(tr);
+  });
+
+  document.querySelectorAll('.star-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const id = +btn.dataset.id;
+      starred.has(id) ? starred.delete(id) : starred.add(id);
+      btn.classList.toggle('starred');
+    });
+  });
+}
+
+async function refreshData() {
+  const btn = document.getElementById('refreshBtn');
+  const orig = btn.innerHTML;
+  btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Refreshing…`;
+  await fetchIndices();
+  btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Updated`;
+  setTimeout(() => { btn.innerHTML = orig; }, 1400);
+}
+
+document.getElementById('refreshBtn').addEventListener('click', refreshData);
+setInterval(() => { if (document.getElementById('autoRefreshToggle').checked) fetchIndices(); }, 60000);
+
+fetchIndices();
+</script>
+</body>
+</html>

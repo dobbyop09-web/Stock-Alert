@@ -5,6 +5,7 @@ import com.dobby.price_alert.constants.DashboardIndex;
 import com.dobby.price_alert.dto.nse.DashboardIndexData;
 import com.dobby.price_alert.dto.nse.IndexData;
 import com.dobby.price_alert.dto.nse.IndexResponseData;
+import com.dobby.price_alert.mapper.DashboardIndexMapper;
 import com.dobby.price_alert.service.R2UploadService;
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.ObjectMapper;
@@ -51,15 +52,7 @@ public class IndexDataRunner implements CommandLineRunner {
                                 return null;
                             }
 
-                            return DashboardIndexData.builder()
-                                    .name(data.getIndex())
-                                    .last(data.getLast())
-                                    .variation(data.getVariation())
-                                    .percentChange(data.getPercentChange())
-                                    .screenerUrl(
-                                            "https://www.screener.in/company/"
-                                                    + config.getScreenerSlug() + "/")
-                                    .build();
+                            return DashboardIndexMapper.map(data);
                         })
                         .filter(Objects::nonNull)
                         .toList();
