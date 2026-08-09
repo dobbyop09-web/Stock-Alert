@@ -627,7 +627,43 @@
     }
     .btn-modal-confirm:hover { background: rgba(45,212,191,.15); }
 
-    *::-webkit-scrollbar { width: 4px; height: 4px; }
+    /* ── Today's Change card: inline index snippet ── */
+    .kpi-card.has-index { flex-direction: row; align-items: stretch; gap: 0; }
+    .kpi-card.has-index .kpi-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .kpi-index-divider { width: 1px; background: rgba(255,255,255,.08); margin: 2px 12px; flex-shrink: 0; }
+    .kpi-index-snip {
+        flex-shrink: 0; display: flex; flex-direction: column; justify-content: center;
+        gap: 4px; cursor: pointer; padding: 2px 4px 2px 0; min-width: 74px;
+    }
+    .kpi-index-snip:hover .kpi-index-name { color: #cfe2f5; }
+    .kpi-index-name {
+        font-size: 9px; color: #4a6075; text-transform: uppercase;
+        letter-spacing: .06em; font-weight: 600; white-space: nowrap;
+        transition: color .15s ease;
+    }
+    .kpi-index-val { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.01em; white-space: nowrap; }
+    .kpi-index-val.pos { color: #2DD4BF; }
+    .kpi-index-val.neg { color: #FF5C6C; }
+    .kpi-index-last { font-size: 9px; color: #3a5060; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+    /* ── Indices modal (reuses fh- blurred-modal shell) ── */
+    .idx-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+    .idx-row {
+        display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        background: rgba(255,255,255,.03);
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 8px; padding: 10px 12px;
+        transition: border-color .15s ease, background .15s ease;
+    }
+    .idx-row:hover { border-color: rgba(255,255,255,.16); background: rgba(255,255,255,.05); }
+    .idx-row-left { min-width: 0; }
+    .idx-row-name { font-size: 11px; font-weight: 600; color: #cfe2f5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .idx-row-last { font-size: 10px; color: #4a6075; font-variant-numeric: tabular-nums; margin-top: 2px; }
+    .idx-row-right { text-align: right; flex-shrink: 0; }
+    .idx-row-pct { font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .idx-row-var { font-size: 9px; font-variant-numeric: tabular-nums; margin-top: 1px; }
+    .idx-row-pct.pos, .idx-row-var.pos { color: #2DD4BF; }
+    .idx-row-pct.neg, .idx-row-var.neg { color: #FF5C6C; }
     *::-webkit-scrollbar-track { background: transparent; }
     *::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 4px; }
 
@@ -1088,6 +1124,29 @@
     </div>
 </div>
 
+<!-- Market Indices modal -->
+<div class="fh-overlay" id="idxOverlay">
+    <div class="fh-modal" role="dialog" aria-modal="true" aria-labelledby="idxTitle" style="max-width:640px">
+        <div class="fh-head">
+            <div class="fh-head-left">
+                <div class="fh-head-icon" style="background:linear-gradient(135deg, rgba(245,166,35,.16), rgba(91,158,255,.12)); border-color:rgba(245,166,35,.25); color:#F5A623">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+                </div>
+                <div>
+                    <div class="fh-head-title" id="idxTitle">Market Indices</div>
+                    <div class="fh-head-sub" id="idxSub">Live NSE index levels</div>
+                </div>
+            </div>
+            <button class="fh-close" id="idxCloseBtn" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="fh-body" id="idxBody">
+            <div class="fh-loading"><div class="fh-spinner"></div>Loading indices…</div>
+        </div>
+    </div>
+</div>
+
 <script>
 (() => {
   const API_BASE = "https://tiny-art-8473.dobbyop09.workers.dev";
@@ -1507,6 +1566,68 @@
     renderFhModal();
   });
 
+  // ── Market Indices (NIFTY 50 + sector indices) ──────────────────
+  const idxOverlay  = document.getElementById("idxOverlay");
+  const idxBody     = document.getElementById("idxBody");
+  const idxSub      = document.getElementById("idxSub");
+  const idxCloseBtn = document.getElementById("idxCloseBtn");
+
+  let indexData = [];
+
+  function idxFind(name) {
+    return indexData.find(x => (x.name || "").toUpperCase() === name.toUpperCase()) || null;
+  }
+
+  async function loadIndexData() {
+    try {
+      const res = await fetch(`${API_BASE}/dashboard-indices`);
+      if (!res.ok) throw new Error("Failed");
+      const data = await res.json();
+      indexData = Array.isArray(data) ? data : [];
+    } catch (e) {
+      indexData = [];
+    }
+    computeKPIs();
+  }
+
+  function renderIdxModal() {
+    if (!indexData.length) {
+      idxBody.innerHTML = `<div class="fh-error">Could not load index data.</div>`;
+      return;
+    }
+    idxSub.textContent = `${indexData.length} indices · Live NSE levels`;
+    idxBody.innerHTML = `<div class="idx-grid">${indexData.map(ix => {
+      const pct = parseFloat(ix.percentChange), varn = parseFloat(ix.variation);
+      const cls = pct > 0 ? "pos" : pct < 0 ? "neg" : "";
+      const sign = pct > 0 ? "+" : "";
+      const url = ix.screenerUrl;
+      return `<a class="idx-row" ${url ? `href="${escAttr(url)}" target="_blank" rel="noopener"` : ""} style="text-decoration:none">
+        <div class="idx-row-left">
+          <div class="idx-row-name">${escHtml(ix.name || "—")}</div>
+          <div class="idx-row-last">${fhFmt(ix.last, 2)}</div>
+        </div>
+        <div class="idx-row-right">
+          <div class="idx-row-pct ${cls}">${sign}${isFinite(pct) ? pct.toFixed(2) : "—"}%</div>
+          <div class="idx-row-var ${cls}">${sign}${isFinite(varn) ? fhFmt(varn,2) : "—"}</div>
+        </div>
+      </a>`;
+    }).join("")}</div>`;
+  }
+
+  function openIdxModal() {
+    idxOverlay.classList.add("visible");
+    document.body.style.overflow = "hidden";
+    renderIdxModal();
+    if (!indexData.length) loadIndexData().then(renderIdxModal);
+  }
+  function closeIdxModal() {
+    idxOverlay.classList.remove("visible");
+    document.body.style.overflow = "";
+  }
+  idxCloseBtn.addEventListener("click", closeIdxModal);
+  idxOverlay.addEventListener("click", e => { if (e.target === idxOverlay) closeIdxModal(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && idxOverlay.classList.contains("visible")) closeIdxModal(); });
+
   // Token
   const saveToken  = t => { try { sessionStorage.setItem(TOKEN_KEY, t); } catch(e){} };
   const readToken  = () => { try { return sessionStorage.getItem(TOKEN_KEY); } catch(e){ return null; } };
@@ -1856,14 +1977,18 @@
     const todayChangePct=yesterdayValue>0?(todayChange/yesterdayValue)*100:0;
 
     const cards = [
-      { lbl:"Today's Change",
-        val:`${todayChange>=0?"+":""}₹${fmtMoney(todayChange)} (${todayChangePct>=0?"+":""}${todayChangePct.toFixed(2)}%)`,
-        cls:todayChange>=0?"pos":"neg",
-        note:`${gainers} up · ${losers} down`, noteCls:"",
-        accent:"#F5A623", iconBg:"rgba(245,166,35,.12)",
-        icon:'<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>'
+         { lbl:"Total Investment", val:`₹${fmtMoney(investment)}`, cls:"",
+        note:`Across ${holdings.length} stock${holdings.length===1?"":"s"}`, noteCls:"",
+        accent:"#5B9EFF", iconBg:"rgba(91,158,255,.12)",
+        icon:'<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>'
       },
-      { lbl:"Total Gain / Loss",
+        { lbl:"Current Value", val:`₹${fmtMoney(currentValue)}`, cls:"",
+        note:"Live market data", noteCls:"",
+        accent:"#8B5CF6", iconBg:"rgba(139,92,246,.12)",
+        icon:'<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>'
+      },
+   
+         { lbl:"Total Gain / Loss",
         val:`${gainLoss>=0?"+":""}₹${fmtMoney(gainLoss)} (${gainLossPct>=0?"+":""}${gainLossPct.toFixed(2)}%)`,
         cls:gainLoss>=0?"pos":"neg",
         note:best?`Best: ${best.symbol} ${best.pct>=0?"+":""}${best.pct.toFixed(2)}%`:"—",
@@ -1871,24 +1996,22 @@
         accent:"#2DD4BF", iconBg:"rgba(45,212,191,.12)",
         icon:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>'
       },
-      { lbl:"Current Value", val:`₹${fmtMoney(currentValue)}`, cls:"",
-        note:"Live market data", noteCls:"",
-        accent:"#8B5CF6", iconBg:"rgba(139,92,246,.12)",
-        icon:'<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>'
+    
+      { lbl:"Today's Change",
+        val:`${todayChange>=0?"+":""}₹${fmtMoney(todayChange)} (${todayChangePct>=0?"+":""}${todayChangePct.toFixed(2)}%)`,
+        cls:todayChange>=0?"pos":"neg",
+        note:`${gainers} up · ${losers} down`, noteCls:"",
+        accent:"#F5A623", iconBg:"rgba(245,166,35,.12)",
+        icon:'<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>'
       },
-      { lbl:"Total Investment", val:`₹${fmtMoney(investment)}`, cls:"",
-        note:`Across ${holdings.length} stock${holdings.length===1?"":"s"}`, noteCls:"",
-        accent:"#5B9EFF", iconBg:"rgba(91,158,255,.12)",
-        icon:'<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>'
-      },
+   
     ];
 
     // Insert the 4 standard cards, in order, before the FII card
+    const nifty = idxFind("NIFTY 50");
     cards.forEach(k => {
       const div = document.createElement("div");
-      div.className = "kpi-card";
-      div.style.cssText = `--accent:${k.accent}`;
-      div.innerHTML = `
+      const mainHtml = `
         <div class="kpi-icon-row">
           <div class="kpi-lbl">${k.lbl}</div>
           <div class="kpi-icon" style="background:${k.iconBg};color:${k.accent}">
@@ -1897,6 +2020,27 @@
         </div>
         <div class="kpi-val ${k.cls}">${k.val}</div>
         <div class="kpi-note ${k.noteCls}">${k.note}</div>`;
+
+      if (k.lbl === "Today's Change" && nifty) {
+        div.className = "kpi-card has-index";
+        div.style.cssText = `--accent:${k.accent}`;
+        const pct = parseFloat(nifty.percentChange);
+        const cls = pct > 0 ? "pos" : pct < 0 ? "neg" : "";
+        const sign = pct > 0 ? "+" : "";
+        div.innerHTML = `
+          <div class="kpi-main">${mainHtml}</div>
+          <div class="kpi-index-divider"></div>
+          <div class="kpi-index-snip" id="niftySnip" title="View all market indices">
+            <div class="kpi-index-name">${escHtml(nifty.name)}</div>
+            <div class="kpi-index-val ${cls}">${sign}${isFinite(pct) ? pct.toFixed(2) : "—"}%</div>
+            <div class="kpi-index-last">${fhFmt(nifty.last,2)}</div>
+          </div>`;
+        div.querySelector("#niftySnip").addEventListener("click", e => { e.stopPropagation(); openIdxModal(); });
+      } else {
+        div.className = "kpi-card";
+        div.style.cssText = `--accent:${k.accent}`;
+        div.innerHTML = mainHtml;
+      }
       kpiGrid.insertBefore(div, fiiCardEl);
     });
   }
@@ -2031,7 +2175,11 @@
   editBtn.addEventListener("click", enterEditMode);
   cancelBtn.addEventListener("click", cancelEdit);
   saveBtn.addEventListener("click", savePortfolio);
-  refreshBtn.addEventListener("click", () => { loadPortfolio(); loadFiiData(); if (fhOverlay.classList.contains("visible")) loadFhHistory(); });
+  refreshBtn.addEventListener("click", () => {
+    loadPortfolio(); loadFiiData(); loadIndexData();
+    if (fhOverlay.classList.contains("visible")) loadFhHistory();
+    if (idxOverlay.classList.contains("visible")) renderIdxModal();
+  });
   document.getElementById("loginCancelBtn").addEventListener("click", closeLoginModal);
   document.getElementById("loginSubmitBtn").addEventListener("click", submitLogin);
   document.getElementById("saleCancelBtn").addEventListener("click", closeSaleModal);
@@ -2048,7 +2196,8 @@
     if (ok) { sessionToken=token; updateAuthUI(true,payload.u); loadPortfolio(); }
     else { if (token) clearToken(); updateAuthUI(false); openLoginModal(); }
     loadSymbolList();
-    loadFiiData(); // load FII/DII data independently of auth
+    loadFiiData();   // load FII/DII data independently of auth
+    loadIndexData(); // load market indices independently of auth
   }
   init();
 })();
