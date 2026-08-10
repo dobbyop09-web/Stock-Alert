@@ -51,6 +51,23 @@ function sortByMarketCap() {
 
     render();
 }
+function sortByDayChange() {
+    const btn = document.getElementById("sortDayChangeBtn");
+
+    state.rows.sort((a, b) =>
+        state.dayChangeAscending
+            ? a.changePercent - b.changePercent
+            : b.changePercent - a.changePercent
+    );
+
+    state.dayChangeAscending = !state.dayChangeAscending;
+
+    btn.textContent = state.dayChangeAscending
+        ? "Current / Day Change ↑"
+        : "Current / Day Change ↓";
+
+    render();
+}
 
 export function initFilters() {
     document.getElementById("searchBox").addEventListener("input", applyFilters);
@@ -69,4 +86,5 @@ export function initFilters() {
 
     document.getElementById("sortBtn").addEventListener("click", sortByDistance);
     document.getElementById("sortMcBtn").addEventListener("click", sortByMarketCap);
+    document.getElementById("sortDayChangeBtn").addEventListener("click", sortByDayChange);
 }

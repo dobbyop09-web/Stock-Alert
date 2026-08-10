@@ -1921,6 +1921,443 @@
         transform: rotate(360deg);
       }
     }
+
+    /* ── Sector Allocation clickable card ── */
+    .sector-clickable {
+      cursor: pointer;
+      transition:
+        border-color .18s ease,
+        background .18s ease,
+        transform .18s ease,
+        box-shadow .18s ease;
+    }
+
+    .sector-clickable:hover {
+      border-color: rgba(45, 212, 191, .25);
+      background: #102131;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
+    }
+
+    .sector-modal {
+      max-width: 1060px;
+      max-height: 92vh;
+    }
+
+    .sector-modal-icon {
+      background: linear-gradient(135deg,
+          rgba(45, 212, 191, .16),
+          rgba(91, 158, 255, .12));
+
+      border-color: rgba(45, 212, 191, .25);
+      color: #2DD4BF;
+    }
+
+    #sectorModalBody {
+      padding: 16px 18px 18px;
+    }
+
+    /* ── Sector KPI Cards ── */
+
+    .sector-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .sector-kpi-card {
+      position: relative;
+      min-width: 0;
+      padding: 14px 15px 13px;
+
+      background: #0e1d2b;
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 9px;
+
+      overflow: hidden;
+    }
+
+    .sector-kpi-card::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 2px;
+
+      background: var(--sector-accent, transparent);
+    }
+
+    .sector-kpi-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-bottom: 9px;
+    }
+
+    .sector-kpi-icon svg {
+      width: 15px;
+      height: 15px;
+    }
+
+
+    /* Icon colors */
+
+    .sector-kpi-icon.invested {
+      color: #2DD4BF;
+      background: rgba(45, 212, 191, .12);
+    }
+
+    .sector-kpi-icon.current {
+      color: #8B5CF6;
+      background: rgba(139, 92, 246, .12);
+    }
+
+    .sector-kpi-icon.gain {
+      color: #2DD4BF;
+      background: rgba(45, 212, 191, .12);
+    }
+
+    .sector-kpi-icon.best {
+      color: #F5A623;
+      background: rgba(245, 166, 35, .12);
+    }
+
+    .sector-kpi-icon.sectors {
+      color: #5B9EFF;
+      background: rgba(91, 158, 255, .12);
+    }
+
+
+    /* Accent lines */
+
+    .sector-kpi-card:nth-child(1) {
+      --sector-accent: #2DD4BF;
+    }
+
+    .sector-kpi-card:nth-child(2) {
+      --sector-accent: #8B5CF6;
+    }
+
+    .sector-kpi-card:nth-child(3) {
+      --sector-accent: #2DD4BF;
+    }
+
+    .sector-kpi-card:nth-child(4) {
+      --sector-accent: #F5A623;
+    }
+
+    .sector-kpi-card:nth-child(5) {
+      --sector-accent: #5B9EFF;
+    }
+
+
+    .sector-kpi-label {
+      font-size: 10px;
+      color: #4a6075;
+
+      margin-bottom: 5px;
+
+      white-space: nowrap;
+    }
+
+
+    .sector-kpi-value {
+      font-size: 17px;
+      line-height: 1.15;
+
+      font-weight: 700;
+      color: #edf5ff;
+
+      letter-spacing: -.02em;
+      font-variant-numeric: tabular-nums;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+
+    .sector-kpi-value.pos {
+      color: #2DD4BF;
+    }
+
+    .sector-kpi-value.neg {
+      color: #FF5C6C;
+    }
+
+
+    .sector-kpi-note {
+      margin-top: 5px;
+
+      font-size: 10px;
+      color: #4a6075;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sector-kpi-note.pos {
+      color: rgba(45, 212, 191, .8);
+    }
+
+    .sector-kpi-note.neg {
+      color: rgba(255, 92, 108, .8);
+    }
+
+
+    /* Responsive */
+
+    @media (max-width: 900px) {
+      .sector-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .sector-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    /* ── Sector Summary ── */
+
+.sector-summary {
+    margin-top: 14px;
+
+    background: #0e1d2b;
+    border: 1px solid rgba(255, 255, 255, .07);
+    border-radius: 9px;
+
+    overflow: hidden;
+}
+
+
+/* Header */
+
+.sector-summary-head {
+    min-height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 14px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, .06);
+
+    gap: 12px;
+}
+
+.sector-summary-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #dce8f4;
+}
+
+
+/* Right-side controls */
+
+.sector-summary-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sector-sort {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    font-size: 10px;
+    color: #7f93a8;
+}
+
+.sector-sort select {
+    height: 30px;
+
+    padding: 0 28px 0 10px;
+
+    border-radius: 7px;
+    border: 1px solid rgba(255, 255, 255, .09);
+
+    background: #101f2e;
+    color: #cfe2f5;
+
+    font-size: 10px;
+    outline: none;
+
+    cursor: pointer;
+}
+
+.sector-sort select:hover {
+    border-color: rgba(45, 212, 191, .25);
+}
+
+
+/* Export */
+
+.sector-export-btn {
+    height: 30px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 0 10px;
+
+    border-radius: 7px;
+    border: 1px solid rgba(255, 255, 255, .09);
+
+    background: rgba(255, 255, 255, .02);
+    color: #8fa3bc;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.sector-export-btn:hover {
+    color: #dce8f4;
+    border-color: rgba(255, 255, 255, .16);
+    background: rgba(255, 255, 255, .04);
+}
+
+.sector-export-btn svg {
+    width: 13px;
+    height: 13px;
+}
+
+
+/* ── Table ── */
+
+.sector-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.sector-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    table-layout: fixed;
+}
+
+
+/* Header */
+
+.sector-table thead th {
+    height: 40px;
+
+    padding: 0 12px;
+
+    background: rgba(255, 255, 255, .015);
+    border-bottom: 1px solid rgba(255, 255, 255, .05);
+
+    color: #52677b;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: .055em;
+
+    text-align: right;
+
+    white-space: nowrap;
+}
+
+.sector-table thead th:first-child {
+    width: 18%;
+    text-align: left;
+}
+
+.sector-table thead th:nth-child(2) {
+    width: 13%;
+}
+
+.sector-table thead th:nth-child(3) {
+    width: 14%;
+}
+
+.sector-table thead th:nth-child(4) {
+    width: 13%;
+}
+
+.sector-table thead th:nth-child(5) {
+    width: 12%;
+}
+
+.sector-table thead th:nth-child(6) {
+    width: 17%;
+}
+
+.sector-table thead th:nth-child(7) {
+    width: 11%;
+}
+
+.sector-table thead th:last-child {
+    width: 3%;
+}
+
+
+/* Rows */
+
+.sector-table tbody tr {
+    height: 43px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, .035);
+
+    transition: background .15s ease;
+}
+
+.sector-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.sector-table tbody tr:hover {
+    background: rgba(255, 255, 255, .025);
+}
+
+
+/* Cells */
+
+.sector-table tbody td {
+    padding: 0 12px;
+
+    color: #cfe2f5;
+
+    font-size: 10.5px;
+
+    text-align: right;
+
+    white-space: nowrap;
+
+    font-variant-numeric: tabular-nums;
+}
+
+.sector-table tbody td:first-child {
+    text-align: left;
+}
+
+
+/* Empty state */
+
+.sector-table-empty {
+    height: 90px;
+
+    text-align: center !important;
+
+    color: #4a6075 !important;
+
+    font-size: 11px !important;
+}
   </style>
 </head>
 
@@ -1928,12 +2365,12 @@
   <div class="shell">
 
     <!-- ══ SIDEBAR ══ -->
-  <aside class="sb" id="sidebar">
+    <aside class="sb" id="sidebar">
       <nav class="sb-nav">
         <a href="index.html" class="sb-link" data-title="Dashboard">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
             stroke-linejoin="round">
-    
+
             <path d="M18 10a6 6 0 0 0-12 0c0 7-3 7-3 8h18c0-1-3-1-3-8" />
             <path d="M10 21h4" />
             <circle cx="18.5" cy="5.5" r="2.2" fill="currentColor" stroke="none" />
@@ -1942,26 +2379,26 @@
         <a href="watchlist.html" class="sb-link" data-title="Market Watchlist">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
             stroke-linejoin="round">
-    
+
             <!-- Eye -->
             <path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z" />
             <circle cx="12" cy="12" r="2.5" />
-    
+
             <!-- Trend -->
             <path d="M14.5 19.5l3-3 2 1.5 3-4" />
           </svg>
         </a>
         <a href="heatmap.html" class="sb-link" data-title="Heat Map">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
-    
+
             <rect x="3" y="3" width="5" height="5" />
             <rect x="10" y="3" width="5" height="5" />
             <rect x="17" y="3" width="4" height="5" />
-    
+
             <rect x="3" y="10" width="5" height="5" />
             <rect x="10" y="10" width="5" height="5" />
             <rect x="17" y="10" width="4" height="5" />
-    
+
             <rect x="3" y="17" width="5" height="4" />
             <rect x="10" y="17" width="5" height="4" />
             <rect x="17" y="17" width="4" height="4" />
@@ -1970,22 +2407,22 @@
         <a href="admin.html" class="sb-link active" data-title="Holdings">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
             stroke-linejoin="round">
-    
+
             <path d="M12 3a9 9 0 1 0 9 9h-9V3Z" />
             <path d="M15 3.5A9 9 0 0 1 20.5 9H15V3.5Z" />
           </svg>
         </a>
-    
+
         <a href="realized-profit.html" class="sb-link" data-title="Realised P&L">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
             stroke-linejoin="round">
-    
+
             <!-- Trend -->
             <polyline points="3,17 8,12 12,15 20,7" />
-    
+
             <!-- Arrow -->
             <polyline points="15,7 20,7 20,12" />
-    
+
             <!-- Rupee -->
             <path d="M5 6h4.5" />
             <path d="M5 9h4.5" />
@@ -1996,13 +2433,13 @@
         <a href="gtt-orders.html" class="sb-link" data-title="GTT Orders">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
             stroke-linejoin="round">
-    
+
             <!-- Clock -->
             <circle cx="12" cy="12" r="8.5" />
-    
+
             <!-- Hands -->
             <path d="M12 7v5l3.5 2" />
-    
+
             <!-- Trigger dots -->
             <circle cx="12" cy="3" r="0.8" fill="currentColor" stroke="none" />
             <circle cx="20.5" cy="12" r="0.8" fill="currentColor" stroke="none" />
@@ -2011,15 +2448,15 @@
         <a href="all-transactions.html" class="sb-link" data-title="All Trades">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
             stroke-linejoin="round">
-    
+
             <!-- Document -->
             <path d="M5 3h10l4 4v14H5V3Z" />
             <path d="M15 3v5h4" />
-    
+
             <!-- Document lines -->
             <path d="M8 11h6" />
             <path d="M8 14h4" />
-    
+
             <!-- Mini chart -->
             <path d="M8 18v-2" />
             <path d="M12 18v-4" />
@@ -2202,8 +2639,8 @@
             </div>
 
             <!-- Sidebar -->
-            <aside class="side-col" id="sideCol">
-              <div class="panel" id="sectorPanel">
+            <aside class="side-col " id="sideCol">
+              <div class="panel sector-clickable" id="sectorPanel">
                 <div class="panel-title">Allocation by Sector</div>
                 <div class="donut-layout">
                   <div class="donut-wrap" id="sectorDonutWrap"></div>
@@ -2339,6 +2776,255 @@
           <div class="fh-spinner"></div>Loading indices…
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Sector Allocation Modal -->
+  <div class="fh-overlay" id="sectorOverlay">
+    <div class="fh-modal sector-modal" role="dialog" aria-modal="true" aria-labelledby="sectorModalTitle">
+
+      <!-- Header -->
+      <div class="fh-head">
+        <div class="fh-head-left">
+
+          <div class="fh-head-icon sector-modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M4 19V5" />
+              <path d="M4 19h16" />
+              <rect x="7" y="11" width="3" height="5" rx="1" />
+              <rect x="12" y="8" width="3" height="8" rx="1" />
+              <rect x="17" y="5" width="3" height="11" rx="1" />
+            </svg>
+          </div>
+
+          <div>
+            <div class="fh-head-title" id="sectorModalTitle">
+              Allocation by Sector
+            </div>
+
+            <div class="fh-head-sub">
+              Detailed breakdown of your current investment by sector
+            </div>
+          </div>
+
+        </div>
+
+        <button class="fh-close" id="sectorCloseBtn" aria-label="Close">
+
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="fh-body" id="sectorModalBody">
+
+        <!-- Sector KPI Cards -->
+        <div class="sector-kpi-grid">
+
+          <!-- Total Invested -->
+          <div class="sector-kpi-card">
+            <div class="sector-kpi-icon invested">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <ellipse cx="12" cy="6" rx="8" ry="3"></ellipse>
+                <path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6"></path>
+                <path d="M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"></path>
+              </svg>
+            </div>
+
+            <div class="sector-kpi-label">
+              Total Invested
+            </div>
+
+            <div class="sector-kpi-value" id="sectorTotalInvested">
+              ₹—
+            </div>
+
+            <div class="sector-kpi-note">
+              Across <span id="sectorCountInvested">—</span> sectors
+            </div>
+          </div>
+
+
+          <!-- Current Value -->
+          <div class="sector-kpi-card">
+            <div class="sector-kpi-icon current">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M21 12a9 9 0 1 1-9-9"></path>
+                <path d="M21 3v6h-6"></path>
+              </svg>
+            </div>
+
+            <div class="sector-kpi-label">
+              Current Value
+            </div>
+
+            <div class="sector-kpi-value" id="sectorCurrentValue">
+              ₹—
+            </div>
+
+            <div class="sector-kpi-note">
+              Live market value
+            </div>
+          </div>
+
+
+          <!-- Gain / Loss -->
+          <div class="sector-kpi-card">
+            <div class="sector-kpi-icon gain">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <polyline points="3 17 9 11 13 15 21 7"></polyline>
+                <polyline points="15 7 21 7 21 13"></polyline>
+              </svg>
+            </div>
+
+            <div class="sector-kpi-label">
+              Total Gain / Loss
+            </div>
+
+            <div class="sector-kpi-value pos" id="sectorGainLoss">
+              +₹—
+            </div>
+
+            <div class="sector-kpi-note pos" id="sectorGainLossPct">
+              +—%
+            </div>
+          </div>
+
+
+          <!-- Best Sector -->
+          <div class="sector-kpi-card">
+            <div class="sector-kpi-icon best">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M8 21h8"></path>
+                <path d="M12 17v4"></path>
+                <path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"></path>
+                <path d="M7 6H4a4 4 0 0 0 4 4"></path>
+                <path d="M17 6h3a4 4 0 0 1-4 4"></path>
+              </svg>
+            </div>
+
+            <div class="sector-kpi-label">
+              Best Sector
+            </div>
+
+            <div class="sector-kpi-value" id="sectorBestName">
+              —
+            </div>
+
+            <div class="sector-kpi-note pos" id="sectorBestPct">
+              +—%
+            </div>
+          </div>
+
+
+          <!-- Number of Sectors -->
+          <div class="sector-kpi-card">
+            <div class="sector-kpi-icon sectors">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="8"></circle>
+                <path d="M12 4v8l6 4"></path>
+              </svg>
+            </div>
+
+            <div class="sector-kpi-label">
+              No. of Sectors
+            </div>
+
+            <div class="sector-kpi-value" id="sectorCount">
+              —
+            </div>
+
+            <div class="sector-kpi-note">
+              Diversified
+            </div>
+          </div>
+
+        </div>
+        <!-- Sector Summary -->
+<div class="sector-summary">
+
+  <!-- Section Header -->
+  <div class="sector-summary-head">
+
+    <div class="sector-summary-title">
+      Sector Summary
+    </div>
+
+    <div class="sector-summary-actions">
+
+      <div class="sector-sort">
+        <span>Sort by</span>
+
+        <select id="sectorSortSelect">
+          <option value="invested">Invested Amount</option>
+          <option value="current">Current Value</option>
+          <option value="gain">Gain / Loss</option>
+          <option value="gainPct">Gain / Loss %</option>
+          <option value="allocation">Allocation</option>
+        </select>
+      </div>
+
+      <button class="sector-export-btn" id="sectorExportBtn">
+        <svg viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round">
+          <path d="M12 3v12"></path>
+          <path d="m7 10 5 5 5-5"></path>
+          <path d="M5 21h14"></path>
+        </svg>
+
+        Export
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- Table -->
+  <div class="sector-table-wrap">
+
+    <table class="sector-table">
+
+      <thead>
+        <tr>
+          <th>Sector</th>
+          <th>Invested ₹</th>
+          <th>Current Value ₹</th>
+          <th>Gain / Loss ₹</th>
+          <th>Gain / Loss %</th>
+          <th>Allocation ₹</th>
+          <th>No. of Stocks</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody id="sectorSummaryBody">
+        <!-- Rows will be generated by JavaScript -->
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+        
+
+      </div>
+
     </div>
   </div>
 
@@ -2749,6 +3435,39 @@
 
       fiiCard.addEventListener("click", openFhModal);
       fiiCard.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openFhModal(); } });
+      // ── Sector Allocation Modal ──────────────────────────────────────
+      const sectorPanel = document.getElementById("sectorPanel");
+      const sectorOverlay = document.getElementById("sectorOverlay");
+      const sectorCloseBtn = document.getElementById("sectorCloseBtn");
+
+      function openSectorModal() {
+        sectorOverlay.classList.add("visible");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeSectorModal() {
+        sectorOverlay.classList.remove("visible");
+        document.body.style.overflow = "";
+      }
+
+      sectorPanel.addEventListener("click", openSectorModal);
+
+      sectorCloseBtn.addEventListener("click", closeSectorModal);
+
+      sectorOverlay.addEventListener("click", e => {
+        if (e.target === sectorOverlay) {
+          closeSectorModal();
+        }
+      });
+
+      document.addEventListener("keydown", e => {
+        if (
+          e.key === "Escape" &&
+          sectorOverlay.classList.contains("visible")
+        ) {
+          closeSectorModal();
+        }
+      });
       fhCloseBtn.addEventListener("click", closeFhModal);
       fhOverlay.addEventListener("click", e => { if (e.target === fhOverlay) closeFhModal(); });
       document.addEventListener("keydown", e => { if (e.key === "Escape" && fhOverlay.classList.contains("visible")) closeFhModal(); });
