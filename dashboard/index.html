@@ -19,6 +19,7 @@
         <!-- ══ Icon sidebar — same as the Portfolio page ══ -->
         <aside class="sb">
             <nav class="sb-nav">
+
                 <a href="index.html" class="sb-link active" data-title="Dashboard">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="7" />
@@ -27,64 +28,70 @@
                         <rect x="3" y="14" width="7" height="7" />
                     </svg>
                 </a>
-                <a href="watchlist.html" class="sb-link active" data-title="Market Watchlist">
+
+                <a href="watchlist.html" class="sb-link" data-title="Market Watchlist">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 3v18h18"/><path d="M7 12l4-4 3 3 4-6"/>
+                        <path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3z" />
                     </svg>
                 </a>
+
                 <a href="heatmap.html" class="sb-link" data-title="Heat Map">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10" />
                         <path d="M12 2v20M2 12h20" />
                     </svg>
                 </a>
+
                 <a href="admin.html" class="sb-link" data-title="Portfolio">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 3h18v18H3z" />
                         <path d="M3 9h18M9 21V9" />
                     </svg>
                 </a>
+
             </nav>
         </aside>
 
         <!-- ══ Main app column ══ -->
         <div class="app-main">
 
-  <header class="topbar">
-    <div class="topbar-top">
-        <div class="topbar-title">
-            <h1>Stock Dashboard</h1>
-            <p class="sub" id="subline">Loading...</p>
-        </div>
-        <div class="topbar-right">
-            <span id="refreshMsg"></span>
+            <header class="topbar">
+                <div class="topbar-top">
+                    <div class="topbar-title">
+                        <h1>Stock Dashboard</h1>
+                        <p class="sub" id="subline">Loading...</p>
+                    </div>
+                    <div class="topbar-right">
+                        <span id="refreshMsg"></span>
 
-            <button id="refreshBtn" class="btn-ghost">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="23 4 23 10 17 10" />
-                    <polyline points="1 20 1 14 7 14" />
-                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-                </svg>
-                Refresh Now
-            </button>
-            <button id="loginBtn" class="btn-ghost" disabled>Loading Google Sign-In…</button>
-            <span id="authStatus"></span>
-        </div>
-    </div>
+                        <button id="refreshBtn" class="btn-ghost">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="23 4 23 10 17 10" />
+                                <polyline points="1 20 1 14 7 14" />
+                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                            </svg>
+                            Refresh Now
+                        </button>
+                        <button id="loginBtn" class="btn-ghost" disabled>Loading Google Sign-In…</button>
+                        <span id="authStatus"></span>
+                    </div>
+                </div>
 
-    <div class="ticker-scroll">
-        <div class="ticker" id="indexTicker">
-            <!-- rendered by JS -->
-        </div>
-    </div>
-</header>
+                <div class="ticker-scroll">
+                    <div class="ticker" id="indexTicker">
+                        <!-- rendered by JS -->
+                    </div>
+                </div>
+            </header>
 
             <div class="content" id="content">
                 <div class="page-body">
 
                     <aside class="sidebar">
                         <div class="sidebar-search">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
                                 <circle cx="11" cy="11" r="8" />
                                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
                             </svg>
