@@ -10,4 +10,5 @@ export const state = {
     accessToken: sessionStorage.getItem("accessToken"),
     tokenClient: null,
     marketCapAscending: false,
+    dayChangeAscending: false,
 };
