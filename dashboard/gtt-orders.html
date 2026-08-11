@@ -351,12 +351,11 @@
 <div class="shell">
 
   <!-- ══ SIDEBAR ══ -->
- <aside class="sb" id="sidebar">
+  <aside class="sb" id="sidebar">
       <nav class="sb-nav">
         <a href="index.html" class="sb-link" data-title="Dashboard">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
             stroke-linejoin="round">
-    
             <path d="M18 10a6 6 0 0 0-12 0c0 7-3 7-3 8h18c0-1-3-1-3-8" />
             <path d="M10 21h4" />
             <circle cx="18.5" cy="5.5" r="2.2" fill="currentColor" stroke="none" />
@@ -365,26 +364,19 @@
         <a href="watchlist.html" class="sb-link" data-title="Market Watchlist">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
             stroke-linejoin="round">
-    
-            <!-- Eye -->
             <path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z" />
             <circle cx="12" cy="12" r="2.5" />
-    
-            <!-- Trend -->
             <path d="M14.5 19.5l3-3 2 1.5 3-4" />
           </svg>
         </a>
         <a href="heatmap.html" class="sb-link" data-title="Heat Map">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
-    
             <rect x="3" y="3" width="5" height="5" />
             <rect x="10" y="3" width="5" height="5" />
             <rect x="17" y="3" width="4" height="5" />
-    
             <rect x="3" y="10" width="5" height="5" />
             <rect x="10" y="10" width="5" height="5" />
             <rect x="17" y="10" width="4" height="5" />
-    
             <rect x="3" y="17" width="5" height="4" />
             <rect x="10" y="17" width="5" height="4" />
             <rect x="17" y="17" width="4" height="4" />
@@ -393,23 +385,15 @@
         <a href="admin.html" class="sb-link" data-title="Holdings">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
             stroke-linejoin="round">
-    
             <path d="M12 3a9 9 0 1 0 9 9h-9V3Z" />
             <path d="M15 3.5A9 9 0 0 1 20.5 9H15V3.5Z" />
           </svg>
         </a>
-    
         <a href="realized-profit.html" class="sb-link" data-title="Realised P&L">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
             stroke-linejoin="round">
-    
-            <!-- Trend -->
             <polyline points="3,17 8,12 12,15 20,7" />
-    
-            <!-- Arrow -->
             <polyline points="15,7 20,7 20,12" />
-    
-            <!-- Rupee -->
             <path d="M5 6h4.5" />
             <path d="M5 9h4.5" />
             <path d="M7 6c2.5 0 3.5 1.2 3.5 2.5S9.5 11 7 11" />
@@ -419,14 +403,8 @@
         <a href="gtt-orders.html" class="sb-link active" data-title="GTT Orders">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
             stroke-linejoin="round">
-    
-            <!-- Clock -->
             <circle cx="12" cy="12" r="8.5" />
-    
-            <!-- Hands -->
             <path d="M12 7v5l3.5 2" />
-    
-            <!-- Trigger dots -->
             <circle cx="12" cy="3" r="0.8" fill="currentColor" stroke="none" />
             <circle cx="20.5" cy="12" r="0.8" fill="currentColor" stroke="none" />
           </svg>
@@ -434,16 +412,10 @@
         <a href="all-transactions.html" class="sb-link" data-title="All Trades">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
             stroke-linejoin="round">
-    
-            <!-- Document -->
             <path d="M5 3h10l4 4v14H5V3Z" />
             <path d="M15 3v5h4" />
-    
-            <!-- Document lines -->
             <path d="M8 11h6" />
             <path d="M8 14h4" />
-    
-            <!-- Mini chart -->
             <path d="M8 18v-2" />
             <path d="M12 18v-4" />
             <path d="M16 18v-6" />
@@ -894,7 +866,6 @@
      CUSTOM DROPDOWN COMPONENT
   ══════════════════════════════════════ */
   function initCustomDropdown(cfg) {
-    // cfg: { triggerId, menuId, labelId, wrapperId, onChange }
     const trigger = document.getElementById(cfg.triggerId);
     const menu    = document.getElementById(cfg.menuId);
     const labelEl = document.getElementById(cfg.labelId);
@@ -903,7 +874,6 @@
     trigger.addEventListener("click", e => {
       e.stopPropagation();
       const isOpen = menu.style.display === "block";
-      // Close all other menus
       document.querySelectorAll(".custom-dropdown-menu").forEach(m => { m.style.display = "none"; });
       document.querySelectorAll(".custom-dropdown-trigger").forEach(t => { t.classList.remove("open"); });
       if (!isOpen) {
@@ -917,15 +887,11 @@
       if (!opt) return;
       const val = opt.dataset.value;
       currentVal = val;
-      // Update label
       labelEl.textContent = opt.textContent.trim().replace(/[\u2713✓]/g, "").trim();
-      // Update selected state
       menu.querySelectorAll(".custom-dropdown-option").forEach(o => o.classList.remove("selected"));
       opt.classList.add("selected");
-      // Has-value styling
       if (val) trigger.classList.add("has-value");
       else     trigger.classList.remove("has-value");
-      // Close
       menu.style.display = "none";
       trigger.classList.remove("open");
       cfg.onChange(val);
@@ -945,7 +911,6 @@
     };
   }
 
-  // Close dropdowns on outside click
   document.addEventListener("click", () => {
     document.querySelectorAll(".custom-dropdown-menu").forEach(m => { m.style.display = "none"; });
     document.querySelectorAll(".custom-dropdown-trigger").forEach(t => { t.classList.remove("open"); });
@@ -1312,25 +1277,83 @@
     const active    = gttOrders.filter(o => o.status === "Active");
     const triggered = gttOrders.filter(o => o.status === "Triggered");
     const total     = gttOrders.length;
-    const activeRate = total ? ((active.length / total)*100).toFixed(1) : "0";
-    const today = new Date().toDateString();
-    const triggeredToday = triggered.filter(o => o.triggeredOn && new Date(o.triggeredOn).toDateString() === today).length;
+
+    // Filter active orders that are in the near category (≤ 2%)
+    const near2Orders = active.filter(o => {
+      const d = getDiffPercentValue(o);
+      return d !== null && d <= 2;
+    });
+    const near2Amount = near2Orders.reduce((sum, o) => {
+      const price = o.conditionPrice || o.targetPrice;
+      return sum + (parseFloat(price) || 0) * (parseInt(o.quantity) || 0);
+    }, 0);
+
+    // Filter active orders that are in the near future category (≤ 5% - yellow)
+    const near5Orders = active.filter(o => {
+      const d = getDiffPercentValue(o);
+      return d !== null && d <= 5;
+    });
+    const near5Amount = near5Orders.reduce((sum, o) => {
+      const price = o.conditionPrice || o.targetPrice;
+      return sum + (parseFloat(price) || 0) * (parseInt(o.quantity) || 0);
+    }, 0);
+
     const totalVal = active.reduce((sum,o) => {
       const price = o.targetPrice || o.conditionPrice;
       return sum + (parseFloat(price)||0) * (parseInt(o.quantity)||0);
     }, 0);
 
     const kpis = [
-      { lbl:"Total GTT Orders",  val:total,           noteCls:"teal",  note:`${active.length} active`,    accent:"#2DD4BF", iconBg:"rgba(45,212,191,.1)",   valCls:"",
-        icon:'<path d="M18 20V10M12 20V4M6 20v-6"/><circle cx="18" cy="7" r="2" fill="currentColor" stroke="none"/>' },
-      { lbl:"Active Orders",     val:active.length,   noteCls:"teal",  note:`${activeRate}% of total`,   accent:"#2DD4BF", iconBg:"rgba(45,212,191,.1)",   valCls:"teal",
-        icon:'<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>' },
-      { lbl:"Triggered Today",   val:triggeredToday,  noteCls:"amber", note:"Today",                     accent:"#F5A623", iconBg:"rgba(245,166,35,.1)",  valCls:"amber",
-        icon:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>' },
-      { lbl:"Total Triggered",   val:triggered.length,noteCls:"blue",  note:"All time",                  accent:"#5B9EFF", iconBg:"rgba(91,158,255,.1)",  valCls:"blue",
-        icon:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>' },
-      { lbl:"Active Value",      val:"₹ "+totalVal.toLocaleString("en-IN",{maximumFractionDigits:0}), noteCls:"muted", note:"Across active orders", accent:"#8B5CF6", iconBg:"rgba(139,92,246,.1)", valCls:"",
-        icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>' },
+      { 
+        lbl:"Total GTT Orders",  
+        val:total,           
+        noteCls:"teal",  
+        note:`${active.length} active`,    
+        accent:"#2DD4BF", 
+        iconBg:"rgba(45,212,191,.1)",   
+        valCls:"",
+        icon:'<path d="M18 20V10M12 20V4M6 20v-6"/><circle cx="18" cy="7" r="2" fill="currentColor" stroke="none"/>' 
+      },
+      { 
+        lbl:"Amount Required (≤ 2%)",     
+        val:"₹ "+near2Amount.toLocaleString("en-IN",{maximumFractionDigits:0}),   
+        noteCls:"teal",  
+        note:`${near2Orders.length} near trigger (≤2%)`,   
+        accent:"#2DD4BF", 
+        iconBg:"rgba(45,212,191,.1)",   
+        valCls:"teal",
+        icon:'<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>' 
+      },
+      { 
+        lbl:"Amt Req (Near Future)",   
+        val:"₹ "+near5Amount.toLocaleString("en-IN",{maximumFractionDigits:0}),  
+        noteCls:"amber", 
+        note:`${near5Orders.length} within 5% trigger`,                     
+        accent:"#F5A623", 
+        iconBg:"rgba(245,166,35,.1)",  
+        valCls:"amber",
+        icon:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>' 
+      },
+      { 
+        lbl:"Total Triggered",   
+        val:triggered.length,
+        noteCls:"blue",  
+        note:"All time",                  
+        accent:"#5B9EFF", 
+        iconBg:"rgba(91,158,255,.1)",  
+        valCls:"blue",
+        icon:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>' 
+      },
+      { 
+        lbl:"Active Value",      
+        val:"₹ "+totalVal.toLocaleString("en-IN",{maximumFractionDigits:0}), 
+        noteCls:"muted", 
+        note:"Across active orders", 
+        accent:"#8B5CF6", 
+        iconBg:"rgba(139,92,246,.1)", 
+        valCls:"",
+        icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>' 
+      },
     ];
 
     document.getElementById("kpiGrid").innerHTML = kpis.map(k => `
@@ -1581,45 +1604,41 @@
         const buyPrice  = parseFloat(currentOrder.buyPrice || 0);
         await mutatePortfolio(p => {
           p.closedTransactions.push({
-            symbol:    currentOrder.symbol,
-            quantity:  parseInt(currentOrder.quantity) || 1,
-            buyPrice:  isFinite(buyPrice) ? buyPrice : null,
-            buyDate:   currentOrder.buyDate || "",
-            sellPrice: isFinite(sellPrice) ? sellPrice : 0,
-            sellDate:  todayISO()
+            symbol:            currentOrder.symbol,
+            quantity:          parseInt(currentOrder.quantity) || 1,
+            buyPrice:          isFinite(buyPrice) ? buyPrice : null,
+            sellPrice:         sellPrice,
+            sellDate:          todayISO(),
+            realizedProfitLoss:(sellPrice - (isFinite(buyPrice) ? buyPrice : sellPrice)) * (parseInt(currentOrder.quantity) || 1)
           });
         });
         await patchGttStatus(orderId, "Triggered", { triggeredOn: nowISO() });
         const o = gttOrders.find(o=>o.id===orderId);
         if (o) { o.status = "Triggered"; o.triggeredOn = nowISO(); }
         closeGttModal();
-        showToast(`${currentOrder.symbol} sell recorded in Closed Transactions.`, "success");
+        showToast("Order moved to Closed Transactions.", "success");
 
       } else if (action === "trigger-buy") {
         const buyPrice = parseFloat(currentOrder.conditionPrice);
         await mutatePortfolio(p => {
           p.holdings.push({
-            symbol:       currentOrder.symbol,
-            quantity:     parseInt(currentOrder.quantity) || 1,
-            buyPrice:     isFinite(buyPrice) ? buyPrice : 0,
-            buyDate:      todayISO(),
-            targetAmount: currentOrder.targetPrice ? parseFloat(currentOrder.targetPrice) : ""
+            symbol:   currentOrder.symbol,
+            quantity: parseInt(currentOrder.quantity) || 1,
+            buyPrice: buyPrice,
+            buyDate:  todayISO()
           });
         });
         await patchGttStatus(orderId, "Triggered", { triggeredOn: nowISO() });
         const o = gttOrders.find(o=>o.id===orderId);
         if (o) { o.status = "Triggered"; o.triggeredOn = nowISO(); }
-        const symbol   = currentOrder.symbol;
-        const quantity = currentOrder.quantity;
         closeGttModal();
-        showToast(`${symbol}: ${quantity} shares added to Holdings.`, "info");
+        showToast("Order moved to Holdings.", "success");
       }
-
-      render();
     } catch(e) {
-      btn.disabled = false;
-      btn.textContent = "Retry";
-      showToast(`Error: ${e.message}`, "error");
+      showToast("Action failed. Please try again.", "error");
+    } finally {
+      if (btn) btn.disabled = false;
+      render();
     }
   }
 
@@ -1628,474 +1647,384 @@
     currentOrder = null;
   }
 
-  /* ══════════════════════════════════════
-     EDIT GTT MODAL
-  ══════════════════════════════════════ */
-  function openEditGttModal(orderId) {
-    const o = gttOrders.find(x => x.id === orderId);
-    if (!o) return;
-    editingOrder = o;
+  /* ── Modals & Controls ── */
+  document.getElementById("gttModalClose").addEventListener("click", closeGttModal);
+  
+  document.getElementById("gttStepChoose").addEventListener("click", e => {
+    const opt = e.target.closest(".gtt-action-option");
+    if (!opt) return;
+    const act = opt.dataset.action;
+    showConfirmStep(act);
+  });
 
-    document.getElementById("editGttHint").textContent = `${o.symbol} · ${o.type} · ${o.orderType} · ${o.exchange}`;
-    document.getElementById("editCondPrice").value = o.conditionPrice ?? "";
-    document.getElementById("editQuantity").value  = o.quantity ?? "";
+  // Edit Modal
+  function openEditModal(orderId) {
+    editingOrder = gttOrders.find(o => o.id === orderId);
+    if (!editingOrder) return;
+    document.getElementById("editCondPrice").value = editingOrder.conditionPrice || "";
+    document.getElementById("editQuantity").value  = editingOrder.quantity || "";
     document.getElementById("editGttError").textContent = "";
-
-    const saveBtn = document.getElementById("editGttSaveBtn");
-    saveBtn.disabled = false;
-    saveBtn.textContent = "Save Changes";
-
+    document.getElementById("editGttHint").textContent = `Editing ${editingOrder.symbol} (${editingOrder.type})`;
     editGttModal.classList.add("show");
-    setTimeout(() => document.getElementById("editCondPrice").focus(), 100);
   }
 
-  function closeEditGttModal() {
+  function closeEditModal() {
     editGttModal.classList.remove("show");
     editingOrder = null;
   }
 
-  async function saveEditGtt() {
+  document.getElementById("editGttCancelBtn").addEventListener("click", closeEditModal);
+  document.getElementById("editGttSaveBtn").addEventListener("click", async () => {
     if (!editingOrder) return;
+    const price = parseFloat(document.getElementById("editCondPrice").value);
+    const qty   = parseInt(document.getElementById("editQuantity").value);
     const errEl = document.getElementById("editGttError");
-    errEl.textContent = "";
 
-    const condPrice = parseFloat(document.getElementById("editCondPrice").value);
-    const qty       = parseInt(document.getElementById("editQuantity").value);
+    if (!isFinite(price) || price <= 0) { errEl.textContent = "Please enter a valid trigger price."; return; }
+    if (!isFinite(qty) || qty < 1)       { errEl.textContent = "Please enter a valid quantity."; return; }
 
-    if (!isFinite(condPrice) || condPrice <= 0) { errEl.textContent = "Enter a valid trigger price"; return; }
-    if (!isFinite(qty) || qty < 1)              { errEl.textContent = "Enter a valid quantity (≥ 1)"; return; }
+    const saveBtn = document.getElementById("editGttSaveBtn");
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving…";
 
-    const btn = document.getElementById("editGttSaveBtn");
-    btn.disabled = true;
-    btn.textContent = "Saving…";
+    const ok = await patchGttFields(editingOrder.id, { conditionPrice: price, quantity: qty });
+    saveBtn.disabled = false;
+    saveBtn.textContent = "Save Changes";
 
-    try {
-      const ok = await patchGttFields(editingOrder.id, { conditionPrice: condPrice, quantity: qty });
-      if (!ok) throw new Error("Failed to update order");
-      editingOrder.conditionPrice = condPrice;
-      editingOrder.quantity       = qty;
-      const symbol = editingOrder.symbol;
-      closeEditGttModal();
+    if (ok) {
+      editingOrder.conditionPrice = price;
+      editingOrder.quantity = qty;
+      closeEditModal();
+      showToast("GTT order updated successfully.", "success");
       render();
-      showToast(`${symbol}: trigger price / quantity updated.`, "success");
-    } catch(e) {
-      errEl.textContent = e.message || "Failed to update order.";
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Save Changes";
+    } else {
+      errEl.textContent = "Failed to update order. Try again.";
     }
-  }
+  });
 
-  /* ══════════════════════════════════════
-     CREATE GTT MODAL
-  ══════════════════════════════════════ */
-  window.setGttType = function(type) {
+  // Table clicks
+  document.getElementById("gttTbody").addEventListener("click", e => {
+    const closeBtn = e.target.closest(".btn-close-gtt");
+    if (closeBtn) {
+      openGttActionModal(closeBtn.dataset.id);
+      return;
+    }
+    const editBtn = e.target.closest(".btn-edit-gtt");
+    if (editBtn) {
+      openEditModal(editBtn.dataset.id);
+      return;
+    }
+    const cb = e.target.closest(".bulk-checkbox");
+    if (cb) {
+      const id = cb.dataset.id;
+      if (cb.checked) selectedOrders.add(id);
+      else selectedOrders.delete(id);
+      updateBulkSelectionUI();
+    }
+  });
+
+  // Tabs
+  document.getElementById("tabsBar").addEventListener("click", e => {
+    const btn = e.target.closest(".tab-btn");
+    if (!btn) return;
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    activeTab = btn.dataset.tab;
+    selectedOrders.clear();
+    const bulkHeader = document.getElementById("bulkSelectHeader");
+    const bulkDeleteBtn = document.getElementById("bulkDeleteBtn");
+    if (isBulkTab()) {
+      bulkDeleteMode = true;
+      bulkHeader.style.display = "table-cell";
+      bulkDeleteBtn.style.display = "inline-flex";
+    } else {
+      bulkDeleteMode = false;
+      bulkHeader.style.display = "none";
+      bulkDeleteBtn.style.display = "none";
+    }
+    renderTable();
+  });
+
+  // Bulk Delete Modal
+  const bulkDeleteConfirmModal = document.getElementById("bulkDeleteConfirmModal");
+  document.getElementById("bulkDeleteBtn").addEventListener("click", () => {
+    if (selectedOrders.size === 0) return;
+    document.getElementById("bulkDeleteConfirmTitle").textContent = `Delete ${selectedOrders.size} order(s)?`;
+    document.getElementById("bulkDeleteConfirmText").textContent = `Are you sure you want to delete ${selectedOrders.size} selected order(s)?`;
+    bulkDeleteConfirmModal.classList.add("show");
+  });
+
+  document.getElementById("bulkDeleteCancelBtn").addEventListener("click", () => {
+    bulkDeleteConfirmModal.classList.remove("show");
+  });
+
+  document.getElementById("bulkDeleteConfirmBtn").addEventListener("click", async () => {
+    const ids = Array.from(selectedOrders);
+    const confirmBtn = document.getElementById("bulkDeleteConfirmBtn");
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = "Deleting…";
+
+    const ok = await bulkDeleteGttOrders(ids);
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = "Delete";
+    bulkDeleteConfirmModal.classList.remove("show");
+
+    if (ok) {
+      gttOrders = gttOrders.filter(o => !selectedOrders.has(o.id));
+      selectedOrders.clear();
+      showToast(`${ids.length} order(s) deleted.`, "success");
+      render();
+    } else {
+      showToast("Failed to delete selected orders.", "error");
+    }
+  });
+
+  // Select all bulk
+  document.getElementById("selectAllBulk").addEventListener("change", e => {
+    const checked = e.target.checked;
+    const tabOrders = gttOrders.filter(o => o.status === activeTab);
+    if (checked) {
+      tabOrders.forEach(o => selectedOrders.add(o.id));
+    } else {
+      tabOrders.forEach(o => selectedOrders.delete(o.id));
+    }
+    renderTable();
+  });
+
+  // Sort by To Trigger
+  document.getElementById("thToTrigger").addEventListener("click", () => {
+    if (sortToTrigger === null) sortToTrigger = "asc";
+    else if (sortToTrigger === "asc") sortToTrigger = "desc";
+    else sortToTrigger = null;
+
+    const icon = document.getElementById("toTriggerSortIcon");
+    if (sortToTrigger === "asc") icon.textContent = "▲";
+    else if (sortToTrigger === "desc") icon.textContent = "▼";
+    else icon.textContent = "↕";
+
+    renderTable();
+  });
+
+  // Filters & Search
+  document.getElementById("searchInput").addEventListener("input", e => {
+    searchQ = e.target.value.trim();
+    renderTable();
+  });
+
+  const ddType = initCustomDropdown({
+    triggerId: "ddTypeTrigger", menuId: "ddTypeMenu", labelId: "ddTypeLabel",
+    onChange: val => { filterType = val; renderTable(); }
+  });
+  const ddOrder = initCustomDropdown({
+    triggerId: "ddOrderTrigger", menuId: "ddOrderMenu", labelId: "ddOrderLabel",
+    onChange: val => { filterOrder = val; renderTable(); }
+  });
+  const ddSeg = initCustomDropdown({
+    triggerId: "ddSegTrigger", menuId: "ddSegMenu", labelId: "ddSegLabel",
+    onChange: val => { filterSeg = val; renderTable(); }
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    document.getElementById("searchInput").value = "";
+    searchQ = "";
+    ddType.reset(); ddOrder.reset(); ddSeg.reset();
+    sortToTrigger = null;
+    document.getElementById("toTriggerSortIcon").textContent = "↕";
+    renderTable();
+  });
+
+  // Create GTT Modal
+  window.setGttType = type => {
     gttType = type;
-    document.getElementById("toggleBuy").className  = type === "Buy"  ? "active-buy"  : "";
-    document.getElementById("toggleSell").className = type === "Sell" ? "active-sell" : "";
+    const b = document.getElementById("toggleBuy");
+    const s = document.getElementById("toggleSell");
+    if (type === "Buy") {
+      b.className = "active-buy"; s.className = "";
+      document.getElementById("buyPriceGroup").style.display = "none";
+    } else {
+      s.className = "active-sell"; b.className = "";
+      document.getElementById("buyPriceGroup").style.display = "flex";
+    }
     updateConditionLabel();
     updatePreview();
-    document.getElementById("buyPriceGroup").style.display = type === "Sell" ? "flex" : "none";
-    document.getElementById("buyPriceLabel").textContent   = "Original Buy Price (for P&L)";
   };
 
-  window.updateConditionLabel = function() {
-    const orderType = document.getElementById("gttOrderType").value;
-    const lbl = document.getElementById("condLabel");
+  window.updateConditionLabel = () => {
+    const oType = document.getElementById("gttOrderType").value;
+    const condLbl = document.getElementById("condLabel");
     if (gttType === "Buy") {
-      lbl.textContent = "Trigger Price (≤) *";
+      condLbl.textContent = oType === "Stoploss" ? "Trigger Price (≥) *" : "Trigger Price (≤) *";
     } else {
-      lbl.textContent = orderType === "Stoploss" ? "Trigger Price (≤) *" : "Trigger Price (≥) *";
+      condLbl.textContent = oType === "Stoploss" ? "Trigger Price (≤) *" : "Trigger Price (≥) *";
     }
-    updatePreview();
   };
 
-  window.updatePreview = function() {
-    const symbol      = (document.getElementById("gttSymbol").value||"").toUpperCase() || "SYMBOL";
-    const exchange    = document.getElementById("gttExchange").value;
-    const orderType   = document.getElementById("gttOrderType").value;
-    const condPrice   = document.getElementById("gttCondPrice").value;
-    const targetPrice = document.getElementById("gttTargetPrice").value;
-    const qty         = document.getElementById("gttQuantity").value;
+  window.updatePreview = () => {
+    const sym   = document.getElementById("gttSymbol").value.trim().toUpperCase();
+    const cond  = document.getElementById("gttCondPrice").value;
+    const target= document.getElementById("gttTargetPrice").value;
+    const qty   = document.getElementById("gttQuantity").value;
+    const exch  = document.getElementById("gttExchange").value;
+    const oType = document.getElementById("gttOrderType").value;
+    const prev  = document.getElementById("gttPreview");
 
-    const isBuy    = gttType === "Buy";
-    const op       = isBuy ? "≤" : "≥";
-    const condStr  = condPrice   ? `₹${parseFloat(condPrice).toLocaleString("en-IN",{minimumFractionDigits:2})}`   : "₹?";
-    const targetStr= targetPrice ? `₹${parseFloat(targetPrice).toLocaleString("en-IN",{minimumFractionDigits:2})}` : "Market Price";
-    const action   = isBuy ? "BUY" : "SELL";
+    if (!sym || !cond || !qty) {
+      prev.innerHTML = "Fill in symbol, trigger price, and quantity to see preview.";
+      return;
+    }
 
-    document.getElementById("gttPreview").innerHTML =
-      `When <strong>${symbol}</strong> (${exchange}) last price <span class="preview-cond">${op} ${condStr}</span>, 
-       place a <strong>${orderType}</strong> <span class="preview-action">${action}</span> order 
-       for <strong>${qty||"?"} shares</strong> at ${targetStr}.`;
+    const condOp = gttType === "Buy"
+      ? (oType === "Stoploss" ? "≥" : "≤")
+      : (oType === "Stoploss" ? "≤" : "≥");
+
+    prev.innerHTML = `<strong>${esc(gttType.toUpperCase())} ${esc(qty)} shares</strong> of <strong>${esc(sym)}</strong> on ${esc(exch)} when price is <span class="preview-cond">${condOp} ₹${fmtPrice(cond)}</span>. ${target ? `Target order at <span class="preview-action">₹${fmtPrice(target)}</span>.` : "Order places at market price."}`;
   };
 
-  function openCreateGttModal() {
-    if (!sessionToken) { openLoginModal(); return; }
-    document.getElementById("gttSymbol").value         = "";
-    document.getElementById("gttExchange").value       = "NSE";
-    document.getElementById("gttOrderType").value      = "Limit";
-    document.getElementById("gttTradeType").value      = "Delivery";
-    document.getElementById("gttCondPrice").value      = "";
-    document.getElementById("gttTargetPrice").value    = "";
-    document.getElementById("gttQuantity").value       = "";
-    document.getElementById("gttBuyPrice").value       = "";
-    document.getElementById("gttSymbolSuggestions").style.display = "none";
-    document.getElementById("errSymbol").textContent   = "";
-    document.getElementById("errCondPrice").textContent= "";
-    document.getElementById("errQuantity").textContent = "";
-    document.getElementById("errGlobal").textContent   = "";
-    document.getElementById("createGttBtnText").textContent = "Create GTT Order";
-    document.getElementById("createGttSubmitBtn").disabled  = false;
-    setGttType("Buy");
-    updatePreview();
+  document.getElementById("createGttBtn").addEventListener("click", () => {
     createGttModal.classList.add("show");
-    setTimeout(() => document.getElementById("gttSymbol").focus(), 100);
-  }
-
-  function closeCreateGttModal() {
+  });
+  document.getElementById("createGttClose").addEventListener("click", () => {
     createGttModal.classList.remove("show");
-    document.getElementById("gttSymbolSuggestions").style.display = "none";
-  }
+  });
+  document.getElementById("createGttCancelBtn").addEventListener("click", () => {
+    createGttModal.classList.remove("show");
+  });
 
-  async function submitCreateGtt() {
+  document.getElementById("createGttSubmitBtn").addEventListener("click", async () => {
+    const sym   = document.getElementById("gttSymbol").value.trim().toUpperCase();
+    const condP = parseFloat(document.getElementById("gttCondPrice").value);
+    const tgtP  = parseFloat(document.getElementById("gttTargetPrice").value);
+    const qty   = parseInt(document.getElementById("gttQuantity").value);
+    const exch  = document.getElementById("gttExchange").value;
+    const oType = document.getElementById("gttOrderType").value;
+    const tType = document.getElementById("gttTradeType").value;
+    const buyP  = parseFloat(document.getElementById("gttBuyPrice").value);
+
     let valid = true;
-    const symbol      = (document.getElementById("gttSymbol").value||"").trim().toUpperCase();
-    const exchange    = document.getElementById("gttExchange").value;
-    const orderType   = document.getElementById("gttOrderType").value;
-    const tradeType   = document.getElementById("gttTradeType").value;
-    const condPrice   = parseFloat(document.getElementById("gttCondPrice").value);
-    const targetVal   = document.getElementById("gttTargetPrice").value;
-    const targetPrice = targetVal ? parseFloat(targetVal) : null;
-    const qty         = parseInt(document.getElementById("gttQuantity").value);
-    const buyPrice    = parseFloat(document.getElementById("gttBuyPrice").value) || null;
+    document.querySelectorAll(".form-error").forEach(e => e.textContent = "");
 
-    document.getElementById("errSymbol").textContent    = "";
-    document.getElementById("errCondPrice").textContent = "";
-    document.getElementById("errQuantity").textContent  = "";
-    document.getElementById("errGlobal").textContent    = "";
+    if (!sym)   { document.getElementById("errSymbol").textContent = "Symbol required"; valid = false; }
+    if (!condP || condP <= 0) { document.getElementById("errCondPrice").textContent = "Valid trigger price required"; valid = false; }
+    if (!qty || qty < 1)     { document.getElementById("errQuantity").textContent  = "Quantity must be ≥ 1"; valid = false; }
 
-    if (!symbol)                              { document.getElementById("errSymbol").textContent    = "Symbol is required";           valid = false; }
-    if (!isFinite(condPrice) || condPrice<=0) { document.getElementById("errCondPrice").textContent = "Enter a valid trigger price";  valid = false; }
-    if (!isFinite(qty) || qty < 1)           { document.getElementById("errQuantity").textContent  = "Enter a valid quantity (≥ 1)"; valid = false; }
     if (!valid) return;
 
-    const isBuy = gttType === "Buy";
-    const condition = isBuy ? "Last Price ≤"
-                    : (orderType === "Stoploss" ? "Last Price ≤" : "Last Price ≥");
+    const condOp = gttType === "Buy"
+      ? (oType === "Stoploss" ? "≥" : "≤")
+      : (oType === "Stoploss" ? "≤" : "≥");
 
     const payload = {
-      symbol, exchange,
+      symbol:         sym,
+      exchange:       exch,
       type:           gttType,
-      orderType,      tradeType,
-      condition,
-      conditionPrice: condPrice,
-      target:         targetPrice ? "Limit Price" : "Market Price",
-      targetPrice,
+      orderType:      oType,
+      tradeType:      tType,
+      condition:      condOp,
+      conditionPrice: condP,
+      targetPrice:    isFinite(tgtP) && tgtP > 0 ? tgtP : null,
+      buyPrice:       gttType === "Sell" && isFinite(buyP) && buyP > 0 ? buyP : null,
       quantity:       qty,
-      buyPrice,
       status:         "Active",
       createdOn:      nowISO()
     };
 
-    const btn = document.getElementById("createGttSubmitBtn");
-    btn.disabled = true;
+    const submitBtn = document.getElementById("createGttSubmitBtn");
+    submitBtn.disabled = true;
     document.getElementById("createGttBtnText").textContent = "Creating…";
 
-    try {
-      const result = await postGttOrder(payload);
-      if (!result) throw new Error("Server returned an error");
-      const newOrder = result.gttOrder || result;
-      if (newOrder && newOrder.id) {
-        gttOrders.unshift(newOrder);
-      } else {
-        gttOrders.unshift({ ...payload, id: "TMP_" + Date.now() });
-      }
-      closeCreateGttModal();
-      activeTab = "Active";
-      document.querySelectorAll(".tab-btn").forEach(b => {
-        b.classList.toggle("active", b.dataset.tab === "Active");
-      });
-      render();
-      showToast(`GTT order for ${symbol} created successfully.`, "success");
-    } catch(e) {
-      document.getElementById("errGlobal").textContent = `Failed to create GTT: ${e.message}`;
-      btn.disabled = false;
-      document.getElementById("createGttBtnText").textContent = "Create GTT Order";
+    const result = await postGttOrder(payload);
+    submitBtn.disabled = false;
+    document.getElementById("createGttBtnText").textContent = "Create GTT Order";
+
+    if (result) {
+      createGttModal.classList.remove("show");
+      showToast(`GTT Order created for ${sym}`, "success");
+      await loadData();
+    } else {
+      document.getElementById("errGlobal").textContent = "Failed to create order. Please try again.";
     }
-  }
+  });
 
-  /* ── Toast ── */
-  function showToast(msg, type = "success") {
-    const toast     = document.getElementById("toast");
-    const toastMsg  = document.getElementById("toastMsg");
-    const toastIcon = document.getElementById("toastIcon");
-    toastMsg.textContent = msg;
-    toastIcon.className  = `toast-icon ${type}`;
-    const icons = {
-      success: '<polyline points="20 6 9 17 4 12"/>',
-      info:    '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',
-      warning: '<polygon points="10.29 3.86 1.82 18 22.18 18 13.71 3.86 10.29 3.86"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
-      error:   '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>'
-    };
-    toastIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">${icons[type]||icons.success}</svg>`;
-    toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 3500);
-  }
-
-  /* ── Login ── */
+  // Auth / Login
   function openLoginModal() {
-    loginError.textContent = ""; loginUsername.value = ""; loginPassword.value = "";
-    loginModal.classList.add("show"); loginUsername.focus();
+    loginUsername.value = ""; loginPassword.value = ""; loginError.textContent = "";
+    loginModal.classList.add("show");
   }
-  function closeLoginModal() { loginModal.classList.remove("show"); }
 
-  async function submitLogin() {
+  signInBtn.addEventListener("click", openLoginModal);
+  document.getElementById("authGateSignIn").addEventListener("click", openLoginModal);
+  document.getElementById("loginCancelBtn").addEventListener("click", () => loginModal.classList.remove("show"));
+
+  document.getElementById("loginSubmitBtn").addEventListener("click", async () => {
+    const u = loginUsername.value.trim();
+    const p = loginPassword.value;
+    if (!u || !p) { loginError.textContent = "Please enter both fields."; return; }
+
     loginError.textContent = "";
-    const u = loginUsername.value.trim(), p = loginPassword.value;
-    if (!u || !p) { loginError.textContent = "Enter username and password."; return; }
     const btn = document.getElementById("loginSubmitBtn");
     btn.disabled = true; btn.textContent = "Signing in…";
+
     try {
       const res = await fetch(`${API_BASE}/login`, {
-        method:  "POST",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ username: u, password: p })
+        body: JSON.stringify({ username: u, password: p })
       });
-      if (!res.ok) { loginError.textContent = "Invalid credentials."; return; }
       const data = await res.json();
-      sessionToken = data.token; saveToken(data.token);
-      updateAuthUI(true, data.username || u);
-      closeLoginModal();
-      await Promise.all([loadDashboardSymbols(), loadData()]);
+      if (res.ok && data.token) {
+        sessionToken = data.token;
+        saveToken(sessionToken);
+        const payload = decodePayload(sessionToken);
+        updateAuthUI(true, payload?.username || u);
+        loginModal.classList.remove("show");
+        showToast("Signed in successfully.", "success");
+        await loadDashboardSymbols();
+        await loadData();
+      } else {
+        loginError.textContent = data.message || "Invalid username or password.";
+      }
     } catch(e) {
-      loginError.textContent = "Could not reach server.";
+      loginError.textContent = "Connection error. Please try again.";
     } finally {
       btn.disabled = false; btn.textContent = "Sign in";
     }
-  }
+  });
 
-  function logout() {
-    clearToken(); sessionToken = null; gttOrders = []; dashboardData = [];
+  signOutBtn.addEventListener("click", () => {
+    clearToken(); sessionToken = null; gttOrders = [];
     updateAuthUI(false, "");
+    showToast("Signed out.", "info");
+  });
+
+  document.getElementById("refreshBtn").addEventListener("click", async () => {
+    showToast("Refreshing data…", "info");
+    await loadDashboardSymbols();
+    await loadData();
+  });
+
+  // Toast
+  function showToast(msg, type = "success") {
+    const toast = document.getElementById("toast");
+    const toastMsg = document.getElementById("toastMsg");
+    const toastIcon = document.getElementById("toastIcon");
+
+    toastMsg.textContent = msg;
+    toastIcon.className = `toast-icon ${type}`;
+    toast.classList.add("show");
+
+    setTimeout(() => { toast.classList.remove("show"); }, 3000);
   }
 
-  /* ── Reset bulk mode helpers ── */
-  function exitBulkMode() {
-    bulkDeleteMode = false;
-    selectedOrders.clear();
-    const btn = document.getElementById("bulkDeleteBtn");
-    btn.textContent = "Bulk Delete";
-    btn.disabled    = false;
-    document.getElementById("bulkSelectHeader").style.display = "none";
-    document.getElementById("selectedCount").style.display = "none";
-  }
-
-  /* ── Dropdown instances ── */
-  let ddTypeInst, ddOrderInst, ddSegInst;
-
-  /* ══════════════════════════════════════
-     WIRE-UPS
-  ══════════════════════════════════════ */
-  signInBtn.addEventListener("click", openLoginModal);
-  document.getElementById("authGateSignIn").addEventListener("click", openLoginModal);
-  signOutBtn.addEventListener("click", logout);
-  document.getElementById("refreshBtn").addEventListener("click", () => {
-    Promise.all([loadDashboardSymbols(), loadData()]);
-  });
-
-  document.getElementById("loginCancelBtn").addEventListener("click", closeLoginModal);
-  document.getElementById("loginSubmitBtn").addEventListener("click", submitLogin);
-  loginModal.addEventListener("click", e => { if (e.target === loginModal) closeLoginModal(); });
-  loginUsername.addEventListener("keydown", e => { if (e.key === "Enter") submitLogin(); });
-  loginPassword.addEventListener("keydown", e => { if (e.key === "Enter") submitLogin(); });
-
-  document.getElementById("editGttCancelBtn").addEventListener("click", closeEditGttModal);
-  document.getElementById("editGttSaveBtn").addEventListener("click", saveEditGtt);
-  editGttModal.addEventListener("click", e => { if (e.target === editGttModal) closeEditGttModal(); });
-  document.getElementById("editCondPrice").addEventListener("keydown", e => { if (e.key === "Enter") saveEditGtt(); });
-  document.getElementById("editQuantity").addEventListener("keydown", e => { if (e.key === "Enter") saveEditGtt(); });
-
-  /* ── TO TRIGGER column sort ── */
-  document.getElementById("thToTrigger").addEventListener("click", () => {
-    sortToTrigger = sortToTrigger === "asc" ? "desc" : sortToTrigger === "desc" ? null : "asc";
-    const icon = document.getElementById("toTriggerSortIcon");
-    icon.textContent   = sortToTrigger === "asc" ? "↑" : sortToTrigger === "desc" ? "↓" : "↕";
-    icon.style.opacity = sortToTrigger ? "1" : ".5";
-    icon.style.color   = sortToTrigger ? "#2DD4BF" : "";
-    renderTable();
-  });
-
-  /* ── Bulk Delete confirm modal ── */
-  document.getElementById("bulkDeleteCancelBtn").addEventListener("click", () => {
-    document.getElementById("bulkDeleteConfirmModal").classList.remove("show");
-  });
-
-  document.getElementById("bulkDeleteConfirmModal").addEventListener("click", e => {
-    if (e.target === document.getElementById("bulkDeleteConfirmModal")) {
-      document.getElementById("bulkDeleteConfirmModal").classList.remove("show");
-    }
-  });
-
-  document.getElementById("bulkDeleteConfirmBtn").addEventListener("click", async () => {
-    const confirmBtn = document.getElementById("bulkDeleteConfirmBtn");
-    const modal      = document.getElementById("bulkDeleteConfirmModal");
-    const ids        = [...selectedOrders];
-    if (!ids.length) { modal.classList.remove("show"); return; }
-
-    confirmBtn.disabled    = true;
-    confirmBtn.textContent = "Deleting...";
-    try {
-      const success = await bulkDeleteGttOrders(ids);
-      if (!success) throw new Error("Failed to delete orders");
-      gttOrders = gttOrders.filter(o => !selectedOrders.has(o.id));
-      exitBulkMode();
-      modal.classList.remove("show");
-      renderTable();
-      renderCounts();
-      renderKPIs();
-      updateBulkSelectionUI();
-      showToast(`${ids.length} order${ids.length === 1 ? "" : "s"} deleted successfully.`, "success");
-    } catch(e) {
-      showToast(e.message || "Failed to delete orders.", "error");
-    } finally {
-      confirmBtn.disabled    = false;
-      confirmBtn.textContent = "Delete";
-    }
-  });
-
-  /* ── Bulk Delete button ── */
-  document.getElementById("bulkDeleteBtn").addEventListener("click", () => {
-    if (!bulkDeleteMode) {
-      bulkDeleteMode = true;
-      const btn = document.getElementById("bulkDeleteBtn");
-      btn.textContent = "Delete Selected";
-      btn.disabled    = true;
-      document.getElementById("bulkSelectHeader").style.display = "table-cell";
-      renderTable();
-      updateBulkSelectionUI();
-      return;
-    }
-    if (!selectedOrders.size) return;
-    const count    = selectedOrders.size;
-    const tabLabel = activeTab === "Triggered" ? "triggered" : "cancelled";
-    document.getElementById("bulkDeleteConfirmTitle").textContent = `Delete ${tabLabel} orders?`;
-    document.getElementById("bulkDeleteConfirmText").textContent  =
-      `Are you sure you want to delete ${count} ${tabLabel} order${count === 1 ? "" : "s"}?`;
-    document.getElementById("bulkDeleteConfirmModal").classList.add("show");
-  });
-
-  /* ── Tabs ── */
-  document.getElementById("tabsBar").addEventListener("click", e => {
-    const btn = e.target.closest(".tab-btn");
-    if (!btn) return;
-    activeTab = btn.dataset.tab;
-    document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b === btn));
-
-    const showBulk = activeTab === "Cancelled" || activeTab === "Triggered";
-    document.getElementById("bulkDeleteBtn").style.display = showBulk ? "inline-flex" : "none";
-
-    if (bulkDeleteMode) exitBulkMode();
-    renderTable();
-  });
-
-  // Search
-  document.getElementById("searchInput").addEventListener("input", e => { searchQ = e.target.value; renderTable(); });
-
-  // Reset
-  document.getElementById("resetBtn").addEventListener("click", () => {
-    searchQ = "";
-    document.getElementById("searchInput").value = "";
-    if (ddTypeInst)  ddTypeInst.reset();
-    if (ddOrderInst) ddOrderInst.reset();
-    if (ddSegInst)   ddSegInst.reset();
-    filterType = ""; filterOrder = ""; filterSeg = "";
-    renderTable();
-  });
-
-  /* ── Select All checkbox ── */
-  document.getElementById("selectAllBulk").addEventListener("change", e => {
-    if (!bulkDeleteMode) return;
-    const checked = e.target.checked;
-    gttOrders
-      .filter(o => o.status === activeTab)
-      .forEach(o => {
-        if (checked) selectedOrders.add(o.id);
-        else         selectedOrders.delete(o.id);
-      });
-    renderTable();
-    updateBulkSelectionUI();
-  });
-
-  /* ── Table row delegation ── */
-  document.getElementById("gttTbody").addEventListener("click", e => {
-    const checkbox = e.target.closest(".bulk-checkbox");
-    if (checkbox) {
-      const id = checkbox.dataset.id;
-      if (checkbox.checked) selectedOrders.add(id);
-      else                  selectedOrders.delete(id);
-      updateBulkSelectionUI();
-      return;
-    }
-
-    const editBtn = e.target.closest(".btn-edit-gtt");
-    if (editBtn) { openEditGttModal(editBtn.dataset.id); return; }
-
-    const closeBtn = e.target.closest(".btn-close-gtt");
-    const moreBtn  = e.target.closest(".btn-more:not(.btn-edit-gtt)");
-    if (closeBtn && !closeBtn.disabled) openGttActionModal(closeBtn.dataset.id);
-    if (moreBtn)                        openGttActionModal(moreBtn.dataset.id);
-  });
-
-  // Action modal
-  document.getElementById("gttModalClose").addEventListener("click", closeGttModal);
-  gttActionModal.addEventListener("click", e => { if (e.target === gttActionModal) closeGttModal(); });
-  document.getElementById("gttStepChoose").addEventListener("click", e => {
-    const opt = e.target.closest(".gtt-action-option");
-    if (opt) showConfirmStep(opt.dataset.action);
-  });
-
-  // Create GTT modal
-  document.getElementById("createGttBtn").addEventListener("click", openCreateGttModal);
-  document.getElementById("createGttClose").addEventListener("click", closeCreateGttModal);
-  document.getElementById("createGttCancelBtn").addEventListener("click", closeCreateGttModal);
-  document.getElementById("createGttSubmitBtn").addEventListener("click", submitCreateGtt);
-  createGttModal.addEventListener("click", e => { if (e.target === createGttModal) closeCreateGttModal(); });
-
-  // Escape key
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape") { closeGttModal(); closeLoginModal(); closeCreateGttModal(); closeEditGttModal(); }
-  });
-
-  /* ══════════════════════════════════════
-     INIT
-  ══════════════════════════════════════ */
+  /* ── Init ── */
   async function init() {
-    // Init custom dropdowns
-    ddTypeInst = initCustomDropdown({
-      triggerId: "ddTypeTrigger", menuId: "ddTypeMenu", labelId: "ddTypeLabel",
-      onChange: val => { filterType = val; renderTable(); }
-    });
-    ddOrderInst = initCustomDropdown({
-      triggerId: "ddOrderTrigger", menuId: "ddOrderMenu", labelId: "ddOrderLabel",
-      onChange: val => { filterOrder = val; renderTable(); }
-    });
-    ddSegInst = initCustomDropdown({
-      triggerId: "ddSegTrigger", menuId: "ddSegMenu", labelId: "ddSegLabel",
-      onChange: val => { filterSeg = val; renderTable(); }
-    });
-
-    const token   = readToken();
-    const payload = token ? decodePayload(token) : null;
-    const ok      = payload && payload.exp > Math.floor(Date.now() / 1000);
-    if (ok) {
-      sessionToken = token;
-      updateAuthUI(true, payload.u);
-      await Promise.all([loadDashboardSymbols(), loadData()]);
+    sessionToken = readToken();
+    if (sessionToken) {
+      const payload = decodePayload(sessionToken);
+      updateAuthUI(true, payload?.username || "Admin");
+      await loadDashboardSymbols();
+      await loadData();
     } else {
-      if (token) clearToken();
       updateAuthUI(false, "");
-      openLoginModal();
     }
   }
 
