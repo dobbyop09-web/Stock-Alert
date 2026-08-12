@@ -3,18 +3,8 @@ name: Stock Alert
 on:
   workflow_dispatch:
 
-  schedule:
-    # 09:20 IST
-    - cron: '50 3 * * 1-5'
-
-    # 10:00–14:40 IST every 20 minutes
-    - cron: '0,20,40 4-8 * * 1-5'
-
-    # 17:00 IST
-    - cron: '30 11 * * 1-5'
-
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   stock-alert:
@@ -46,19 +36,3 @@ jobs:
 
       - name: Run Application
         run: java -jar target/*.jar
-
-#      - name: Commit dashboard data
-#        run: |
-#          git config user.name "github-actions[bot]"
-#          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-#
-#          git add dashboard/dashboard-data.json dashboard/dashboard-meta.json dashboard/dashboard-indices.json
-#
-#          if git diff --cached --quiet; then
-#            echo "No dashboard changes detected."
-#            exit 0
-#          fi
-#
-#          git commit -m "Update dashboard data"
-#
-#          git push
