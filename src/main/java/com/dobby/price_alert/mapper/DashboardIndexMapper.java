@@ -1,7 +1,7 @@
 package com.dobby.price_alert.mapper;
 
-import com.dobby.price_alert.dto.nse.DashboardIndexData;
-import com.dobby.price_alert.dto.nse.IndexData;
+import com.dobby.price_alert.dto.nse.index.DashboardIndexData;
+import com.dobby.price_alert.dto.nse.index.IndexData;
 
 public class DashboardIndexMapper {
 

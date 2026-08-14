@@ -1,4 +1,4 @@
-package com.dobby.price_alert.dto.nse;
+package com.dobby.price_alert.dto.nse.fii;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

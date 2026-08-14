@@ -1,4 +1,4 @@
-package com.dobby.price_alert.scheduler;
+package com.dobby.price_alert.runners;
 
 import com.dobby.price_alert.constants.SheetType;
 import com.dobby.price_alert.dto.DashboardStock;

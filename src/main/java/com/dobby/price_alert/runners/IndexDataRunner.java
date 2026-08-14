@@ -1,10 +1,10 @@
-package com.dobby.price_alert.scheduler;
+package com.dobby.price_alert.runners;
 
 import com.dobby.price_alert.client.NSEClient;
 import com.dobby.price_alert.constants.DashboardIndex;
-import com.dobby.price_alert.dto.nse.DashboardIndexData;
-import com.dobby.price_alert.dto.nse.IndexData;
-import com.dobby.price_alert.dto.nse.IndexResponseData;
+import com.dobby.price_alert.dto.nse.index.DashboardIndexData;
+import com.dobby.price_alert.dto.nse.index.IndexData;
+import com.dobby.price_alert.dto.nse.index.IndexResponseData;
 import com.dobby.price_alert.mapper.DashboardIndexMapper;
 import com.dobby.price_alert.service.R2UploadService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,6 @@ import tools.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import tools.jackson.databind.SerializationFeature;
 
 import java.io.File;
 import java.nio.file.Path;

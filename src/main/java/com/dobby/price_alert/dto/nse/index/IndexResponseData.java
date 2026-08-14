@@ -1,9 +1,8 @@
-package com.dobby.price_alert.dto.nse;
+package com.dobby.price_alert.dto.nse.index;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
