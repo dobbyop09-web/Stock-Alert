@@ -1,4 +1,4 @@
-package com.dobby.price_alert.dto.nse;
+package com.dobby.price_alert.dto.nse.index;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

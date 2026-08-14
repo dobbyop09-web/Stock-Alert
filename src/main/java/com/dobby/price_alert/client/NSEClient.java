@@ -1,8 +1,7 @@
 package com.dobby.price_alert.client;
 
-import com.dobby.price_alert.dto.nse.FiiDataDto;
-import com.dobby.price_alert.dto.nse.IndexData;
-import com.dobby.price_alert.dto.nse.IndexResponseData;
+import com.dobby.price_alert.dto.nse.fii.FiiDataDto;
+import com.dobby.price_alert.dto.nse.index.IndexResponseData;
 import com.dobby.price_alert.dto.nse.NseResponse;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

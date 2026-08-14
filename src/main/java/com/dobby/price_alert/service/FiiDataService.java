@@ -1,9 +1,9 @@
 package com.dobby.price_alert.service;
 
 import com.dobby.price_alert.client.NSEClient;
-import com.dobby.price_alert.dto.nse.FiiDataDto;
-import com.dobby.price_alert.dto.nse.FiiDiiHistoryDto;
-import com.dobby.price_alert.dto.nse.FiiDiiValuesDto;
+import com.dobby.price_alert.dto.nse.fii.FiiDataDto;
+import com.dobby.price_alert.dto.nse.fii.FiiDiiHistoryDto;
+import com.dobby.price_alert.dto.nse.fii.FiiDiiValuesDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -71,8 +71,6 @@ public class FiiDataService {
 
             r2UploadService.upload(outputFile, TODAY_FILE);
 
-            log.info("Updated today's FII/DII snapshot: {}", TODAY_FILE);
-
         } catch (Exception e) {
 
             log.error("Failed to update today's FII/DII snapshot", e);
@@ -113,7 +111,6 @@ public class FiiDataService {
                             downloadedFile.toFile(),
                             new TypeReference<List<FiiDiiHistoryDto>>() {}
                     );
-                    log.info("Loaded existing FII/DII history");
                 } else {
                     log.info("No existing FII/DII history found (first run). Starting fresh.");
                     history = new ArrayList<>();
@@ -141,8 +138,6 @@ public class FiiDataService {
                     .writeValue(outputFile.toFile(), history);
 
             r2UploadService.upload(outputFile, HISTORY_FILE);
-
-            log.info("Updated FII/DII history for {}", newEntry.getDate());
 
         } catch (Exception e) {
 

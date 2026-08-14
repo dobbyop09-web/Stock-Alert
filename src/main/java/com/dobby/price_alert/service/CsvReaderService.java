@@ -61,8 +61,6 @@ public class CsvReaderService {
             String screenerUrl ="https://www.screener.in/company/" + symbol + "/consolidated";
             AlertStatus  alertStatus = stockAlertService.shouldSendAlert(sheetConfig.getName(), symbol, dayLow, alert,triggeredToday);
             if (alertStatus.isShouldSend()) {
-                log.info("Telegram sent for {}", symbol);
-
                 StockMessageDto dto = StockMessageDto.builder().stockName(symbol).currentPrice(current).targetPrice(alert).screenerUrl(screenerUrl).sheetName(sheetConfig.getName()).build();
                 String message = MessageFormat.format(dto);
                 telegramService.sendMessage(message);
