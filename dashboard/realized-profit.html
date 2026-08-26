@@ -2441,7 +2441,7 @@
       /* Chart toggle */
       document.querySelectorAll(".chart-view-btn").forEach(btn => {
         btn.addEventListener("click", () => {
-          if (btn.dataset.view === chartView) return; fffffffff
+          if (btn.dataset.view === chartView) return;
           chartView = btn.dataset.view;
           document.querySelectorAll(".chart-view-btn").forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
