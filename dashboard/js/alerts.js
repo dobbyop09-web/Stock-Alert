@@ -2,6 +2,7 @@ import { SPREADSHEET_ID } from "./config.js";
 import { state } from "./state.js";
 import { render } from "./render.js";
 import { loadDashboard } from "./data-loader.js";
+import { showModal } from "./modal.js";
 
 export function editAlert(symbol, btn) {
     document.getElementById("alertHeader").innerHTML = "✏️ Editing";
@@ -55,7 +56,7 @@ export async function saveAlert(symbol) {
     if (row === -1) {
         document.getElementById("alertHeader").textContent = "Alert";
         loadDashboard();
-        alert("Stock not found.");
+        showModal({ type: "error", title: "Stock not found", message: `${symbol} could not be located in the sheet.` });
         return;
     }
 
@@ -80,7 +81,7 @@ export async function saveAlert(symbol) {
     if (!res.ok) {
         document.getElementById("alertHeader").textContent = "Alert";
         loadDashboard();
-        alert("Failed to save");
+        showModal({ type: "error", title: "Failed to save", message: "The Google Sheets update did not go through. Please try again." });
         return;
     }
 
@@ -89,5 +90,5 @@ export async function saveAlert(symbol) {
     document.getElementById("alertHeader").textContent = "Alert";
     render();
 
-    alert("Saved!");
+    showModal({ type: "success", title: "Saved!", message: "Your changes have been saved successfully." });
 }
