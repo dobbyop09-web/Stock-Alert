@@ -196,21 +196,46 @@
     const exact = symbols.find(s => s === q);
     if (exact) return exact;
 
-    const explicit = row.querySelector('[data-symbol], .stock-link, .sym-avatar + strong, strong');
+    // Prefer the dedicated symbol-text node (excludes the avatar-letter icon);
+    // `.stock-link` is checked last since it also wraps that icon.
+    const explicit = row.querySelector('[data-symbol], .sym-text, .sym-avatar + strong, strong, .stock-link');
     if (explicit && looksLikeSymbol(explicit.textContent)) return normalize(explicit.textContent).toUpperCase();
     return q;
   }
 
+  // Elements that are purely decorative/interactive and shouldn't leak into
+  // the popup's extracted field text (e.g. the round symbol-initial icon,
+  // or an edit button).
+  const NOISE_SELECTOR = '.sym-avatar, .icon-btn, button';
+
   function extractCells(row) {
     const cells = [...row.querySelectorAll(':scope > td, :scope > th')];
     if (cells.length) {
-      return cells.map(cell => normalize(cell.innerText || cell.textContent)).filter(Boolean);
+      return cells
+        .map(cell => {
+          const clone = cell.cloneNode(true);
+          clone.querySelectorAll(NOISE_SELECTOR).forEach(el => el.remove());
+          const text = normalize(clone.innerText || clone.textContent);
+          let html = clone.innerHTML.trim();
+
+          // A cell with no child elements but its own inline style (e.g. the
+          // colored distance/% cells) loses that styling once we only take
+          // innerHTML — re-wrap the text so the color/weight survives.
+          const styleAttr = cell.getAttribute('style');
+          if (styleAttr && !clone.querySelector('*')) {
+            html = `<span style="${esc(styleAttr)}">${esc(text)}</span>`;
+          }
+
+          return { text, html };
+        })
+        .filter(c => c.text);
     }
 
     return normalize(row.innerText || row.textContent)
       .split(/\n+/)
       .map(normalize)
-      .filter(Boolean);
+      .filter(Boolean)
+      .map(text => ({ text, html: esc(text) }));
   }
 
   function nearbyContext(row) {
@@ -254,13 +279,15 @@
     const context = nearbyContext(current);
     const fields = [];
 
-    values.forEach((value, i) => {
+    values.forEach((cell, i) => {
+      const value = cell.text;
       if (!value) return;
       const label = headers[i] || `Information ${i + 1}`;
       if (/^(edit|delete|action)$/i.test(label)) return;
       // Skip the symbol itself as a field; it is already shown in the title.
       if (value.toUpperCase() === symbol.toUpperCase()) return;
-      fields.push(`<div class="us-field"><div class="us-label">${esc(label)}</div><div class="us-value">${esc(value)}</div></div>`);
+      const valueHtml = cell.html || esc(value);
+      fields.push(`<div class="us-field"><div class="us-label">${esc(label)}</div><div class="us-value">${valueHtml}</div></div>`);
     });
 
     const matchesHtml = state.matches.length > 1
