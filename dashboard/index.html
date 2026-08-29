@@ -29,6 +29,12 @@
             <circle cx="18.5" cy="5.5" r="2.2" fill="currentColor" stroke="none" />
           </svg>
         </a>
+        <a href="stock-360.html" class="sb-link" data-title="Stock 360 — Global Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="10.5" cy="10.5" r="6.5" />
+            <line x1="20" y1="20" x2="15.3" y2="15.3" />
+          </svg>
+        </a>
         <a href="watchlist.html" class="sb-link" data-title="Market Watchlist">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
             stroke-linejoin="round">
@@ -213,6 +219,24 @@
                     </main>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- ══ Reusable status modal (Saved / error) — replaces browser alert() ══ -->
+    <div class="modal-overlay" id="statusModal" hidden>
+        <div class="alert-modal" id="statusModalBox">
+            <div class="alert-modal-icon" id="statusModalIcon">
+                <span class="confetti c1"></span>
+                <span class="confetti c2"></span>
+                <span class="confetti c3"></span>
+                <span class="confetti c4"></span>
+                <span class="confetti c5"></span>
+                <span class="confetti c6"></span>
+                <span class="icon-circle" id="statusModalCircle"></span>
+            </div>
+            <h3 id="statusModalTitle">Saved!</h3>
+            <p id="statusModalMsg">Your changes have been saved successfully.</p>
+            <button type="button" class="btn-modal-ok" id="statusModalOk">OK</button>
         </div>
     </div>
 

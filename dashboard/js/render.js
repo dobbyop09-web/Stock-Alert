@@ -9,6 +9,23 @@ const STATUS_STYLE = {
 };
 const DEFAULT_STYLE = { color: "var(--far)", badge: "b-far" };
 
+const SECTOR_ICONS = {
+    auto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2-5a2 2 0 0 1 2-1.3h10a2 2 0 0 1 2 1.3l2 5" /><rect x="2" y="13" width="20" height="6" rx="1.5" /><circle cx="7" cy="19" r="1.6" /><circle cx="17" cy="19" r="1.6" /></svg>',
+    bank: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-6 9 6" /><path d="M5 10v9M10 10v9M14 10v9M19 10v9" /><path d="M3 21h18" /></svg>',
+    capitalmarket: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V10M10 19V5M16 19v-7M20 19V3" /></svg>',
+    defence: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3.5v5.4c0 5-3.4 8.6-8 11.1-4.6-2.5-8-6.1-8-11.1V5.5L12 2Z" /></svg>',
+    fmcg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.3" /><circle cx="17" cy="20" r="1.3" /><path d="M2.5 3h2.4l2.4 12.6a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H6" /></svg>',
+    health: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.6c0 5.6-8.8 10.9-8.8 10.9S3.2 14.2 3.2 8.6a4.6 4.6 0 0 1 8.8-1.9 4.6 4.6 0 0 1 8.8 1.9Z" /></svg>',
+    it: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1.5" /><path d="M8 20h8M12 16v4" /></svg>',
+    manufacturing: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V11l6 4V11l6 4V8l6 4v9H3Z" /></svg>',
+    metal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2" /><ellipse cx="12" cy="12" rx="9" ry="3.6" /><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(60 12 12)" /><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(120 12 12)" /></svg>',
+    misc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.2" /><rect x="14" y="3" width="7" height="7" rx="1.2" /><rect x="3" y="14" width="7" height="7" rx="1.2" /><rect x="14" y="14" width="7" height="7" rx="1.2" /></svg>',
+    oilenergy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s6 6.5 6 11.5a6 6 0 0 1-12 0C6 8.5 12 2 12 2Z" /></svg>',
+    reality: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-5 8 5v12" /><path d="M9 21v-6h6v6" /></svg>',
+};
+const SECTOR_ICON_DEFAULT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3" /></svg>';
+const ALL_SECTORS_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.2" /><rect x="14" y="3" width="7" height="5" rx="1.2" /><rect x="14" y="12" width="7" height="9" rx="1.2" /><rect x="3" y="16" width="7" height="5" rx="1.2" /></svg>';
+
 function rowHtml(r) {
     const { color, badge } = STATUS_STYLE[r.status] || DEFAULT_STYLE;
     const chg = r.changePercent;
@@ -42,19 +59,29 @@ function rowHtml(r) {
     `;
 }
 
+const STAT_ICONS = {
+    Triggered: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 5-2 6-2 7h16c0-1-2-2-2-7" /><path d="M10.3 20a1.8 1.8 0 0 0 3.4 0" /></svg>',
+    Near: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="4.5" /><circle cx="12" cy="12" r="0.8" fill="currentColor" stroke="none" /></svg>',
+    Watch: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z" /><circle cx="12" cy="12" r="2.5" /></svg>',
+    Total: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M20 20v-3.5" /></svg>'
+};
+
 function statsHtml(counts) {
-    const card = (status, label, color, count) => `
-        <div class="stat ${state.statusFilter === status ? "active" : ""}" data-status="${status}" style="color:${color}">
-            <div class="n" style="color:${color}">${count}</div>
-            <div class="l">${label}</div>
+    const card = (status, label, cls, count) => `
+        <div class="stat stat-${cls} ${state.statusFilter === status ? "active" : ""}" data-status="${status}">
+            <div class="stat-body">
+                <div class="n">${count}</div>
+                <div class="l">${label}</div>
+            </div>
+            <div class="stat-icon">${STAT_ICONS[label]}</div>
         </div>
     `;
 
     return (
-        card("Triggered", "Triggered", "var(--triggered)", counts.triggered) +
-        card("Near", "Near", "var(--near)", counts.near) +
-        card("Watch", "Watch", "var(--watch)", counts.watch) +
-        card("", "Total", "var(--text)", state.contextRows.length)
+        card("Triggered", "Triggered", "triggered", counts.triggered) +
+        card("Near", "Near", "near", counts.near) +
+        card("Watch", "Watch", "watch", counts.watch) +
+        card("", "Total", "total", state.contextRows.length)
     );
 }
 
@@ -101,10 +128,12 @@ export function renderSectorList(searchFilteredRows) {
 
     const sectors = [...new Set(state.allRows.map(s => s.sheet).filter(Boolean))].sort();
     const countFor = sector => searchFilteredRows.filter(s => s.sheet === sector).length;
+    const iconFor = sector => SECTOR_ICONS[String(sector).toLowerCase()] || SECTOR_ICON_DEFAULT;
 
     let html = `
         <li class="sector-item ${state.sectorFilter === "" ? "active" : ""}" data-sector="">
-            <span>All Sectors</span>
+            <span class="sector-icon">${ALL_SECTORS_ICON}</span>
+            <span class="sector-name">All Sectors</span>
             <span class="count">${searchFilteredRows.length}</span>
         </li>
     `;
@@ -112,7 +141,8 @@ export function renderSectorList(searchFilteredRows) {
     sectors.forEach(sector => {
         html += `
             <li class="sector-item ${state.sectorFilter === sector ? "active" : ""}" data-sector="${sector}">
-                <span>${sector}</span>
+                <span class="sector-icon">${iconFor(sector)}</span>
+                <span class="sector-name">${sector}</span>
                 <span class="count">${countFor(sector)}</span>
             </li>
         `;
