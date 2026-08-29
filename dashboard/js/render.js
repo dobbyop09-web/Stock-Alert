@@ -26,6 +26,49 @@ const SECTOR_ICONS = {
 const SECTOR_ICON_DEFAULT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3" /></svg>';
 const ALL_SECTORS_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.2" /><rect x="14" y="3" width="7" height="5" rx="1.2" /><rect x="14" y="12" width="7" height="9" rx="1.2" /><rect x="3" y="16" width="7" height="5" rx="1.2" /></svg>';
 
+const SECTOR_COLORS = {
+    auto: "#9CA3AF",
+    bank: "#818CF8",
+    capitalmarket: "#2DD4BF",
+    defence: "#60A5FA",
+    fmcg: "#34D399",
+    health: "#C084FC",
+    it: "#22D3EE",
+    manufacturing: "#A78BFA",
+    metal: "#94A3B8",
+    misc: "#9CA3AF",
+    oilenergy: "#FB923C",
+    reality: "#FB7185",
+};
+const SECTOR_COLOR_DEFAULT = "#9CA3AF";
+const SECTOR_COLOR_ALL = "#2DD4BF";
+
+function hexToRgba(hex, a) {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+}
+
+// No logo/company data is available from the sheet, so each symbol gets a
+// deterministic colored initials avatar (same symbol -> same color, always).
+const AVATAR_PALETTE = ["#2563EB", "#DC2626", "#059669", "#D97706", "#7C3AED", "#DB2777", "#0891B2", "#65A30D", "#4F46E5", "#EA580C", "#0D9488", "#9333EA"];
+
+function avatarFor(symbol) {
+    const s = String(symbol || "?");
+    let hash = 0;
+    for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) >>> 0;
+    const color = AVATAR_PALETTE[hash % AVATAR_PALETTE.length];
+    const letter = (s.match(/[A-Za-z]/) || ["?"])[0].toUpperCase();
+    return { color, letters: letter };
+}
+
+const STATUS_ICONS = {
+    Triggered: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 5-2 6-2 7h16c0-1-2-2-2-7" /><path d="M10.3 20a1.8 1.8 0 0 0 3.4 0" /></svg>',
+    Near: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="4" /></svg>',
+    Watch: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z" /><circle cx="12" cy="12" r="2.5" /></svg>',
+    Far: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><line x1="8.5" y1="12" x2="15.5" y2="12" /></svg>',
+};
+const STATUS_ICON_DEFAULT = STATUS_ICONS.Far;
+
 function rowHtml(r) {
     const { color, badge } = STATUS_STYLE[r.status] || DEFAULT_STYLE;
     const chg = r.changePercent;
@@ -33,10 +76,18 @@ function rowHtml(r) {
     const changeHtml = (chg === undefined || chg === null) ? "" :
         `<span class="change-pct ${chgUp ? "up" : "down"}">${chgUp ? "+" : ""}${chg.toFixed(2)}%</span>`;
 
+    const av = avatarFor(r.symbol);
+    const sectorColor = SECTOR_COLORS[String(r.sheet).toLowerCase()] || SECTOR_COLOR_DEFAULT;
+    const sectorIcon = SECTOR_ICONS[String(r.sheet).toLowerCase()] || SECTOR_ICON_DEFAULT;
+    const statusIcon = STATUS_ICONS[r.status] || STATUS_ICON_DEFAULT;
+
     return `
         <tr>
             <td>
-                <a href="${r.screenerUrl}" target="_blank" class="stock-link">${r.symbol}</a>
+                <a href="${r.screenerUrl}" target="_blank" class="stock-link">
+                    <span class="sym-avatar" style="background:${av.color}">${av.letters}</span>
+                    <span class="sym-text">${r.symbol}</span>
+                </a>
             </td>
             <td class="num">
                 <div class="price-cell">
@@ -46,8 +97,8 @@ function rowHtml(r) {
             </td>
             <td class="num alertCell">${r.alertPrice}</td>
             <td class="num" style="color:${color};font-weight:bold">${fmtPct(r.distance)}</td>
-            <td><span class="badge ${badge}">${r.status}</span></td>
-            <td>${r.sheet}</td>
+            <td><span class="badge ${badge}">${statusIcon}${r.status}</span></td>
+            <td><span class="sector-badge" style="color:${sectorColor};background:${hexToRgba(sectorColor, .12)};border-color:${hexToRgba(sectorColor, .28)}">${sectorIcon}${r.sheet || "—"}</span></td>
              <td>
     <button class="icon-btn" onclick="editAlert('${r.symbol}',this)">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -129,19 +180,21 @@ export function renderSectorList(searchFilteredRows) {
     const sectors = [...new Set(state.allRows.map(s => s.sheet).filter(Boolean))].sort();
     const countFor = sector => searchFilteredRows.filter(s => s.sheet === sector).length;
     const iconFor = sector => SECTOR_ICONS[String(sector).toLowerCase()] || SECTOR_ICON_DEFAULT;
+    const colorFor = sector => SECTOR_COLORS[String(sector).toLowerCase()] || SECTOR_COLOR_DEFAULT;
 
     let html = `
         <li class="sector-item ${state.sectorFilter === "" ? "active" : ""}" data-sector="">
-            <span class="sector-icon">${ALL_SECTORS_ICON}</span>
+            <span class="sector-icon" style="background:${hexToRgba(SECTOR_COLOR_ALL, .16)};color:${SECTOR_COLOR_ALL}">${ALL_SECTORS_ICON}</span>
             <span class="sector-name">All Sectors</span>
             <span class="count">${searchFilteredRows.length}</span>
         </li>
     `;
 
     sectors.forEach(sector => {
+        const c = colorFor(sector);
         html += `
             <li class="sector-item ${state.sectorFilter === sector ? "active" : ""}" data-sector="${sector}">
-                <span class="sector-icon">${iconFor(sector)}</span>
+                <span class="sector-icon" style="background:${hexToRgba(c, .16)};color:${c}">${iconFor(sector)}</span>
                 <span class="sector-name">${sector}</span>
                 <span class="count">${countFor(sector)}</span>
             </li>

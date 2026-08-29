@@ -38,7 +38,7 @@ function sortByDistance() {
 }
 
 function sortByMarketCap() {
-    const mcBtn = document.getElementById("sortMcBtn");
+    const mcBtn = document.getElementById("sortMcBtn").querySelector(".sort-label");
 
     state.rows.sort((a, b) =>
         state.marketCapAscending
@@ -52,7 +52,7 @@ function sortByMarketCap() {
     render();
 }
 function sortByDayChange() {
-    const btn = document.getElementById("sortDayChangeBtn");
+    const btn = document.getElementById("sortDayChangeBtn").querySelector(".sort-label");
 
     state.rows.sort((a, b) =>
         state.dayChangeAscending

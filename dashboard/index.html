@@ -29,12 +29,12 @@
             <circle cx="18.5" cy="5.5" r="2.2" fill="currentColor" stroke="none" />
           </svg>
         </a>
-        <!-- <a href="stock-360.html" class="sb-link" data-title="Stock 360 — Global Search">
+        <a href="stock-360.html" class="sb-link" data-title="Stock 360 — Global Search">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="10.5" cy="10.5" r="6.5" />
             <line x1="20" y1="20" x2="15.3" y2="15.3" />
           </svg>
-        </a> -->
+        </a>
         <a href="watchlist.html" class="sb-link" data-title="Market Watchlist">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
             stroke-linejoin="round">
@@ -136,7 +136,7 @@
                     <div class="topbar-right">
                         <span id="refreshMsg"></span>
 
-                        <button id="refreshBtn" class="btn-ghost">
+                        <button id="refreshBtn" class="btn-ghost btn-refresh">
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
                                 <polyline points="23 4 23 10 17 10" />
@@ -145,7 +145,17 @@
                             </svg>
                             Refresh Now
                         </button>
-                        <button id="loginBtn" class="btn-ghost" disabled>Loading Google Sign-In…</button>
+
+                        <div class="auth-menu" id="authMenu">
+                            <button id="loginBtn" class="auth-btn" disabled>
+                                <span class="auth-dot"></span>
+                                <span id="loginBtnText">Loading Google Sign-In…</span>
+                                <svg class="auth-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 12,15 18,9" /></svg>
+                            </button>
+                            <div class="auth-dropdown" id="authDropdown" hidden>
+                                <button type="button" id="signOutGoogleBtn" class="auth-dropdown-item">Sign out</button>
+                            </div>
+                        </div>
                         <span id="authStatus"></span>
                     </div>
                 </div>
@@ -191,9 +201,18 @@
                             <div class="table-toolbar">
                                 <div class="showing" id="showingLine"></div>
                                 <div class="toolbar">
-                                      <button id="sortDayChangeBtn" class="btn-ghost">Current / Day Change ↓</button>
-                                    <button id="sortBtn" class="btn-ghost">Sort by closest to alert</button>
-                                    <button id="sortMcBtn" class="btn-ghost">Market Cap ↓</button>
+                                      <button id="sortDayChangeBtn" class="btn-ghost sort-btn">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8" /><path d="M15 7h6v6" /></svg>
+                                        <span class="sort-label">Current / Day Change ↓</span>
+                                      </button>
+                                    <button id="sortBtn" class="btn-ghost sort-btn">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v18M7 21l-4-4M7 21l4-4M17 21V3M17 3l-4 4M17 3l4 4" /></svg>
+                                        <span class="sort-label">Sort by closest to alert</span>
+                                    </button>
+                                    <button id="sortMcBtn" class="btn-ghost sort-btn">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V10M10 19V4M16 19v-7M20 19v-3.5" /></svg>
+                                        <span class="sort-label">Market Cap ↓</span>
+                                    </button>
                                 </div>
                             </div>
 
