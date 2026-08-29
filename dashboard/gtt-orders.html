@@ -118,6 +118,8 @@
     .gtt-table tbody tr:last-child td{border-bottom:none}
     .gtt-table th.right,.gtt-table td.right{text-align:right}
     .gtt-table th.center,.gtt-table td.center{text-align:center}
+    .sector-badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:4px 10px 4px 8px;border-radius:16px;border:1px solid;white-space:nowrap}
+    .sector-badge svg{width:12px;height:12px;flex-shrink:0}
     .bulk-select-header{width:42px;text-align:center}
     .bulk-select-cell{width:42px;text-align:center}
     .bulk-select-header input,
@@ -604,6 +606,7 @@
                     <input type="checkbox" id="selectAllBulk">
                   </th>
                   <th>SYMBOL</th>
+                  <th>SECTOR</th>
                   <th>TYPE</th>
                   <th>CONDITION</th>
                   <th>CMP</th>
@@ -946,7 +949,7 @@
   async function loadData() {
     if (!sessionToken) return;
     const tbody = document.getElementById("gttTbody");
-    tbody.innerHTML = `<tr class="loading-row"><td colspan="11"><div class="spinner" style="margin:0 auto"></div></td></tr>`;
+    tbody.innerHTML = `<tr class="loading-row"><td colspan="12"><div class="spinner" style="margin:0 auto"></div></td></tr>`;
     document.getElementById("gttEmpty").style.display = "none";
 
     try {
@@ -1113,6 +1116,44 @@
     if (!symbol || !Array.isArray(dashboardData)) return null;
     const target = String(symbol).toUpperCase();
     return dashboardData.find(d => (d.symbol || "").toUpperCase() === target) || null;
+  }
+
+  /* ── Sector badge (same icon/color set as the main dashboard table) ── */
+  const SECTOR_ICONS = {
+    auto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2-5a2 2 0 0 1 2-1.3h10a2 2 0 0 1 2 1.3l2 5" /><rect x="2" y="13" width="20" height="6" rx="1.5" /><circle cx="7" cy="19" r="1.6" /><circle cx="17" cy="19" r="1.6" /></svg>',
+    bank: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-6 9 6" /><path d="M5 10v9M10 10v9M14 10v9M19 10v9" /><path d="M3 21h18" /></svg>',
+    capitalmarket: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V10M10 19V5M16 19v-7M20 19V3" /></svg>',
+    defence: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3.5v5.4c0 5-3.4 8.6-8 11.1-4.6-2.5-8-6.1-8-11.1V5.5L12 2Z" /></svg>',
+    fmcg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.3" /><circle cx="17" cy="20" r="1.3" /><path d="M2.5 3h2.4l2.4 12.6a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H6" /></svg>',
+    health: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.6c0 5.6-8.8 10.9-8.8 10.9S3.2 14.2 3.2 8.6a4.6 4.6 0 0 1 8.8-1.9 4.6 4.6 0 0 1 8.8 1.9Z" /></svg>',
+    it: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1.5" /><path d="M8 20h8M12 16v4" /></svg>',
+    manufacturing: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V11l6 4V11l6 4V8l6 4v9H3Z" /></svg>',
+    metal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2" /><ellipse cx="12" cy="12" rx="9" ry="3.6" /><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(60 12 12)" /><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(120 12 12)" /></svg>',
+    misc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.2" /><rect x="14" y="3" width="7" height="7" rx="1.2" /><rect x="3" y="14" width="7" height="7" rx="1.2" /><rect x="14" y="14" width="7" height="7" rx="1.2" /></svg>',
+    oilenergy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s6 6.5 6 11.5a6 6 0 0 1-12 0C6 8.5 12 2 12 2Z" /></svg>',
+    reality: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-5 8 5v12" /><path d="M9 21v-6h6v6" /></svg>',
+  };
+  const SECTOR_ICON_DEFAULT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3" /></svg>';
+  const SECTOR_COLORS = {
+    auto: "#9CA3AF", bank: "#818CF8", capitalmarket: "#2DD4BF", defence: "#60A5FA",
+    fmcg: "#34D399", health: "#C084FC", it: "#22D3EE", manufacturing: "#A78BFA",
+    metal: "#94A3B8", misc: "#9CA3AF", oilenergy: "#FB923C", reality: "#FB7185",
+  };
+  const SECTOR_COLOR_DEFAULT = "#9CA3AF";
+
+  function hexToRgba(hex, a) {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+  }
+
+  function buildSectorCell(symbol) {
+    const match = getCmpForSymbol(symbol);
+    const sheet = match && match.sheet ? match.sheet : "";
+    if (!sheet) return `<span style="color:#3a5060">—</span>`;
+    const key   = sheet.toLowerCase();
+    const color = SECTOR_COLORS[key] || SECTOR_COLOR_DEFAULT;
+    const icon  = SECTOR_ICONS[key] || SECTOR_ICON_DEFAULT;
+    return `<span class="sector-badge" style="color:${color};background:${hexToRgba(color, .12)};border-color:${hexToRgba(color, .28)}">${icon}${esc(sheet)}</span>`;
   }
 
   function getDiffPercentValue(o) {
@@ -1444,6 +1485,7 @@
       return `<tr data-id="${esc(o.id)}">
         ${selectCell}
         <td><div class="sym-cell"><span class="sym-name">${esc(o.symbol)}</span><span class="sym-exch">${esc(o.exchange)}</span></div></td>
+        <td>${buildSectorCell(o.symbol)}</td>
         <td><div class="type-pill ${typeCls}">${esc(o.type)}</div><div class="order-sub">${esc(o.orderType)}</div></td>
         <td><div class="cond-cell"><span class="cond-op">${esc(conditionText)}</span><span class="cond-price">₹ ${fmtPrice(o.conditionPrice)}</span></div></td>
         <td>${cmpHtml}</td>
