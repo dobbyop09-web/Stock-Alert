@@ -789,6 +789,15 @@
       overflow-y: auto;
       height: calc(100vh - 260px);
       max-height: none;
+      scrollbar-width: none;
+      /* Firefox */
+      -ms-overflow-style: none;
+      /* IE / legacy Edge */
+    }
+
+    .table-scroll::-webkit-scrollbar {
+      display: none;
+      /* Chrome / Safari / new Edge */
     }
 
     table {
@@ -913,6 +922,36 @@
       flex-shrink: 0;
     }
 
+    /* Sector chip (holdings table) — same visual language as sector-badge elsewhere */
+    .sector-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 10px 4px 8px;
+      border-radius: 16px;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+
+    .sector-chip svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+    }
+
+    /* Current value coloring by profit/loss */
+    .cv-pos {
+      color: #2DD4BF;
+      font-weight: 600;
+    }
+
+    .cv-neg {
+      color: #FF5C6C;
+      font-weight: 600;
+    }
+
     /* Edit inputs */
     input.cell {
       background: rgba(255, 255, 255, .05);
@@ -944,22 +983,29 @@
       -moz-appearance: textfield;
     }
 
-    /* Add row button */
-    .add-row-btn {
-      width: calc(100% - 24px);
-      margin: 12px;
-      background: transparent;
-      border: 1px dashed rgba(255, 255, 255, .12);
-      border-radius: 6px;
-      padding: 10px;
-      color: #3a5060;
-      font-size: 11px;
+    /* Add holding button (toolbar) */
+    .add-holding-btn {
       display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #256e70, #318884);
+      border: 1px solid #3b9991;
+      box-shadow: 0 6px 16px rgba(45, 141, 133, .16);
+      color: #e7fffc;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
     }
 
-    .add-row-btn:hover {
-      color: #2DD4BF;
-      border-color: #2DD4BF;
+    .add-holding-btn:hover {
+      filter: brightness(1.08);
+    }
+
+    .add-holding-btn svg {
+      width: 14px;
+      height: 14px;
     }
 
     /* Remove / sell-date columns */
@@ -1276,6 +1322,31 @@
       font-weight: 700;
       color: #edf5ff;
       margin-bottom: 3px;
+    }
+
+    .modal-head-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .modal-close-x {
+      background: transparent;
+      border: none;
+      color: #4a6075;
+      cursor: pointer;
+      padding: 2px;
+      line-height: 0;
+      flex-shrink: 0;
+    }
+
+    .modal-close-x:hover {
+      color: #cfe2f5;
+    }
+
+    .modal-close-x svg {
+      width: 16px;
+      height: 16px;
     }
 
     .modal .hint {
@@ -2738,26 +2809,40 @@
               <!-- Table toolbar -->
               <div class="table-toolbar">
                 <span class="table-toolbar-title">Open Positions</span>
+                <button class="add-holding-btn" id="addRowBtn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                  Add Holding
+                </button>
               </div>
 
               <div class="table-scroll" id="tableView">
                 <table>
                   <thead>
                     <tr>
-                      <th style="width:12%"><button class="th-sort" id="thSortSymbol" data-field="symbol">Symbol <span
+                      <th style="width:11%"><button class="th-sort" id="thSortSymbol" data-field="symbol">Symbol <span
                             class="sort-arrow"></span></button></th>
-                      <th class="num" style="width:6%">Qty</th>
-                      <th class="num" style="width:9%">Buy Price</th>
-                      <th class="num" style="width:9%" id="curPriceHeaderCell">Current Price</th>
-                      <th class="num" style="width:7%" id="chgHeaderCell"><button class="th-sort" id="thSortChg"
+                      <th style="width:9%"><button class="th-sort" id="thSortSector" data-field="sector">Sector <span
+                            class="sort-arrow"></span></button></th>
+                      <th class="num" style="width:5%"><button class="th-sort" id="thSortQty" data-field="qty">Qty <span
+                            class="sort-arrow"></span></button></th>
+                      <th class="num" style="width:8%"><button class="th-sort" id="thSortBuyPrice" data-field="buyPrice">Buy Price <span
+                            class="sort-arrow"></span></button></th>
+                      <th class="num" style="width:8%" id="curPriceHeaderCell"><button class="th-sort" id="thSortCurPrice" data-field="curPrice">Current Price <span
+                            class="sort-arrow"></span></button></th>
+                      <th class="num" style="width:6%" id="chgHeaderCell"><button class="th-sort" id="thSortChg"
                           data-field="chg">Chg % <span class="sort-arrow"></span></button></th>
-                      <th class="num" style="width:9%"><button class="th-sort" id="thSortProfitRs"
+                      <th class="num" style="width:8%"><button class="th-sort" id="thSortInvested" data-field="invested">Invested <span
+                            class="sort-arrow"></span></button></th>
+                      <th class="num" style="width:8%"><button class="th-sort" id="thSortCurValue" data-field="currentValue">Current Value <span
+                            class="sort-arrow"></span></button></th>
+                      <th class="num" style="width:8%"><button class="th-sort" id="thSortProfitRs"
                           data-field="profitRs">Profit ₹ <span class="sort-arrow"></span></button></th>
-                      <th class="num" style="width:8%"><button class="th-sort" id="thSortProfitPct"
+                      <th class="num" style="width:7%"><button class="th-sort" id="thSortProfitPct"
                           data-field="profitPct">Profit % <span class="sort-arrow"></span></button></th>
-                      <th class="num" style="width:8%">Target ₹</th>
-                      <th class="num" style="width:8%">Target %</th>
-                      <th style="width:9%">Buy Date</th>
+                      <th class="num" style="width:7%"><button class="th-sort" id="thSortTarget" data-field="target">Target ₹ <span
+                            class="sort-arrow"></span></button></th>
+                      <th style="width:8%"><button class="th-sort" id="thSortBuyDate" data-field="buyDate">Buy Date <span
+                            class="sort-arrow"></span></button></th>
                       <th class="sell-date-cell" id="sellDateHeaderCell" style="width:8%">Sale</th>
                       <th class="remove-cell" id="removeHeaderCell">Actions</th>
                     </tr>
@@ -2770,8 +2855,6 @@
                 <h3>No holdings yet</h3>
                 Add a holding to get started.
               </div>
-
-              <button class="add-row-btn" id="addRowBtn">+ Add holding</button>
 
               <datalist id="symbolList"></datalist>
             </div>
@@ -2839,6 +2922,31 @@
       <div class="modal-actions">
         <button class="btn-modal-cancel" id="saleCancelBtn">Cancel</button>
         <button class="btn-modal-confirm" id="saleConfirmBtn">Close position</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add holding modal -->
+  <div class="modal-overlay" id="addHoldingModal">
+    <div class="modal">
+      <div class="modal-head-row">
+        <h2>Add Holding</h2>
+        <button class="modal-close-x" id="addHoldingCloseX" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+        </button>
+      </div>
+      <label for="addSymbolInput">Symbol</label>
+      <input type="text" id="addSymbolInput" list="symbolList" placeholder="Search symbol...">
+      <label for="addBuyPriceInput">Buy Price (₹)</label>
+      <input type="number" step="any" min="0" id="addBuyPriceInput" placeholder="Enter buy price">
+      <label for="addQuantityInput">Quantity</label>
+      <input type="number" step="any" min="0" id="addQuantityInput" placeholder="Enter quantity">
+      <label for="addBuyDateInput">Buy Date</label>
+      <input type="date" id="addBuyDateInput">
+      <div class="error-text" id="addHoldingError"></div>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" id="addHoldingCancelBtn">Cancel</button>
+        <button class="btn-modal-confirm" id="addHoldingConfirmBtn">Add Holding</button>
       </div>
     </div>
   </div>
@@ -2945,9 +3053,17 @@
       let symbolDataMap = {};
 
       const thSortSymbol = document.getElementById("thSortSymbol");
+      const thSortSector = document.getElementById("thSortSector");
+      const thSortQty = document.getElementById("thSortQty");
+      const thSortBuyPrice = document.getElementById("thSortBuyPrice");
+      const thSortCurPrice = document.getElementById("thSortCurPrice");
       const thSortChg = document.getElementById("thSortChg");
+      const thSortInvested = document.getElementById("thSortInvested");
+      const thSortCurValue = document.getElementById("thSortCurValue");
       const thSortProfitRs = document.getElementById("thSortProfitRs");
       const thSortProfitPct = document.getElementById("thSortProfitPct");
+      const thSortTarget = document.getElementById("thSortTarget");
+      const thSortBuyDate = document.getElementById("thSortBuyDate");
       let sortField = null;
       let sortDir = "asc";
 
@@ -2990,6 +3106,15 @@
       const salePriceInput = document.getElementById("salePrice");
       const saleDateInput = document.getElementById("saleDate");
       const saleError = document.getElementById("saleError");
+      const addHoldingModal = document.getElementById("addHoldingModal");
+      const addSymbolInput = document.getElementById("addSymbolInput");
+      const addBuyPriceInput = document.getElementById("addBuyPriceInput");
+      const addQuantityInput = document.getElementById("addQuantityInput");
+      const addBuyDateInput = document.getElementById("addBuyDateInput");
+      const addHoldingError = document.getElementById("addHoldingError");
+      const addHoldingCancelBtn = document.getElementById("addHoldingCancelBtn");
+      const addHoldingConfirmBtn = document.getElementById("addHoldingConfirmBtn");
+      const addHoldingCloseX = document.getElementById("addHoldingCloseX");
       const fiiBody = document.getElementById("fiiBody");
       const fiiCard = document.getElementById("fiiCard");
       const fiiDateBadge = document.getElementById("fiiDateBadge");
@@ -3541,7 +3666,7 @@
         closedTransactionsSnapshot = JSON.parse(JSON.stringify(closedTransactions));
         editEntryBar.style.display = "none";
         editModeActions.style.display = "flex";
-        addRowBtn.style.display = "block";
+        addRowBtn.style.display = "inline-flex";
         removeHeaderCell.classList.add("visible");
         sellDateHeaderCell.classList.add("visible");
         curPriceHeaderCell.style.display = "none";
@@ -3627,6 +3752,121 @@
       function curPriceOf(h) {
         const sd = symbolDataMap[(h.symbol || "").toUpperCase()];
         const c = sd ? parseFloat(sd.currentPrice) : NaN; return c;
+      }
+      function investedOf(h) {
+        const b = parseFloat(h.buyPrice); return isFinite(b) ? qtyOf(h) * b : NaN;
+      }
+      function currentValueOf(h) {
+        const c = curPriceOf(h); return isFinite(c) ? qtyOf(h) * c : NaN;
+      }
+      function currentValueClass(h) {
+        const inv = investedOf(h), cur = currentValueOf(h);
+        if (!isFinite(inv) || !isFinite(cur)) return "";
+        return cur > inv ? "cv-pos" : cur < inv ? "cv-neg" : "";
+      }
+      // Same sector icon/color set used on the Realized Profit page
+     const SECTOR_ICON_MAP = {
+    "Auto": {
+        svg: '<path d="M3 13l2-5a2 2 0 0 1 2-1.3h10a2 2 0 0 1 2 1.3l2 5"/><rect x="2" y="13" width="20" height="6" rx="1.5"/><circle cx="7" cy="19" r="1.6"/><circle cx="17" cy="19" r="1.6"/>',
+        color: '#818CF8'
+    },
+
+    "Bank": {
+        svg: '<path d="M3 10l9-6 9 6"/><path d="M5 10v9M10 10v9M14 10v9M19 10v9"/><path d="M3 21h18"/>',
+        color: '#2DD4BF'
+    },
+
+    "CapitalMarket": {
+        svg: '<path d="M4 19V10M10 19V5M16 19v-7M20 19V3"/>',
+        color: '#38BDF8'
+    },
+
+    "Defence": {
+        svg: '<path d="M12 2l8 3.5v5.4c0 5-3.4 8.6-8 11.1-4.6-2.5-8-6.1-8-11.1V5.5L12 2Z"/>',
+        color: '#64748B'
+    },
+
+    "FMCG": {
+        svg: '<circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/><path d="M2.5 3h2.4l2.4 12.6a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H6"/>',
+        color: '#FACC15'
+    },
+
+    "Fmcg": {
+        svg: '<circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/><path d="M2.5 3h2.4l2.4 12.6a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H6"/>',
+        color: '#FACC15'
+    },
+
+    "Pharma": {
+        svg: '<path d="M20.8 8.6c0 5.6-8.8 10.9-8.8 10.9S3.2 14.2 3.2 8.6a4.6 4.6 0 0 1 8.8-1.9 4.6 4.6 0 0 1 8.8 1.9Z"/>',
+        color: '#4ADE80'
+    },
+
+    "Health": {
+        svg: '<path d="M20.8 8.6c0 5.6-8.8 10.9-8.8 10.9S3.2 14.2 3.2 8.6a4.6 4.6 0 0 1 8.8-1.9 4.6 4.6 0 0 1 8.8 1.9Z"/>',
+        color: '#4ADE80'
+    },
+
+    "IT": {
+        svg: '<rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/>',
+        color: '#C084FC'
+    },
+
+    "Manufacturing": {
+        svg: '<path d="M3 21V11l6 4V11l6 4V8l6 4v9H3Z"/>',
+        color: '#5B9EFF'
+    },
+
+    "Mfg.": {
+        svg: '<path d="M3 21V11l6 4V11l6 4V8l6 4v9H3Z"/>',
+        color: '#5B9EFF'
+    },
+
+    "Metal": {
+        svg: '<circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="9" ry="3.6"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(120 12 12)"/>',
+        color: '#94A3B8'
+    },
+
+    "Other": {
+        svg: '<rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/>',
+        color: '#94A3B8'
+    },
+
+    "Misc": {
+        svg: '<rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/>',
+        color: '#94A3B8'
+    },
+
+    "OilEnergy": {
+        svg: '<path d="M12 2s6 6.5 6 11.5a6 6 0 0 1-12 0C6 8.5 12 2 12 2Z"/>',
+        color: '#FB923C'
+    },
+
+    "Energy": {
+        svg: '<path d="M12 2s6 6.5 6 11.5a6 6 0 0 1-12 0C6 8.5 12 2 12 2Z"/>',
+        color: '#FB923C'
+    },
+
+    "Reality": {
+        svg: '<path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/>',
+        color: '#F472B6'
+    },
+
+    "Realty": {
+        svg: '<path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/>',
+        color: '#F472B6'
+    }
+};
+      function getSectorIcon(name) { return SECTOR_ICON_MAP[name] || SECTOR_ICON_MAP["Other"]; }
+      function hexToRgba(hex, a) {
+        const n = parseInt(hex.replace("#", ""), 16);
+        return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+      }
+      function sectorCellHtml(symbol) {
+        const sd = symbolDataMap[(symbol || "").toUpperCase()];
+        const sector = sd && sd.sector ? sd.sector : "";
+        if (!sector) return `<span style="color:#3a5060">—</span>`;
+        const icon = getSectorIcon(sector);
+        return `<span class="sector-chip" style="color:${icon.color};background:${hexToRgba(icon.color, .12)};border-color:${hexToRgba(icon.color, .28)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icon.svg}</svg>${escHtml(sector)}</span>`;
       }
       function profitPct(buy, cur) {
         const b = parseFloat(buy), c = parseFloat(cur);
@@ -3853,21 +4093,39 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
 
       function applySort() {
         if (!sortField) return;
-        holdings.sort((a, b) => {
-          if (sortField === "symbol") {
-            const va = (a.symbol || "").toUpperCase(), vb = (b.symbol || "").toUpperCase();
+        if (sortField === "symbol" || sortField === "sector") {
+          holdings.sort((a, b) => {
+            const va = sortField === "symbol" ? (a.symbol || "").toUpperCase() : ((symbolDataMap[(a.symbol || "").toUpperCase()] || {}).sector || "").toUpperCase();
+            const vb = sortField === "symbol" ? (b.symbol || "").toUpperCase() : ((symbolDataMap[(b.symbol || "").toUpperCase()] || {}).sector || "").toUpperCase();
             if (va < vb) return sortDir === "asc" ? -1 : 1;
             if (va > vb) return sortDir === "asc" ? 1 : -1; return 0;
-          }
-          let va, vb;
-          if (sortField === "chg") { va = chgOf(a); vb = chgOf(b); }
-          else if (sortField === "profitRs") { va = profitRsOf(a); vb = profitRsOf(b); }
-          else { va = profitPct(a.buyPrice, curPriceOf(a)); vb = profitPct(b.buyPrice, curPriceOf(b)); }
+          });
+          return;
+        }
+        const getters = {
+          qty: h => qtyOf(h),
+          buyPrice: h => { const v = parseFloat(h.buyPrice); return isFinite(v) ? v : -Infinity; },
+          curPrice: h => { const v = curPriceOf(h); return isFinite(v) ? v : -Infinity; },
+          chg: h => chgOf(h),
+          invested: h => { const v = investedOf(h); return isFinite(v) ? v : -Infinity; },
+          currentValue: h => { const v = currentValueOf(h); return isFinite(v) ? v : -Infinity; },
+          profitRs: h => profitRsOf(h),
+          profitPct: h => profitPct(h.buyPrice, curPriceOf(h)),
+          target: h => { const v = parseFloat(h.targetAmount); return isFinite(v) ? v : -Infinity; },
+          buyDate: h => { const t = h.buyDate ? new Date(h.buyDate).getTime() : NaN; return isFinite(t) ? t : -Infinity; },
+        };
+        const getter = getters[sortField] || getters.profitPct;
+        holdings.sort((a, b) => {
+          const va = getter(a), vb = getter(b);
           return sortDir === "asc" ? va - vb : vb - va;
         });
       }
 
-      const sortHeaderMap = { symbol: thSortSymbol, chg: thSortChg, profitRs: thSortProfitRs, profitPct: thSortProfitPct };
+      const sortHeaderMap = {
+        symbol: thSortSymbol, sector: thSortSector, qty: thSortQty, buyPrice: thSortBuyPrice,
+        curPrice: thSortCurPrice, chg: thSortChg, invested: thSortInvested, currentValue: thSortCurValue,
+        profitRs: thSortProfitRs, profitPct: thSortProfitPct, target: thSortTarget, buyDate: thSortBuyDate,
+      };
       function updateSortIndicators() {
         Object.entries(sortHeaderMap).forEach(([field, el]) => {
           if (!el) return;
@@ -3935,34 +4193,40 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           const profit = profitInfo(h.buyPrice, curPrice);
           const profitBadge = `<span class="badge ${profit.cls}">${profit.text}</span>`;
           const profitRsBadge = profitRupeesBadge(h.buyPrice, curPrice, h.quantity);
-          const targetPct = profitInfo(h.buyPrice, h.targetAmount);
-          const targetPctBadge = `<span class="badge ${targetPct.cls}">${targetPct.text}</span>`;
           const sd = symbolDataMap[(h.symbol || "").toUpperCase()];
           const chgBadge = changeBadge(sd ? sd.changePercent : undefined);
+          const sectorHtml = sectorCellHtml(h.symbol);
+          const investedTxt = fmtMoney(investedOf(h));
+          const currentValueTxt = fmtMoney(currentValueOf(h));
+          const cvCls = currentValueClass(h);
 
           if (isEditing) {
             tr.innerHTML = `
           <td><input type="text" class="cell" list="symbolList" value="${escAttr(h.symbol ?? '')}" data-i="${i}" data-f="symbol" placeholder="SYMBOL"></td>
+          <td class="sector-cell">${sectorHtml}</td>
           <td><input type="number" step="any" min="0" class="cell num" value="${numOrBlank(h.quantity)}" data-i="${i}" data-f="quantity" placeholder="1"></td>
           <td><input type="number" step="any" class="cell num" value="${numOrBlank(h.buyPrice)}" data-i="${i}" data-f="buyPrice" placeholder="0.00"></td>
+          <td class="num invested-cell">${investedTxt}</td>
+          <td class="num current-value-cell ${cvCls}">${currentValueTxt}</td>
           <td class="num profit-rs-cell">${profitRsBadge}</td>
           <td class="num profit-cell">${profitBadge}</td>
           <td><input type="number" step="any" class="cell num" value="${numOrBlank(h.targetAmount)}" data-i="${i}" data-f="targetAmount" placeholder="0.00"></td>
-          <td class="num target-pct-cell">${targetPctBadge}</td>
           <td><input type="date" class="cell" value="${escAttr(h.buyDate ?? '')}" data-i="${i}" data-f="buyDate"></td>
           <td class="sell-date-cell visible"><button class="icon-btn" data-sell="${i}" title="Close position">Sell</button></td>
           <td class="remove-cell visible"><button class="icon-btn danger" data-remove="${i}" title="Remove">${ICON_TRASH}</button></td>`;
           } else {
             tr.innerHTML = `
           <td><div class="sym-badge"><div class="sym-avatar" style="background:${avatarColor(h.symbol)}">${escHtml((h.symbol || "?").charAt(0).toUpperCase())}</div><span style="font-weight:600;font-size:11px">${escHtml(h.symbol || "—")}</span></div></td>
+          <td class="sector-cell">${sectorHtml}</td>
           <td class="num">${escHtml(String(qtyOf(h)))}</td>
           <td class="num">${fmtMoney(h.buyPrice)}</td>
           <td class="num current-price-cell">${fmtMoney(curPrice)}</td>
           <td class="num chg-cell">${chgBadge}</td>
+          <td class="num invested-cell">${investedTxt}</td>
+          <td class="num current-value-cell ${cvCls}">${currentValueTxt}</td>
           <td class="num profit-rs-cell">${profitRsBadge}</td>
           <td class="num profit-cell">${profitBadge}</td>
           <td class="num">${fmtMoney(h.targetAmount)}</td>
-          <td class="num target-pct-cell">${targetPctBadge}</td>
           <td>${fmtDate(h.buyDate)}</td>`;
           }
           tbody.appendChild(tr);
@@ -4152,9 +4416,23 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           const rsCell = row.querySelector(".profit-rs-cell");
           if (rsCell) rsCell.innerHTML = profitRupeesBadge(holdings[idx].buyPrice, curPriceOf(holdings[idx]), holdings[idx].quantity);
         }
-        if (f === "buyPrice" || f === "targetAmount") {
-          const tCell = row.querySelector(".target-pct-cell");
-          if (tCell) { const tp = profitInfo(holdings[idx].buyPrice, holdings[idx].targetAmount); tCell.innerHTML = `<span class="badge ${tp.cls}">${tp.text}</span>`; }
+        if (f === "buyPrice" || f === "quantity") {
+          const investedCell = row.querySelector(".invested-cell");
+          if (investedCell) investedCell.textContent = fmtMoney(investedOf(holdings[idx]));
+        }
+        if (f === "symbol" || f === "quantity") {
+          const cvCell = row.querySelector(".current-value-cell");
+          if (cvCell) cvCell.textContent = fmtMoney(currentValueOf(holdings[idx]));
+          const sectorCell = row.querySelector(".sector-cell");
+          if (sectorCell) sectorCell.innerHTML = sectorCellHtml(holdings[idx].symbol);
+        }
+        if (f === "symbol" || f === "quantity" || f === "buyPrice") {
+          const cvCell = row.querySelector(".current-value-cell");
+          if (cvCell) {
+            cvCell.classList.remove("cv-pos", "cv-neg");
+            const cls = currentValueClass(holdings[idx]);
+            if (cls) cvCell.classList.add(cls);
+          }
         }
         computeKPIs();
         saveStatus.textContent = isDirty() ? "You have unsaved changes" : "No changes";
@@ -4169,12 +4447,27 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
         if (removeBtn) { holdings.splice(parseInt(removeBtn.getAttribute("data-remove"), 10), 1); renderTable(); }
       });
 
-      addRowBtn.addEventListener("click", () => {
-        holdings.push({ symbol: "", quantity: 1, buyPrice: "", buyDate: "", targetAmount: "" });
-        renderTable();
-        const inputs = tbody.querySelectorAll('input[data-f="symbol"]');
-        if (inputs.length) inputs[inputs.length - 1].focus();
-      });
+      function openAddHoldingModal() {
+        addHoldingError.textContent = "";
+        addSymbolInput.value = ""; addBuyPriceInput.value = ""; addQuantityInput.value = "";
+        addBuyDateInput.value = new Date().toISOString().slice(0, 10);
+        addHoldingModal.classList.add("visible"); addSymbolInput.focus();
+      }
+      function closeAddHoldingModal() { addHoldingModal.classList.remove("visible"); }
+      function confirmAddHolding() {
+        const symbol = addSymbolInput.value.trim().toUpperCase();
+        const buyPrice = parseFloat(addBuyPriceInput.value);
+        const quantity = parseFloat(addQuantityInput.value);
+        const buyDate = addBuyDateInput.value;
+        if (!symbol || !isFinite(buyPrice) || buyPrice <= 0 || !isFinite(quantity) || quantity <= 0) {
+          addHoldingError.textContent = "Enter a symbol, buy price and quantity."; return;
+        }
+        holdings.push({ symbol, quantity, buyPrice, buyDate: buyDate || "", targetAmount: "" });
+        closeAddHoldingModal(); renderTable();
+        saveStatus.textContent = "You have unsaved changes"; saveStatus.className = "edit-banner-sub";
+      }
+
+      addRowBtn.addEventListener("click", openAddHoldingModal);
 
       // Sale modal
       function openSaleModal(index) {
@@ -4209,9 +4502,13 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
       document.getElementById("loginSubmitBtn").addEventListener("click", submitLogin);
       document.getElementById("saleCancelBtn").addEventListener("click", closeSaleModal);
       document.getElementById("saleConfirmBtn").addEventListener("click", confirmSale);
+      addHoldingCancelBtn.addEventListener("click", closeAddHoldingModal);
+      addHoldingCloseX.addEventListener("click", closeAddHoldingModal);
+      addHoldingConfirmBtn.addEventListener("click", confirmAddHolding);
       passwordInput.addEventListener("keydown", e => { if (e.key === "Enter") submitLogin(); });
       loginModal.addEventListener("click", e => { if (e.target === loginModal) closeLoginModal(); });
       saleModal.addEventListener("click", e => { if (e.target === saleModal) closeSaleModal(); });
+      addHoldingModal.addEventListener("click", e => { if (e.target === addHoldingModal) closeAddHoldingModal(); });
 
       // Init
       function init() {
