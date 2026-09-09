@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class MarketData {
+    private String companyName;
     private  double currentPrice;
     private  double marketCap;
     private  double previousPrice;

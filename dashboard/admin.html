@@ -1194,6 +1194,22 @@
       flex: none;
     }
 
+    .sector-icon-badge {
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 7px;
+      flex: none;
+    }
+
+    .sector-icon-badge svg {
+      width: 11px;
+      height: 11px;
+    }
+
     .sector-pct {
       font-family: 'SF Mono', monospace;
       color: #4a6075;
@@ -2485,6 +2501,21 @@
     flex: 0 0 auto;
 }
 
+.sector-icon-badge {
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+}
+
+.sector-icon-badge svg {
+    width: 13px;
+    height: 13px;
+}
+
 
 /* ── Gain / Loss ── */
 
@@ -3742,10 +3773,23 @@
       // Sorting
       const SECTOR_COLORS = ["#2DD4BF", "#F5A623", "#8B5CF6", "#5B9EFF", "#FF5C6C", "#5B6472", "#22C55E", "#EAB308"];
 
+      // Every stock gets its own distinct color (not shared/cycled) — hue is
+      // spread around the color wheel via the golden angle so it stays stable
+      // for a given symbol while never colliding with another held symbol.
+      let avatarColorMap = {};
+      function rebuildAvatarColorMap(symbols) {
+        avatarColorMap = {};
+        [...new Set((symbols || []).map(s => (s || "?").toUpperCase()))].sort().forEach((sym, i) => {
+          const hue = (i * 137.508) % 360;
+          avatarColorMap[sym] = `hsl(${hue.toFixed(1)}, 62%, 54%)`;
+        });
+      }
       function avatarColor(symbol) {
-        const s = (symbol || "?").toUpperCase(); let h = 0;
+        const s = (symbol || "?").toUpperCase();
+        if (avatarColorMap[s]) return avatarColorMap[s];
+        let h = 0;
         for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
-        return SECTOR_COLORS[h % SECTOR_COLORS.length];
+        return `hsl(${h % 360}, 62%, 54%)`;
       }
 
       function qtyOf(h) { const q = parseFloat(h.quantity); return isFinite(q) && q > 0 ? q : 1; }
@@ -4080,7 +4124,7 @@
 // }
 let sectorSortField="invested", sectorSortDir="desc";
 function renderSectorHoldings(name,row,scroll=true){const d=buildSectorData().sectors.find(x=>x.sector===name);if(!d)return;document.querySelectorAll("#sectorSummaryBody tr").forEach(x=>x.classList.remove("sector-selected"));row?.classList.add("sector-selected");document.getElementById("sectorHoldingsTitle").textContent=d.sector+" Holdings";document.getElementById("sectorHoldingsMeta").textContent=d.stockCount+" stock"+(d.stockCount===1?"":"s");document.getElementById("sectorHoldingsBody").innerHTML=d.holdings.map(h=>{const q=qtyOf(h),b=parseFloat(h.buyPrice),c=curPriceOf(h),i=b*q,v=c*q,g=v-i,p=i?g/i*100:0,cl=g>=0?"sector-positive":"sector-negative";return `<tr><td>${escHtml((h.symbol||"—").toUpperCase())}</td><td>${q}</td><td>₹${fmtMoney(i)}</td><td>₹${fmtMoney(v)}</td><td class="${cl}">${g>=0?"+":"-"}₹${fmtMoney(Math.abs(g))}</td><td class="${cl}">${p>=0?"+":""}${p.toFixed(2)}%</td></tr>`}).join("");const card=document.getElementById("sectorHoldingsCard");card.classList.add("visible");if(scroll)card.scrollIntoView({behavior:"smooth",block:"nearest"})}
-function renderSectorSummary(){const data=buildSectorData(),body=document.getElementById("sectorSummaryBody");body.innerHTML="";if(!data.sectors.length){body.innerHTML='<tr><td colspan="8" class="sector-table-empty">No sector data available</td></tr>';document.getElementById("sectorHoldingsCard").classList.remove("visible");return}const sectors=[...data.sectors].sort((a,b)=>{if(sectorSortField==="sector"){const r=a.sector.localeCompare(b.sector);return sectorSortDir==="asc"?r:-r}const r=(a[sectorSortField]||0)-(b[sectorSortField]||0);return sectorSortDir==="asc"?r:-r}),colors=["#2DD4BF","#F59E0B","#8B5CF6","#5B9EFF","#FF5C7A","#94A3B8","#22C55E","#FACC15"];sectors.forEach((x,n)=>{const c=colors[n%colors.length],r=document.createElement("tr");r.dataset.sector=x.sector;r.innerHTML=`<td><div class="sector-name-cell"><span class="sector-dot" style="background:${c}"></span><span>${escHtml(x.sector)}</span></div></td><td>₹${fmtMoney(x.invested)}</td><td>₹${fmtMoney(x.currentValue)}</td><td class="${x.gainLoss>=0?"sector-positive":"sector-negative"}">${x.gainLoss>=0?"+":"-"}₹${fmtMoney(Math.abs(x.gainLoss))}</td><td class="${x.gainLossPct>=0?"sector-positive":"sector-negative"}">${x.gainLossPct>=0?"+":""}${x.gainLossPct.toFixed(1)}%</td><td><div class="sector-allocation-cell"><div class="sector-allocation-bar"><span style="width:${Math.min(Math.max(x.allocationPct,0),100)}%;background:${c}"></span></div><span>${x.allocationPct.toFixed(1)}%</span></div></td><td>${x.stockCount}</td><td class="sector-row-arrow">›</td>`;r.addEventListener("click",()=>renderSectorHoldings(x.sector,r));body.appendChild(r)});document.querySelectorAll(".sector-th-sort").forEach(b=>{const a=b.dataset.sectorSort===sectorSortField;b.classList.toggle("active",a);b.querySelector(".sector-sort-arrow").textContent=a?(sectorSortDir==="asc"?"▲":"▼"):""});const first=body.querySelector("tr[data-sector]");if(first)renderSectorHoldings(first.dataset.sector,first,false)}
+function renderSectorSummary(){const data=buildSectorData(),body=document.getElementById("sectorSummaryBody");body.innerHTML="";if(!data.sectors.length){body.innerHTML='<tr><td colspan="8" class="sector-table-empty">No sector data available</td></tr>';document.getElementById("sectorHoldingsCard").classList.remove("visible");return}const sectors=[...data.sectors].sort((a,b)=>{if(sectorSortField==="sector"){const r=a.sector.localeCompare(b.sector);return sectorSortDir==="asc"?r:-r}const r=(a[sectorSortField]||0)-(b[sectorSortField]||0);return sectorSortDir==="asc"?r:-r});sectors.forEach((x)=>{const icon=getSectorIcon(x.sector),c=icon.color,r=document.createElement("tr");r.dataset.sector=x.sector;r.innerHTML=`<td><div class="sector-name-cell"><span class="sector-icon-badge" style="color:${c};background:${hexToRgba(c,.16)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icon.svg}</svg></span><span>${escHtml(x.sector)}</span></div></td><td>₹${fmtMoney(x.invested)}</td><td>₹${fmtMoney(x.currentValue)}</td><td class="${x.gainLoss>=0?"sector-positive":"sector-negative"}">${x.gainLoss>=0?"+":"-"}₹${fmtMoney(Math.abs(x.gainLoss))}</td><td class="${x.gainLossPct>=0?"sector-positive":"sector-negative"}">${x.gainLossPct>=0?"+":""}${x.gainLossPct.toFixed(1)}%</td><td><div class="sector-allocation-cell"><div class="sector-allocation-bar"><span style="width:${Math.min(Math.max(x.allocationPct,0),100)}%;background:${c}"></span></div><span>${x.allocationPct.toFixed(1)}%</span></div></td><td>${x.stockCount}</td><td class="sector-row-arrow">›</td>`;r.addEventListener("click",()=>renderSectorHoldings(x.sector,r));body.appendChild(r)});document.querySelectorAll(".sector-th-sort").forEach(b=>{const a=b.dataset.sectorSort===sectorSortField;b.classList.toggle("active",a);b.querySelector(".sector-sort-arrow").textContent=a?(sectorSortDir==="asc"?"▲":"▼"):""});const first=body.querySelector("tr[data-sector]");if(first)renderSectorHoldings(first.dataset.sector,first,false)}
       function chgOf(h) {
         const sd = symbolDataMap[(h.symbol || "").toUpperCase()];
         const chg = sd ? parseFloat(sd.changePercent) : NaN; return isFinite(chg) ? chg : -Infinity;
@@ -4177,6 +4221,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
       // Render table
       function renderTable() {
         tbody.innerHTML = "";
+        rebuildAvatarColorMap(holdings.map(h => h.symbol));
         computeKPIs();
         renderInsights();
 
@@ -4196,6 +4241,11 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           const sd = symbolDataMap[(h.symbol || "").toUpperCase()];
           const chgBadge = changeBadge(sd ? sd.changePercent : undefined);
           const sectorHtml = sectorCellHtml(h.symbol);
+          const rowSector = sd && sd.sector ? sd.sector : "";
+          const rowSectorColor = rowSector ? getSectorIcon(rowSector).color : null;
+          tr.style.background = rowSectorColor
+            ? `linear-gradient(90deg, ${hexToRgba(rowSectorColor, .16)} 0%, ${hexToRgba(rowSectorColor, .05)} 35%, transparent 75%)`
+            : "";
           const investedTxt = fmtMoney(investedOf(h));
           const currentValueTxt = fmtMoney(currentValueOf(h));
           const cvCls = currentValueClass(h);
@@ -4312,7 +4362,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
 
           if (k.lbl === "Today's Change" && nifty) {
             div.className = "kpi-card has-index";
-            div.style.cssText = `--accent:${k.accent}`;
+            div.style.cssText = `--accent:${k.accent};background:linear-gradient(120deg, ${hexToRgba(k.accent, .16)} 0%, ${hexToRgba(k.accent, .05)} 40%, #0e1d2b 85%)`;
             const pct = parseFloat(nifty.percentChange);
             const cls = pct > 0 ? "pos" : pct < 0 ? "neg" : "";
             const sign = pct > 0 ? "+" : "";
@@ -4327,7 +4377,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
             div.querySelector("#niftySnip").addEventListener("click", e => { e.stopPropagation(); openIdxModal(); });
           } else {
             div.className = "kpi-card";
-            div.style.cssText = `--accent:${k.accent}`;
+            div.style.cssText = `--accent:${k.accent};background:linear-gradient(120deg, ${hexToRgba(k.accent, .16)} 0%, ${hexToRgba(k.accent, .05)} 40%, #0e1d2b 85%)`;
             div.innerHTML = mainHtml;
           }
           kpiGrid.insertBefore(div, fiiCardEl);
@@ -4338,9 +4388,9 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
       function buildDonutSVG(entries, total) {
         const size = 120, radius = 42, cx = 60, cy = 60, circ = 2 * Math.PI * radius;
         let offset = 0;
-        const segs = entries.map(([, val], idx) => {
+        const segs = entries.map(([sector, val]) => {
           const pct = val / total, dash = pct * circ;
-          const color = SECTOR_COLORS[idx % SECTOR_COLORS.length];
+          const color = getSectorIcon(sector).color;
           const seg = `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${color}" stroke-width="16" stroke-dasharray="${dash.toFixed(2)} ${(circ - dash).toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 ${cx} ${cy})"/>`;
           offset += dash; return seg;
         }).join("");
@@ -4389,9 +4439,9 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
         if (sectorEntries.length && total > 0) {
           sectorDonutWrap.innerHTML = buildDonutSVG(sectorEntries, total)
             + `<div class="donut-center"><span class="dc-val">${holdings.length}</span><span class="dc-lbl">Stocks</span></div>`;
-          sectorAllocList.innerHTML = sectorEntries.map(([sector, value], idx) => {
-            const pct = (value / total) * 100; const color = SECTOR_COLORS[idx % SECTOR_COLORS.length];
-            return `<li class="sector-row"><span class="sector-name"><span class="sector-dot" style="background:${color}"></span>${escHtml(sector)}</span><span class="sector-pct">${pct.toFixed(1)}%</span></li>`;
+          sectorAllocList.innerHTML = sectorEntries.map(([sector, value]) => {
+            const pct = (value / total) * 100; const icon = getSectorIcon(sector);
+            return `<li class="sector-row"><span class="sector-name"><span class="sector-icon-badge" style="color:${icon.color};background:${hexToRgba(icon.color, .16)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icon.svg}</svg></span>${escHtml(sector)}</span><span class="sector-pct">${pct.toFixed(1)}%</span></li>`;
           }).join("");
         } else {
           sectorDonutWrap.innerHTML = "";

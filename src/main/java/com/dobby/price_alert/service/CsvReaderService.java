@@ -53,6 +53,7 @@ public class CsvReaderService {
             if(!(symbol.equals("544224") || symbol.equals("526433"))) {
               marketData=  marketDataService.getMarketData(symbol);
             }
+            String companyName = marketData.getCompanyName();
             double dayLow = marketData.getDayLow();
             double current =marketData.getCurrentPrice();
             double prevClose = marketData.getPreviousPrice();
@@ -63,7 +64,7 @@ public class CsvReaderService {
             if (alertStatus.isShouldSend()) {
                 StockMessageDto dto = StockMessageDto.builder().stockName(symbol).currentPrice(current).targetPrice(alert).screenerUrl(screenerUrl).sheetName(sheetConfig.getName()).build();
                 String message = MessageFormat.format(dto);
-                telegramService.sendMessage(message);
+//                telegramService.sendMessage(message);
 
             }
             double distance = ((current - alert) / alert) * 100;
@@ -83,6 +84,7 @@ public class CsvReaderService {
             dashboardStocks.add(
                     DashboardStock.builder()
                             .symbol(symbol)
+                            .companyName(companyName)
                             .currentPrice(BigDecimal.valueOf(current))
                             .alertPrice(BigDecimal.valueOf(alert))
                             .distance(BigDecimal.valueOf(distance))

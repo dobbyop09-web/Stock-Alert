@@ -37,6 +37,7 @@ public class MarketDataService {
                 ? tradeInfo.getLastPrice()
                 : metaData.getClosePrice();
         return MarketData.builder()
+                .companyName(metaData.getCompanyName())
                 .currentPrice(currentPrice.doubleValue())
                 .marketCap(tradeInfo.getTotalMarketCap().doubleValue())
                 .previousPrice(metaData.getPreviousClose().doubleValue())
