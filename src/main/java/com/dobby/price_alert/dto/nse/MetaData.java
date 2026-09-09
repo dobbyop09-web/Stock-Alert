@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class MetaData {
     private String symbol;
+    private String companyName;
     private BigDecimal open;
     private BigDecimal dayHigh;
     private BigDecimal dayLow;

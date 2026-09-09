@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 @Builder
 public class DashboardStock {
     private String symbol;
+    private String companyName;
     private BigDecimal currentPrice;
     private BigDecimal alertPrice;
     private BigDecimal previousClose;
