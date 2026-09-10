@@ -920,6 +920,15 @@
       font-weight: 700;
       color: #0B0F11;
       flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .sym-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #fff;
     }
 
     /* Sector chip (holdings table) — same visual language as sector-badge elsewhere */
@@ -3792,6 +3801,60 @@
         return `hsl(${h % 360}, 62%, 54%)`;
       }
 
+      // Company logos: symbol -> CDN image URL.
+      // logo.json must be kept in the same folder as this HTML file.
+      let companyLogos = {};
+
+      async function loadCompanyLogos() {
+        try {
+          const logoFileUrl = new URL("logo.json", window.location.href);
+          const res = await fetch(logoFileUrl, {
+            cache: "no-cache"
+          });
+
+          if (!res.ok) throw new Error(`logo.json returned HTTP ${res.status}`);
+
+          const rawLogos = await res.json();
+
+          // Normalise symbol keys so RELIANCE, reliance and " RELIANCE "
+          // all resolve to the same logo.
+          companyLogos = Object.fromEntries(
+            Object.entries(rawLogos || {})
+              .filter(([symbol, url]) => typeof url === "string" && url.trim())
+              .map(([symbol, url]) => [String(symbol).trim().toUpperCase(), url.trim()])
+          );
+
+          console.log(`Loaded ${Object.keys(companyLogos).length} company logos`);
+        } catch (error) {
+          console.error("Could not load logo.json:", error);
+          companyLogos = {};
+        }
+      }
+
+      function symAvatarHtml(symbol) {
+        const sym = String(symbol || "?").trim();
+        const symbolKey = sym.toUpperCase();
+        const letter = escHtml(symbolKey.charAt(0) || "?");
+        const color = avatarColor(symbolKey);
+        const logoUrl = companyLogos[symbolKey];
+
+        if (!logoUrl) {
+          return `<div class="sym-avatar" style="background:${color}">${letter}</div>`;
+        }
+
+        return `
+          <div class="sym-avatar" style="background:${color}">
+            <img
+              src="${escHtml(logoUrl)}"
+              alt="${escHtml(symbolKey)}"
+              loading="lazy"
+              referrerpolicy="no-referrer"
+              onerror="this.remove(); this.parentElement.textContent='${letter}';"
+            >
+          </div>
+        `;
+      }
+
       function qtyOf(h) { const q = parseFloat(h.quantity); return isFinite(q) && q > 0 ? q : 1; }
       function curPriceOf(h) {
         const sd = symbolDataMap[(h.symbol || "").toUpperCase()];
@@ -3827,7 +3890,7 @@
 
     "Defence": {
         svg: '<path d="M12 2l8 3.5v5.4c0 5-3.4 8.6-8 11.1-4.6-2.5-8-6.1-8-11.1V5.5L12 2Z"/>',
-        color: '#64748B'
+        color: '#E5484D'
     },
 
     "FMCG": {
@@ -3867,17 +3930,17 @@
 
     "Metal": {
         svg: '<circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="9" ry="3.6"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(120 12 12)"/>',
-        color: '#94A3B8'
+        color: '#8BC34A'
     },
 
     "Other": {
         svg: '<rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/>',
-        color: '#94A3B8'
+        color: '#C026D3'
     },
 
     "Misc": {
         svg: '<rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/>',
-        color: '#94A3B8'
+        color: '#C026D3'
     },
 
     "OilEnergy": {
@@ -4266,7 +4329,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           <td class="remove-cell visible"><button class="icon-btn danger" data-remove="${i}" title="Remove">${ICON_TRASH}</button></td>`;
           } else {
             tr.innerHTML = `
-          <td><div class="sym-badge"><div class="sym-avatar" style="background:${avatarColor(h.symbol)}">${escHtml((h.symbol || "?").charAt(0).toUpperCase())}</div><span style="font-weight:600;font-size:11px">${escHtml(h.symbol || "—")}</span></div></td>
+          <td><div class="sym-badge">${symAvatarHtml(h.symbol)}<span style="font-weight:600;font-size:11px">${escHtml(h.symbol || "—")}</span></div></td>
           <td class="sector-cell">${sectorHtml}</td>
           <td class="num">${escHtml(String(qtyOf(h)))}</td>
           <td class="num">${fmtMoney(h.buyPrice)}</td>
@@ -4570,6 +4633,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
         loadSymbolList();
         loadFiiData();   // load FII/DII data independently of auth
         loadIndexData(); // load market indices independently of auth
+        loadCompanyLogos().then(() => { if (holdings.length) renderTable(); });
       }
       init();
     })();

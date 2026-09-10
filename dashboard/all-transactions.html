@@ -78,7 +78,8 @@
     .trades-table tbody tr:hover td{background:rgba(255,255,255,.02)}
     .trades-table tbody tr:last-child td{border-bottom:none}
     .sym-badge{display:flex;align-items:center;gap:8px}
-    .sym-avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#0B0F11;flex-shrink:0}
+    .sym-avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#0B0F11;flex-shrink:0;overflow:hidden}
+    .sym-avatar img.symbol-logo{width:100%;height:100%;object-fit:contain;display:block;background:#fff;border-radius:50%;padding:2px}
     .badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:16px}
     .badge.pos{background:rgba(45,212,191,.1);color:#2DD4BF}
     .badge.neg{background:rgba(255,92,108,.1);color:#FF5C6C}
@@ -292,6 +293,24 @@
 
       let rows = [];
       let searchQuery = "";
+      let companyLogos = {};
+
+      async function loadCompanyLogos() {
+        try {
+          const response = await fetch("logo.json", { cache: "no-cache" });
+          if (!response.ok) throw new Error("logo.json request failed");
+          const data = await response.json();
+          companyLogos = Object.fromEntries(Object.entries(data || {}).map(([symbol, url]) => [String(symbol).trim().toUpperCase(), String(url || "").trim()]));
+        } catch (e) { companyLogos = {}; console.warn("Unable to load logo.json", e); }
+      }
+
+      function logoHtml(symbol, color) {
+        const key = String(symbol || "").trim().toUpperCase();
+        const url = companyLogos[key];
+        const letter = escHtml(key.charAt(0) || "?");
+        if (!url) return `<div class="sym-avatar" style="background:${color}">${letter}</div>`;
+        return `<div class="sym-avatar" style="background:#fff"><img class="symbol-logo" src="${escHtml(url)}" alt="${escHtml(key)}" loading="lazy" onerror="this.remove();this.parentElement.textContent='${letter}';this.parentElement.style.background='${color}'"></div>`;
+      }
 
       const SECTOR_COLORS = ["#5B9EFF","#FF5C6C","#F5A623","#8B5CF6","#2DD4BF","#22C55E","#EAB308","#EC4899","#14B8A6"];
 
@@ -363,7 +382,7 @@
                 const color = avatarColor(t.symbol);
                 return `<tr>
                   <td><div class="sym-badge">
-                    <div class="sym-avatar" style="background:${color}">${escHtml((t.symbol||"?").charAt(0).toUpperCase())}</div>
+                    ${logoHtml(t.symbol, color)}
                     <strong style="font-size:11px">${escHtml(t.symbol||"—")}</strong>
                   </div></td>
                   <td class="num">${qty(t)}</td>
@@ -393,6 +412,7 @@
           return;
         }
         try {
+          await loadCompanyLogos();
           const response = await fetch(`${API_BASE}/portfolio.json`, { headers: { Authorization: `Bearer ${token}` } });
           if (!response.ok) throw new Error();
           const data = await response.json();
