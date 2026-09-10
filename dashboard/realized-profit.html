@@ -1901,6 +1901,26 @@
       let searchQuery = "";
       let activeRange = "all";
       let allValid = [];
+      let companyLogos = {};
+
+      async function loadCompanyLogos() {
+        try {
+          const response = await fetch("logo.json", { cache: "no-cache" });
+          if (!response.ok) throw new Error("logo.json request failed");
+          const data = await response.json();
+          companyLogos = Object.fromEntries(
+            Object.entries(data || {}).map(([symbol, url]) => [String(symbol).trim().toUpperCase(), String(url || "").trim()])
+          );
+        } catch (e) { companyLogos = {}; console.warn("Unable to load logo.json", e); }
+      }
+
+      function logoHtml(symbol, color) {
+        const key = String(symbol || "").trim().toUpperCase();
+        const url = companyLogos[key];
+        const letter = escHtmlFull(key.charAt(0) || "?");
+        if (!url) return `<div class="sym-avatar" style="background:${color}">${letter}</div>`;
+        return `<div class="sym-avatar" style="background:#fff"><img class="symbol-logo" src="${escHtmlFull(url)}" alt="${escHtmlFull(key)}" loading="lazy" onerror="this.remove();this.parentElement.textContent='${letter}';this.parentElement.style.background='${color}'"></div>`;
+      }
       let activePeriod = "fy";
       let chartView = "monthly";
       let chartData = [];
@@ -2260,7 +2280,7 @@
           const typeCls = typeLabel === "Intraday" ? "type-intraday" : "type-delivery";
           return `<tr>
             <td><div class="sym-badge">
-              <div class="sym-avatar" style="background:${color}">${escHtmlFull((t.symbol || "?").charAt(0).toUpperCase())}</div>
+              ${logoHtml(t.symbol, color)}
               <strong style="font-size:11px">${escHtmlFull(t.symbol || "—")}</strong>
             </div></td>
             <td class="num">${t.quantity || 1}</td>

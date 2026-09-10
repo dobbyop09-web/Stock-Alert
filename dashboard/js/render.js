@@ -43,13 +43,23 @@ const SECTOR_COLORS = {
 const SECTOR_COLOR_DEFAULT = "#9CA3AF";
 const SECTOR_COLOR_ALL = "#2DD4BF";
 
+let companyLogos = {};
+
+export function setCompanyLogos(data) {
+    companyLogos = Object.fromEntries(
+        Object.entries(data || {}).map(([symbol, url]) => [
+            String(symbol).trim().toUpperCase(),
+            String(url || "").trim()
+        ])
+    );
+}
+
 function hexToRgba(hex, a) {
     const n = parseInt(hex.slice(1), 16);
     return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
 }
 
-// No logo/company data is available from the sheet, so each symbol gets a
-// deterministic colored initials avatar (same symbol -> same color, always).
+// Deterministic colored initials fallback used when a symbol has no logo URL.
 const AVATAR_PALETTE = ["#2563EB", "#DC2626", "#059669", "#D97706", "#7C3AED", "#DB2777", "#0891B2", "#65A30D", "#4F46E5", "#EA580C", "#0D9488", "#9333EA"];
 
 function avatarFor(symbol) {
@@ -77,6 +87,10 @@ function rowHtml(r) {
         `<span class="change-pct ${chgUp ? "up" : "down"}">${chgUp ? "+" : ""}${chg.toFixed(2)}%</span>`;
 
     const av = avatarFor(r.symbol);
+    const logoUrl = companyLogos[String(r.symbol || "").trim().toUpperCase()];
+    const logoHtml = logoUrl
+        ? `<img src="${String(logoUrl).replace(/&/g, "&amp;").replace(/"/g, "&quot;")}" alt="${String(r.symbol || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">`
+        : "";
     const sectorColor = SECTOR_COLORS[String(r.sheet).toLowerCase()] || SECTOR_COLOR_DEFAULT;
     const sectorIcon = SECTOR_ICONS[String(r.sheet).toLowerCase()] || SECTOR_ICON_DEFAULT;
     const statusIcon = STATUS_ICONS[r.status] || STATUS_ICON_DEFAULT;
@@ -85,7 +99,10 @@ function rowHtml(r) {
         <tr>
             <td>
                 <a href="${r.screenerUrl}" target="_blank" class="stock-link">
-                    <span class="sym-avatar" style="background:${av.color}">${av.letters}</span>
+                    <span class="sym-avatar${logoUrl ? " has-logo" : ""}" style="background:${av.color}">
+                        ${logoHtml}
+                        <span class="sym-avatar-letter"${logoUrl ? ' style="display:none"' : ""}>${av.letters}</span>
+                    </span>
                     <span class="sym-text">${r.symbol}</span>
                 </a>
             </td>

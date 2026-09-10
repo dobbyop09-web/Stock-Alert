@@ -1,16 +1,25 @@
 import { state } from "./state.js";
-import { render, renderSectorList } from "./render.js";
+import { render, renderSectorList, setCompanyLogos } from "./render.js";
 import { timeAgo } from "./utils.js";
 
 export async function loadDashboard() {
  const BASE_URL = "https://tiny-art-8473.dobbyop09.workers.dev";
     try {
-       const [dataRes, metaRes] = await Promise.all([
+       const [dataRes, metaRes, logoRes] = await Promise.all([
            fetch(`${BASE_URL}/dashboard-data?t=${Date.now()}`),
-           fetch(`${BASE_URL}/dashboard-status?t=${Date.now()}`)
+           fetch(`${BASE_URL}/dashboard-status?t=${Date.now()}`),
+           fetch(`logo.json?t=${Date.now()}`, { cache: "no-cache" })
        ]);
         const data = await dataRes.json();
         const meta = await metaRes.json();
+
+        let logoData = {};
+        try {
+            if (logoRes.ok) logoData = await logoRes.json();
+        } catch (logoError) {
+            console.warn("Unable to load logo.json", logoError);
+        }
+        setCompanyLogos(logoData);
 
         state.allRows = data;
         state.rows = [...state.allRows];

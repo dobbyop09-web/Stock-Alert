@@ -64,7 +64,7 @@ public class CsvReaderService {
             if (alertStatus.isShouldSend()) {
                 StockMessageDto dto = StockMessageDto.builder().stockName(symbol).currentPrice(current).targetPrice(alert).screenerUrl(screenerUrl).sheetName(sheetConfig.getName()).build();
                 String message = MessageFormat.format(dto);
-//                telegramService.sendMessage(message);
+                telegramService.sendMessage(message);
 
             }
             double distance = ((current - alert) / alert) * 100;
