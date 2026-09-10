@@ -455,13 +455,13 @@ button {
 }
 
 .sector-item.active {
-    background: rgba(45, 212, 191, .12);
+    background: linear-gradient(135deg, rgba(45, 212, 191, .18), rgba(45, 212, 191, .05));
     color: var(--accent);
     font-weight: 600;
 }
 
 .sector-item.active .sector-icon {
-    background: rgba(45, 212, 191, .22);
+    background: linear-gradient(135deg, rgba(45, 212, 191, .55), rgba(45, 212, 191, .15));
     color: var(--accent);
 }
 
@@ -640,27 +640,27 @@ tbody tr:hover td {
 }
 
 .b-triggered {
-    background: rgba(255, 92, 108, .1);
+    background: linear-gradient(135deg, rgba(255, 92, 108, .28), rgba(255, 92, 108, .06));
     color: var(--triggered);
-    border-color: rgba(255, 92, 108, .25);
+    border-color: rgba(255, 92, 108, .3);
 }
 
 .b-near {
-    background: rgba(245, 166, 35, .1);
+    background: linear-gradient(135deg, rgba(245, 166, 35, .28), rgba(245, 166, 35, .06));
     color: var(--near);
-    border-color: rgba(245, 166, 35, .25);
+    border-color: rgba(245, 166, 35, .3);
 }
 
 .b-watch {
-    background: rgba(45, 212, 191, .1);
+    background: linear-gradient(135deg, rgba(45, 212, 191, .28), rgba(45, 212, 191, .06));
     color: var(--watch);
-    border-color: rgba(45, 212, 191, .25);
+    border-color: rgba(45, 212, 191, .3);
 }
 
 .b-far {
-    background: rgba(255, 255, 255, .06);
+    background: linear-gradient(135deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .03));
     color: var(--far);
-    border-color: rgba(255, 255, 255, .1);
+    border-color: rgba(255, 255, 255, .12);
 }
 
 /* ── Sector pill (table) ── */

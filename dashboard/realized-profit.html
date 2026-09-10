@@ -828,7 +828,15 @@
     .trades-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 750px
+      table-layout: fixed;
+      min-width: 980px
+    }
+
+    .trades-table th,
+    .trades-table td {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
     }
 
     .trades-table th {
@@ -875,16 +883,28 @@
     }
 
     .sym-avatar {
-      width: 22px;
-      height: 22px;
+      width: 30px;
+      height: 30px;
+      min-width: 30px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
       font-size: 9px;
       font-weight: 700;
       color: #0B0F11;
       flex-shrink: 0
+    }
+
+    .sym-avatar .symbol-logo {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      background: #fff;
+      padding: 2px;
+      border-radius: 50%
     }
 
     .badge {
@@ -1793,6 +1813,17 @@
               </div>
               <div class="trades-scroll">
                 <table class="trades-table">
+                  <colgroup>
+                    <col style="width:16%">
+                    <col style="width:6%">
+                    <col style="width:12%">
+                    <col style="width:12%">
+                    <col style="width:14%">
+                    <col style="width:10%">
+                    <col style="width:12%">
+                    <col style="width:9%">
+                    <col style="width:9%">
+                  </colgroup>
                   <thead>
                     <tr>
                       <th>Symbol</th>
@@ -1905,21 +1936,45 @@
 
       async function loadCompanyLogos() {
         try {
-          const response = await fetch("logo.json", { cache: "no-cache" });
-          if (!response.ok) throw new Error("logo.json request failed");
+          const response = await fetch(new URL("logo.json", window.location.href), { cache: "no-cache" });
+          if (!response.ok) throw new Error(`logo.json returned HTTP ${response.status}`);
           const data = await response.json();
           companyLogos = Object.fromEntries(
-            Object.entries(data || {}).map(([symbol, url]) => [String(symbol).trim().toUpperCase(), String(url || "").trim()])
+            Object.entries(data || {})
+              .filter(([_, url]) => typeof url === "string" && url.trim())
+              .map(([symbol, url]) => [String(symbol).trim().toUpperCase(), url.trim()])
           );
-        } catch (e) { companyLogos = {}; console.warn("Unable to load logo.json", e); }
+          console.log(`[logo.json] loaded ${Object.keys(companyLogos).length} logos`);
+        } catch (e) {
+          companyLogos = {};
+          console.warn("Unable to load logo.json", e);
+        }
       }
 
       function logoHtml(symbol, color) {
         const key = String(symbol || "").trim().toUpperCase();
         const url = companyLogos[key];
         const letter = escHtmlFull(key.charAt(0) || "?");
-        if (!url) return `<div class="sym-avatar" style="background:${color}">${letter}</div>`;
-        return `<div class="sym-avatar" style="background:#fff"><img class="symbol-logo" src="${escHtmlFull(url)}" alt="${escHtmlFull(key)}" loading="lazy" onerror="this.remove();this.parentElement.textContent='${letter}';this.parentElement.style.background='${color}'"></div>`;
+
+        if (!url) {
+          return `<div class="sym-avatar" style="background:${color}">${letter}</div>`;
+        }
+
+        const safeUrl = escHtmlFull(url);
+        const safeKey = escHtmlFull(key);
+
+        return `
+          <div class="sym-avatar" style="background:${color}">
+            <img
+              class="symbol-logo"
+              src="${safeUrl}"
+              alt="${safeKey}"
+              loading="lazy"
+              referrerpolicy="no-referrer"
+              onerror="this.style.display='none'; this.parentElement.textContent='${letter}'; this.parentElement.style.background='${color}';"
+            >
+          </div>
+        `;
       }
       let activePeriod = "fy";
       let chartView = "monthly";
@@ -2484,12 +2539,20 @@
       document.addEventListener("keydown", e => { if (e.key === "Escape") sectorModal.style.display = "none"; });
 
       /* Init */
-      function init() {
+      async function init() {
+        await loadCompanyLogos();
         const token = readToken();
         const payload = token ? decodePayload(token) : null;
         const ok = payload && payload.exp > Math.floor(Date.now() / 1000);
-        if (ok) { sessionToken = token; updateAuthUI(true, payload.u); loadData(); }
-        else { if (token) clearToken(); updateAuthUI(false, ""); openModal(); }
+        if (ok) {
+          sessionToken = token;
+          updateAuthUI(true, payload.u);
+          await loadData();
+        } else {
+          if (token) clearToken();
+          updateAuthUI(false, "");
+          openModal();
+        }
       }
       init();
 

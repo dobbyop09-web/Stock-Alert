@@ -1,14 +1,17 @@
 // Same sector colors used across the dashboard (index chips, sector badges).
 const SECTOR_COLORS = {
-    auto: "#9CA3AF",
-    bank: "#818CF8",
-    capitalmarket: "#2DD4BF",
-    defence: "#60A5FA",
-    fmcg: "#34D399",
-    health: "#C084FC",
+    bank: "#14B8A6",
+    manufacturing: "#3B82F6",
+    fmcg: "#EAB308",
+    health: "#22C55E",
+    metal: "#16A34A",
+    capitalmarket: "#0EA5E9",
+    oilenergy: "#F97316",
+    defence: "#EF4444",
+    auto: "#60A5FA",
+    misc: "#D946EF",
     it: "#22D3EE",
-    metal: "#94A3B8",
-    oilenergy: "#FB923C",
+    reality: "#FB7185",
 };
 const SECTOR_COLOR_DEFAULT = "#9CA3AF";
 
@@ -21,8 +24,11 @@ const SECTOR_ICONS = {
     fmcg: '<circle cx="9" cy="20" r="1.3" /><circle cx="17" cy="20" r="1.3" /><path d="M2.5 3h2.4l2.4 12.6a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H6" />',
     health: '<path d="M20.8 8.6c0 5.6-8.8 10.9-8.8 10.9S3.2 14.2 3.2 8.6a4.6 4.6 0 0 1 8.8-1.9 4.6 4.6 0 0 1 8.8 1.9Z" />',
     it: '<rect x="3" y="4" width="18" height="12" rx="1.5" /><path d="M8 20h8M12 16v4" />',
+    manufacturing: '<path d="M3 21V11l6 4V11l6 4V8l6 4v9H3Z" />',
     metal: '<circle cx="12" cy="12" r="2" /><ellipse cx="12" cy="12" rx="9" ry="3.6" /><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(60 12 12)" /><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(120 12 12)" />',
+    misc: '<rect x="3" y="3" width="7" height="7" rx="1.2" /><rect x="14" y="3" width="7" height="7" rx="1.2" /><rect x="3" y="14" width="7" height="7" rx="1.2" /><rect x="14" y="14" width="7" height="7" rx="1.2" />',
     oilenergy: '<path d="M12 2s6 6.5 6 11.5a6 6 0 0 1-12 0C6 8.5 12 2 12 2Z" />',
+    reality: '<path d="M4 21V9l8-5 8 5v12" /><path d="M9 21v-6h6v6" />',
 };
 const SECTOR_ICON_DEFAULT = '<rect x="3" y="3" width="7" height="9" rx="1.2" /><rect x="14" y="3" width="7" height="5" rx="1.2" /><rect x="14" y="12" width="7" height="9" rx="1.2" /><rect x="3" y="16" width="7" height="5" rx="1.2" />';
 
