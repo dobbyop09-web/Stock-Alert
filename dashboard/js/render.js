@@ -27,17 +27,17 @@ const SECTOR_ICON_DEFAULT = '<svg viewBox="0 0 24 24" fill="none" stroke="curren
 const ALL_SECTORS_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.2" /><rect x="14" y="3" width="7" height="5" rx="1.2" /><rect x="14" y="12" width="7" height="9" rx="1.2" /><rect x="3" y="16" width="7" height="5" rx="1.2" /></svg>';
 
 const SECTOR_COLORS = {
-    auto: "#9CA3AF",
-    bank: "#818CF8",
-    capitalmarket: "#2DD4BF",
-    defence: "#60A5FA",
-    fmcg: "#34D399",
-    health: "#C084FC",
+    bank: "#14B8A6",
+    manufacturing: "#3B82F6",
+    fmcg: "#EAB308",
+    health: "#22C55E",
+    metal: "#16A34A",
+    capitalmarket: "#0EA5E9",
+    oilenergy: "#F97316",
+    defence: "#EF4444",
+    auto: "#60A5FA",
+    misc: "#D946EF",
     it: "#22D3EE",
-    manufacturing: "#A78BFA",
-    metal: "#94A3B8",
-    misc: "#9CA3AF",
-    oilenergy: "#FB923C",
     reality: "#FB7185",
 };
 const SECTOR_COLOR_DEFAULT = "#9CA3AF";
@@ -115,7 +115,7 @@ function rowHtml(r) {
             <td class="num alertCell">${r.alertPrice}</td>
             <td class="num" style="color:${color};font-weight:bold">${fmtPct(r.distance)}</td>
             <td><span class="badge ${badge}">${statusIcon}${r.status}</span></td>
-            <td><span class="sector-badge" style="color:${sectorColor};background:${hexToRgba(sectorColor, .12)};border-color:${hexToRgba(sectorColor, .28)}">${sectorIcon}${r.sheet || "—"}</span></td>
+            <td><span class="sector-badge" style="color:${sectorColor};background:linear-gradient(135deg, ${hexToRgba(sectorColor, .22)}, ${hexToRgba(sectorColor, .06)});border-color:${hexToRgba(sectorColor, .28)}">${sectorIcon}${r.sheet || "—"}</span></td>
              <td>
     <button class="icon-btn" onclick="editAlert('${r.symbol}',this)">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -201,7 +201,7 @@ export function renderSectorList(searchFilteredRows) {
 
     let html = `
         <li class="sector-item ${state.sectorFilter === "" ? "active" : ""}" data-sector="">
-            <span class="sector-icon" style="background:${hexToRgba(SECTOR_COLOR_ALL, .16)};color:${SECTOR_COLOR_ALL}">${ALL_SECTORS_ICON}</span>
+            <span class="sector-icon" style="background:linear-gradient(135deg, ${hexToRgba(SECTOR_COLOR_ALL, .5)}, ${hexToRgba(SECTOR_COLOR_ALL, .1)});color:${SECTOR_COLOR_ALL}">${ALL_SECTORS_ICON}</span>
             <span class="sector-name">All Sectors</span>
             <span class="count">${searchFilteredRows.length}</span>
         </li>
@@ -211,7 +211,7 @@ export function renderSectorList(searchFilteredRows) {
         const c = colorFor(sector);
         html += `
             <li class="sector-item ${state.sectorFilter === sector ? "active" : ""}" data-sector="${sector}">
-                <span class="sector-icon" style="background:${hexToRgba(c, .16)};color:${c}">${iconFor(sector)}</span>
+                <span class="sector-icon" style="background:linear-gradient(135deg, ${hexToRgba(c, .5)}, ${hexToRgba(c, .1)});color:${c}">${iconFor(sector)}</span>
                 <span class="sector-name">${sector}</span>
                 <span class="count">${countFor(sector)}</span>
             </li>
