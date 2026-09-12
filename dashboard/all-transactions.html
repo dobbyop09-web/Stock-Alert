@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sold Transactions — Portfolio</title>
+  <title>Realised Profit — Portfolio</title>
      <link rel="stylesheet" href="css/universal-search.css">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -32,14 +32,25 @@
     .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 
     /* Topbar */
-    .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;gap:12px;background:#0b1520}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;gap:16px;background:#0b1520;flex-wrap:wrap}
+    .topbar-left{display:flex;align-items:center;gap:12px;min-width:0}
+    .topbar-icon{width:38px;height:38px;border-radius:10px;background:rgba(45,212,191,.12);color:#2DD4BF;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .topbar-icon svg{width:18px;height:18px}
     .topbar-title h1{font-size:17px;font-weight:700;color:#edf5ff;letter-spacing:-.01em}
-    .topbar-title p{font-size:11px;color:#5a7080;margin-top:2px}
-    .topbar-right{display:flex;align-items:center;gap:8px}
-    .btn-ghost{display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:6px;border:1px solid rgba(255,255,255,.09);color:#6a8299;font-size:11px;background:rgba(255,255,255,.02)}
+    .topbar-title p{font-size:11px;color:#5a7080;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+    .btn-ghost{display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:6px;border:1px solid rgba(255,255,255,.09);color:#8fa3bc;font-size:11px;background:rgba(255,255,255,.02);white-space:nowrap}
     .btn-ghost:hover{color:#dce8f4;border-color:rgba(255,255,255,.18)}
-    .btn-ghost svg{width:13px;height:13px}
-    .btn-export{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.1);color:#8fa3bc;font-size:12px;font-weight:500;background:rgba(255,255,255,.03)}
+    .btn-ghost svg{width:13px;height:13px;flex-shrink:0}
+    .btn-ghost .chev{width:10px;height:10px;color:#4a6075}
+
+    .pill-group{display:flex;align-items:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:3px;gap:2px}
+    .pill{padding:5px 10px;border-radius:5px;font-size:11px;font-weight:600;color:#6a8299}
+    .pill:hover{color:#dce8f4}
+    .pill.active{background:#2DD4BF;color:#06231f}
+
+    .btn-export{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.1);color:#8fa3bc;font-size:12px;font-weight:500;background:rgba(255,255,255,.03);white-space:nowrap}
     .btn-export:hover{border-color:rgba(255,255,255,.2);color:#dce8f4}
     .btn-export svg{width:13px;height:13px}
 
@@ -49,33 +60,55 @@
     .content::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:4px}
 
     /* KPI totals */
-    .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-    @media(max-width:700px){.kpi-grid{grid-template-columns:1fr}}
-    .kpi-card{background:#0e1d2b;border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:14px 14px 12px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+    .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+    @media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:760px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:480px){.kpi-grid{grid-template-columns:1fr}}
+    .kpi-card{background:linear-gradient(160deg,color-mix(in srgb,var(--accent,#2DD4BF) 10%,#0e1d2b) 0%,#0e1d2b 55%,#0e1d2b 100%);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:14px 14px 12px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+    .kpi-card::before{content:'';position:absolute;top:-40%;right:-20%;width:65%;height:140%;background:radial-gradient(circle,color-mix(in srgb,var(--accent,#2DD4BF) 16%,transparent) 0%,transparent 70%);pointer-events:none}
     .kpi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent,transparent);border-radius:8px 8px 0 0}
+    .kpi-card>*{position:relative;z-index:1}
     .kpi-icon-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-    .kpi-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+    .kpi-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .kpi-icon svg{width:14px;height:14px}
-    .kpi-lbl{font-size:10px;color:#4a6075;text-transform:uppercase;letter-spacing:.07em;font-weight:500;margin-bottom:5px;line-height:1.3}
-    .kpi-val{font-size:20px;font-weight:700;color:#edf5ff;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1;margin-bottom:4px}
+    .kpi-lbl{font-size:10px;color:#4a6075;text-transform:uppercase;letter-spacing:.07em;font-weight:600;line-height:1.3}
+    .kpi-val{font-size:20px;font-weight:700;color:#edf5ff;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1;margin-bottom:5px}
     .kpi-val.pos{color:#2DD4BF}
     .kpi-val.neg{color:#FF5C6C}
+    .kpi-sub{font-size:10.5px;color:#4a6075;display:flex;align-items:center;gap:5px}
+    .kpi-sub .up{color:#2DD4BF;font-weight:700}
+    .kpi-sub .down{color:#FF5C6C;font-weight:700}
+    .kpi-sub .dot{width:6px;height:6px;border-radius:50%;display:inline-block}
 
     /* Trades table (Panel) */
     .trades-panel{background:#0e1d2b;border:1px solid rgba(255,255,255,.07);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
     .trades-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);flex-wrap:wrap;flex-shrink:0}
-    .trades-toolbar-left{display:flex;align-items:center;gap:10px}
-    .trades-title{font-size:12px;font-weight:600;color:#cfe2f5}
-    .search-wrap{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:5px;padding:5px 10px}
-    .search-wrap input{background:none;border:none;outline:none;color:#dce8f4;font-size:11px;font-family:inherit;width:130px}
+    .trades-toolbar-left{display:flex;flex-direction:column;gap:2px}
+    .trades-title{font-size:13px;font-weight:700;color:#edf5ff}
+    .trades-sub{font-size:10.5px;color:#4a6075}
+    .trades-toolbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .search-wrap{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:6px 10px}
+    .search-wrap input{background:none;border:none;outline:none;color:#dce8f4;font-size:11px;font-family:inherit;width:150px}
     .search-wrap input::placeholder{color:#3a5060}
     .search-wrap svg{width:12px;height:12px;color:#3a5060;flex-shrink:0}
+    .select-wrap{position:relative;display:inline-flex}
+    .select-wrap select{appearance:none;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;color:#8fa3bc;font-size:11px;font-family:inherit;padding:7px 26px 7px 10px;cursor:pointer}
+    .select-wrap select:hover{border-color:rgba(255,255,255,.18);color:#dce8f4}
+    .select-wrap::after{content:'';position:absolute;right:9px;top:50%;width:6px;height:6px;border-right:1.5px solid #4a6075;border-bottom:1.5px solid #4a6075;transform:translateY(-65%) rotate(45deg);pointer-events:none}
+
     .trades-scroll{overflow-x:auto;flex:1;overflow-y:auto}
-    .trades-table{width:100%;border-collapse:collapse;min-width:750px}
-    .trades-table th{padding:8px 12px;font-size:10px;color:#3a5060;font-weight:600;text-transform:uppercase;letter-spacing:.06em;text-align:left;border-bottom:1px solid rgba(255,255,255,.05);background:#0c1822;white-space:nowrap;position:sticky;top:0;z-index:2}
+    .trades-table{width:100%;border-collapse:collapse;min-width:980px}
+    .trades-table th{padding:8px 12px;font-size:10px;color:#3a5060;font-weight:700;text-transform:uppercase;letter-spacing:.06em;text-align:left;border-bottom:1px solid rgba(255,255,255,.05);background:#0c1822;white-space:nowrap;position:sticky;top:0;z-index:2;user-select:none}
     .trades-table th.num,.trades-table td.num{text-align:right}
+    .trades-table th.sortable{cursor:pointer}
+    .trades-table th.sortable:hover{color:#8fa3bc}
+    .th-inner{display:inline-flex;align-items:center;gap:4px}
+    .th-inner.num-align{justify-content:flex-end;width:100%}
+    .sort-ico{width:11px;height:11px;color:#2a4055;flex-shrink:0;transition:color .15s}
+    th.sortable.sort-asc .sort-ico,th.sortable.sort-desc .sort-ico{color:#2DD4BF}
     .trades-table td{padding:9px 12px;font-size:11px;color:#cfe2f5;border-bottom:1px solid rgba(255,255,255,.04);font-variant-numeric:tabular-nums}
-    .trades-table tbody tr:hover td{background:rgba(255,255,255,.02)}
+    .trades-table tbody tr:nth-child(even) td{background:rgba(255,255,255,.015)}
+    .trades-table tbody tr:hover td{background:rgba(45,212,191,.05)}
     .trades-table tbody tr:last-child td{border-bottom:none}
     .sym-badge{display:flex;align-items:center;gap:8px}
     .sym-avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#0B0F11;flex-shrink:0;overflow:hidden}
@@ -83,8 +116,19 @@
     .badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:16px}
     .badge.pos{background:rgba(45,212,191,.1);color:#2DD4BF}
     .badge.neg{background:rgba(255,92,108,.1);color:#FF5C6C}
+    .badge.status{background:rgba(45,212,191,.1);color:#2DD4BF;font-weight:700}
     .empty-state{padding:32px 16px;text-align:center;color:#3a5060;font-size:11px}
     .empty-state h3{font-size:13px;color:#5a7080;margin-bottom:6px;font-weight:600}
+
+    .trades-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;border-top:1px solid rgba(255,255,255,.05);flex-wrap:wrap;flex-shrink:0}
+    .footer-count{font-size:10.5px;color:#4a6075}
+    .pager{display:flex;align-items:center;gap:4px}
+    .pager button{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#6a8299;border:1px solid transparent}
+    .pager button:hover:not(:disabled){background:rgba(255,255,255,.05);color:#dce8f4}
+    .pager button:disabled{opacity:.35;cursor:default}
+    .pager button.page-num.active{background:#2DD4BF;color:#06231f;font-weight:700}
+    .pager button svg{width:13px;height:13px}
+
     .footer-note{font-size:10px;color:#2a4055;padding:4px 0;display:flex;align-items:center;gap:6px;flex-shrink:0}
     .footer-note svg{width:13px;height:13px;color:#2DD4BF;flex-shrink:0}
 
@@ -203,20 +247,36 @@
       <!-- Topbar -->
       <header class="topbar">
         <div class="topbar-left">
+          <div class="topbar-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>
+            </svg>
+          </div>
           <div class="topbar-title">
-            <h1>Sold Transactions</h1>
-            <p>Closed trades only</p>
+            <h1>Realised Profit</h1>
+            <p>Track your closed trades, realised gains and losses, and overall portfolio performance.</p>
           </div>
         </div>
         <div class="topbar-right">
-          <button class="btn-export" id="exportBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
+          <button class="btn-ghost" id="dateRangeBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
             </svg>
-            Export CSV
+            <span id="dateRangeLabel">01 Apr 2025 – 09 Sep 2026</span>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
+          <div class="pill-group" id="timeframeGroup">
+            <button class="pill" data-range="1M">1M</button>
+            <button class="pill" data-range="3M">3M</button>
+            <button class="pill" data-range="6M">6M</button>
+            <button class="pill" data-range="1Y">1Y</button>
+            <button class="pill active" data-range="ALL">ALL</button>
+          </div>
+          <div class="select-wrap">
+            <select id="symbolFilter">
+              <option value="">All Symbols</option>
+            </select>
+          </div>
         </div>
       </header>
 
@@ -227,25 +287,67 @@
         <div class="kpi-grid" id="kpiGrid">
           <div class="kpi-card" style="--accent:#2DD4BF">
             <div class="kpi-icon-row">
-              <div class="kpi-lbl">Overall Realised Profit / Loss</div>
+              <div class="kpi-lbl">Total Realised Profit</div>
               <div class="kpi-icon" style="background:rgba(45,212,191,.12);color:#2DD4BF">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+                  <path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                 </svg>
               </div>
             </div>
             <div class="kpi-val pos" id="overallProfit">—</div>
+            <div class="kpi-sub"><span id="overallProfitPct" class="up">—</span><span>vs. total invested</span></div>
           </div>
+
           <div class="kpi-card" style="--accent:#5B9EFF">
             <div class="kpi-icon-row">
-              <div class="kpi-lbl">Overall Return</div>
+              <div class="kpi-lbl">Total Invested</div>
               <div class="kpi-icon" style="background:rgba(91,158,255,.1);color:#5B9EFF">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9"/><path d="M9 12h6M12 9v6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-val" id="totalInvested">—</div>
+            <div class="kpi-sub">Capital deployed</div>
+          </div>
+
+          <div class="kpi-card" style="--accent:#8B5CF6">
+            <div class="kpi-icon-row">
+              <div class="kpi-lbl">Total Trades</div>
+              <div class="kpi-icon" style="background:rgba(139,92,246,.12);color:#8B5CF6">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.6" fill="currentColor"/>
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-val" id="totalTrades">—</div>
+            <div class="kpi-sub"><span class="dot" style="background:#2DD4BF"></span><span id="winCount">—</span><span style="margin-left:6px" class="dot" style="background:#FF5C6C"></span><span id="lossCount">—</span></div>
+          </div>
+
+          <div class="kpi-card" style="--accent:#F5A623">
+            <div class="kpi-icon-row">
+              <div class="kpi-lbl">Avg. Profit per Trade</div>
+              <div class="kpi-icon" style="background:rgba(245,166,35,.12);color:#F5A623">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="4" y1="20" x2="4" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="20" y1="20" x2="20" y2="14"/>
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-val" id="avgProfit">—</div>
+            <div class="kpi-sub">Per closed trade</div>
+          </div>
+
+          <div class="kpi-card" style="--accent:#22C55E">
+            <div class="kpi-icon-row">
+              <div class="kpi-lbl">Overall Profit %</div>
+              <div class="kpi-icon" style="background:rgba(34,197,94,.12);color:#22C55E">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
                 </svg>
               </div>
             </div>
             <div class="kpi-val pos" id="overallReturn">—</div>
+            <div class="kpi-sub">Return on invested capital</div>
           </div>
         </div>
 
@@ -253,17 +355,47 @@
         <div class="trades-panel">
           <div class="trades-toolbar">
             <div class="trades-toolbar-left">
-              <span class="trades-title">Closed Trades</span>
+              <span class="trades-title">Realised Trades</span>
+              <span class="trades-sub" id="tradesSub">Showing all closed positions</span>
+            </div>
+            <div class="trades-toolbar-right">
               <div class="search-wrap">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
                 </svg>
-                <input type="text" id="searchInput" placeholder="Search symbol…">
+                <input type="text" id="searchInput" placeholder="Search symbol, company…">
               </div>
+              <div class="select-wrap">
+                <select id="resultFilter">
+                  <option value="">All</option>
+                  <option value="win">Profit</option>
+                  <option value="loss">Loss</option>
+                </select>
+              </div>
+              <div class="select-wrap">
+                <select id="sortSelect">
+                  <option value="sellDate-desc">Latest first</option>
+                  <option value="sellDate-asc">Oldest first</option>
+                  <option value="pnl-desc">Highest P&amp;L</option>
+                  <option value="pnl-asc">Lowest P&amp;L</option>
+                </select>
+              </div>
+              <button class="btn-export" id="exportBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Export CSV
+              </button>
             </div>
           </div>
           <div class="trades-scroll" id="tradesScroll">
             <div class="empty-state">Loading transactions…</div>
+          </div>
+          <div class="trades-footer" id="tradesFooter" style="display:none">
+            <span class="footer-count" id="footerCount"></span>
+            <div class="pager" id="pager"></div>
           </div>
         </div>
 
@@ -286,13 +418,37 @@
       const token = sessionStorage.getItem("portfolioAdminToken");
 
       const tradesScroll   = document.getElementById("tradesScroll");
-      const overallProfit  = document.getElementById("overallProfit");
-      const overallReturn  = document.getElementById("overallReturn");
-      const searchInput    = document.getElementById("searchInput");
-      const footerText     = document.getElementById("footerText");
+      const tradesFooter   = document.getElementById("tradesFooter");
+      const footerCount    = document.getElementById("footerCount");
+      const pagerEl        = document.getElementById("pager");
+      const tradesSub      = document.getElementById("tradesSub");
+
+      const overallProfit    = document.getElementById("overallProfit");
+      const overallProfitPct = document.getElementById("overallProfitPct");
+      const totalInvested    = document.getElementById("totalInvested");
+      const totalTrades      = document.getElementById("totalTrades");
+      const winCount         = document.getElementById("winCount");
+      const lossCount        = document.getElementById("lossCount");
+      const avgProfit        = document.getElementById("avgProfit");
+      const overallReturn    = document.getElementById("overallReturn");
+
+      const searchInput   = document.getElementById("searchInput");
+      const resultFilter  = document.getElementById("resultFilter");
+      const sortSelect    = document.getElementById("sortSelect");
+      const symbolFilter  = document.getElementById("symbolFilter");
+      const timeframeGroup= document.getElementById("timeframeGroup");
+      const dateRangeLabel= document.getElementById("dateRangeLabel");
+      const footerText    = document.getElementById("footerText");
 
       let rows = [];
       let searchQuery = "";
+      let resultQuery = "";
+      let symbolQuery = "";
+      let timeframe = "ALL";
+      let sortKey = "sellDate";
+      let sortDir = "desc"; // 'asc' | 'desc'
+      let currentPage = 1;
+      const PAGE_SIZE = 15;
       let companyLogos = {};
 
       async function loadCompanyLogos() {
@@ -332,55 +488,191 @@
         return { cost, sold, pnl, pct: cost ? (pnl/cost)*100 : NaN };
       }
 
-      function renderTotals() {
-        const invested = rows.reduce((s,t)=>s+tradeInfo(t).cost,0);
-        const sold = rows.reduce((s,t)=>s+tradeInfo(t).sold,0);
+      const MONTH_MS = 30 * 86400000;
+      const RANGE_MONTHS = { "1M":1, "3M":3, "6M":6, "1Y":12 };
+
+      function withinTimeframe(t) {
+        if (timeframe === "ALL") return true;
+        const months = RANGE_MONTHS[timeframe];
+        if (!months) return true;
+        const sell = new Date(t.sellDate);
+        if (isNaN(sell)) return true;
+        const now = new Date();
+        const cutoff = new Date(now.getTime() - months * MONTH_MS);
+        return sell >= cutoff;
+      }
+
+      function populateSymbolFilter() {
+        const symbols = Array.from(new Set(rows.map(t => (t.symbol||"").toUpperCase()).filter(Boolean))).sort();
+        const current = symbolFilter.value;
+        symbolFilter.innerHTML = `<option value="">All Symbols</option>` + symbols.map(s=>`<option value="${escHtml(s)}">${escHtml(s)}</option>`).join("");
+        symbolFilter.value = symbols.includes(current) ? current : "";
+      }
+
+      function getFiltered() {
+        const q = searchQuery.toLowerCase();
+        return rows.filter(t => {
+          if (q && !(t.symbol||"").toLowerCase().includes(q)) return false;
+          if (symbolQuery && (t.symbol||"").toUpperCase() !== symbolQuery) return false;
+          if (!withinTimeframe(t)) return false;
+          if (resultQuery) {
+            const pnl = tradeInfo(t).pnl;
+            if (resultQuery === "win" && pnl < 0) return false;
+            if (resultQuery === "loss" && pnl >= 0) return false;
+          }
+          return true;
+        });
+      }
+
+      function sortRows(list) {
+        const dir = sortDir === "asc" ? 1 : -1;
+        return [...list].sort((a,b) => {
+          let av, bv;
+          switch (sortKey) {
+            case "symbol": av=(a.symbol||"").toUpperCase(); bv=(b.symbol||"").toUpperCase(); return av.localeCompare(bv) * dir;
+            case "qty": av=qty(a); bv=qty(b); break;
+            case "buyPrice": av=Number(a.buyPrice); bv=Number(b.buyPrice); break;
+            case "sellPrice": av=Number(a.sellPrice); bv=Number(b.sellPrice); break;
+            case "buyDate": av=new Date(a.buyDate).getTime()||0; bv=new Date(b.buyDate).getTime()||0; break;
+            case "sellDate": av=new Date(a.sellDate).getTime()||0; bv=new Date(b.sellDate).getTime()||0; break;
+            case "holding": av=holdingDays(a)??0; bv=holdingDays(b)??0; break;
+            case "invested": av=tradeInfo(a).cost; bv=tradeInfo(b).cost; break;
+            case "sold": av=tradeInfo(a).sold; bv=tradeInfo(b).sold; break;
+            case "pnl": av=tradeInfo(a).pnl; bv=tradeInfo(b).pnl; break;
+            case "pnlPct": av=tradeInfo(a).pct; bv=tradeInfo(b).pct; break;
+            case "status": av=tradeInfo(a).pnl>=0?1:0; bv=tradeInfo(b).pnl>=0?1:0; break;
+            default: av=0; bv=0;
+          }
+          if (av < bv) return -1 * dir;
+          if (av > bv) return 1 * dir;
+          return 0;
+        });
+      }
+
+      function renderTotals(filteredAll) {
+        const source = filteredAll.length ? filteredAll : rows;
+        const invested = source.reduce((s,t)=>s+tradeInfo(t).cost,0);
+        const sold = source.reduce((s,t)=>s+tradeInfo(t).sold,0);
         const total = sold - invested;
         const returnPct = invested ? (total/invested)*100 : 0;
-        overallProfit.textContent = `${total>=0?'+':'-'}₹${fmtMoney(Math.abs(total))}`;
+        const wins = source.filter(t=>tradeInfo(t).pnl>=0).length;
+        const losses = source.length - wins;
+        const avg = source.length ? total/source.length : 0;
+
+        overallProfit.textContent = `₹${fmtMoney(Math.abs(total))}`;
         overallProfit.className = 'kpi-val ' + (total>=0?'pos':'neg');
+        overallProfitPct.textContent = `${returnPct>=0?'+':''}${returnPct.toFixed(1)}%`;
+        overallProfitPct.className = returnPct>=0 ? 'up' : 'down';
+
+        totalInvested.textContent = `₹${fmtMoney(invested)}`;
+        totalTrades.textContent = source.length;
+        winCount.textContent = `${wins} Win`;
+        lossCount.textContent = `${losses} Loss`;
+
+        avgProfit.textContent = `₹${fmtMoney(Math.abs(avg))}`;
+        avgProfit.className = 'kpi-val ' + (avg>=0?'pos':'neg');
+
         overallReturn.textContent = `${returnPct>=0?'+':''}${returnPct.toFixed(2)}%`;
         overallReturn.className = 'kpi-val ' + (returnPct>=0?'pos':'neg');
+      }
+
+      function sortIndicatorClass(key) {
+        if (sortKey !== key) return '';
+        return sortDir === 'asc' ? 'sort-asc' : 'sort-desc';
+      }
+
+      const SORT_ICON = `<svg class="sort-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/></svg>`;
+
+      const COLUMNS = [
+        { key:"symbol",   label:"Symbol",          num:false },
+        { key:"qty",      label:"Qty",             num:true  },
+        { key:"buyPrice", label:"Buy Price",       num:true  },
+        { key:"sellPrice",label:"Sell Price",      num:true  },
+        { key:"buyDate",  label:"Buy Date",        num:false },
+        { key:"sellDate", label:"Sell Date",       num:false },
+        { key:"holding",  label:"Holding Period",  num:true  },
+        { key:"invested", label:"Invested Value",  num:true  },
+        { key:"sold",     label:"Sold Value",      num:true  },
+        { key:"pnl",      label:"P&amp;L (₹)",     num:true  },
+        { key:"pnlPct",   label:"P&amp;L (%)",     num:true  },
+        { key:"status",   label:"Status",          num:false },
+      ];
+
+      function renderHeader() {
+        return `<tr>
+          <th>#</th>
+          ${COLUMNS.map(c => `<th class="sortable ${c.num?'num':''} ${sortIndicatorClass(c.key)}" data-key="${c.key}">
+            <span class="th-inner ${c.num?'num-align':''}">${c.label}${SORT_ICON}</span>
+          </th>`).join("")}
+        </tr>`;
+      }
+
+      function renderPager(totalRows) {
+        const totalPages = Math.max(1, Math.ceil(totalRows / PAGE_SIZE));
+        if (currentPage > totalPages) currentPage = totalPages;
+        const start = totalRows === 0 ? 0 : (currentPage-1)*PAGE_SIZE + 1;
+        const end = Math.min(totalRows, currentPage*PAGE_SIZE);
+        footerCount.textContent = totalRows ? `Showing ${start} – ${end} of ${totalRows} closed trades` : "";
+
+        let pageBtns = "";
+        for (let p=1; p<=totalPages; p++) {
+          pageBtns += `<button class="page-num ${p===currentPage?'active':''}" data-page="${p}">${p}</button>`;
+        }
+        pagerEl.innerHTML = `
+          <button id="pagerPrev" ${currentPage<=1?'disabled':''} aria-label="Previous page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          ${pageBtns}
+          <button id="pagerNext" ${currentPage>=totalPages?'disabled':''} aria-label="Next page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>`;
+        tradesFooter.style.display = totalRows ? "flex" : "none";
+
+        document.getElementById("pagerPrev")?.addEventListener("click", () => { currentPage--; renderTable(); });
+        document.getElementById("pagerNext")?.addEventListener("click", () => { currentPage++; renderTable(); });
+        pagerEl.querySelectorAll(".page-num").forEach(btn => {
+          btn.addEventListener("click", () => { currentPage = Number(btn.dataset.page); renderTable(); });
+        });
       }
 
       function renderTable() {
         if (!rows.length) {
           tradesScroll.innerHTML = `<div class="empty-state"><h3>No closed positions yet</h3>Close a holding from the Portfolio page to populate this table.</div>`;
+          tradesFooter.style.display = "none";
+          renderTotals([]);
           return;
         }
-        const q = searchQuery.toLowerCase();
-        const filtered = q ? rows.filter(t => (t.symbol||"").toLowerCase().includes(q)) : rows;
-        const sorted = [...filtered].sort((a,b)=>String(b.sellDate||"").localeCompare(String(a.sellDate||"")));
+
+        const filtered = getFiltered();
+        renderTotals(filtered);
+        tradesSub.textContent = filtered.length === rows.length ? "Showing all closed positions" : `Showing ${filtered.length} of ${rows.length} closed positions`;
+
+        const sorted = sortRows(filtered);
 
         if (!sorted.length) {
-          tradesScroll.innerHTML = `<div class="empty-state"><h3>No matches</h3>Try a different symbol.</div>`;
+          tradesScroll.innerHTML = `<table class="trades-table"><thead>${renderHeader()}</thead></table><div class="empty-state"><h3>No matches</h3>Try a different filter or search term.</div>`;
+          tradesFooter.style.display = "none";
+          attachHeaderSort();
           return;
         }
+
+        const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
+        if (currentPage > totalPages) currentPage = totalPages;
+        const pageRows = sorted.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
 
         tradesScroll.innerHTML = `
           <table class="trades-table">
-            <thead>
-              <tr>
-                <th>Symbol</th>
-                <th class="num">Qty</th>
-                <th class="num">Buy Price</th>
-                <th class="num">Sell Price</th>
-                <th>Buy Date</th>
-                <th>Sell Date</th>
-                <th class="num">Holding Period</th>
-                <th class="num">Invested Value</th>
-                <th class="num">Sold Value</th>
-                <th class="num">P&amp;L</th>
-              </tr>
-            </thead>
+            <thead>${renderHeader()}</thead>
             <tbody>
-              ${sorted.map(t=>{
+              ${pageRows.map((t,i)=>{
                 const info = tradeInfo(t);
                 const cls = info.pnl>=0 ? 'pos' : 'neg';
                 const sign = info.pnl>=0 ? '+' : '-';
                 const days = holdingDays(t);
                 const color = avatarColor(t.symbol);
+                const rowNum = (currentPage-1)*PAGE_SIZE + i + 1;
                 return `<tr>
+                  <td class="num" style="color:#4a6075">${rowNum}</td>
                   <td><div class="sym-badge">
                     ${logoHtml(t.symbol, color)}
                     <strong style="font-size:11px">${escHtml(t.symbol||"—")}</strong>
@@ -394,14 +686,57 @@
                   <td class="num">₹${fmtMoney(info.cost)}</td>
                   <td class="num">₹${fmtMoney(info.sold)}</td>
                   <td class="num"><span class="badge ${cls}">${sign}₹${fmtMoney(Math.abs(info.pnl))}</span></td>
+                  <td class="num"><span class="badge ${cls}">${sign}${Math.abs(info.pct).toFixed(2)}%</span></td>
+                  <td><span class="badge status">Closed</span></td>
                 </tr>`;
               }).join("")}
             </tbody>
           </table>`;
+
+        renderPager(sorted.length);
+        attachHeaderSort();
+      }
+
+      function attachHeaderSort() {
+        tradesScroll.querySelectorAll("th.sortable").forEach(th => {
+          th.addEventListener("click", () => {
+            const key = th.dataset.key;
+            if (sortKey === key) {
+              sortDir = sortDir === "asc" ? "desc" : "asc";
+            } else {
+              sortKey = key;
+              sortDir = "asc";
+            }
+            syncSortSelect();
+            currentPage = 1;
+            renderTable();
+          });
+        });
+      }
+
+      function syncSortSelect() {
+        if (sortKey === "sellDate" && sortDir === "desc") sortSelect.value = "sellDate-desc";
+        else if (sortKey === "sellDate" && sortDir === "asc") sortSelect.value = "sellDate-asc";
+        else if (sortKey === "pnl" && sortDir === "desc") sortSelect.value = "pnl-desc";
+        else if (sortKey === "pnl" && sortDir === "asc") sortSelect.value = "pnl-asc";
+        else sortSelect.selectedIndex = 0;
+      }
+
+      function updateDateRangeLabel() {
+        if (!rows.length) return;
+        const dates = rows.map(t=>new Date(t.sellDate)).filter(d=>!isNaN(d));
+        const buyDates = rows.map(t=>new Date(t.buyDate)).filter(d=>!isNaN(d));
+        const all = [...dates, ...buyDates];
+        if (!all.length) return;
+        const min = new Date(Math.min(...all));
+        const max = new Date(Math.max(...all));
+        dateRangeLabel.textContent = `${fmtDate(min)} – ${fmtDate(max)}`;
       }
 
       function render() {
-        renderTotals();
+        populateSymbolFilter();
+        updateDateRangeLabel();
+        currentPage = 1;
         renderTable();
         footerText.textContent = `Realised profit includes ${rows.length} closed position${rows.length===1?"":"s"}. Data updated EOD.`;
       }
@@ -423,16 +758,33 @@
         }
       }
 
-      searchInput.addEventListener("input", e => { searchQuery = e.target.value; renderTable(); });
+      searchInput.addEventListener("input", e => { searchQuery = e.target.value; currentPage = 1; renderTable(); });
+      resultFilter.addEventListener("change", e => { resultQuery = e.target.value; currentPage = 1; renderTable(); });
+      symbolFilter.addEventListener("change", e => { symbolQuery = e.target.value; currentPage = 1; renderTable(); });
+      timeframeGroup.addEventListener("click", e => {
+        const btn = e.target.closest(".pill");
+        if (!btn) return;
+        timeframeGroup.querySelectorAll(".pill").forEach(p=>p.classList.remove("active"));
+        btn.classList.add("active");
+        timeframe = btn.dataset.range;
+        currentPage = 1;
+        renderTable();
+      });
+      sortSelect.addEventListener("change", e => {
+        const [key, dir] = e.target.value.split("-");
+        sortKey = key; sortDir = dir;
+        currentPage = 1;
+        renderTable();
+      });
 
       document.getElementById("exportBtn").addEventListener("click", () => {
         const csv = [
-          ["Symbol","Quantity","Buy Date","Sell Date","Invested Value","Sold Value","P&L"],
-          ...rows.map(t=>{ const info=tradeInfo(t); return [t.symbol||"",qty(t),t.buyDate||"",t.sellDate||"",info.cost,info.sold,info.pnl]; })
+          ["Symbol","Quantity","Buy Date","Sell Date","Invested Value","Sold Value","P&L","P&L %"],
+          ...getFiltered().map(t=>{ const info=tradeInfo(t); return [t.symbol||"",qty(t),t.buyDate||"",t.sellDate||"",info.cost,info.sold,info.pnl,info.pct]; })
         ].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
         const url = URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
         const link = document.createElement("a");
-        link.href = url; link.download = "all-transactions.csv"; link.click();
+        link.href = url; link.download = "realised-profit.csv"; link.click();
         URL.revokeObjectURL(url);
       });
 
