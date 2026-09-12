@@ -1556,10 +1556,145 @@
       color: #8fa3bc;
       justify-self: end;
     }
+
+    /* ═══════════════════════════════════════════════
+       REDESIGN — Swing-trades style dashboard (v2)
+       ═══════════════════════════════════════════════ */
+
+    .dash-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px
+    }
+
+    @media(max-width:1400px) { .dash-kpi-grid { grid-template-columns: repeat(3, 1fr) } }
+    @media(max-width:760px)  { .dash-kpi-grid { grid-template-columns: repeat(2, 1fr) } }
+
+    .dash-kpi-card {
+      background: #0e1d2b;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 12px;
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      overflow: hidden
+    }
+
+    .dash-kpi-card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--accent, transparent);
+    }
+
+    .dash-kpi-top { display: flex; align-items: center; justify-content: space-between }
+
+    .dash-kpi-lbl {
+      font-size: 10px; color: #4a6075; text-transform: uppercase;
+      letter-spacing: .07em; font-weight: 600
+    }
+
+    .dash-kpi-icon {
+      width: 28px; height: 28px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0
+    }
+
+    .dash-kpi-icon svg { width: 14px; height: 14px }
+
+    .dash-kpi-val { font-size: 19px; font-weight: 700; color: #edf5ff; letter-spacing: -.02em; font-variant-numeric: tabular-nums }
+    .dash-kpi-val.pos { color: #2DD4BF }
+    .dash-kpi-val.neg { color: #FF5C6C }
+
+    .dash-kpi-note { font-size: 10.5px; color: #4a6075; display: flex; align-items: center; gap: 5px; flex-wrap: wrap }
+    .dash-kpi-note .dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block }
+    .dash-kpi-note .dot.win { background: #2DD4BF }
+    .dash-kpi-note .dot.loss { background: #FF5C6C }
+    .dash-kpi-note.pos { color: rgba(45,212,191,.8) }
+    .dash-kpi-note.neg { color: rgba(255,92,108,.8) }
+
+    /* Row: equity / sector-donut / key-metrics */
+    .row-top3 { display: grid; grid-template-columns: 1.7fr 1.05fr .9fr; gap: 12px }
+    @media(max-width:1300px) { .row-top3 { grid-template-columns: 1fr } }
+
+    /* Row: monthly / top / worst / duration */
+    .row-bottom4 { display: grid; grid-template-columns: 1.15fr 1fr 1fr .95fr; gap: 12px }
+    @media(max-width:1300px) { .row-bottom4 { grid-template-columns: 1fr 1fr } }
+    @media(max-width:760px)  { .row-bottom4 { grid-template-columns: 1fr } }
+
+    .panel-subtitle { font-size: 10px; color: #3a5060; font-weight: 500 }
+
+    /* Donut layout (sector + duration) */
+    .donut-wrap { display: flex; align-items: center; gap: 16px }
+    .donut-canvas-wrap { position: relative; width: 128px; height: 128px; flex-shrink: 0 }
+    .donut-canvas-wrap.small { width: 108px; height: 108px }
+    .donut-center {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center; pointer-events: none
+    }
+    .donut-center .dc-val { font-size: 15px; font-weight: 800; color: #edf5ff; letter-spacing: -.02em }
+    .donut-center .dc-lbl { font-size: 8.5px; color: #4a6075; text-transform: uppercase; letter-spacing: .06em; margin-top: 2px }
+
+    .donut-legend { display: flex; flex-direction: column; gap: 7px; flex: 1; min-width: 0 }
+    .legend-row { display: flex; align-items: center; gap: 7px; font-size: 11px }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0 }
+    .legend-name { color: #cfe2f5; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+    .legend-pct { color: #8fa3bc; font-weight: 700; font-variant-numeric: tabular-nums; flex-shrink: 0 }
+
+    /* Key metrics list */
+    .key-metrics-list { display: flex; flex-direction: column; gap: 0 }
+    .km-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.05); font-size: 11.5px
+    }
+    .km-row:last-child { border-bottom: none }
+    .km-lbl { color: #6a8299 }
+    .km-val { font-weight: 700; color: #dce8f4; font-variant-numeric: tabular-nums }
+    .km-val.pos { color: #2DD4BF }
+    .km-val.neg { color: #FF5C6C }
+    .km-val.blue { color: #5B9EFF }
+
+    /* Top/Worst performing trades lists */
+    .perf-list { display: flex; flex-direction: column; gap: 0 }
+    .perf-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.05)
+    }
+    .perf-row:last-child { border-bottom: none }
+    .perf-left { display: flex; align-items: center; gap: 9px; min-width: 0 }
+    .perf-symbol { font-size: 12px; font-weight: 700; color: #edf5ff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 120px }
+    .perf-duration { font-size: 9.5px; color: #4a6075; margin-top: 1px }
+    .perf-right { text-align: right; flex-shrink: 0 }
+    .perf-pnl { font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums }
+    .perf-pnl.pos { color: #2DD4BF }
+    .perf-pnl.neg { color: #FF5C6C }
+    .perf-pct { font-size: 10px; font-weight: 600; margin-top: 1px }
+    .perf-pct.pos { color: rgba(45,212,191,.75) }
+    .perf-pct.neg { color: rgba(255,92,108,.75) }
+
+    /* History table pagination */
+    .history-panel .trades-scroll { max-height: 420px }
+    .history-pagination {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px; border-top: 1px solid rgba(255,255,255,.05); flex-shrink: 0
+    }
+    .hp-info { font-size: 10.5px; color: #4a6075 }
+    .hp-pages { display: flex; align-items: center; gap: 4px }
+    .hp-btn {
+      min-width: 26px; height: 26px; padding: 0 7px; border-radius: 6px;
+      background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08);
+      color: #8fa3bc; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center
+    }
+    .hp-btn:hover { border-color: rgba(255,255,255,.2); color: #dce8f4 }
+    .hp-btn.active { background: rgba(45,212,191,.14); border-color: rgba(45,212,191,.35); color: #2DD4BF }
+    .hp-btn:disabled { opacity: .35; cursor: default }
+    .status-pill {
+      display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 999px;
+      background: rgba(45,212,191,.1); color: #2DD4BF
+    }
   </style>
      <link rel="stylesheet" href="css/universal-search.css">
 </head>
-
 <body>
   <div class="shell">
 
@@ -1673,7 +1808,7 @@
         <div class="topbar-left">
           <div class="topbar-title">
             <h1>Realised Profit</h1>
-            <p>Track your closed trades and realised performance</p>
+            <p>Track your closed trades, open-position risk and overall performance</p>
           </div>
         </div>
         <div class="topbar-right">
@@ -1761,109 +1896,147 @@
         </div>
 
         <!-- Dashboard -->
+        <!-- Dashboard -->
         <div id="dashboard" style="display:none;flex-direction:column;gap:14px">
 
           <!-- KPI row -->
-          <div class="kpi-grid" id="kpiGrid"></div>
+          <div class="dash-kpi-grid" id="kpiGridV2"></div>
 
-          <!-- Charts row -->
-          <div class="row-charts">
-            <div class="panel">
+          <!-- Equity / Sector / Key metrics -->
+          <div class="row-top3">
+            <div class="panel equity-panel">
               <div class="panel-head">
-                <div class="panel-title">Monthly Profit Trend</div>
-                <div class="chart-view-toggle">
-                  <button class="chart-view-btn active" data-view="monthly">Monthly</button>
-                  <button class="chart-view-btn" data-view="daily">Daily</button>
+                <div class="panel-title">Equity Curve</div>
+                <div class="chart-view-toggle" id="equityToggle">
+                  <button class="chart-view-btn active" data-view="pnl">P&amp;L</button>
+                  <button class="chart-view-btn" data-view="value">Value</button>
                 </div>
               </div>
-              <div class="chart-wrap">
-                <canvas id="pnlChart"></canvas>
+              <div class="chart-wrap" style="height:230px">
+                <canvas id="equityChart"></canvas>
               </div>
             </div>
-            <div class="panel">
-              <div class="panel-head">
-                <span class="panel-title">Sectors Performance</span>
+
+            <div class="panel sector-donut-panel">
+              <div class="panel-head"><span class="panel-title">Profit by Sectors</span></div>
+              <div class="donut-wrap">
+                <div class="donut-canvas-wrap">
+                  <canvas id="sectorDonut"></canvas>
+                  <div class="donut-center" id="sectorDonutCenter"></div>
+                </div>
+                <div class="donut-legend" id="sectorLegend"></div>
               </div>
-              <div id="sectorBody" class="sector-layout"></div>
+              <div class="sector-more" id="sectorMoreBtn" style="display:none">View all sectors</div>
+            </div>
+
+            <div class="panel key-metrics-panel">
+              <div class="panel-head"><span class="panel-title">Key Metrics</span></div>
+              <div class="key-metrics-list" id="keyMetricsList"></div>
             </div>
           </div>
 
-          <!-- Bottom row -->
-          <div class="row-bottom">
-            <div class="trades-panel">
-              <div class="trades-toolbar">
-                <div class="trades-toolbar-left">
-                  <span class="trades-title">Realised Trades</span>
-                  <div class="search-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <circle cx="11" cy="11" r="8" />
-                      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                    <input type="text" id="searchInput" placeholder="Search symbol…">
-                  </div>
+          <!-- Monthly / Top / Worst / Duration -->
+          <div class="row-bottom4">
+            <div class="panel monthly-panel">
+              <div class="panel-head">
+                <div class="panel-title">Monthly P&amp;L</div>
+                <div class="chart-view-toggle" id="monthlyToggle">
+                  <button class="chart-view-btn active" data-view="pnl">P&amp;L</button>
+                  <button class="chart-view-btn" data-view="trades">Trades</button>
                 </div>
-                <button class="btn-export" id="exportBtn">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
-                  Export
-                </button>
               </div>
-              <div class="trades-scroll">
-                <table class="trades-table">
-                  <colgroup>
-                    <col style="width:16%">
-                    <col style="width:6%">
-                    <col style="width:12%">
-                    <col style="width:12%">
-                    <col style="width:14%">
-                    <col style="width:10%">
-                    <col style="width:12%">
-                    <col style="width:9%">
-                    <col style="width:9%">
-                  </colgroup>
-                  <thead>
-                    <tr>
-                      <th>Symbol</th>
-                      <th class="num">Qty</th>
-                      <th class="num">Buy Price</th>
-                      <th class="num">Sell Price</th>
-                      <th class="num">Profit / Loss</th>
-                      <th class="num">Profit %</th>
-                      <th class="num">Holding Period</th>
-                      <th>Trade Type</th>
-                      <th>Exit Date</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tradesTbody"></tbody>
-                </table>
-                <div class="empty-state" id="tradesEmpty" style="display:none">
-                  <h3>No closed positions yet</h3>
-                  Close a holding from the Portfolio page to populate this table.
-                </div>
+              <div class="chart-wrap" style="height:200px">
+                <canvas id="monthlyChart"></canvas>
               </div>
             </div>
 
-            <div style="display:flex;flex-direction:column;gap:12px">
-              <div class="panel">
-                <div class="panel-head"><span class="panel-title">Average Metrics</span></div>
-                <div class="metrics-grid" id="metricsGrid"></div>
+            <div class="panel perf-panel">
+              <div class="panel-head"><span class="panel-title">Top Performing Trades</span></div>
+              <div class="perf-list" id="topPerfList"></div>
+            </div>
+
+            <div class="panel perf-panel">
+              <div class="panel-head">
+                <span class="panel-title">Worst Performing Trades</span>
+                <span class="panel-subtitle">from open holdings</span>
               </div>
-              <div class="panel">
-                <div class="panel-head"><span class="panel-title">Summary</span></div>
-                <div class="summary-block" id="summaryBlock"></div>
-              </div>
-              <div class="footer-note" id="footerNote">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <line x1="12" y1="16" x2="12.01" y2="16" />
-                </svg>
-                <span>Realised profit includes all closed trades. Data updated EOD.</span>
+              <div class="perf-list" id="worstPerfList"></div>
+            </div>
+
+            <div class="panel duration-panel">
+              <div class="panel-head"><span class="panel-title">Trade Duration</span></div>
+              <div class="donut-wrap">
+                <div class="donut-canvas-wrap small">
+                  <canvas id="durationDonut"></canvas>
+                  <div class="donut-center" id="durationDonutCenter"></div>
+                </div>
+                <div class="donut-legend" id="durationLegend"></div>
               </div>
             </div>
+          </div>
+
+          <!-- Swing Trades History -->
+          <div class="trades-panel history-panel">
+            <div class="trades-toolbar">
+              <div class="trades-toolbar-left">
+                <span class="trades-title">Swing Trades History</span>
+                <div class="search-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  <input type="text" id="searchInput" placeholder="Search symbol…">
+                </div>
+              </div>
+              <button class="btn-export" id="exportBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Export
+              </button>
+            </div>
+            <div class="trades-scroll">
+              <table class="trades-table history-table">
+                <colgroup>
+                  <col style="width:5%">
+                  <col style="width:13%">
+                  <col style="width:7%">
+                  <col style="width:10%">
+                  <col style="width:10%">
+                  <col style="width:6%">
+                  <col style="width:9%">
+                  <col style="width:9%">
+                  <col style="width:11%">
+                  <col style="width:8%">
+                  <col style="width:8%">
+                  <col style="width:8%">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Symbol</th>
+                    <th>Type</th>
+                    <th>Entry Date</th>
+                    <th>Exit Date</th>
+                    <th class="num">Qty</th>
+                    <th class="num">Entry Price</th>
+                    <th class="num">Exit Price</th>
+                    <th class="num">P&amp;L (₹)</th>
+                    <th class="num">Return %</th>
+                    <th class="num">Duration</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTbody"></tbody>
+              </table>
+              <div class="empty-state" id="historyEmpty" style="display:none">
+                <h3>No closed positions yet</h3>
+                Close a holding from the Portfolio page to populate this table.
+              </div>
+            </div>
+            <div class="history-pagination" id="historyPagination"></div>
           </div>
 
         </div><!-- /dashboard -->
@@ -1927,12 +2100,25 @@
 
       let sessionToken = null;
       let closedTransactions = [];
+      let holdings = [];
       let symbolDataMap = {};
-      let pnlChartInstance = null;
       let searchQuery = "";
-      let activeRange = "all";
-      let allValid = [];
+      let activePeriod = "fy";
+      let allValid = [];          // closed trades + computed info
+      let allHoldingsCalc = [];   // open holdings + computed info (only priced ones have .info)
+      let sectorSourceItems = []; // combined, for sector modal
       let companyLogos = {};
+      let allSectorEntries = [];
+      let sectorTotalPnl = 0;
+      let equityView = "pnl";
+      let monthlyView = "pnl";
+      let historyPage = 1;
+      const HISTORY_PAGE_SIZE = 6;
+
+      let equityChartInstance = null;
+      let monthlyChartInstance = null;
+      let sectorDonutInstance = null;
+      let durationDonutInstance = null;
 
       async function loadCompanyLogos() {
         try {
@@ -1976,11 +2162,6 @@
           </div>
         `;
       }
-      let activePeriod = "fy";
-      let chartView = "monthly";
-      let chartData = [];
-      let allSectorEntries = [];
-      let sectorTotalPnl = 0;
 
       /* dom */
       const dashboard = document.getElementById("dashboard");
@@ -2031,6 +2212,7 @@
           if (portfolioRes.ok) {
             const data = await portfolioRes.json();
             closedTransactions = Array.isArray(data.closedTransactions) ? data.closedTransactions : [];
+            holdings = Array.isArray(data.holdings) ? data.holdings : [];
           }
           if (dashRes.ok) {
             const items = await dashRes.json();
@@ -2065,7 +2247,7 @@
         finally { btn.disabled = false; btn.textContent = "Sign in"; }
       }
 
-      function logout() { clearToken(); sessionToken = null; closedTransactions = []; updateAuthUI(false, ""); }
+      function logout() { clearToken(); sessionToken = null; closedTransactions = []; holdings = []; updateAuthUI(false, ""); }
 
       /* helpers */
       const SECTOR_COLORS = ["#5B9EFF", "#FF5C6C", "#F5A623", "#8B5CF6", "#2DD4BF", "#22C55E", "#EAB308", "#EC4899", "#14B8A6"];
@@ -2086,10 +2268,10 @@
         return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
       }
 
-      function holdingDays(t) {
-        const b = new Date(t.buyDate), s = new Date(t.sellDate);
-        if (isNaN(b) || isNaN(s)) return null;
-        return Math.max(0, Math.round((s - b) / 86400000));
+      function daysBetweenDates(d1, d2) {
+        const a = new Date(d1), b = new Date(d2);
+        if (isNaN(a) || isNaN(b)) return null;
+        return Math.max(0, Math.round((b - a) / 86400000));
       }
 
       function tradeInfo(t) {
@@ -2097,6 +2279,23 @@
         if (!isFinite(buy) || !isFinite(sell)) return { pnl: NaN, pct: NaN, cost: NaN };
         const cost = buy * qty, pnl = (sell - buy) * qty;
         return { pnl, pct: cost ? (pnl / cost) * 100 : NaN, cost };
+      }
+
+      function curPriceOf(h) {
+        // Live price always comes from the dashboard-data feed (symbolDataMap),
+        // same as admin.html's curPriceOf — the currentPrice field stored on a
+        // holding itself can be stale/absent, so it is never used for P&L math.
+        const sd = symbolDataMap[(h.symbol || "").toUpperCase()];
+        const c = sd ? parseFloat(sd.currentPrice) : NaN;
+        return c;
+      }
+
+      function holdingInfo(h) {
+        const qty = h.quantity || 1, buy = parseFloat(h.buyPrice);
+        const cp = curPriceOf(h);
+        if (!isFinite(cp) || !isFinite(buy)) return null;
+        const cost = buy * qty, pnl = (cp - buy) * qty;
+        return { pnl, pct: cost ? (pnl / cost) * 100 : NaN, cost, cp };
       }
 
       function escHtml(s) {
@@ -2107,6 +2306,14 @@
 
       function escHtmlFull(s) {
         return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      }
+
+      function sectorOf(symbol) {
+        // dashboard-data.json's raw field is "sheet" (admin.html renames it to
+        // "sector" internally after fetching — here we store items as-is,
+        // so we read item.sheet directly).
+        const sd = symbolDataMap[(symbol || "").toUpperCase()];
+        return (sd && sd.sheet) || "Other";
       }
 
       function getFilteredByPeriod(transactions) {
@@ -2124,230 +2331,534 @@
         });
       }
 
-      /* render */
+      /* ═══════════════════════════════════
+         MAIN RENDER PIPELINE
+         ═══════════════════════════════════ */
       function render() {
-        allValid = closedTransactions.map(t => ({ ...t, info: tradeInfo(t), days: holdingDays(t) })).filter(t => isFinite(t.info.pnl));
-        const filtered = getFilteredByPeriod(allValid);
-        chartData = filtered;
-        renderKPIs(filtered);
-        renderChart(chartData);
-        renderSector(filtered);
-        renderTrades(filtered);
-        renderSummary(filtered);
-        updateDateLabel();
+        const closedComputed = closedTransactions
+          .map(t => ({ ...t, info: tradeInfo(t), days: daysBetweenDates(t.buyDate, t.sellDate), kind: "closed" }))
+          .filter(t => isFinite(t.info.pnl));
+
+        allValid = getFilteredByPeriod(closedComputed);
+
+        const today = new Date();
+        allHoldingsCalc = holdings.map(h => {
+          const info = holdingInfo(h);
+          return { ...h, info, days: daysBetweenDates(h.buyDate, today), kind: "open" };
+        });
+
+        // Profit by Sectors is based on realised (closed) trades only.
+        sectorSourceItems = allValid;
+
+        renderKPIv2();
+        renderEquityChart();
+        renderSectorDonutPanel();
+        renderKeyMetrics();
+        renderMonthlyChart();
+        renderTopPerformers();
+        renderWorstPerformers();
+        renderDurationDonut();
+        historyPage = 1;
+        renderHistoryTable();
       }
 
-      function updateDateLabel() {
-        const sorted = [...allValid].sort((a, b) => String(a.sellDate).localeCompare(String(b.sellDate)));
-        if (sorted.length >= 2) {
-          const first = new Date(sorted[0].sellDate), last = new Date(sorted[sorted.length - 1].sellDate);
-          const el = document.getElementById("dateRangeLabel");
-          if (el && !isNaN(first) && !isNaN(last)) {
-            el.textContent = first.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) + " – " + last.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
-          }
-        }
-      }
+      /* ═══════════════════════════════════
+         KPI ROW
+         ═══════════════════════════════════ */
+      function renderKPIv2() {
+        const totalTrades = allValid.length;
+        const wins = allValid.filter(t => t.info.pnl > 0).length;
+        const losses = totalTrades - wins;
+        const winRate = totalTrades ? (wins / totalTrades) * 100 : 0;
 
-      /* KPIs */
-      function renderKPIs(valid) {
-        const gains = valid.filter(t => t.info.pnl > 0), losses = valid.filter(t => t.info.pnl < 0);
-        const totalProfit = gains.reduce((s, t) => s + t.info.pnl, 0);
-        const totalLoss = Math.abs(losses.reduce((s, t) => s + t.info.pnl, 0));
-        const netPnl = valid.reduce((s, t) => s + t.info.pnl, 0);
-        const totalCost = valid.reduce((s, t) => s + t.info.cost, 0);
-        const winRate = valid.length ? (gains.length / valid.length) * 100 : 0;
-        const avgProfit = gains.length ? totalProfit / gains.length : 0;
-        const best = [...valid].sort((a, b) => b.info.pnl - a.info.pnl)[0];
-        const worst = [...valid].sort((a, b) => a.info.pnl - b.info.pnl)[0];
+        const totalInvested = allValid.reduce((s, t) => s + t.info.cost, 0);
+        const currentValue = allValid.reduce((s, t) => s + (t.info.cost + t.info.pnl), 0);
+        const realisedPnl = currentValue - totalInvested;
+        const realisedPct = totalInvested ? (realisedPnl / totalInvested) * 100 : 0;
+
+        const priced = allHoldingsCalc.filter(h => h.info);
+        const openCost = priced.reduce((s, h) => s + h.info.cost, 0);
+        const unrealisedPnl = priced.reduce((s, h) => s + h.info.pnl, 0);
+        const unrealisedPct = openCost ? (unrealisedPnl / openCost) * 100 : 0;
 
         const kpis = [
-          { lbl: "Total Realised Profit", val: netPnl >= 0 ? `₹${fmtMoney(netPnl)}` : `-₹${fmtMoney(Math.abs(netPnl))}`, cls: netPnl >= 0 ? "pos" : "neg", note: totalCost ? `▲ ${netPnl >= 0 ? "+" : ""}${((netPnl / totalCost) * 100).toFixed(2)}% vs prev. period` : "—", noteCls: netPnl >= 0 ? "pos" : "neg", accent: "#2DD4BF", iconBg: "rgba(45,212,191,.12)", icon: '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>' },
-          { lbl: "Realised Gains", val: `₹${fmtMoney(totalProfit)}`, cls: "pos", note: `▲ +${gains.length ? ((totalProfit / totalCost) * 100).toFixed(2) : 0}%`, noteCls: "pos", accent: "#2DD4BF", iconBg: "rgba(45,212,191,.1)", icon: '<line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>' },
-          { lbl: "Realised Losses", val: losses.length ? `-₹${fmtMoney(totalLoss)}` : "₹0.00", cls: losses.length ? "neg" : "", note: losses.length ? `▼ -${((totalLoss / totalCost) * 100).toFixed(2)}%` : "—", noteCls: "neg", accent: "#FF5C6C", iconBg: "rgba(255,92,108,.1)", icon: '<line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>' },
-          { lbl: "Win Rate", val: `${winRate.toFixed(2)}%`, cls: "blue", note: `${gains.length} Wins / ${losses.length} Losses`, noteCls: "gray", accent: "#5B9EFF", iconBg: "rgba(91,158,255,.1)", icon: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>' },
-          { lbl: "Avg. Profit / Trade", val: `₹${fmtMoney(avgProfit)}`, cls: "pos", note: `▲ +${gains.length ? ((avgProfit / (totalCost / Math.max(valid.length, 1))) * 100).toFixed(2) : 0}%`, noteCls: "pos", accent: "#2DD4BF", iconBg: "rgba(45,212,191,.08)", icon: '<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>' },
-          { lbl: "Largest Profit", val: best && best.info.pnl > 0 ? `₹${fmtMoney(best.info.pnl)}` : "—", cls: "pos", note: best && best.info.pnl > 0 ? escHtml(best.symbol) : "", noteCls: "gray", accent: "#F5A623", iconBg: "rgba(245,166,35,.1)", icon: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' },
-          { lbl: "Largest Loss", val: worst && worst.info.pnl < 0 ? `-₹${fmtMoney(Math.abs(worst.info.pnl))}` : "—", cls: worst && worst.info.pnl < 0 ? "neg" : "", note: worst && worst.info.pnl < 0 ? escHtml(worst.symbol) : "", noteCls: "gray", accent: "#FF5C6C", iconBg: "rgba(255,92,108,.08)", icon: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>' },
+          {
+            lbl: "Total Trades", val: `${totalTrades}`, cls: "",
+            note: `<span class="dot win"></span>${wins} Win &nbsp; <span class="dot loss"></span>${losses} Loss`,
+            noteCls: "", accent: "#5B9EFF", iconBg: "rgba(91,158,255,.12)", iconColor: "#5B9EFF",
+            icon: '<path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-4"/>'
+          },
+          {
+            lbl: "Total Invested", val: `₹${fmtMoney(totalInvested)}`, cls: "",
+            note: `${totalTrades} closed position${totalTrades === 1 ? "" : "s"}`,
+            noteCls: "", accent: "#8B5CF6", iconBg: "rgba(139,92,246,.12)", iconColor: "#8B5CF6",
+            icon: '<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/>'
+          },
+          {
+            lbl: "Current Value", val: `₹${fmtMoney(currentValue)}`, cls: "",
+            note: `On exited capital`,
+            noteCls: "", accent: "#2DD4BF", iconBg: "rgba(45,212,191,.12)", iconColor: "#2DD4BF",
+            icon: '<path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/>'
+          },
+          {
+            lbl: "Realised P&L", val: `${realisedPnl >= 0 ? "+" : "-"}₹${fmtMoney(Math.abs(realisedPnl))}`,
+            cls: realisedPnl >= 0 ? "pos" : "neg",
+            note: `${realisedPnl >= 0 ? "+" : ""}${realisedPct.toFixed(2)}%`,
+            noteCls: realisedPnl >= 0 ? "pos" : "neg", accent: "#F5A623", iconBg: "rgba(245,166,35,.12)", iconColor: "#F5A623",
+            icon: '<circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-5"/>'
+          },
+          {
+            lbl: "Unrealised P&L",
+            val: priced.length ? `${unrealisedPnl >= 0 ? "+" : "-"}₹${fmtMoney(Math.abs(unrealisedPnl))}` : "—",
+            cls: priced.length ? (unrealisedPnl >= 0 ? "pos" : "neg") : "",
+            note: priced.length ? `${unrealisedPnl >= 0 ? "+" : ""}${unrealisedPct.toFixed(2)}% · ${priced.length} open` : "No live prices yet",
+            noteCls: priced.length ? (unrealisedPnl >= 0 ? "pos" : "neg") : "",
+            accent: "#FF5C6C", iconBg: "rgba(255,92,108,.1)", iconColor: "#FF5C6C",
+            icon: '<path d="M12 2v20M2 12h20"/>'
+          },
+          {
+            lbl: "Win Rate", val: `${winRate.toFixed(2)}%`, cls: "",
+            note: `${wins} / ${totalTrades} trades`,
+            noteCls: "", accent: "#2DD4BF", iconBg: "rgba(45,212,191,.12)", iconColor: "#2DD4BF",
+            icon: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>'
+          },
         ];
 
-        document.getElementById("kpiGrid").innerHTML = kpis.map(k => `
-          <div class="kpi-card" style="--accent:${k.accent}">
-            <div class="kpi-icon-row">
-              <div class="kpi-lbl">${k.lbl}</div>
-              <div class="kpi-icon" style="background:${k.iconBg};color:${k.accent}">
+        document.getElementById("kpiGridV2").innerHTML = kpis.map(k => `
+          <div class="dash-kpi-card" style="--accent:${k.accent}">
+            <div class="dash-kpi-top">
+              <div class="dash-kpi-lbl">${k.lbl}</div>
+              <div class="dash-kpi-icon" style="background:${k.iconBg};color:${k.iconColor}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${k.icon}</svg>
               </div>
             </div>
-            <div class="kpi-val ${k.cls}">${k.val}</div>
-            <div class="kpi-note ${k.noteCls}">${k.note}</div>
+            <div class="dash-kpi-val ${k.cls}">${k.val}</div>
+            <div class="dash-kpi-note ${k.noteCls}">${k.note}</div>
           </div>`).join("");
       }
 
-      /* Chart */
-      function renderChart(valid) {
-        const sorted = [...valid].sort((a, b) => String(a.sellDate || "").localeCompare(String(b.sellDate || "")));
-        let grouped = {};
+      /* ═══════════════════════════════════
+         EQUITY CURVE
+         ═══════════════════════════════════ */
+      function renderEquityChart() {
+        const sorted = [...allValid].sort((a, b) => String(a.sellDate || "").localeCompare(String(b.sellDate || "")));
+        const canvas = document.getElementById("equityChart");
+        if (equityChartInstance) { equityChartInstance.destroy(); equityChartInstance = null; }
+        if (!canvas || !sorted.length) return;
+
+        const labels = sorted.map(t => fmtDate(t.sellDate));
+        let cumPnl = 0, cumInvested = 0, cumValue = 0;
+        const pnlSeries = [], investedSeries = [], valueSeries = [];
         sorted.forEach(t => {
-          if (!t.sellDate) return;
-          const dt = new Date(t.sellDate);
-          let key, label;
-          if (chartView === "daily") {
-            key = t.sellDate;
-            label = dt.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "2-digit" });
-          } else {
-            key = dt.getFullYear() + "-" + String(dt.getMonth() + 1).padStart(2, "0");
-            label = dt.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
-          }
-          if (!grouped[key]) grouped[key] = { pnl: 0, label, trades: 0 };
-          grouped[key].pnl += t.info.pnl;
-          grouped[key].trades++;
+          cumPnl += t.info.pnl;
+          cumInvested += t.info.cost;
+          cumValue += (t.info.cost + t.info.pnl);
+          pnlSeries.push(cumPnl);
+          investedSeries.push(cumInvested);
+          valueSeries.push(cumValue);
         });
-        const entries = Object.entries(grouped).sort((a, b) => a[0].localeCompare(b[0]));
-        const labels = entries.map(([, v]) => v.label);
-        const daily = entries.map(([, v]) => v.pnl);
-        const tradeCounts = entries.map(([, v]) => v.trades);
-        let cum = 0; const cumulative = daily.map(v => cum += v);
 
-        if (pnlChartInstance) { pnlChartInstance.destroy(); pnlChartInstance = null; }
-        const canvas = document.getElementById("pnlChart");
-        if (!canvas || !entries.length) return;
         const ctx = canvas.getContext("2d");
+        const grad = ctx.createLinearGradient(0, 0, 0, 220);
+        grad.addColorStop(0, "rgba(45,212,191,.35)");
+        grad.addColorStop(1, "rgba(45,212,191,0)");
 
-        pnlChartInstance = new Chart(ctx, {
-          data: {
-            labels,
-            datasets: [
-              { type: "bar", label: "Monthly P&L", data: daily, backgroundColor: daily.map(v => v >= 0 ? "rgba(45,212,191,.55)" : "rgba(255,92,108,.55)"), borderRadius: 2, order: 2 },
-              { type: "line", label: "Cumulative P&L", data: cumulative, borderColor: "#5B9EFF", borderWidth: 2, pointRadius: entries.length > 40 ? 0 : 2, pointBackgroundColor: "#5B9EFF", tension: 0.3, fill: false, order: 1 }
-            ]
-          },
+        const datasets = equityView === "pnl"
+          ? [{
+            label: "Cumulative P&L", data: pnlSeries, borderColor: "#2DD4BF", backgroundColor: grad,
+            borderWidth: 2, fill: true, tension: .3, pointRadius: sorted.length > 30 ? 0 : 2.5, pointBackgroundColor: "#2DD4BF"
+          }]
+          : [
+            { label: "Invested", data: investedSeries, borderColor: "#5B9EFF", backgroundColor: "transparent", borderWidth: 2, borderDash: [4, 3], fill: false, tension: .3, pointRadius: 0 },
+            { label: "Current Value", data: valueSeries, borderColor: "#2DD4BF", backgroundColor: grad, borderWidth: 2, fill: true, tension: .3, pointRadius: 0 }
+          ];
+
+        equityChartInstance = new Chart(ctx, {
+          type: "line",
+          data: { labels, datasets },
           options: {
             responsive: true, maintainAspectRatio: false,
             interaction: { mode: "index", intersect: false },
             plugins: {
-              legend: { display: false },
+              legend: { display: equityView !== "pnl", position: "top", align: "end", labels: { color: "#8fa3bc", boxWidth: 10, font: { size: 10 } } },
               tooltip: {
                 backgroundColor: "#0f1c28", borderColor: "rgba(255,255,255,.1)", borderWidth: 1, titleColor: "#cfe2f5", bodyColor: "#8fa3bc", padding: 8,
-                callbacks: {
-                  label: ctx => { const v = ctx.raw; return ` ${ctx.dataset.label}: ${v >= 0 ? "+" : "-"}₹${Math.abs(v).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` },
-                  afterBody: items => { const n = tradeCounts[items[0].dataIndex] || 0; return ` Trades: ${n}`; }
-                }
+                callbacks: { label: c => ` ${c.dataset.label}: ₹${fmtMoney(c.raw)}` }
               }
             },
             scales: {
-              x: { ticks: { color: "#3a5060", font: { size: 9 }, maxRotation: 45, maxTicksLimit: 12, autoSkip: true }, grid: { display: false }, border: { color: "rgba(255,255,255,.05)" } },
+              x: { ticks: { color: "#3a5060", font: { size: 9 }, maxRotation: 0, maxTicksLimit: 7, autoSkip: true }, grid: { display: false }, border: { color: "rgba(255,255,255,.05)" } },
               y: { ticks: { color: "#3a5060", font: { size: 9 }, callback: v => { const a = Math.abs(v); const f = a >= 100000 ? `${(a / 100000).toFixed(1)}L` : a >= 1000 ? `${(a / 1000).toFixed(1)}K` : a.toFixed(0); return v < 0 ? `-₹${f}` : `₹${f}` } }, grid: { color: "rgba(255,255,255,.04)" }, border: { color: "rgba(255,255,255,.05)" } }
             }
           }
         });
       }
 
-      /* Sector mini panel */
-      function renderSector(valid) {
+      /* ═══════════════════════════════════
+         SECTOR ICON MAP (matches admin.html)
+         ═══════════════════════════════════ */
+      const SECTOR_ICON_MAP = {
+        "Auto": { svg: '<path d="M3 13l2-5a2 2 0 0 1 2-1.3h10a2 2 0 0 1 2 1.3l2 5"/><rect x="2" y="13" width="20" height="6" rx="1.5"/><circle cx="7" cy="19" r="1.6"/><circle cx="17" cy="19" r="1.6"/>', color: '#818CF8' },
+        "Bank": { svg: '<path d="M3 10l9-6 9 6"/><path d="M5 10v9M10 10v9M14 10v9M19 10v9"/><path d="M3 21h18"/>', color: '#2DD4BF' },
+        "CapitalMarket": { svg: '<path d="M4 19V10M10 19V5M16 19v-7M20 19V3"/>', color: '#38BDF8' },
+        "Defence": { svg: '<path d="M12 2l8 3.5v5.4c0 5-3.4 8.6-8 11.1-4.6-2.5-8-6.1-8-11.1V5.5L12 2Z"/>', color: '#E5484D' },
+        "FMCG": { svg: '<circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/><path d="M2.5 3h2.4l2.4 12.6a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H6"/>', color: '#FACC15' },
+        "Fmcg": { svg: '<circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/><path d="M2.5 3h2.4l2.4 12.6a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H6"/>', color: '#FACC15' },
+        "Pharma": { svg: '<path d="M20.8 8.6c0 5.6-8.8 10.9-8.8 10.9S3.2 14.2 3.2 8.6a4.6 4.6 0 0 1 8.8-1.9 4.6 4.6 0 0 1 8.8 1.9Z"/>', color: '#4ADE80' },
+        "Health": { svg: '<path d="M20.8 8.6c0 5.6-8.8 10.9-8.8 10.9S3.2 14.2 3.2 8.6a4.6 4.6 0 0 1 8.8-1.9 4.6 4.6 0 0 1 8.8 1.9Z"/>', color: '#4ADE80' },
+        "IT": { svg: '<rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/>', color: '#C084FC' },
+        "Manufacturing": { svg: '<path d="M3 21V11l6 4V11l6 4V8l6 4v9H3Z"/>', color: '#5B9EFF' },
+        "Mfg.": { svg: '<path d="M3 21V11l6 4V11l6 4V8l6 4v9H3Z"/>', color: '#5B9EFF' },
+        "Metal": { svg: '<circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="9" ry="3.6"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(120 12 12)"/>', color: '#8BC34A' },
+        "Other": { svg: '<rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/>', color: '#C026D3' },
+        "Misc": { svg: '<rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/>', color: '#C026D3' },
+        "OilEnergy": { svg: '<path d="M12 2s6 6.5 6 11.5a6 6 0 0 1-12 0C6 8.5 12 2 12 2Z"/>', color: '#FB923C' },
+        "Energy": { svg: '<path d="M12 2s6 6.5 6 11.5a6 6 0 0 1-12 0C6 8.5 12 2 12 2Z"/>', color: '#FB923C' },
+        "Reality": { svg: '<path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/>', color: '#F472B6' },
+        "Realty": { svg: '<path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/>', color: '#F472B6' },
+      };
+
+      const SECTOR_DESC_MAP = {
+        "Auto": "Automobile sector riding demand recovery",
+        "Bank": "Strong momentum in leading banking stocks",
+        "CapitalMarket": "Capital markets with active participation",
+        "Defence": "Defence & aerospace order-book strength",
+        "FMCG": "Consumer goods delivering stable returns",
+        "Fmcg": "Consumer goods delivering stable returns",
+        "Pharma": "Steady growth in pharmaceutical segment",
+        "Health": "Steady growth in pharmaceutical segment",
+        "IT": "Challenging market conditions impacting returns",
+        "Manufacturing": "Manufacturing sector showing consistent strength",
+        "Mfg.": "Manufacturing sector showing consistent strength",
+        "Metal": "Metals & mining tracking commodity cycles",
+        "OilEnergy": "Energy sector with mixed performance",
+        "Energy": "Energy sector with mixed performance",
+        "Reality": "Real estate riding the housing upcycle",
+        "Realty": "Real estate riding the housing upcycle",
+        "Other": "Diversified positions across sectors",
+        "Misc": "Diversified positions across sectors",
+      };
+
+      function getSectorIcon(name) { return SECTOR_ICON_MAP[name] || SECTOR_ICON_MAP["Other"]; }
+      function getSectorDesc(name) { return SECTOR_DESC_MAP[name] || "Sector performance overview"; }
+
+      /* ═══════════════════════════════════
+         PROFIT BY SECTORS — donut + legend
+         ═══════════════════════════════════ */
+      function renderSectorDonutPanel() {
         const totals = {};
-        valid.forEach(t => {
-          const sd = symbolDataMap[(t.symbol || "").toUpperCase()];
-          const sector = (sd && sd.sheet) || "Other";
+        sectorSourceItems.forEach(t => {
+          const sector = sectorOf(t.symbol);
           if (!totals[sector]) totals[sector] = { pnl: 0, cost: 0, trades: 0 };
           totals[sector].pnl += t.info.pnl;
           totals[sector].cost += t.info.cost;
           totals[sector].trades++;
         });
 
-        const entries = Object.entries(totals).map(([name, data]) => {
-          data.returnPct = data.cost > 0 ? (data.pnl / data.cost) * 100 : 0;
-          return { sector: name, ...data };
-        });
-        entries.sort((a, b) => b.pnl - a.pnl);
-        allSectorEntries = [...entries];
+        const entries = Object.entries(totals).map(([name, data]) => ({
+          sector: name, ...data, returnPct: data.cost > 0 ? (data.pnl / data.cost) * 100 : 0
+        }));
+        entries.sort((a, b) => Math.abs(b.pnl) - Math.abs(a.pnl));
+        allSectorEntries = entries;
+        sectorTotalPnl = entries.reduce((s, e) => s + Math.abs(e.pnl), 0);
 
-        const topSectors = entries.slice(0, 3);
-        const remainingCount = entries.length - topSectors.length;
-        const totalPnl = entries.reduce((sum, e) => sum + Math.abs(e.pnl), 0);
-        sectorTotalPnl = totalPnl;
+        const totalPnl = sectorSourceItems.reduce((s, t) => s + t.info.pnl, 0);
+        const centerEl = document.getElementById("sectorDonutCenter");
+        const legendEl = document.getElementById("sectorLegend");
+        const moreBtn = document.getElementById("sectorMoreBtn");
 
-        const container = document.getElementById("sectorBody");
-        if (!entries.length) { container.innerHTML = '<div class="empty-state">No sector data</div>'; return; }
+        if (!entries.length) {
+          if (centerEl) centerEl.innerHTML = "";
+          if (legendEl) legendEl.innerHTML = '<div class="empty-state" style="padding:8px 0">No sector data</div>';
+          if (moreBtn) moreBtn.style.display = "none";
+          if (sectorDonutInstance) { sectorDonutInstance.destroy(); sectorDonutInstance = null; }
+          return;
+        }
 
-        container.innerHTML = `
-          <div class="sector-performance">
-            ${topSectors.map(sector => {
-          const contribution = (Math.abs(sector.pnl) / totalPnl) * 100;
-          return `
-              <div class="sector-card">
-                <div class="sector-info">
-                  <div class="sector-name">${escHtml(sector.sector)}</div>
-                  <div class="sector-return ${sector.returnPct >= 0 ? "positive" : "negative"}">${sector.returnPct >= 0 ? "+" : ""}${sector.returnPct.toFixed(1)}%</div>
-                  <div class="sector-profit ${sector.pnl >= 0 ? "positive" : "negative"}">${sector.pnl >= 0 ? "+" : "-"}₹${fmtMoney(Math.abs(sector.pnl))}</div>
-                  <div class="sector-trades-badge">${sector.trades}</div>
-                </div>
-                <div class="sector-bar">
-                  <div class="sector-bar-fill ${sector.pnl >= 0 ? "positive" : "negative"}" style="width:${contribution}%"></div>
-                </div>
-              </div>`;
-        }).join("")}
-            ${remainingCount > 0 ? `<div class="sector-more">View all sectors — +${remainingCount} more</div>` : ""}
+        centerEl.innerHTML = `
+          <div class="dc-val" style="color:${totalPnl >= 0 ? '#2DD4BF' : '#FF5C6C'}">${totalPnl >= 0 ? '+' : '-'}₹${fmtMoney(Math.abs(totalPnl) >= 1000 ? Math.abs(totalPnl) / 1000 : Math.abs(totalPnl)).replace(/\.00$/, '')}${Math.abs(totalPnl) >= 1000 ? 'K' : ''}</div>
+          <div class="dc-lbl">Total P&amp;L</div>`;
+
+        const shown = entries.slice(0, 6);
+        legendEl.innerHTML = shown.map(e => {
+          const icon = getSectorIcon(e.sector);
+          const pct = sectorTotalPnl ? (Math.abs(e.pnl) / sectorTotalPnl) * 100 : 0;
+          return `<div class="legend-row">
+            <span class="legend-dot" style="background:${icon.color}"></span>
+            <span class="legend-name">${escHtmlFull(e.sector)}</span>
+            <span class="legend-pct">${pct.toFixed(1)}%</span>
           </div>`;
+        }).join("");
+
+        moreBtn.style.display = entries.length ? "block" : "none";
+        moreBtn.textContent = entries.length > 6 ? `View all sectors — +${entries.length - 6} more` : "View sector breakdown";
+
+        const canvas = document.getElementById("sectorDonut");
+        if (sectorDonutInstance) { sectorDonutInstance.destroy(); sectorDonutInstance = null; }
+        if (!canvas) return;
+        sectorDonutInstance = new Chart(canvas.getContext("2d"), {
+          type: "doughnut",
+          data: {
+            labels: shown.map(e => e.sector),
+            datasets: [{ data: shown.map(e => Math.abs(e.pnl)), backgroundColor: shown.map(e => getSectorIcon(e.sector).color), borderColor: "#0e1d2b", borderWidth: 2 }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false, cutout: "72%",
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: "#0f1c28", borderColor: "rgba(255,255,255,.1)", borderWidth: 1, titleColor: "#cfe2f5", bodyColor: "#8fa3bc", padding: 8,
+                callbacks: { label: c => ` ${c.label}: ₹${fmtMoney(c.raw)}` }
+              }
+            }
+          }
+        });
       }
 
-      /* Summary */
-      function renderSummary(valid) {
-        const gains = valid.filter(t => t.info.pnl > 0), losses = valid.filter(t => t.info.pnl < 0);
-        const netPnl = valid.reduce((s, t) => s + t.info.pnl, 0);
-        const avgGain = gains.length ? gains.reduce((s, t) => s + t.info.pnl, 0) / gains.length : 0;
-        const avgLoss = losses.length ? Math.abs(losses.reduce((s, t) => s + t.info.pnl, 0) / losses.length) : 0;
-        const rr = avgLoss > 0 ? avgGain / avgLoss : null;
-        const daysArr = valid.filter(t => t.days !== null);
-        const avgDays = daysArr.length ? daysArr.reduce((s, t) => s + t.days, 0) / daysArr.length : null;
+      /* ═══════════════════════════════════
+         KEY METRICS
+         ═══════════════════════════════════ */
+      function renderKeyMetrics() {
+        const wins = allValid.filter(t => t.info.pnl > 0);
+        const losses = allValid.filter(t => t.info.pnl < 0);
+        const avgProfit = wins.length ? wins.reduce((s, t) => s + t.info.pnl, 0) / wins.length : 0;
+        const avgLoss = losses.length ? losses.reduce((s, t) => s + t.info.pnl, 0) / losses.length : 0;
+        const grossWin = wins.reduce((s, t) => s + t.info.pnl, 0);
+        const grossLoss = Math.abs(losses.reduce((s, t) => s + t.info.pnl, 0));
+        const profitFactor = grossLoss > 0 ? (grossWin / grossLoss) : (grossWin > 0 ? Infinity : 0);
 
-        document.getElementById("summaryBlock").innerHTML = `
-          <div class="sum-row"><span class="sum-lbl">Total Trades</span><span class="sum-val">${valid.length}</span></div>
-          <div class="sum-row"><span class="sum-lbl">Profitable Trades</span><span class="sum-val pos">${gains.length} (${valid.length ? ((gains.length / valid.length) * 100).toFixed(2) : 0}%)</span></div>
-          <div class="sum-row"><span class="sum-lbl">Losing Trades</span><span class="sum-val neg">${losses.length} (${valid.length ? ((losses.length / valid.length) * 100).toFixed(2) : 0}%)</span></div>
-          <div class="sum-row"><span class="sum-lbl">Breakeven Trades</span><span class="sum-val">${valid.filter(t => t.info.pnl === 0).length} (0.00%)</span></div>`;
+        const sorted = [...allValid].sort((a, b) => String(a.sellDate || "").localeCompare(String(b.sellDate || "")));
+        let cum = 0, peak = 0, maxDD = 0;
+        sorted.forEach(t => {
+          cum += t.info.pnl;
+          if (cum > peak) peak = cum;
+          const dd = peak > 0 ? ((cum - peak) / peak) * 100 : 0;
+          if (dd < maxDD) maxDD = dd;
+        });
 
-        document.getElementById("metricsGrid").innerHTML = `
-          <div class="metric-item"><div class="metric-lbl">Avg. Holding Period</div><div class="metric-val">${avgDays !== null ? avgDays.toFixed(1) + " Days" : "—"}</div></div>
-          <div class="metric-item"><div class="metric-lbl">Avg. Profit (Wins)</div><div class="metric-val pos">₹${fmtMoney(avgGain)}</div></div>
-          <div class="metric-item"><div class="metric-lbl">Avg. Loss (Losses)</div><div class="metric-val neg">-₹${fmtMoney(avgLoss)}</div></div>
-          <div class="metric-item"><div class="metric-lbl">Risk : Reward Ratio</div><div class="metric-val blue">${rr !== null ? `1 : ${rr.toFixed(2)}` : "—"}</div></div>`;
+        const best = allValid.length ? [...allValid].sort((a, b) => b.info.pnl - a.info.pnl)[0] : null;
+        const worst = allValid.length ? [...allValid].sort((a, b) => a.info.pnl - b.info.pnl)[0] : null;
+        const worstIsLoss = worst && worst.info.pnl < 0;
 
-        const footerEl = document.getElementById("footerNote");
-        if (footerEl) footerEl.querySelector("span").textContent = `Realised profit includes ${valid.length} closed position${valid.length === 1 ? "" : "s"}. Data updated EOD.`;
+        const rows = [
+          { lbl: "Avg. Profit per Trade", val: wins.length ? `+₹${fmtMoney(avgProfit)}` : "—", cls: "pos" },
+          { lbl: "Avg. Loss per Trade", val: losses.length ? `-₹${fmtMoney(Math.abs(avgLoss))}` : "—", cls: losses.length ? "neg" : "" },
+          { lbl: "Profit Factor", val: profitFactor === Infinity ? "∞" : profitFactor ? profitFactor.toFixed(2) : "—", cls: "blue" },
+          { lbl: "Max Drawdown", val: `${maxDD.toFixed(2)}%`, cls: maxDD < 0 ? "neg" : "" },
+          { lbl: "Largest Win", val: best ? `+₹${fmtMoney(best.info.pnl)} · ${escHtmlFull(best.symbol)}` : "—", cls: "pos" },
+          { lbl: "Largest Loss", val: worstIsLoss ? `-₹${fmtMoney(Math.abs(worst.info.pnl))} · ${escHtmlFull(worst.symbol)}` : "—", cls: worstIsLoss ? "neg" : "" },
+        ];
+
+        document.getElementById("keyMetricsList").innerHTML = rows.map(r => `
+          <div class="km-row"><span class="km-lbl">${r.lbl}</span><span class="km-val ${r.cls}">${r.val}</span></div>
+        `).join("");
       }
 
-      /* Trades */
-      function renderTrades(valid) {
+      /* ═══════════════════════════════════
+         MONTHLY P&L CHART
+         ═══════════════════════════════════ */
+      function renderMonthlyChart() {
+        const sorted = [...allValid].sort((a, b) => String(a.sellDate || "").localeCompare(String(b.sellDate || "")));
+        const grouped = {};
+        sorted.forEach(t => {
+          if (!t.sellDate) return;
+          const dt = new Date(t.sellDate);
+          const key = dt.getFullYear() + "-" + String(dt.getMonth() + 1).padStart(2, "0");
+          const label = dt.toLocaleDateString("en-GB", { month: "short" });
+          if (!grouped[key]) grouped[key] = { pnl: 0, trades: 0, label };
+          grouped[key].pnl += t.info.pnl;
+          grouped[key].trades++;
+        });
+        const entries = Object.entries(grouped).sort((a, b) => a[0].localeCompare(b[0]));
+        const labels = entries.map(([, v]) => v.label);
+        const pnlData = entries.map(([, v]) => v.pnl);
+        const tradeData = entries.map(([, v]) => v.trades);
+
+        const canvas = document.getElementById("monthlyChart");
+        if (monthlyChartInstance) { monthlyChartInstance.destroy(); monthlyChartInstance = null; }
+        if (!canvas || !entries.length) return;
+
+        const data = monthlyView === "pnl" ? pnlData : tradeData;
+        const colors = monthlyView === "pnl"
+          ? pnlData.map(v => v >= 0 ? "rgba(45,212,191,.65)" : "rgba(255,92,108,.65)")
+          : "rgba(91,158,255,.65)";
+
+        monthlyChartInstance = new Chart(canvas.getContext("2d"), {
+          type: "bar",
+          data: { labels, datasets: [{ label: monthlyView === "pnl" ? "P&L" : "Trades", data, backgroundColor: colors, borderRadius: 3, maxBarThickness: 26 }] },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: "#0f1c28", borderColor: "rgba(255,255,255,.1)", borderWidth: 1, titleColor: "#cfe2f5", bodyColor: "#8fa3bc", padding: 8,
+                callbacks: { label: c => monthlyView === "pnl" ? ` ₹${fmtMoney(c.raw)}` : ` ${c.raw} trade${c.raw === 1 ? "" : "s"}` }
+              }
+            },
+            scales: {
+              x: { ticks: { color: "#3a5060", font: { size: 9 } }, grid: { display: false }, border: { color: "rgba(255,255,255,.05)" } },
+              y: {
+                ticks: {
+                  color: "#3a5060", font: { size: 9 }, callback: v => {
+                    if (monthlyView !== "pnl") return v;
+                    const a = Math.abs(v); const f = a >= 1000 ? `${(a / 1000).toFixed(1)}K` : a.toFixed(0);
+                    return v < 0 ? `-₹${f}` : `₹${f}`;
+                  }
+                }, grid: { color: "rgba(255,255,255,.04)" }, border: { color: "rgba(255,255,255,.05)" }
+              }
+            }
+          }
+        });
+      }
+
+      /* ═══════════════════════════════════
+         TOP / WORST PERFORMING TRADES
+         ═══════════════════════════════════ */
+      function perfRowHtml(symbol, pnl, pct, durationDays, durationLabel) {
+        const cls = pnl >= 0 ? "pos" : "neg";
+        const sign = pnl >= 0 ? "+" : "-";
+        const color = avatarColor(symbol);
+        return `<div class="perf-row">
+          <div class="perf-left">
+            ${logoHtml(symbol, color)}
+            <div>
+              <div class="perf-symbol">${escHtmlFull(symbol)}</div>
+              <div class="perf-duration">${durationDays !== null ? durationDays + " days" : "—"}${durationLabel ? " · " + durationLabel : ""}</div>
+            </div>
+          </div>
+          <div class="perf-right">
+            <div class="perf-pnl ${cls}">${sign}₹${fmtMoney(Math.abs(pnl))}</div>
+            <div class="perf-pct ${cls}">${isFinite(pct) ? (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%" : "—"}</div>
+          </div>
+        </div>`;
+      }
+
+      function renderTopPerformers() {
+        const top = [...allValid].sort((a, b) => b.info.pnl - a.info.pnl).slice(0, 5);
+        const el = document.getElementById("topPerfList");
+        if (!top.length) { el.innerHTML = '<div class="empty-state">No closed trades yet</div>'; return; }
+        el.innerHTML = top.map(t => perfRowHtml(t.symbol, t.info.pnl, t.info.pct, t.days, "closed")).join("");
+      }
+
+      function renderWorstPerformers() {
+        const priced = allHoldingsCalc.filter(h => h.info);
+        const worst = [...priced].sort((a, b) => a.info.pnl - b.info.pnl).slice(0, 5);
+        const el = document.getElementById("worstPerfList");
+        if (!worst.length) { el.innerHTML = '<div class="empty-state">No priced open holdings yet</div>'; return; }
+        el.innerHTML = worst.map(h => perfRowHtml(h.symbol, h.info.pnl, h.info.pct, h.days, "open")).join("");
+      }
+
+      /* ═══════════════════════════════════
+         TRADE DURATION DONUT
+         ═══════════════════════════════════ */
+      function renderDurationDonut() {
+        const buckets = [
+          { label: "< 7 days", min: 0, max: 6, color: "#2DD4BF", count: 0 },
+          { label: "7 – 14 days", min: 7, max: 14, color: "#5B9EFF", count: 0 },
+          { label: "15 – 30 days", min: 15, max: 30, color: "#8B5CF6", count: 0 },
+          { label: "> 30 days", min: 31, max: Infinity, color: "#F5A623", count: 0 },
+        ];
+        let sum = 0, n = 0;
+        allValid.forEach(t => {
+          if (t.days === null) return;
+          n++; sum += t.days;
+          const b = buckets.find(b => t.days >= b.min && t.days <= b.max);
+          if (b) b.count++;
+        });
+        const avg = n ? Math.round(sum / n) : null;
+
+        const centerEl = document.getElementById("durationDonutCenter");
+        const legendEl = document.getElementById("durationLegend");
+        centerEl.innerHTML = `<div class="dc-val">${avg !== null ? avg : "—"}</div><div class="dc-lbl">Avg. Days</div>`;
+        legendEl.innerHTML = buckets.map(b => `
+          <div class="legend-row">
+            <span class="legend-dot" style="background:${b.color}"></span>
+            <span class="legend-name">${b.label}</span>
+            <span class="legend-pct">${n ? ((b.count / n) * 100).toFixed(0) : 0}%</span>
+          </div>`).join("");
+
+        const canvas = document.getElementById("durationDonut");
+        if (durationDonutInstance) { durationDonutInstance.destroy(); durationDonutInstance = null; }
+        if (!canvas || !n) return;
+        durationDonutInstance = new Chart(canvas.getContext("2d"), {
+          type: "doughnut",
+          data: { labels: buckets.map(b => b.label), datasets: [{ data: buckets.map(b => b.count), backgroundColor: buckets.map(b => b.color), borderColor: "#0e1d2b", borderWidth: 2 }] },
+          options: {
+            responsive: true, maintainAspectRatio: false, cutout: "70%",
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: "#0f1c28", borderColor: "rgba(255,255,255,.1)", borderWidth: 1, titleColor: "#cfe2f5", bodyColor: "#8fa3bc", padding: 8,
+                callbacks: { label: c => ` ${c.label}: ${c.raw} trades` }
+              }
+            }
+          }
+        });
+      }
+
+      /* ═══════════════════════════════════
+         SWING TRADES HISTORY (paginated)
+         ═══════════════════════════════════ */
+      function getFilteredHistory() {
         const q = searchQuery.toLowerCase();
-        const filtered = q ? valid.filter(t => (t.symbol || "").toLowerCase().includes(q)) : valid;
-        const sorted = [...filtered].sort((a, b) => String(b.sellDate || "").localeCompare(String(a.sellDate || "")));
-        const tbody = document.getElementById("tradesTbody");
-        const empty = document.getElementById("tradesEmpty");
-        if (!sorted.length) { tbody.innerHTML = ""; empty.style.display = "block"; return; }
+        const filtered = q ? allValid.filter(t => (t.symbol || "").toLowerCase().includes(q)) : allValid;
+        return [...filtered].sort((a, b) => String(b.sellDate || "").localeCompare(String(a.sellDate || "")));
+      }
+
+      function renderHistoryTable() {
+        const list = getFilteredHistory();
+        const tbody = document.getElementById("historyTbody");
+        const empty = document.getElementById("historyEmpty");
+        const pager = document.getElementById("historyPagination");
+
+        if (!list.length) {
+          tbody.innerHTML = ""; empty.style.display = "block"; pager.innerHTML = "";
+          return;
+        }
         empty.style.display = "none";
-        tbody.innerHTML = sorted.map(t => {
+
+        const totalPages = Math.max(1, Math.ceil(list.length / HISTORY_PAGE_SIZE));
+        if (historyPage > totalPages) historyPage = totalPages;
+        const start = (historyPage - 1) * HISTORY_PAGE_SIZE;
+        const pageItems = list.slice(start, start + HISTORY_PAGE_SIZE);
+
+        tbody.innerHTML = pageItems.map((t, i) => {
           const { pnl, pct } = t.info;
-          const sign = pnl >= 0 ? "+" : "";
           const cls = pnl >= 0 ? "pos" : "neg";
-          const days = t.days;
-          const color = avatarColor(t.symbol);
-          const typeLabel = days !== null && days === 0 ? "Intraday" : "Delivery";
-          const typeCls = typeLabel === "Intraday" ? "type-intraday" : "type-delivery";
+          const sign = pnl >= 0 ? "+" : "";
           return `<tr>
-            <td><div class="sym-badge">
-              ${logoHtml(t.symbol, color)}
-              <strong style="font-size:11px">${escHtmlFull(t.symbol || "—")}</strong>
-            </div></td>
+            <td>${start + i + 1}</td>
+            <td><div class="sym-badge">${logoHtml(t.symbol, avatarColor(t.symbol))}<strong style="font-size:11px">${escHtmlFull(t.symbol || "—")}</strong></div></td>
+            <td><span class="type-pill type-delivery">BUY</span></td>
+            <td>${fmtDate(t.buyDate)}</td>
+            <td>${fmtDate(t.sellDate)}</td>
             <td class="num">${t.quantity || 1}</td>
             <td class="num">₹${fmtMoney(t.buyPrice)}</td>
             <td class="num">₹${fmtMoney(t.sellPrice)}</td>
             <td class="num"><span class="badge ${cls}">${sign}₹${fmtMoney(Math.abs(pnl))}</span></td>
             <td class="num"><span class="badge ${cls}">${isFinite(pct) ? (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%" : "—"}</span></td>
-            <td class="num">${days !== null ? days + " Days" : "—"}</td>
-            <td><span class="type-pill ${typeCls}">${typeLabel}</span></td>
-            <td>${fmtDate(t.sellDate)}</td>
+            <td class="num">${t.days !== null ? t.days + "d" : "—"}</td>
+            <td><span class="status-pill">Closed</span></td>
           </tr>`;
         }).join("");
+
+        const from = start + 1, to = Math.min(start + HISTORY_PAGE_SIZE, list.length);
+        let pageBtns = `<button class="hp-btn" id="hpPrev" ${historyPage === 1 ? "disabled" : ""}>‹</button>`;
+        for (let p = 1; p <= totalPages; p++) {
+          pageBtns += `<button class="hp-btn page-btn ${p === historyPage ? "active" : ""}" data-page="${p}">${p}</button>`;
+        }
+        pageBtns += `<button class="hp-btn" id="hpNext" ${historyPage === totalPages ? "disabled" : ""}>›</button>`;
+
+        pager.innerHTML = `
+          <div class="hp-info">Showing ${from}–${to} of ${list.length} trades</div>
+          <div class="hp-pages">${pageBtns}</div>`;
+
+        pager.querySelectorAll(".page-btn").forEach(btn => {
+          btn.addEventListener("click", () => { historyPage = parseInt(btn.dataset.page, 10); renderHistoryTable(); });
+        });
+        const prevBtn = document.getElementById("hpPrev"), nextBtn = document.getElementById("hpNext");
+        if (prevBtn) prevBtn.addEventListener("click", () => { if (historyPage > 1) { historyPage--; renderHistoryTable(); } });
+        if (nextBtn) nextBtn.addEventListener("click", () => { if (historyPage < totalPages) { historyPage++; renderHistoryTable(); } });
       }
 
       /* CSV export */
@@ -2358,49 +2869,18 @@
         const csv = [h, ...rows].join("\n");
         const blob = new Blob([csv], { type: "text/csv" });
         const url = URL.createObjectURL(blob);
-        const a = document.createElement("a"); a.href = url; a.download = "realised-trades.csv"; a.click(); URL.revokeObjectURL(url);
+        const a = document.createElement("a"); a.href = url; a.download = "swing-trades-history.csv"; a.click(); URL.revokeObjectURL(url);
       }
 
       /* ═══════════════════════════════════
          SECTOR MODAL — icon/desc/build
          ═══════════════════════════════════ */
-      const SECTOR_ICON_MAP = {
-        "Bank": { svg: '<path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/>', bg: '#0d3d2e', color: '#2DD4BF' },
-        "Mfg.": { svg: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>', bg: '#0d2a3d', color: '#5B9EFF' },
-        "Manufacturing": { svg: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>', bg: '#0d2a3d', color: '#5B9EFF' },
-        "IT": { svg: '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>', bg: '#2d1a3d', color: '#C084FC' },
-        "Pharma": { svg: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>', bg: '#1a2d1a', color: '#4ADE80' },
-        "FMCG": { svg: '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>', bg: '#2d2a0d', color: '#FACC15' },
-        "Energy": { svg: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>', bg: '#2d1a0d', color: '#FB923C' },
-        "Auto": { svg: '<rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>', bg: '#1a1a2d', color: '#818CF8' },
-        "CapitalMarket": { svg: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>', bg: '#0d2235', color: '#38BDF8' },
-        "Other": { svg: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>', bg: '#1a2030', color: '#94A3B8' },
-      };
-
-      const SECTOR_DESC_MAP = {
-        "Bank": "Strong momentum in leading banking stocks",
-        "Mfg.": "Manufacturing sector showing consistent strength",
-        "Manufacturing": "Manufacturing sector showing consistent strength",
-        "IT": "Challenging market conditions impacting returns",
-        "Pharma": "Steady growth in pharmaceutical segment",
-        "FMCG": "Consumer goods delivering stable returns",
-        "Energy": "Energy sector with mixed performance",
-        "Auto": "Automobile sector riding demand recovery",
-        "CapitalMarket": "Capital markets with active participation",
-        "Other": "Diversified positions across sectors",
-      };
-
-      function getSectorIcon(name) { return SECTOR_ICON_MAP[name] || SECTOR_ICON_MAP["Other"]; }
-      function getSectorDesc(name) { return SECTOR_DESC_MAP[name] || "Sector performance overview"; }
-
       function buildSectorModalRows(entries) {
         if (!entries.length) return '<div style="padding:40px;text-align:center;color:#3a5060;font-size:13px">No sector data available</div>';
 
-        /* build per-sector lookups from allValid */
         const bestByFull = {}, tradeCountBySector = {}, holdBySector = {};
-        allValid.forEach(t => {
-          const sd = symbolDataMap[(t.symbol || "").toUpperCase()];
-          const sec = (sd && sd.sheet) || "Other";
+        sectorSourceItems.forEach(t => {
+          const sec = sectorOf(t.symbol);
           if (!bestByFull[sec] || t.info.pnl > bestByFull[sec].info.pnl) bestByFull[sec] = t;
           tradeCountBySector[sec] = (tradeCountBySector[sec] || 0) + 1;
           if (!holdBySector[sec]) holdBySector[sec] = { sum: 0, count: 0 };
@@ -2408,7 +2888,6 @@
         });
 
         return entries.map((sector, idx) => {
-          const rank = idx + 1;
           const icon = getSectorIcon(sector.sector);
           const desc = getSectorDesc(sector.sector);
           const isPos = sector.pnl >= 0;
@@ -2426,10 +2905,8 @@
           return `
 <div class="sm-row">
   <div class="sm-row-top">
-
-    <!-- Sector identity -->
     <div class="sm-sector-id">
-      <div class="sm-icon" style="background:${icon.bg}">
+      <div class="sm-icon" style="background:${icon.color}22">
         <svg viewBox="0 0 24 24" fill="none" stroke="${icon.color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icon.svg}</svg>
       </div>
       <div>
@@ -2437,8 +2914,6 @@
         <div class="sm-sector-desc">${escHtmlFull(desc)}</div>
       </div>
     </div>
-
-    <!-- Performance -->
     <div class="sm-perf">
       <div class="sm-perf-top">
         <span class="sm-perf-pct ${isPos ? "pos" : "neg"}">${isPos ? "+" : "-"}${contribution.toFixed(1)}%</span>
@@ -2462,14 +2937,10 @@
         </div>
       </div>
     </div>
-
-    <!-- ROI -->
     <div class="sm-roi-box">
       <div class="sm-roi-label">ROI</div>
       <div class="sm-roi-val ${sector.returnPct >= 0 ? "pos" : "neg"}">${sector.returnPct >= 0 ? "+" : ""}${sector.returnPct.toFixed(1)}%</div>
     </div>
-
-    <!-- Best Trade -->
     <div class="sm-best-box">
       <div class="sm-trophy">🏆</div>
       <div>
@@ -2478,10 +2949,7 @@
       </div>
       <div class="sm-best-arrow">›</div>
     </div>
-
-    <!-- Trade count -->
     <div class="sm-rank">${tradeCount}</div>
-
   </div>
 </div>`;
         }).join("");
@@ -2502,7 +2970,7 @@
       loginPassword.addEventListener("keydown", e => { if (e.key === "Enter") submitLogin(); });
       loginModal.addEventListener("click", e => { if (e.target === loginModal) closeModal(); });
       exportBtn.addEventListener("click", exportCSV);
-      searchInput.addEventListener("input", e => { searchQuery = e.target.value; renderTrades(allValid); });
+      searchInput.addEventListener("input", e => { searchQuery = e.target.value; historyPage = 1; renderHistoryTable(); });
 
       /* FY filter */
       fyFilter.addEventListener("click", e => { e.stopPropagation(); fyDropdown.classList.toggle("show"); });
@@ -2518,20 +2986,27 @@
         render();
       });
 
-      /* Chart toggle */
-      document.querySelectorAll(".chart-view-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          if (btn.dataset.view === chartView) return;
-          chartView = btn.dataset.view;
-          document.querySelectorAll(".chart-view-btn").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-          renderChart(chartData);
-        });
+      /* Chart toggles (equity + monthly) */
+      document.getElementById("equityToggle").addEventListener("click", e => {
+        const btn = e.target.closest(".chart-view-btn"); if (!btn) return;
+        if (btn.dataset.view === equityView) return;
+        equityView = btn.dataset.view;
+        e.currentTarget.querySelectorAll(".chart-view-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderEquityChart();
+      });
+      document.getElementById("monthlyToggle").addEventListener("click", e => {
+        const btn = e.target.closest(".chart-view-btn"); if (!btn) return;
+        if (btn.dataset.view === monthlyView) return;
+        monthlyView = btn.dataset.view;
+        e.currentTarget.querySelectorAll(".chart-view-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderMonthlyChart();
       });
 
       /* Sector modal triggers */
       document.addEventListener("click", e => {
-        if (e.target.closest(".sector-more")) openSectorModal();
+        if (e.target.closest(".sector-more") || e.target.closest("#sectorMoreBtn")) openSectorModal();
       });
 
       document.getElementById("closeSectorModal").addEventListener("click", () => { sectorModal.style.display = "none"; });
