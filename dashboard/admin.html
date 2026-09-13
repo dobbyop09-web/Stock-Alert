@@ -1181,6 +1181,14 @@
       cursor: pointer;
     }
 
+    .deposit-bar {
+      transition: opacity .12s ease;
+    }
+
+    .deposit-bar-hit {
+      cursor: pointer;
+    }
+
     .fh-empty {
       font-size: 12px;
       color: #4a6075;
@@ -2166,6 +2174,43 @@
       display: flex;
       align-items: center;
       gap: 14px;
+    }
+
+    .fh-chart-toggle {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+    .fh-chart-toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #5a7080;
+      transition: background .15s ease, color .15s ease;
+    }
+
+    .fh-chart-toggle-btn svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+    }
+
+    .fh-chart-toggle-btn:hover {
+      color: #cfe2f5;
+    }
+
+    .fh-chart-toggle-btn.active {
+      background: rgba(45, 212, 191, .14);
+      color: #2DD4BF;
     }
 
     .fh-legend-item {
@@ -3255,8 +3300,8 @@
                 <span class="table-toolbar-title">Open Positions</span>
                 <div class="etf-toggle-group" id="etfToggleGroup" style="display:none">
                   <button type="button" class="etf-toggle-btn active" data-mode="all">All</button>
-                  <button type="button" class="etf-toggle-btn" data-mode="exclude">Excl. ETF</button>
-                  <button type="button" class="etf-toggle-btn" data-mode="only">ETF Only</button>
+                  <button type="button" class="etf-toggle-btn" data-mode="exclude">Stocks</button>
+                  <button type="button" class="etf-toggle-btn" data-mode="only">ETF</button>
                 </div>
                 <button class="add-holding-btn" id="addRowBtn">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
@@ -3535,8 +3580,18 @@
           <button class="fh-filter-btn" data-range="1Y">1Y</button>
           <button class="fh-filter-btn active" data-range="ALL">All</button>
         </div>
+        <div class="fh-chart-toggle" id="depositChartToggle">
+          <button type="button" class="fh-chart-toggle-btn active" data-chart="line" title="Cumulative deposits over time">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"></polyline><polyline points="15 6 21 6 21 12"></polyline></svg>
+            Line
+          </button>
+          <button type="button" class="fh-chart-toggle-btn" data-chart="bar" title="Deposits grouped by month">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+            Monthly
+          </button>
+        </div>
         <div class="fh-legend">
-          <div class="fh-legend-item"><span class="fh-legend-dot" style="background:#2DD4BF"></span>Deposits over time</div>
+          <div class="fh-legend-item"><span class="fh-legend-dot" style="background:#2DD4BF"></span><span id="depositLegendText">Deposits over time</span></div>
         </div>
       </div>
       <div class="fh-body" id="depositBody">
@@ -3574,6 +3629,7 @@
       let depositsSnapshot = [];
       let lastPortfolioCurrentValue = 0;
       let depositRange = "ALL";
+      let depositChartType = "line"; // "line" | "bar"
       let saleIndex = null;
       let isEditing = false;
       let symbolDataMap = {};
@@ -4142,6 +4198,103 @@
     </svg>`;
       }
 
+      function monthKeyOf(dateVal) {
+        const dt = new Date(dateVal);
+        return dt.getFullYear() + "-" + String(dt.getMonth() + 1).padStart(2, "0");
+      }
+      function monthLabelOf(key) {
+        const [y, m] = key.split("-").map(Number);
+        return new Date(y, m - 1, 1).toLocaleDateString("en-GB", { month: "short", year: "2-digit" });
+      }
+      function groupDepositsByMonth(rows) {
+        const map = new Map();
+        rows.forEach(r => {
+          const key = monthKeyOf(r.date);
+          map.set(key, (map.get(key) || 0) + (parseFloat(r.amount) || 0));
+        });
+        return [...map.entries()]
+          .sort((a, b) => a[0].localeCompare(b[0]))
+          .map(([key, total]) => ({ key, label: monthLabelOf(key), total }));
+      }
+
+      function renderDepositBarChart(monthlyRows) {
+        const W = 680, H = 200, padL = 48, padR = 16, padT = 16, padB = 26;
+        const plotW = W - padL - padR, plotH = H - padT - padB;
+        const n = monthlyRows.length;
+        if (!n) return `<div class="fh-empty">No deposits in this range.</div>`;
+
+        const maxVal = Math.max(...monthlyRows.map(r => r.total), 1) * 1.15;
+        const yOf = v => padT + plotH - (v / maxVal) * plotH;
+
+        let gridLines = "", yLabels = "";
+        const steps = 4;
+        for (let s = 0; s <= steps; s++) {
+          const v = (maxVal * s) / steps;
+          const y = yOf(v);
+          gridLines += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" class="fh-axis-line"${s === 0 ? "" : ' stroke-dasharray="3 3"'}></line>`;
+          yLabels += `<text x="${(padL - 8).toFixed(1)}" y="${(y + 3).toFixed(1)}" class="fh-tick-label" text-anchor="end">${fmtCompactINR(v)}</text>`;
+        }
+
+        const barW = Math.max(6, Math.min(34, plotW / n - 10));
+        const slot = n > 1 ? (plotW - barW) / (n - 1) : 0;
+        const xOf = i => n === 1 ? padL + plotW / 2 - barW / 2 : padL + i * slot;
+
+        const maxLabels = 8;
+        const lstep = Math.max(1, Math.ceil(n / maxLabels));
+
+        let bars = "", xLabels = "", hitAreas = "";
+        monthlyRows.forEach((r, i) => {
+          const x = xOf(i);
+          const y = yOf(r.total);
+          const h = Math.max((padT + plotH) - y, 1);
+          bars += `<rect class="deposit-bar" data-idx="${i}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${h.toFixed(1)}" rx="3"></rect>`;
+          hitAreas += `<rect class="deposit-bar-hit" data-idx="${i}" x="${x.toFixed(1)}" y="${padT}" width="${barW.toFixed(1)}" height="${plotH.toFixed(1)}" fill="transparent"></rect>`;
+          if (i % lstep === 0 || i === n - 1) {
+            xLabels += `<text x="${(x + barW / 2).toFixed(1)}" y="${H - 6}" class="fh-tick-label" text-anchor="middle">${escHtml(r.label)}</text>`;
+          }
+        });
+
+        return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="depositBarGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2DD4BF" stop-opacity="1"></stop>
+          <stop offset="100%" stop-color="#2DD4BF" stop-opacity="0.55"></stop>
+        </linearGradient>
+      </defs>
+      ${gridLines}
+      <g fill="url(#depositBarGrad)">${bars}</g>
+      ${hitAreas}
+      ${yLabels}
+      ${xLabels}
+    </svg>`;
+      }
+
+      function wireDepositBarTooltips(monthlyRows) {
+        const svg = depositBody.querySelector(".fh-chart-wrap svg");
+        if (!svg) return;
+        let tip = document.getElementById("depositTooltip");
+        if (!tip) {
+          tip = document.createElement("div");
+          tip.className = "fh-tooltip";
+          tip.id = "depositTooltip";
+          document.querySelector("#depositOverlay .fh-modal").appendChild(tip);
+        }
+        svg.querySelectorAll(".deposit-bar-hit").forEach(hit => {
+          const idx = parseInt(hit.getAttribute("data-idx"), 10);
+          const r = monthlyRows[idx];
+          if (!r) return;
+          hit.addEventListener("mousemove", e => {
+            tip.innerHTML = `
+          <div class="fh-tooltip-date">${escHtml(r.label)}</div>
+          <div class="fh-tooltip-row"><span class="fh-tooltip-dot" style="background:#2DD4BF"></span>Deposited <b style="margin-left:auto">₹${fmtMoney(r.total)}</b></div>`;
+            tip.style.left = (e.clientX + 14) + "px";
+            tip.style.top = (e.clientY + 14) + "px";
+            tip.classList.add("visible");
+          });
+          hit.addEventListener("mouseleave", () => tip.classList.remove("visible"));
+        });
+      }
+
       function renderDepositTable(ascRows) {
         const rev = [...ascRows].reverse();
         return `<div class="fh-table-wrap"><table class="fh-table">
@@ -4190,6 +4343,8 @@
       }
 
       const depositModalSub = document.getElementById("depositModalSub");
+      const depositLegendText = document.getElementById("depositLegendText");
+      const depositChartToggle = document.getElementById("depositChartToggle");
 
       function renderDepositModal() {
         const allAsc = sortedDepositsAsc();
@@ -4204,7 +4359,13 @@
         const xirr = depositXirrValue();
         const xirrTxt = xirr == null ? "—" : (xirr >= 0 ? "+" : "") + xirr.toFixed(2) + "%";
         depositModalSub.textContent = `${allAsc.length} deposit${allAsc.length === 1 ? "" : "s"} · Since ${fmtDate(allAsc[0].date)}`;
-        depositBody.innerHTML = `
+
+        let chartHtml;
+        if (depositChartType === "bar") {
+          const monthlyRows = groupDepositsByMonth(chartRows);
+          chartHtml = renderDepositBarChart(monthlyRows);
+          if (depositLegendText) depositLegendText.textContent = "Deposits by month";
+          depositBody.innerHTML = `
       <div class="fh-summary-row">
         <div class="fh-summary-card">
           <div class="fh-summary-lbl">Total Deposited</div>
@@ -4219,9 +4380,43 @@
           <div class="fh-summary-val ${xirr != null && xirr >= 0 ? "buy" : xirr != null ? "sell" : ""}">${xirrTxt}</div>
         </div>
       </div>
-      <div class="fh-chart-wrap">${renderDepositChart(chartRows)}</div>
+      <div class="fh-chart-wrap">${chartHtml}</div>
       ${renderDepositTable(allAsc)}`;
-        wireDepositTooltips(chartRows);
+          wireDepositBarTooltips(monthlyRows);
+        } else {
+          chartHtml = renderDepositChart(chartRows);
+          if (depositLegendText) depositLegendText.textContent = "Deposits over time";
+          depositBody.innerHTML = `
+      <div class="fh-summary-row">
+        <div class="fh-summary-card">
+          <div class="fh-summary-lbl">Total Deposited</div>
+          <div class="fh-summary-val" style="color:#2DD4BF">₹${fmtMoney(totalDeposited)}</div>
+        </div>
+        <div class="fh-summary-card">
+          <div class="fh-summary-lbl">Current Value (of Deposits)</div>
+          <div class="fh-summary-val" style="color:#edf5ff">₹${fmtMoney(lastPortfolioCurrentValue)}</div>
+        </div>
+        <div class="fh-summary-card">
+          <div class="fh-summary-lbl">XIRR (Till Date)</div>
+          <div class="fh-summary-val ${xirr != null && xirr >= 0 ? "buy" : xirr != null ? "sell" : ""}">${xirrTxt}</div>
+        </div>
+      </div>
+      <div class="fh-chart-wrap">${chartHtml}</div>
+      ${renderDepositTable(allAsc)}`;
+          wireDepositTooltips(chartRows);
+        }
+      }
+
+      if (depositChartToggle) {
+        depositChartToggle.addEventListener("click", e => {
+          const btn = e.target.closest(".fh-chart-toggle-btn");
+          if (!btn) return;
+          const type = btn.getAttribute("data-chart");
+          if (type === depositChartType) return;
+          depositChartType = type;
+          depositChartToggle.querySelectorAll(".fh-chart-toggle-btn").forEach(b => b.classList.toggle("active", b === btn));
+          renderDepositModal();
+        });
       }
 
       function openDepositModal() {
