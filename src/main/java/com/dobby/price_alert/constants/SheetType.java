@@ -22,11 +22,13 @@ public enum SheetType {
 
     ENERGY("OilEnergy", "1475720491"),
 
-//    SMALLCAP("Smallcap", "2029475330"),
+//   SMALLCAP("Smallcap", "2029475330"),
 
     MISCELLANEOUS("Misc", "709000981"),
 
-    REALITY("Reality", "1560414317");
+    REALITY("Reality", "1560414317"),
+
+    ETF("Etf", "723969874");
 
 
 
