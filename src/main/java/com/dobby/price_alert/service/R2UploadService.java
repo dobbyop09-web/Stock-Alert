@@ -38,7 +38,7 @@ public class R2UploadService {
 
         s3Client.putObject(request, file);
 
-        System.out.println("Uploaded " + objectKey);
+      log.info("Uploaded file {} to R2 as {}", file, objectKey);
     }
 
 
