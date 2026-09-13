@@ -733,6 +733,40 @@
       color: #cfe2f5;
     }
 
+    .etf-toggle-group {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .etf-toggle-btn {
+      background: transparent;
+      border: none;
+      color: #8fa3bc;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 11px;
+      border-radius: 6px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background .15s ease, color .15s ease;
+    }
+
+    .etf-toggle-btn:hover {
+      color: #dce8f4;
+      background: rgba(255, 255, 255, .05);
+    }
+
+    .etf-toggle-btn.active {
+      background: linear-gradient(120deg, #8B5CF6, #6D28D9);
+      color: #fff;
+      box-shadow: 0 1px 4px rgba(139, 92, 246, .4);
+    }
+
     .edit-banner {
       display: flex;
       align-items: center;
@@ -899,6 +933,232 @@
     .deposit-add-note b {
       color: #c4b5fd;
       font-weight: 700;
+    }
+
+    .deposit-form-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .deposit-form-actions .btn-deposit-add {
+      flex: 1;
+    }
+
+    .btn-deposit-cancel {
+      flex: 1;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, .15);
+      color: #8fa3bc;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 9px 13px;
+      border-radius: 6px;
+      white-space: nowrap;
+      transition: background .15s ease, color .15s ease;
+    }
+
+    .btn-deposit-cancel:hover {
+      background: rgba(255, 255, 255, .06);
+      color: #dce8f4;
+    }
+
+    .deposit-recent {
+      margin-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, .08);
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 220px;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(139, 92, 246, .45) transparent;
+    }
+
+    .deposit-recent::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .deposit-recent::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .deposit-recent::-webkit-scrollbar-thumb {
+      background: rgba(139, 92, 246, .35);
+      border-radius: 10px;
+      transition: background .15s ease;
+    }
+
+    .deposit-recent::-webkit-scrollbar-thumb:hover {
+      background: rgba(139, 92, 246, .6);
+    }
+
+    .deposit-recent:empty {
+      display: none;
+    }
+
+    .deposit-filter-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .deposit-search-wrap {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 6px;
+      padding: 0 8px;
+      transition: border-color .15s ease;
+    }
+
+    .deposit-search-wrap:focus-within {
+      border-color: #8B5CF6;
+    }
+
+    .deposit-search-icon {
+      width: 12px;
+      height: 12px;
+      color: #6a80a0;
+      flex-shrink: 0;
+    }
+
+    .deposit-search-wrap input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #dce8f4;
+      font-size: 11.5px;
+      padding: 7px 0;
+      width: 100%;
+      font-family: inherit;
+      min-width: 0;
+    }
+
+    .deposit-search-wrap input::placeholder {
+      color: #566780;
+    }
+
+    .deposit-search-clear {
+      background: transparent;
+      border: none;
+      color: #6a80a0;
+      font-size: 15px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0 2px;
+      flex-shrink: 0;
+    }
+
+    .deposit-search-clear:hover {
+      color: #dce8f4;
+    }
+
+    .deposit-month-filter {
+      width: 116px;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 6px;
+      color: #dce8f4;
+      font-size: 11px;
+      padding: 0 6px;
+      outline: none;
+      color-scheme: dark;
+      transition: border-color .15s ease;
+    }
+
+    .deposit-month-filter:focus {
+      border-color: #8B5CF6;
+    }
+
+    .deposit-filter-empty {
+      text-align: center;
+      font-size: 11px;
+      color: #6a80a0;
+      padding: 14px 4px;
+    }
+
+    .deposit-recent-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 6px;
+      padding: 7px 8px;
+    }
+
+    .deposit-recent-row.editing {
+      border-color: rgba(139, 92, 246, .5);
+      background: rgba(139, 92, 246, .08);
+    }
+
+    .deposit-recent-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .deposit-recent-amt {
+      font-size: 12px;
+      font-weight: 700;
+      color: #edf5ff;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .deposit-recent-date {
+      font-size: 10px;
+      color: #7f92a6;
+      margin-top: 1px;
+    }
+
+    .deposit-recent-actions {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .deposit-recent-actions button {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 5px;
+      color: #8fa3bc;
+      transition: background .15s ease, color .15s ease, border-color .15s ease;
+      padding: 0;
+    }
+
+    .deposit-recent-actions button svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .deposit-recent-edit:hover {
+      color: #c4b5fd;
+      border-color: #8B5CF6;
+      background: rgba(139, 92, 246, .12);
+    }
+
+    .deposit-recent-del:hover {
+      color: #f87171;
+      border-color: #f87171;
+      background: rgba(248, 113, 113, .12);
+    }
+
+    .deposit-recent-more {
+      text-align: center;
+      font-size: 10px;
+      color: #6a80a0;
+      padding-top: 2px;
     }
 
     /* ── Deposit KPI card (Invested from Bank / XIRR) ── */
@@ -2993,6 +3253,11 @@
               <!-- Table toolbar -->
               <div class="table-toolbar">
                 <span class="table-toolbar-title">Open Positions</span>
+                <div class="etf-toggle-group" id="etfToggleGroup" style="display:none">
+                  <button type="button" class="etf-toggle-btn active" data-mode="all">All</button>
+                  <button type="button" class="etf-toggle-btn" data-mode="exclude">Excl. ETF</button>
+                  <button type="button" class="etf-toggle-btn" data-mode="only">ETF Only</button>
+                </div>
                 <button class="add-holding-btn" id="addRowBtn">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                   Add Holding
@@ -3057,8 +3322,20 @@
                 </div>
                 <label class="deposit-field-lbl" for="depositDateInput">Date</label>
                 <input type="date" class="deposit-date-input" id="depositDateInput">
-                <button class="btn-deposit-add" id="depositAddBtn">+ Add Deposit</button>
+                <div class="deposit-form-actions">
+                  <button class="btn-deposit-add" id="depositAddBtn">+ Add Deposit</button>
+                  <button class="btn-deposit-cancel" id="depositCancelEditBtn" style="display:none" type="button">Cancel</button>
+                </div>
                 <div class="deposit-add-note" id="depositAddNote">Total added: ₹0.00</div>
+                <div class="deposit-filter-row">
+                  <div class="deposit-search-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="deposit-search-icon"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                    <input type="text" id="depositSearchInput" placeholder="Search date, e.g. Sept or 09/2026" autocomplete="off">
+                    <button type="button" id="depositSearchClearBtn" class="deposit-search-clear" style="display:none" aria-label="Clear search">×</button>
+                  </div>
+                  <input type="month" id="depositMonthFilter" class="deposit-month-filter" title="Filter by month">
+                </div>
+                <div class="deposit-recent" id="depositRecentList"></div>
               </div>
               <div class="panel sector-clickable" id="sectorPanel">
                 <div class="panel-title">Allocation by Sector</div>
@@ -3300,6 +3577,8 @@
       let saleIndex = null;
       let isEditing = false;
       let symbolDataMap = {};
+      let etfViewMode = "all"; // "all" | "exclude" | "only"
+      const etfToggleGroup = document.getElementById("etfToggleGroup");
 
       const thSortSymbol = document.getElementById("thSortSymbol");
       const thSortSector = document.getElementById("thSortSector");
@@ -3764,6 +4043,16 @@
       function updateDepositAddNote() {
         if (!depositAddNote) return;
         depositAddNote.innerHTML = `Total added: <b>₹${fmtMoney(depositTotal())}</b>`;
+        renderDepositRecentList();
+      }
+
+      // Ensure every deposit has a stable id so rows can be targeted for edit/delete.
+      function ensureDepositIds() {
+        let changed = false;
+        deposits.forEach(d => {
+          if (!d.id) { d.id = "dep_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); changed = true; }
+        });
+        return changed;
       }
 
       function sortedDepositsAsc() {
@@ -3958,24 +4247,140 @@
         renderDepositModal();
       });
 
+      let editingDepositId = null;
+      const depositCancelEditBtn = document.getElementById("depositCancelEditBtn");
+      const depositRecentList = document.getElementById("depositRecentList");
+      const depositSearchInput = document.getElementById("depositSearchInput");
+      const depositSearchClearBtn = document.getElementById("depositSearchClearBtn");
+      const depositMonthFilter = document.getElementById("depositMonthFilter");
+      let depositSearchQuery = "";
+      let depositFilterMonthVal = "";
+
+      function resetDepositForm() {
+        editingDepositId = null;
+        depositAmountInput.value = "";
+        depositDateInput.value = new Date().toISOString().slice(0, 10);
+        depositAddBtn.textContent = "+ Add Deposit";
+        depositCancelEditBtn.style.display = "none";
+        renderDepositRecentList();
+      }
+
       function addDeposit() {
         const amt = parseFloat(depositAmountInput.value);
         if (!isFinite(amt) || amt <= 0) { depositAmountInput.focus(); return; }
         const dateVal = depositDateInput.value || new Date().toISOString().slice(0, 10);
-        deposits.push({
-          amount: amt,
-          date: dateVal,
-          type: "Bank",
-          remarks: "Added from bank",
-        });
+
+        if (editingDepositId) {
+          const row = deposits.find(d => d.id === editingDepositId);
+          if (row) { row.amount = amt; row.date = dateVal; }
+        } else {
+          deposits.push({
+            id: "dep_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+            amount: amt,
+            date: dateVal,
+            type: "Bank",
+            remarks: "Added from bank",
+          });
+        }
         deposits.sort((a, b) => new Date(a.date) - new Date(b.date));
-        depositAmountInput.value = "";
-        depositDateInput.value = new Date().toISOString().slice(0, 10);
+        resetDepositForm();
         updateDepositAddNote();
         renderTable();
       }
       depositAddBtn.addEventListener("click", addDeposit);
       depositAmountInput.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); addDeposit(); } });
+      depositCancelEditBtn.addEventListener("click", resetDepositForm);
+
+      function editDeposit(id) {
+        const row = deposits.find(d => d.id === id);
+        if (!row) return;
+        editingDepositId = id;
+        depositAmountInput.value = row.amount;
+        depositDateInput.value = row.date;
+        depositAddBtn.textContent = "Update Deposit";
+        depositCancelEditBtn.style.display = "";
+        depositAmountInput.focus();
+        renderDepositRecentList();
+      }
+
+      function deleteDeposit(id) {
+        const row = deposits.find(d => d.id === id);
+        if (!row) return;
+        if (!confirm(`Delete deposit of ₹${fmtMoney(row.amount)} on ${fmtDate(row.date)}? This can't be undone once you save.`)) return;
+        deposits = deposits.filter(d => d.id !== id);
+        if (editingDepositId === id) resetDepositForm();
+        updateDepositAddNote();
+        renderTable();
+      }
+
+      function depositMatchesFilters(d) {
+        if (depositFilterMonthVal) {
+          const dm = (d.date || "").slice(0, 7);
+          if (dm !== depositFilterMonthVal) return false;
+        }
+        if (depositSearchQuery) {
+          const q = depositSearchQuery.toLowerCase();
+          const hay = `${fmtDate(d.date)} ${d.date} ${d.amount} ${d.remarks || ""}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      }
+
+      function renderDepositRecentList() {
+        if (!depositRecentList) return;
+        ensureDepositIds();
+        const filterActive = !!(depositSearchQuery || depositFilterMonthVal);
+        const all = [...deposits].sort((a, b) => new Date(b.date) - new Date(a.date));
+        const rows = all.filter(depositMatchesFilters);
+        if (!rows.length) {
+          depositRecentList.innerHTML = filterActive
+            ? `<div class="deposit-filter-empty">No deposits match this filter.</div>`
+            : "";
+          return;
+        }
+        const MAX_SHOWN = filterActive ? 50 : 6;
+        const shown = rows.slice(0, MAX_SHOWN);
+        depositRecentList.innerHTML = shown.map(d => `
+          <div class="deposit-recent-row${d.id === editingDepositId ? " editing" : ""}" data-id="${escHtml(d.id)}">
+            <div class="deposit-recent-info">
+              <div class="deposit-recent-amt">₹${fmtMoney(d.amount)}</div>
+              <div class="deposit-recent-date">${escHtml(fmtDate(d.date))}</div>
+            </div>
+            <div class="deposit-recent-actions">
+              <button type="button" class="deposit-recent-edit" title="Edit" aria-label="Edit deposit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+              </button>
+              <button type="button" class="deposit-recent-del" title="Delete" aria-label="Delete deposit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>
+              </button>
+            </div>
+          </div>`).join("") + (!filterActive && rows.length > MAX_SHOWN ? `<div class="deposit-recent-more">+${rows.length - MAX_SHOWN} more — see all in Total Investment</div>` : "");
+      }
+
+      depositRecentList.addEventListener("click", e => {
+        const row = e.target.closest(".deposit-recent-row");
+        if (!row) return;
+        const id = row.getAttribute("data-id");
+        if (e.target.closest(".deposit-recent-edit")) editDeposit(id);
+        else if (e.target.closest(".deposit-recent-del")) deleteDeposit(id);
+      });
+
+      depositSearchInput.addEventListener("input", () => {
+        depositSearchQuery = depositSearchInput.value.trim();
+        depositSearchClearBtn.style.display = depositSearchQuery ? "" : "none";
+        renderDepositRecentList();
+      });
+      depositSearchClearBtn.addEventListener("click", () => {
+        depositSearchInput.value = "";
+        depositSearchQuery = "";
+        depositSearchClearBtn.style.display = "none";
+        renderDepositRecentList();
+        depositSearchInput.focus();
+      });
+      depositMonthFilter.addEventListener("change", () => {
+        depositFilterMonthVal = depositMonthFilter.value;
+        renderDepositRecentList();
+      });
 
       // ── Sector Allocation Modal ──────────────────────────────────────
       const sectorPanel = document.getElementById("sectorPanel");
@@ -4476,6 +4881,44 @@
         const icon = getSectorIcon(sector);
         return `<span class="sector-chip" style="color:${icon.color};background:${hexToRgba(icon.color, .12)};border-color:${hexToRgba(icon.color, .28)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icon.svg}</svg>${escHtml(sector)}</span>`;
       }
+
+      // ── ETF view toggle: identifies ETF holdings by their sector tag and
+      // filters both the holdings table and the stat cards accordingly.
+      function holdingIsEtf(h) {
+        if (!h) return false;
+        const sd = symbolDataMap[(h.symbol || "").toUpperCase()];
+        const sector = (sd && sd.sector) || h.sector || "";
+        return /etf/i.test(sector);
+      }
+      function getVisibleHoldingIndices() {
+        return holdings.map((h, i) => i).filter(i => {
+          const isEtf = holdingIsEtf(holdings[i]);
+          if (etfViewMode === "exclude") return !isEtf;
+          if (etfViewMode === "only") return isEtf;
+          return true;
+        });
+      }
+      function updateEtfToggleVisibility() {
+        if (!etfToggleGroup) return;
+        const hasEtf = holdings.some(holdingIsEtf);
+        etfToggleGroup.style.display = hasEtf ? "" : "none";
+        if (!hasEtf && etfViewMode !== "all") {
+          etfViewMode = "all";
+          etfToggleGroup.querySelectorAll(".etf-toggle-btn").forEach(b => b.classList.toggle("active", b.getAttribute("data-mode") === "all"));
+        }
+      }
+      if (etfToggleGroup) {
+        etfToggleGroup.addEventListener("click", e => {
+          const btn = e.target.closest(".etf-toggle-btn");
+          if (!btn) return;
+          const mode = btn.getAttribute("data-mode");
+          if (mode === etfViewMode) return;
+          etfViewMode = mode;
+          etfToggleGroup.querySelectorAll(".etf-toggle-btn").forEach(b => b.classList.toggle("active", b === btn));
+          renderTable();
+        });
+      }
+
       function profitPct(buy, cur) {
         const b = parseFloat(buy), c = parseFloat(cur);
         if (!isFinite(b) || b === 0 || !isFinite(c)) return -Infinity;
@@ -4785,7 +5228,9 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
       // Render table
       function renderTable() {
         tbody.innerHTML = "";
-        rebuildAvatarColorMap(holdings.map(h => h.symbol));
+        updateEtfToggleVisibility();
+        const visibleIndices = getVisibleHoldingIndices();
+        rebuildAvatarColorMap(visibleIndices.map(i => holdings[i].symbol));
         computeKPIs();
         renderInsights();
 
@@ -4794,9 +5239,15 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           emptyMsg.querySelector("h3").textContent = isEditing ? "No holdings yet" : "No holdings yet";
           return;
         }
+        if (visibleIndices.length === 0) {
+          tableView.style.display = "none"; emptyMsg.style.display = "block";
+          emptyMsg.querySelector("h3").textContent = etfViewMode === "only" ? "No ETF holdings yet" : "No holdings match this view";
+          return;
+        }
         tableView.style.display = "block"; emptyMsg.style.display = "none";
 
-        holdings.forEach((h, i) => {
+        visibleIndices.forEach(i => {
+          const h = holdings[i];
           const tr = document.createElement("tr");
           const curPrice = curPriceOf(h);
           const profit = profitInfo(h.buyPrice, curPrice);
@@ -4857,8 +5308,20 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
 
         if (!sessionToken || holdings.length === 0) return;
 
-        let investment = 0, currentValue = 0, todayChange = 0, yesterdayValue = 0, gainers = 0, losers = 0, best = null;
+        // Full-portfolio current value (drives XIRR / the deposit modal) always
+        // reflects every holding, independent of the ETF view toggle below.
+        let fullCurrentValue = 0;
         holdings.forEach(h => {
+          const cur = curPriceOf(h), qty = qtyOf(h);
+          if (isFinite(cur)) fullCurrentValue += cur * qty;
+        });
+        lastPortfolioCurrentValue = fullCurrentValue;
+
+        const visibleHoldings = getVisibleHoldingIndices().map(i => holdings[i]);
+        const etfNoteSuffix = etfViewMode === "exclude" ? " · ETF excluded" : etfViewMode === "only" ? " · ETF only" : "";
+
+        let investment = 0, currentValue = 0, todayChange = 0, yesterdayValue = 0, gainers = 0, losers = 0, best = null;
+        visibleHoldings.forEach(h => {
           const buy = parseFloat(h.buyPrice), cur = curPriceOf(h), qty = qtyOf(h);
           if (isFinite(buy)) investment += buy * qty;
           if (isFinite(cur)) currentValue += cur * qty;
@@ -4874,12 +5337,11 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
         const gainLoss = currentValue - investment;
         const gainLossPct = investment > 0 ? (gainLoss / investment) * 100 : 0;
         const todayChangePct = yesterdayValue > 0 ? (todayChange / yesterdayValue) * 100 : 0;
-        lastPortfolioCurrentValue = currentValue;
 
         const cards = [
           {
             lbl: "Total Investment", val: `₹${fmtMoney(investment)}`, cls: "",
-            note: `Across ${holdings.length} stock${holdings.length === 1 ? "" : "s"}`, noteCls: "",
+            note: `Across ${visibleHoldings.length} stock${visibleHoldings.length === 1 ? "" : "s"}${etfNoteSuffix}`, noteCls: "",
             accent: "#5B9EFF", iconBg: "rgba(91,158,255,.12)",
             icon: '<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>'
           },
@@ -4998,19 +5460,20 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
       }
 
       function renderInsights() {
-        if (!sessionToken || holdings.length === 0) {
+        const visibleHoldings = getVisibleHoldingIndices().map(i => holdings[i]);
+        if (!sessionToken || visibleHoldings.length === 0) {
           profitableCount.textContent = "—"; lossMakingCount.textContent = "—";
           topGainersList.innerHTML = ""; topLosersList.innerHTML = ""; return;
         }
         let profitable = 0, lossMaking = 0;
-        holdings.forEach(h => {
+        visibleHoldings.forEach(h => {
           const buy = parseFloat(h.buyPrice), cur = curPriceOf(h);
           if (!isFinite(buy) || !isFinite(cur)) return;
           if (cur > buy) profitable++; else if (cur < buy) lossMaking++;
         });
         profitableCount.textContent = profitable; lossMakingCount.textContent = lossMaking;
 
-        const withChange = holdings.map(h => {
+        const withChange = visibleHoldings.map(h => {
           const sd = symbolDataMap[(h.symbol || "").toUpperCase()];
           const chg = sd ? parseFloat(sd.changePercent) : NaN;
           return { symbol: h.symbol || "—", chg };
@@ -5028,7 +5491,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           : `<li class="insight-empty">No data available.</li>`;
 
         const sectorTotals = {}; let total = 0;
-        holdings.forEach(h => {
+        visibleHoldings.forEach(h => {
           const cur = curPriceOf(h); if (!isFinite(cur)) return;
           const value = cur * qtyOf(h);
           const sd = symbolDataMap[(h.symbol || "").toUpperCase()];
@@ -5038,7 +5501,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
         const sectorEntries = Object.entries(sectorTotals).sort((a, b) => b[1] - a[1]);
         if (sectorEntries.length && total > 0) {
           sectorDonutWrap.innerHTML = buildDonutSVG(sectorEntries, total)
-            + `<div class="donut-center"><span class="dc-val">${holdings.length}</span><span class="dc-lbl">Stocks</span></div>`;
+            + `<div class="donut-center"><span class="dc-val">${visibleHoldings.length}</span><span class="dc-lbl">Stocks</span></div>`;
           sectorAllocList.innerHTML = sectorEntries.map(([sector, value]) => {
             const pct = (value / total) * 100; const icon = getSectorIcon(sector);
             return `<li class="sector-row"><span class="sector-name"><span class="sector-icon-badge" style="color:${icon.color};background:${hexToRgba(icon.color, .16)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icon.svg}</svg></span>${escHtml(sector)}</span><span class="sector-pct">${pct.toFixed(1)}%</span></li>`;
