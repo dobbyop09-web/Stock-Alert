@@ -5,7 +5,11 @@ import com.dobby.price_alert.constants.SheetType;
 import com.dobby.price_alert.dto.DashboardStock;
 import com.dobby.price_alert.dto.portfolio.PortfolioData;
 import com.dobby.price_alert.dto.portfolio.PortfolioSnapshot;
-import com.dobby.price_alert.service.*;
+import com.dobby.price_alert.service.CsvReaderService;
+import com.dobby.price_alert.service.DashBoardMetaDataService;
+import com.dobby.price_alert.service.DashboardJsonService;
+import com.dobby.price_alert.service.PortfolioSnapshotService;
+import com.dobby.price_alert.service.StockAlertService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -17,18 +21,24 @@ import java.util.Set;
 
 @Component
 public class AlertRunner implements CommandLineRunner {
-    private final CsvReaderService csvReaderService;
-    private static final Logger log =
-            LoggerFactory.getLogger(CsvReaderService.class);
-    private final DashboardJsonService dashboardJsonService;
 
+    private static final Logger log =
+            LoggerFactory.getLogger(AlertRunner.class);
+
+    private final CsvReaderService csvReaderService;
+    private final DashboardJsonService dashboardJsonService;
     private final DashBoardMetaDataService dashBoardMetaDataService;
     private final StockAlertService stockAlertService;
     private final PortfolioSnapshotService portfolioSnapshotService;
 
-    List<DashboardStock> dashboard = new ArrayList<>();
+    private final List<DashboardStock> dashboard = new ArrayList<>();
 
-    public AlertRunner(CsvReaderService csvReaderService, DashboardJsonService dashboardJsonService, DashBoardMetaDataService dashBoardMetaDataService, StockAlertService stockAlertService, PortfolioSnapshotService portfolioSnapshotService
+    public AlertRunner(
+            CsvReaderService csvReaderService,
+            DashboardJsonService dashboardJsonService,
+            DashBoardMetaDataService dashBoardMetaDataService,
+            StockAlertService stockAlertService,
+            PortfolioSnapshotService portfolioSnapshotService
     ) {
         this.csvReaderService = csvReaderService;
         this.dashboardJsonService = dashboardJsonService;
@@ -36,13 +46,22 @@ public class AlertRunner implements CommandLineRunner {
         this.stockAlertService = stockAlertService;
         this.portfolioSnapshotService = portfolioSnapshotService;
     }
+
     @Override
     public void run(String... args) throws Exception {
-        log.info("========== STOCK ALERT JOB STARTED ==========");
-        long startTime = System.currentTimeMillis();
-        Set<String> triggeredToday = stockAlertService.getAllTriggeredToday();
 
-        for(SheetType sheet: SheetType.values()){
+        log.info("========== STOCK ALERT JOB STARTED ==========");
+
+        long startTime = System.currentTimeMillis();
+
+        Set<String> triggeredToday =
+                stockAlertService.getAllTriggeredToday();
+
+        /*
+         * Read all configured sheets.
+         */
+        for (SheetType sheet : SheetType.values()) {
+
             dashboard.addAll(
                     csvReaderService.readCsvAndCheckAlerts(
                             sheet.getSheetConfig(),
@@ -50,16 +69,38 @@ public class AlertRunner implements CommandLineRunner {
                     )
             );
         }
+
         log.info("Preparing to write dashboard JSON...");
         log.info("Total dashboard records: {}", dashboard.size());
 
+        /*
+         * Write dashboard JSON.
+         */
         dashboardJsonService.write(dashboard);
+
+        /*
+         * Update portfolio daily snapshots.
+         */
         updatePortfolioSnapshots();
 
         long endTime = System.currentTimeMillis();
-        dashBoardMetaDataService.buildAndWrite(endTime - startTime);
-        log.info("========== STOCK ALERT JOB COMPLETED ==========");
+
+        dashBoardMetaDataService.buildAndWrite(
+                endTime - startTime
+        );
+
+        log.info(
+                "========== STOCK ALERT JOB COMPLETED =========="
+        );
     }
+
+
+    /*
+     * ============================================================
+     * UPDATE ALL PORTFOLIO SNAPSHOTS
+     * ============================================================
+     */
+
     private void updatePortfolioSnapshots() {
 
         updatePortfolioSnapshot(
@@ -67,12 +108,19 @@ public class AlertRunner implements CommandLineRunner {
                 PortfolioConstants.DOBBY_PORTFOLIO_HISTORY
         );
 
-
         updatePortfolioSnapshot(
                 PortfolioConstants.AMAN_PORTFOLIO,
                 PortfolioConstants.AMAN_PORTFOLIO_HISTORY
         );
     }
+
+
+    /*
+     * ============================================================
+     * UPDATE ONE PORTFOLIO
+     * ============================================================
+     */
+
     private void updatePortfolioSnapshot(
             String portfolioObjectKey,
             String historyObjectKey
@@ -80,43 +128,86 @@ public class AlertRunner implements CommandLineRunner {
 
         try {
 
+            /*
+             * Load current portfolio.
+             */
             PortfolioData portfolioData =
                     portfolioSnapshotService.loadPortfolio(
                             portfolioObjectKey
                     );
 
 
-            PortfolioSnapshot snapshot =
+            /*
+             * ====================================================
+             * STOCK SNAPSHOT
+             * ====================================================
+             */
+
+            PortfolioSnapshot stockSnapshot =
                     portfolioSnapshotService.calculateSnapshot(
                             portfolioData,
-                            dashboard
+                            dashboard,
+                            "STOCK"
                     );
 
 
             portfolioSnapshotService.saveDailySnapshot(
                     historyObjectKey,
-                    snapshot
+                    stockSnapshot
             );
 
 
             log.info(
-                    "Portfolio snapshot updated successfully: {}",
+                    "STOCK portfolio snapshot updated: {}",
                     portfolioObjectKey
             );
 
+            log.info(
+                    "STOCK | Invested: {}, Current: {}, P&L: {}%",
+                    stockSnapshot.getInvestedValue(),
+                    stockSnapshot.getCurrentValue(),
+                    stockSnapshot.getProfitLossPercent()
+            );
+
+
+            /*
+             * ====================================================
+             * ETF SNAPSHOT
+             * ====================================================
+             */
+
+            PortfolioSnapshot etfSnapshot =
+                    portfolioSnapshotService.calculateSnapshot(
+                            portfolioData,
+                            dashboard,
+                            "ETF"
+                    );
+
+
+            portfolioSnapshotService.saveDailySnapshot(
+                    historyObjectKey,
+                    etfSnapshot
+            );
+
 
             log.info(
-                    "Invested Value: {}, Current Value: {}, P&L: {}%",
-                    snapshot.getInvestedValue(),
-                    snapshot.getCurrentValue(),
-                    snapshot.getProfitLossPercent()
+                    "ETF portfolio snapshot updated: {}",
+                    portfolioObjectKey
             );
+
+            log.info(
+                    "ETF | Invested: {}, Current: {}, P&L: {}%",
+                    etfSnapshot.getInvestedValue(),
+                    etfSnapshot.getCurrentValue(),
+                    etfSnapshot.getProfitLossPercent()
+            );
+
 
         } catch (Exception e) {
 
             /*
              * Don't fail the entire stock dashboard job
-             * if one portfolio snapshot fails.
+             * if portfolio snapshot processing fails.
              */
             log.error(
                     "Failed to update portfolio snapshot: {}",
