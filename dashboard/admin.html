@@ -2484,6 +2484,235 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
     }
 
+    /* ── Equity Curve mini widget (sidebar) ── */
+    .equity-panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .equity-title-inline {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .equity-mini-tabs {
+      display: flex;
+      gap: 2px;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 6px;
+      padding: 2px;
+    }
+
+    .equity-mini-tabs button {
+      background: transparent;
+      border: none;
+      color: #6a80a0;
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 4px;
+      transition: background .15s ease, color .15s ease;
+    }
+
+    .equity-mini-tabs button:hover {
+      color: #cfe2f5;
+    }
+
+    .equity-mini-tabs button.active {
+      background: rgba(139, 92, 246, .2);
+      color: #c4b5fd;
+    }
+
+    .equity-mini-legend {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 10px;
+      color: #7f92a6;
+      margin-top: 10px;
+    }
+
+    .equity-mini-legend span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .equity-mini-legend i {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    .equity-mini-type-tabs {
+      display: flex;
+      gap: 2px;
+      margin-left: auto;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 6px;
+      padding: 2px;
+    }
+
+    .equity-mini-type-tabs button {
+      background: transparent;
+      border: none;
+      color: #6a80a0;
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 4px;
+      transition: background .15s ease, color .15s ease;
+    }
+
+    .equity-mini-type-tabs button:hover {
+      color: #cfe2f5;
+    }
+
+    .equity-mini-type-tabs button.active {
+      background: rgba(45, 212, 191, .2);
+      color: #7ee8db;
+    }
+
+    .equity-mini-chart-wrap {
+      margin-top: 8px;
+    }
+
+    .equity-mini-chart-wrap svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .equity-mini-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .equity-mini-stat {
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .equity-mini-stat .lbl {
+      font-size: 9px;
+      color: #4a6075;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .equity-mini-stat .val {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #edf5ff;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .equity-mini-stat .sub {
+      font-size: 9.5px;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .equity-mini-stat .sub.pos { color: #2DD4BF; }
+    .equity-mini-stat .sub.neg { color: #FF5C6C; }
+
+    /* ── Equity Curve modal layout ── */
+    .equity-modal-layout {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .equity-chart-col {
+      flex: 1 1 420px;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .equity-stats-col {
+      flex: 0 0 230px;
+      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .equity-stat-card {
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 9px;
+      padding: 10px 12px;
+    }
+
+    .equity-stat-sub {
+      font-size: 10px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .equity-stat-sub.pos { color: #2DD4BF; }
+    .equity-stat-sub.neg { color: #FF5C6C; }
+    .equity-stat-sub.muted { color: #4a6075; }
+
+    .equity-perf-box {
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 9px;
+      padding: 10px 12px;
+    }
+
+    .equity-perf-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 12px;
+      margin-top: 8px;
+    }
+
+    .equity-perf-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .equity-perf-item .lbl {
+      font-size: 10px;
+      color: #6a80a0;
+    }
+
+    .equity-perf-item .val {
+      font-size: 12.5px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .equity-perf-item .val.pos { color: #2DD4BF; }
+    .equity-perf-item .val.neg { color: #FF5C6C; }
+
+    .fh-footnote {
+      font-size: 10.5px;
+      color: #4a6075;
+      text-align: center;
+      padding-top: 2px;
+    }
+
+
  .sector-modal {
     width: 100%;
     max-width: 1060px;
@@ -3299,8 +3528,8 @@
               <div class="table-toolbar">
                 <span class="table-toolbar-title">Open Positions</span>
                 <div class="etf-toggle-group" id="etfToggleGroup" style="display:none">
-                  <button type="button" class="etf-toggle-btn active" data-mode="all">All</button>
-                  <button type="button" class="etf-toggle-btn" data-mode="exclude">Stocks</button>
+                  <button type="button" class="etf-toggle-btn" data-mode="all">All</button>
+                  <button type="button" class="etf-toggle-btn active" data-mode="exclude">Stocks</button>
                   <button type="button" class="etf-toggle-btn" data-mode="only">ETF</button>
                 </div>
                 <button class="add-holding-btn" id="addRowBtn">
@@ -3388,6 +3617,32 @@
                   <div class="donut-wrap" id="sectorDonutWrap"></div>
                   <ul class="sector-legend" id="sectorAllocList"></ul>
                 </div>
+              </div>
+              <div class="panel sector-clickable" id="equityPanel">
+                <div class="panel-title equity-panel-title">
+                  <span class="equity-title-inline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;color:#8B5CF6"><polyline points="3 17 9 11 13 15 21 6"></polyline><polyline points="15 6 21 6 21 12"></polyline></svg>
+                    Equity Curve
+                  </span>
+                  <div class="equity-mini-tabs" id="equityMiniTabs">
+                    <button type="button" data-range="1M">1M</button>
+                    <button type="button" data-range="3M">3M</button>
+                    <button type="button" data-range="6M">6M</button>
+                    <button type="button" class="active" data-range="1Y">1Y</button>
+                    <button type="button" data-range="ALL">ALL</button>
+                  </div>
+                </div>
+                <div class="equity-mini-legend">
+                  <span><i style="background:#8B5CF6"></i>Current Value</span>
+                  <span><i style="background:#2DD4BF"></i>Invested Value</span>
+                  <div class="equity-mini-type-tabs" id="equityMiniTypeTabs" style="display:none">
+                    <button type="button" class="active" data-type="all">All</button>
+                    <button type="button" data-type="stock">Stocks</button>
+                    <button type="button" data-type="etf">ETF</button>
+                  </div>
+                </div>
+                <div class="equity-mini-chart-wrap" id="equityMiniChartWrap"></div>
+                <div class="equity-mini-stats" id="equityMiniStats"></div>
               </div>
               <div class="panel" id="healthPanel">
                 <div class="panel-title">Portfolio Health</div>
@@ -3602,6 +3857,53 @@
     </div>
   </div>
 
+  <!-- Equity Curve Modal -->
+  <div class="fh-overlay" id="equityOverlay">
+    <div class="fh-modal" role="dialog" aria-modal="true" aria-labelledby="equityModalTitle" style="max-width:920px">
+      <div class="fh-head">
+        <div class="fh-head-left">
+          <div class="fh-head-icon"
+            style="background:linear-gradient(135deg, rgba(139,92,246,.16), rgba(45,212,191,.10)); border-color:rgba(139,92,246,.3); color:#8B5CF6">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"></polyline><polyline points="15 6 21 6 21 12"></polyline></svg>
+          </div>
+          <div>
+            <div class="fh-head-title" id="equityModalTitle">Equity Curve</div>
+            <div class="fh-head-sub" id="equityModalSub">Portfolio value vs. invested capital</div>
+          </div>
+        </div>
+        <button class="fh-close" id="equityCloseBtn" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="fh-toolbar">
+        <div class="fh-filters" id="equityRangeFilters">
+          <button class="fh-filter-btn" data-range="1M">1M</button>
+          <button class="fh-filter-btn" data-range="3M">3M</button>
+          <button class="fh-filter-btn" data-range="6M">6M</button>
+          <button class="fh-filter-btn active" data-range="1Y">1Y</button>
+          <button class="fh-filter-btn" data-range="ALL">ALL</button>
+        </div>
+        <div class="fh-chart-toggle" id="equityTypeToggle" style="display:none">
+          <button type="button" class="fh-chart-toggle-btn active" data-type="all">All</button>
+          <button type="button" class="fh-chart-toggle-btn" data-type="stock">Stocks</button>
+          <button type="button" class="fh-chart-toggle-btn" data-type="etf">ETF</button>
+        </div>
+        <div class="fh-legend">
+          <div class="fh-legend-item"><span class="fh-legend-dot" style="background:#8B5CF6"></span>Current Value</div>
+          <div class="fh-legend-item"><span class="fh-legend-dot" style="background:#2DD4BF"></span>Invested Value</div>
+        </div>
+      </div>
+      <div class="fh-body" id="equityBody">
+        <div class="fh-loading">
+          <div class="fh-spinner"></div>Loading equity curve…
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Sector Allocation Modal -->
   <div class="fh-overlay" id="sectorOverlay"><div class="fh-modal sector-modal" role="dialog" aria-modal="true" aria-labelledby="sectorModalTitle">
   <div class="fh-head"><div class="fh-head-left"><div class="fh-head-icon sector-modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9"/></svg></div><div><div class="fh-head-title" id="sectorModalTitle">Sector Allocation</div><div class="fh-head-sub">Portfolio performance grouped by sector</div></div></div><button type="button" class="fh-close" id="sectorCloseBtn" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
@@ -3633,7 +3935,7 @@
       let saleIndex = null;
       let isEditing = false;
       let symbolDataMap = {};
-      let etfViewMode = "all"; // "all" | "exclude" | "only"
+      let etfViewMode = "exclude"; // "all" | "exclude" | "only"
       const etfToggleGroup = document.getElementById("etfToggleGroup");
 
       const thSortSymbol = document.getElementById("thSortSymbol");
@@ -4442,6 +4744,367 @@
         renderDepositModal();
       });
 
+      // ── Equity Curve (portfolio value vs. invested capital, from /portfolio-history) ──
+      let portfolioHistoryByType = { all: [], stock: [], etf: [] };
+      let equityRange = "1Y";
+      let equityType = "all"; // "all" | "stock" | "etf"
+      const equityPanel = document.getElementById("equityPanel");
+      const equityMiniTabs = document.getElementById("equityMiniTabs");
+      const equityMiniChartWrap = document.getElementById("equityMiniChartWrap");
+      const equityMiniStats = document.getElementById("equityMiniStats");
+      const equityOverlay = document.getElementById("equityOverlay");
+      const equityCloseBtn = document.getElementById("equityCloseBtn");
+      const equityBody = document.getElementById("equityBody");
+      const equityModalSub = document.getElementById("equityModalSub");
+      const equityRangeFilters = document.getElementById("equityRangeFilters");
+      const equityMiniTypeTabs = document.getElementById("equityMiniTypeTabs");
+      const equityTypeToggle = document.getElementById("equityTypeToggle");
+
+      function activePortfolioHistory() {
+        return portfolioHistoryByType[equityType] || [];
+      }
+
+      // Groups raw snapshots (which may carry a "type": "STOCK" | "ETF", or
+      // be legacy rows with no type) into three parallel ascending series.
+      function buildPortfolioHistoryByType(snaps) {
+        const byDate = new Map();
+        snaps.forEach(s => {
+          if (!s || !s.date) return;
+          const type = (s.type || "").toUpperCase();
+          if (!byDate.has(s.date)) byDate.set(s.date, {});
+          const bucket = byDate.get(s.date);
+          if (type === "ETF") bucket.ETF = s;
+          else if (type === "STOCK") bucket.STOCK = s;
+          else bucket.COMBINED = s; // legacy snapshot with no type field
+        });
+        const stock = [], etf = [], all = [];
+        [...byDate.keys()].sort().forEach(dateStr => {
+          const b = byDate.get(dateStr);
+          const dt = new Date(dateStr);
+          if (isNaN(dt)) return;
+          if (b.STOCK) stock.push({ date: dateStr, _date: dt, investedValue: b.STOCK.investedValue, currentValue: b.STOCK.currentValue, holdingCount: b.STOCK.holdingCount });
+          if (b.ETF) etf.push({ date: dateStr, _date: dt, investedValue: b.ETF.investedValue, currentValue: b.ETF.currentValue, holdingCount: b.ETF.holdingCount });
+          if (b.COMBINED) {
+            all.push({ date: dateStr, _date: dt, investedValue: b.COMBINED.investedValue, currentValue: b.COMBINED.currentValue, holdingCount: b.COMBINED.holdingCount });
+          } else if (b.STOCK || b.ETF) {
+            const investedValue = (b.STOCK ? b.STOCK.investedValue : 0) + (b.ETF ? b.ETF.investedValue : 0);
+            const currentValue = (b.STOCK ? b.STOCK.currentValue : 0) + (b.ETF ? b.ETF.currentValue : 0);
+            const holdingCount = (b.STOCK ? b.STOCK.holdingCount : 0) + (b.ETF ? b.ETF.holdingCount : 0);
+            all.push({ date: dateStr, _date: dt, investedValue, currentValue, holdingCount });
+          }
+        });
+        const clean = arr => arr.filter(r => isFinite(r.currentValue) && isFinite(r.investedValue));
+        return { all: clean(all), stock: clean(stock), etf: clean(etf) };
+      }
+
+      async function loadPortfolioHistory() {
+        if (!sessionToken) { portfolioHistoryByType = { all: [], stock: [], etf: [] }; renderEquityWidget(); return; }
+        try {
+          const res = await fetch(`${API_BASE}/portfolio-history`, { headers: { Authorization: `Bearer ${sessionToken}` } });
+          if (res.status === 401) { handleExpired(); return; }
+          if (!res.ok) { portfolioHistoryByType = { all: [], stock: [], etf: [] }; }
+          else {
+            const data = await res.json();
+            const snaps = Array.isArray(data.snapshots) ? data.snapshots : [];
+            portfolioHistoryByType = buildPortfolioHistoryByType(snaps);
+          }
+        } catch (e) { portfolioHistoryByType = { all: [], stock: [], etf: [] }; }
+        updateEquityTypeToggleVisibility();
+        renderEquityWidget();
+        if (equityOverlay && equityOverlay.classList.contains("visible")) renderEquityModal();
+      }
+
+      // Hide the Stocks/ETF split if the backend hasn't sent per-type snapshots yet.
+      function updateEquityTypeToggleVisibility() {
+        const hasSplit = portfolioHistoryByType.stock.length > 0 || portfolioHistoryByType.etf.length > 0;
+        if (equityMiniTypeTabs) equityMiniTypeTabs.style.display = hasSplit ? "" : "none";
+        if (equityTypeToggle) equityTypeToggle.style.display = hasSplit ? "" : "none";
+        if (!hasSplit && equityType !== "all") {
+          equityType = "all";
+          document.querySelectorAll("#equityMiniTypeTabs button, #equityTypeToggle .fh-chart-toggle-btn").forEach(b => {
+            b.classList.toggle("active", b.getAttribute("data-type") === "all");
+          });
+        }
+      }
+
+      function filterEquityByRange(rows, range) {
+        if (!rows.length) return [];
+        if (range === "ALL") return rows;
+        const daysMap = { "1M": 30, "3M": 91, "6M": 182, "1Y": 365 };
+        const days = daysMap[range];
+        if (!days) return rows;
+        const lastTime = rows[rows.length - 1]._date.getTime();
+        const cutoff = lastTime - days * 86400000;
+        const filtered = rows.filter(r => r._date.getTime() >= cutoff);
+        return filtered.length ? filtered : rows.slice(-1);
+      }
+
+      function findEquityValueAtOrBefore(rows, targetTime) {
+        let candidate = null;
+        for (const r of rows) {
+          if (r._date.getTime() <= targetTime) candidate = r; else break;
+        }
+        return candidate || (rows.length ? rows[0] : null);
+      }
+
+      function computeEquityStats(filteredRows) {
+        if (!filteredRows.length) return null;
+        const first = filteredRows[0], last = filteredRows[filteredRows.length - 1];
+        let peak = filteredRows[0];
+        filteredRows.forEach(r => { if (r.currentValue > peak.currentValue) peak = r; });
+        const curPct = first.currentValue > 0 ? ((last.currentValue - first.currentValue) / first.currentValue) * 100 : null;
+        const investedPct = first.investedValue > 0 ? ((last.investedValue - first.investedValue) / first.investedValue) * 100 : null;
+        const totalReturn = last.currentValue - last.investedValue;
+        const totalReturnPct = last.investedValue > 0 ? (totalReturn / last.investedValue) * 100 : null;
+        return { first, last, peak, curPct, investedPct, totalReturn, totalReturnPct };
+      }
+
+      function computeEquityPeriodPerformance(allRows) {
+        if (!allRows.length) return [];
+        const last = allRows[allRows.length - 1];
+        const periods = [{ key: "1M", days: 30 }, { key: "3M", days: 91 }, { key: "6M", days: 182 }, { key: "1Y", days: 365 }];
+        const out = periods.map(p => {
+          const base = findEquityValueAtOrBefore(allRows, last._date.getTime() - p.days * 86400000);
+          const pct = base && base.currentValue > 0 ? ((last.currentValue - base.currentValue) / base.currentValue) * 100 : null;
+          return { label: p.key, pct };
+        });
+        const inception = allRows[0];
+        const inceptionPct = inception && inception.currentValue > 0 ? ((last.currentValue - inception.currentValue) / inception.currentValue) * 100 : null;
+        out.push({ label: "Since Inception", pct: inceptionPct });
+        return out;
+      }
+
+      function pctBadge(pct) {
+        if (pct == null || !isFinite(pct)) return `<span class="equity-stat-sub muted">—</span>`;
+        return `<span class="equity-stat-sub ${pct >= 0 ? "pos" : "neg"}">${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%</span>`;
+      }
+
+      function renderEquityLineChart(rows, opts) {
+        opts = opts || {};
+        const W = opts.w || 680, H = opts.h || 200;
+        const padL = opts.padL != null ? opts.padL : 48, padR = 12, padT = 12, padB = 22;
+        const plotW = W - padL - padR, plotH = H - padT - padB;
+        const n = rows.length;
+        if (!n) return `<div class="fh-empty">No equity history yet.</div>`;
+
+        const allVals = [];
+        rows.forEach(r => { allVals.push(r.currentValue, r.investedValue); });
+        const rawMin = Math.min(...allVals), rawMax = Math.max(...allVals);
+        const spread = Math.max(rawMax - rawMin, rawMax * 0.05, 1);
+        const pad = spread * 0.2;
+        const minVal = Math.max(0, rawMin - pad);
+        const maxVal = rawMax + pad;
+        const span = Math.max(maxVal - minVal, 1);
+
+        const minDate = rows[0]._date.getTime();
+        const maxDate = rows[n - 1]._date.getTime();
+        const dateSpan = Math.max(maxDate - minDate, 86400000);
+        const xOf = i => n === 1 ? padL + plotW / 2 : padL + ((rows[i]._date.getTime() - minDate) / dateSpan) * plotW;
+        const yOf = v => padT + plotH - ((v - minVal) / span) * plotH;
+
+        let gridLines = "", yLabels = "";
+        const steps = opts.compact ? 3 : 4;
+        for (let s = 0; s <= steps; s++) {
+          const v = minVal + (span * s) / steps;
+          const y = yOf(v);
+          gridLines += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" class="fh-axis-line"${s === 0 ? "" : ' stroke-dasharray="3 3"'}></line>`;
+          if (!opts.hideYLabels) yLabels += `<text x="${(padL - 8).toFixed(1)}" y="${(y + 3).toFixed(1)}" class="fh-tick-label" text-anchor="end">${fmtCompactINR(v)}</text>`;
+        }
+
+        const curPts = rows.map((r, i) => ({ x: xOf(i), y: yOf(r.currentValue) }));
+        const invPts = rows.map((r, i) => ({ x: xOf(i), y: yOf(r.investedValue) }));
+        const curPath = curPts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
+        const invPath = invPts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
+        const curArea = `${curPath} L${curPts[n - 1].x.toFixed(1)} ${(padT + plotH).toFixed(1)} L${curPts[0].x.toFixed(1)} ${(padT + plotH).toFixed(1)} Z`;
+
+        const maxLabels = opts.compact ? 3 : 7;
+        const step = Math.max(1, Math.ceil(n / maxLabels));
+        let xLabels = "";
+        if (!opts.hideXLabels) {
+          rows.forEach((r, i) => {
+            if (i % step === 0 || i === n - 1) {
+              xLabels += `<text x="${xOf(i).toFixed(1)}" y="${H - 6}" class="fh-tick-label" text-anchor="middle">${escHtml(r._date.toLocaleDateString("en-GB", { month: "short", year: "2-digit" }))}</text>`;
+            }
+          });
+        }
+
+        const hitW = Math.max(10, plotW / n);
+        const hitAreas = rows.map((r, i) => `<rect class="equity-hit" data-idx="${i}" x="${(xOf(i) - hitW / 2).toFixed(1)}" y="${padT}" width="${hitW.toFixed(1)}" height="${plotH.toFixed(1)}" fill="transparent"></rect>`).join("");
+        const gradId = opts.gradId || "equityAreaGrad";
+
+        return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.28"></stop>
+          <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"></stop>
+        </linearGradient>
+      </defs>
+      ${gridLines}
+      <path d="${curArea}" fill="url(#${gradId})" stroke="none"></path>
+      <path d="${invPath}" fill="none" stroke="#2DD4BF" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"></path>
+      <path d="${curPath}" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>
+      ${hitAreas}
+      ${yLabels}
+      ${xLabels}
+    </svg>`;
+      }
+
+      function wireEquityTooltips(rows, chartWrapSelector, tooltipId, tooltipRoot) {
+        const svg = document.querySelector(`${chartWrapSelector} svg`);
+        if (!svg) return;
+        let tip = document.getElementById(tooltipId);
+        if (!tip) {
+          tip = document.createElement("div");
+          tip.className = "fh-tooltip";
+          tip.id = tooltipId;
+          (tooltipRoot || document.body).appendChild(tip);
+        }
+        svg.querySelectorAll(".equity-hit").forEach(hit => {
+          const idx = parseInt(hit.getAttribute("data-idx"), 10);
+          const r = rows[idx];
+          if (!r) return;
+          hit.addEventListener("mousemove", e => {
+            const pl = r.currentValue - r.investedValue;
+            const plPct = r.investedValue > 0 ? (pl / r.investedValue) * 100 : 0;
+            tip.innerHTML = `
+          <div class="fh-tooltip-date">${escHtml(fmtDate(r.date))}</div>
+          <div class="fh-tooltip-row"><span class="fh-tooltip-dot" style="background:#8B5CF6"></span>Current <b style="margin-left:auto">₹${fmtMoney(r.currentValue)}</b></div>
+          <div class="fh-tooltip-row"><span class="fh-tooltip-dot" style="background:#2DD4BF"></span>Invested <b style="margin-left:auto">₹${fmtMoney(r.investedValue)}</b></div>
+          <div class="fh-tooltip-row" style="padding-left:12px;color:${pl >= 0 ? "#2DD4BF" : "#FF5C6C"}">${pl >= 0 ? "+" : "-"}₹${fmtMoney(Math.abs(pl))} <span style="margin-left:auto">${pl >= 0 ? "+" : ""}${plPct.toFixed(2)}%</span></div>`;
+            tip.style.left = (e.clientX + 14) + "px";
+            tip.style.top = (e.clientY + 14) + "px";
+            tip.classList.add("visible");
+          });
+          hit.addEventListener("mouseleave", () => tip.classList.remove("visible"));
+        });
+      }
+
+      function syncEquityRangeButtons() {
+        document.querySelectorAll("#equityMiniTabs button, #equityRangeFilters .fh-filter-btn").forEach(b => {
+          b.classList.toggle("active", b.getAttribute("data-range") === equityRange);
+        });
+      }
+
+      function renderEquityWidget() {
+        if (!equityMiniChartWrap) return;
+        const hist = activePortfolioHistory();
+        if (!hist.length) {
+          equityMiniChartWrap.innerHTML = `<div class="fh-empty" style="padding:20px 8px">No equity history yet.</div>`;
+          equityMiniStats.innerHTML = "";
+          return;
+        }
+        const filtered = filterEquityByRange(hist, equityRange);
+        equityMiniChartWrap.innerHTML = renderEquityLineChart(filtered, { w: 300, h: 130, padL: 40, compact: true, gradId: "equityAreaGradMini" });
+        wireEquityTooltips(filtered, "#equityMiniChartWrap", "equityMiniTooltip", equityPanel);
+
+        const stats = computeEquityStats(filtered);
+        if (!stats) { equityMiniStats.innerHTML = ""; return; }
+        equityMiniStats.innerHTML = `
+      <div class="equity-mini-stat"><div class="lbl">Current Value</div><div class="val">₹${fmtMoney(stats.last.currentValue)}</div>${pctBadge(stats.curPct)}</div>
+      <div class="equity-mini-stat"><div class="lbl">Invested Value</div><div class="val">₹${fmtMoney(stats.last.investedValue)}</div>${pctBadge(stats.investedPct)}</div>
+      <div class="equity-mini-stat"><div class="lbl">Peak Value</div><div class="val">₹${fmtMoney(stats.peak.currentValue)}</div><div class="sub" style="color:#6a80a0">${escHtml(fmtDate(stats.peak.date))}</div></div>
+      <div class="equity-mini-stat"><div class="lbl">Total Return</div><div class="val" style="color:${stats.totalReturn >= 0 ? "#2DD4BF" : "#FF5C6C"}">${stats.totalReturn >= 0 ? "+" : "-"}₹${fmtMoney(Math.abs(stats.totalReturn))}</div>${pctBadge(stats.totalReturnPct)}</div>`;
+        syncEquityRangeButtons();
+        syncEquityTypeButtons();
+      }
+
+      function renderEquityModal() {
+        if (!equityBody) return;
+        const hist = activePortfolioHistory();
+        if (!hist.length) {
+          equityModalSub.textContent = "Portfolio value vs. invested capital";
+          equityBody.innerHTML = `<div class="fh-empty">No equity history yet. Check back after your next portfolio update.</div>`;
+          return;
+        }
+        const filtered = filterEquityByRange(hist, equityRange);
+        const stats = computeEquityStats(filtered);
+        const perf = computeEquityPeriodPerformance(hist);
+        equityModalSub.textContent = `${fmtDate(filtered[0].date)} → ${fmtDate(filtered[filtered.length - 1].date)}`;
+
+        equityBody.innerHTML = `
+      <div class="equity-modal-layout">
+        <div class="equity-chart-col">
+          <div class="fh-chart-wrap">${renderEquityLineChart(filtered, { w: 680, h: 230, gradId: "equityAreaGradModal" })}</div>
+          <div class="fh-footnote">Equity curve shows the historical value of your portfolio based on market data.</div>
+        </div>
+        <div class="equity-stats-col">
+          <div class="equity-stat-card"><div class="fh-summary-lbl">Current Value</div><div class="fh-summary-val" style="color:#8B5CF6">₹${fmtMoney(stats.last.currentValue)}</div>${pctBadge(stats.curPct)}</div>
+          <div class="equity-stat-card"><div class="fh-summary-lbl">Invested Value</div><div class="fh-summary-val" style="color:#2DD4BF">₹${fmtMoney(stats.last.investedValue)}</div>${pctBadge(stats.investedPct)}</div>
+          <div class="equity-stat-card"><div class="fh-summary-lbl">Peak Value</div><div class="fh-summary-val">₹${fmtMoney(stats.peak.currentValue)}</div><div class="equity-stat-sub muted">${escHtml(fmtDate(stats.peak.date))}</div></div>
+          <div class="equity-stat-card"><div class="fh-summary-lbl">Total Return</div><div class="fh-summary-val ${stats.totalReturn >= 0 ? "buy" : "sell"}">${stats.totalReturn >= 0 ? "+" : "-"}₹${fmtMoney(Math.abs(stats.totalReturn))}</div>${pctBadge(stats.totalReturnPct)}</div>
+          <div class="equity-perf-box">
+            <div class="fh-summary-lbl">Period Performance</div>
+            <div class="equity-perf-grid">
+              ${perf.map(p => `<div class="equity-perf-item"><span class="lbl">${escHtml(p.label)}</span><span class="val ${p.pct == null ? "" : p.pct >= 0 ? "pos" : "neg"}">${p.pct == null ? "—" : (p.pct >= 0 ? "+" : "") + p.pct.toFixed(2) + "%"}</span></div>`).join("")}
+            </div>
+          </div>
+        </div>
+      </div>`;
+        wireEquityTooltips(filtered, "#equityBody .fh-chart-wrap", "equityModalTooltip", document.querySelector("#equityOverlay .fh-modal"));
+        syncEquityRangeButtons();
+        syncEquityTypeButtons();
+      }
+
+      function syncEquityTypeButtons() {
+        document.querySelectorAll("#equityMiniTypeTabs button, #equityTypeToggle .fh-chart-toggle-btn").forEach(b => {
+          b.classList.toggle("active", b.getAttribute("data-type") === equityType);
+        });
+      }
+
+      function openEquityModal() {
+        equityOverlay.classList.add("visible");
+        document.body.style.overflow = "hidden";
+        renderEquityModal();
+      }
+      function closeEquityModal() {
+        equityOverlay.classList.remove("visible");
+        document.body.style.overflow = "";
+      }
+
+      if (equityPanel) {
+        equityPanel.addEventListener("click", e => {
+          if (e.target.closest(".equity-mini-tabs") || e.target.closest(".equity-mini-type-tabs")) return;
+          openEquityModal();
+        });
+      }
+      if (equityMiniTabs) {
+        equityMiniTabs.addEventListener("click", e => {
+          e.stopPropagation();
+          const btn = e.target.closest("button[data-range]");
+          if (!btn) return;
+          equityRange = btn.getAttribute("data-range");
+          renderEquityWidget();
+        });
+      }
+      if (equityMiniTypeTabs) {
+        equityMiniTypeTabs.addEventListener("click", e => {
+          e.stopPropagation();
+          const btn = e.target.closest("button[data-type]");
+          if (!btn) return;
+          equityType = btn.getAttribute("data-type");
+          renderEquityWidget();
+        });
+      }
+      if (equityTypeToggle) {
+        equityTypeToggle.addEventListener("click", e => {
+          const btn = e.target.closest("button[data-type]");
+          if (!btn) return;
+          equityType = btn.getAttribute("data-type");
+          renderEquityModal();
+        });
+      }
+      if (equityCloseBtn) equityCloseBtn.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); closeEquityModal(); });
+      if (equityOverlay) equityOverlay.addEventListener("click", e => { if (e.target === equityOverlay) closeEquityModal(); });
+      document.addEventListener("keydown", e => { if (e.key === "Escape" && equityOverlay && equityOverlay.classList.contains("visible")) closeEquityModal(); });
+      if (equityRangeFilters) {
+        equityRangeFilters.addEventListener("click", e => {
+          const btn = e.target.closest(".fh-filter-btn");
+          if (!btn) return;
+          equityRange = btn.getAttribute("data-range");
+          renderEquityModal();
+        });
+      }
+
       let editingDepositId = null;
       const depositCancelEditBtn = document.getElementById("depositCancelEditBtn");
       const depositRecentList = document.getElementById("depositRecentList");
@@ -4708,6 +5371,7 @@
 
       function handleExpired() {
         clearToken(); sessionToken = null; isEditing = false;
+        portfolioHistoryByType = { all: [], stock: [], etf: [] }; renderEquityWidget();
         exitEditModeCleanup();
         updateAuthUI(false);
         openLoginModal();
@@ -4777,7 +5441,7 @@
           const data = await res.json();
           sessionToken = data.token; saveToken(data.token);
           updateAuthUI(true, data.username || u);
-          closeLoginModal(); await loadPortfolio();
+          closeLoginModal(); await loadPortfolio(); loadPortfolioHistory();
         } catch (e) { loginError.textContent = "Could not reach server. Try again."; }
         finally { btn.disabled = false; btn.textContent = "Sign in"; }
       }
@@ -4851,7 +5515,8 @@
       function logout() {
         if (isEditing && isDirty() && !confirm("Discard unsaved changes and sign out?")) return;
         clearToken(); sessionToken = null; isEditing = false;
-        holdings = []; closedTransactions = []; deposits = [];
+        holdings = []; closedTransactions = []; deposits = []; portfolioHistoryByType = { all: [], stock: [], etf: [] };
+        renderEquityWidget();
         exitEditModeCleanup();
         updateAuthUI(false);
       }
@@ -5513,7 +6178,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
         lastPortfolioCurrentValue = fullCurrentValue;
 
         const visibleHoldings = getVisibleHoldingIndices().map(i => holdings[i]);
-        const etfNoteSuffix = etfViewMode === "exclude" ? " · ETF excluded" : etfViewMode === "only" ? " · ETF only" : "";
+        const etfNoteSuffix = etfViewMode === "exclude" ? " · Stocks only" : etfViewMode === "only" ? " · ETF only" : "";
 
         let investment = 0, currentValue = 0, todayChange = 0, yesterdayValue = 0, gainers = 0, losers = 0, best = null;
         visibleHoldings.forEach(h => {
@@ -5802,7 +6467,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
       cancelBtn.addEventListener("click", cancelEdit);
       saveBtn.addEventListener("click", savePortfolio);
       refreshBtn.addEventListener("click", () => {
-        loadPortfolio(); loadFiiData(); loadIndexData();
+        loadPortfolio(); loadFiiData(); loadIndexData(); loadPortfolioHistory();
         if (fhOverlay.classList.contains("visible")) loadFhHistory();
         if (idxOverlay.classList.contains("visible")) renderIdxModal();
       });
@@ -5823,7 +6488,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
         const token = readToken();
         const payload = token ? decodePayload(token) : null;
         const ok = payload && payload.exp > Math.floor(Date.now() / 1000);
-        if (ok) { sessionToken = token; updateAuthUI(true, payload.u); loadPortfolio(); }
+        if (ok) { sessionToken = token; updateAuthUI(true, payload.u); loadPortfolio(); loadPortfolioHistory(); }
         else { if (token) clearToken(); updateAuthUI(false); openLoginModal(); }
         loadSymbolList();
         loadFiiData();   // load FII/DII data independently of auth

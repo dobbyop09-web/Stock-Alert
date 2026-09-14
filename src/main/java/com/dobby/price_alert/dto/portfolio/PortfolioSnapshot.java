@@ -23,5 +23,7 @@ public class PortfolioSnapshot {
 
     private BigDecimal profitLossPercent;
 
+    private String type;
+
     private Integer holdingCount;
 }
