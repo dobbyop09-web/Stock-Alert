@@ -3403,17 +3403,16 @@
           <p id="lastUpdated">Loading…</p>
         </div>
         <div class="topbar-right">
+           <div class="etf-toggle-group" id="etfToggleGroup" style="display:none">
+                  <button type="button" class="etf-toggle-btn" data-mode="all">All</button>
+                  <button type="button" class="etf-toggle-btn active" data-mode="exclude">Stocks</button>
+                  <button type="button" class="etf-toggle-btn" data-mode="only">ETF</button>
+                </div>
           <div class="whoami-chip" id="whoamiChip" style="display:none">
             <div class="whoami-dot"></div>
             <span id="whoamiText"></span>
           </div>
-          <button class="btn-ghost" id="refreshBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="23 4 23 10 17 10" />
-              <polyline points="1 20 1 14 7 14" />
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-            </svg>
-            Refresh
+         
           </button>
           <div id="editEntryBar">
             <button class="btn-edit" id="editBtn">
@@ -3527,11 +3526,7 @@
               <!-- Table toolbar -->
               <div class="table-toolbar">
                 <span class="table-toolbar-title">Open Positions</span>
-                <div class="etf-toggle-group" id="etfToggleGroup" style="display:none">
-                  <button type="button" class="etf-toggle-btn" data-mode="all">All</button>
-                  <button type="button" class="etf-toggle-btn active" data-mode="exclude">Stocks</button>
-                  <button type="button" class="etf-toggle-btn" data-mode="only">ETF</button>
-                </div>
+               
                 <button class="add-holding-btn" id="addRowBtn">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                   Add Holding
@@ -3959,7 +3954,7 @@
       const whoamiText = document.getElementById("whoamiText");
       const signInBtn = document.getElementById("signInBtn");
       const signOutBtn = document.getElementById("signOutBtn");
-      const refreshBtn = document.getElementById("refreshBtn");
+   
       const editBtn = document.getElementById("editBtn");
       const editEntryBar = document.getElementById("editEntryBar");
       const editModeActions = document.getElementById("editModeActions");
@@ -6466,11 +6461,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
       editBtn.addEventListener("click", enterEditMode);
       cancelBtn.addEventListener("click", cancelEdit);
       saveBtn.addEventListener("click", savePortfolio);
-      refreshBtn.addEventListener("click", () => {
-        loadPortfolio(); loadFiiData(); loadIndexData(); loadPortfolioHistory();
-        if (fhOverlay.classList.contains("visible")) loadFhHistory();
-        if (idxOverlay.classList.contains("visible")) renderIdxModal();
-      });
+   
       document.getElementById("loginCancelBtn").addEventListener("click", closeLoginModal);
       document.getElementById("loginSubmitBtn").addEventListener("click", submitLogin);
       document.getElementById("saleCancelBtn").addEventListener("click", closeSaleModal);
