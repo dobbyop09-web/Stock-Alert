@@ -261,6 +261,40 @@
       position: relative
     }
 
+    .etf-toggle-group {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .etf-toggle-btn {
+      background: transparent;
+      border: none;
+      color: #8fa3bc;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 11px;
+      border-radius: 6px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background .15s ease, color .15s ease;
+    }
+
+    .etf-toggle-btn:hover {
+      color: #dce8f4;
+      background: rgba(255, 255, 255, .05);
+    }
+
+    .etf-toggle-btn.active {
+      background: linear-gradient(120deg, #8B5CF6, #6D28D9);
+      color: #fff;
+      box-shadow: 0 1px 4px rgba(139, 92, 246, .4);
+    }
+
     .btn-filters {
       display: flex;
       align-items: center;
@@ -1812,18 +1846,16 @@
           </div>
         </div>
         <div class="topbar-right">
+          <div class="etf-toggle-group" id="instrumentToggleGroup">
+            <button type="button" class="etf-toggle-btn active" data-mode="all">All</button>
+            <button type="button" class="etf-toggle-btn" data-mode="stock">Stocks</button>
+            <button type="button" class="etf-toggle-btn" data-mode="etf">ETF</button>
+          </div>
           <div class="whoami-chip" id="whoamiChip" style="display:none">
             <div class="whoami-dot"></div>
             <span id="whoamiText"></span>
           </div>
-          <button class="btn-ghost" id="refreshBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="23 4 23 10 17 10" />
-              <polyline points="1 20 1 14 7 14" />
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-            </svg>
-            Refresh
-          </button>
+      
           <div class="fy-filter">
             <div class="date-chip" id="fyFilter">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2112,6 +2144,7 @@
       let sectorTotalPnl = 0;
       let equityView = "pnl";
       let monthlyView = "pnl";
+      let instrumentView = "all"; // "all" | "stock" | "etf"
       let historyPage = 1;
       const HISTORY_PAGE_SIZE = 6;
 
@@ -2170,7 +2203,7 @@
       const whoamiText = document.getElementById("whoamiText");
       const signInBtn = document.getElementById("signInBtn");
       const signOutBtn = document.getElementById("signOutBtn");
-      const refreshBtn = document.getElementById("refreshBtn");
+  
       const loginModal = document.getElementById("loginModal");
       const loginError = document.getElementById("loginError");
       const loginUsername = document.getElementById("loginUsername");
@@ -2316,6 +2349,17 @@
         return (sd && sd.sheet) || "Other";
       }
 
+      // Identifies ETF holdings/trades by their sector tag, same approach as admin.html.
+      function isEtfSymbol(symbol) {
+        return /etf/i.test(sectorOf(symbol));
+      }
+
+      function passesInstrumentFilter(symbol) {
+        if (instrumentView === "all") return true;
+        const isEtf = isEtfSymbol(symbol);
+        return instrumentView === "etf" ? isEtf : !isEtf;
+      }
+
       function getFilteredByPeriod(transactions) {
         if (activePeriod === "fy") return transactions;
         return transactions.filter(t => {
@@ -2336,16 +2380,19 @@
          ═══════════════════════════════════ */
       function render() {
         const closedComputed = closedTransactions
+          .filter(t => passesInstrumentFilter(t.symbol))
           .map(t => ({ ...t, info: tradeInfo(t), days: daysBetweenDates(t.buyDate, t.sellDate), kind: "closed" }))
           .filter(t => isFinite(t.info.pnl));
 
         allValid = getFilteredByPeriod(closedComputed);
 
         const today = new Date();
-        allHoldingsCalc = holdings.map(h => {
-          const info = holdingInfo(h);
-          return { ...h, info, days: daysBetweenDates(h.buyDate, today), kind: "open" };
-        });
+        allHoldingsCalc = holdings
+          .filter(h => passesInstrumentFilter(h.symbol))
+          .map(h => {
+            const info = holdingInfo(h);
+            return { ...h, info, days: daysBetweenDates(h.buyDate, today), kind: "open" };
+          });
 
         // Profit by Sectors is based on realised (closed) trades only.
         sectorSourceItems = allValid;
@@ -2964,7 +3011,7 @@
       signInBtn.addEventListener("click", openModal);
       document.getElementById("authGateSignIn").addEventListener("click", openModal);
       signOutBtn.addEventListener("click", logout);
-      refreshBtn.addEventListener("click", loadData);
+   
       document.getElementById("loginCancelBtn").addEventListener("click", closeModal);
       document.getElementById("loginSubmitBtn").addEventListener("click", submitLogin);
       loginPassword.addEventListener("keydown", e => { if (e.key === "Enter") submitLogin(); });
@@ -2983,6 +3030,15 @@
         option.classList.add("active");
         fyLabel.textContent = option.textContent.trim();
         fyDropdown.classList.remove("show");
+        render();
+      });
+
+      /* Instrument view toggle (All / Stocks / ETF) */
+      document.getElementById("instrumentToggleGroup").addEventListener("click", e => {
+        const btn = e.target.closest(".etf-toggle-btn"); if (!btn) return;
+        if (btn.dataset.mode === instrumentView) return;
+        instrumentView = btn.dataset.mode;
+        e.currentTarget.querySelectorAll(".etf-toggle-btn").forEach(b => b.classList.toggle("active", b === btn));
         render();
       });
 
