@@ -14,9 +14,13 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 
 @Component
 public class CsvReaderService {
@@ -28,6 +32,12 @@ public class CsvReaderService {
 
     @Autowired
     private MarketDataService marketDataService;
+
+    @Autowired
+    private AlertHistoryService alertHistoryService;
+
+    private static final ZoneId INDIA_ZONE =
+            ZoneId.of("Asia/Kolkata");
     private static final Logger log =
             LoggerFactory.getLogger(CsvReaderService.class);
 
@@ -65,6 +75,71 @@ public class CsvReaderService {
                 StockMessageDto dto = StockMessageDto.builder().stockName(symbol).currentPrice(current).targetPrice(alert).screenerUrl(screenerUrl).sheetName(sheetConfig.getName()).build();
                 String message = MessageFormat.format(dto);
                 telegramService.sendMessage(message);
+                HistoricalAlert historicalAlert =
+                        HistoricalAlert.builder()
+
+                                .date(
+                                        LocalDate.now(
+                                                INDIA_ZONE
+                                        ).toString()
+                                )
+
+                                .triggeredAt(
+                                        Instant.now().toString()
+                                )
+
+                                .symbol(symbol)
+
+                                .companyName(companyName)
+
+                                .sheet(
+                                        sheetConfig.getName()
+                                )
+
+                                .alertPrice(
+                                        BigDecimal.valueOf(
+                                                alert
+                                        )
+                                )
+
+                                /*
+                                 * The alert was triggered because
+                                 * dayLow reached/broke the alert price.
+                                 */
+                                .triggerPrice(
+                                        BigDecimal.valueOf(
+                                                dayLow
+                                        )
+                                )
+
+                                .currentPrice(
+                                        BigDecimal.valueOf(
+                                                current
+                                        )
+                                )
+
+                                .watchlist(
+                                        sheetConfig.getName()
+                                )
+
+                                .screenerUrl(
+                                        screenerUrl
+                                )
+
+                                .build();
+
+
+                alertHistoryService.addAlert(
+                        historicalAlert
+                );
+
+
+                log.info(
+                        "Historical alert saved: {} - {}",
+                        sheetConfig.getName(),
+                        symbol
+                );
+
 
             }
             double distance = ((current - alert) / alert) * 100;

@@ -4,6 +4,7 @@ import { initRefresh } from "./refresh.js";
 import { loadDashboard } from "./data-loader.js";
 import { editAlert, saveAlert } from "./alerts.js";
 import { renderTicker } from './ticker.js';
+import { initHistoricalAlerts } from "./historical-alerts.js";
 
 
 // editAlert/saveAlert are invoked via inline onclick="" attributes generated
@@ -14,4 +15,5 @@ window.saveAlert = saveAlert;
 initAuth();
 initFilters();
 initRefresh();
+initHistoricalAlerts();
 loadDashboard();

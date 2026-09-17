@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -81,7 +83,11 @@ public class AlertRunner implements CommandLineRunner {
         /*
          * Update portfolio daily snapshots.
          */
-        updatePortfolioSnapshots();
+        DayOfWeek today = LocalDate.now().getDayOfWeek();
+
+        if (today != DayOfWeek.SATURDAY && today != DayOfWeek.SUNDAY) {
+            updatePortfolioSnapshots();
+        }
 
         long endTime = System.currentTimeMillis();
 
