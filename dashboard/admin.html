@@ -4777,15 +4777,21 @@
           const b = byDate.get(dateStr);
           const dt = new Date(dateStr);
           if (isNaN(dt)) return;
-          if (b.STOCK) stock.push({ date: dateStr, _date: dt, investedValue: b.STOCK.investedValue, currentValue: b.STOCK.currentValue, holdingCount: b.STOCK.holdingCount });
-          if (b.ETF) etf.push({ date: dateStr, _date: dt, investedValue: b.ETF.investedValue, currentValue: b.ETF.currentValue, holdingCount: b.ETF.holdingCount });
+          // realizedPnL: cumulative booked profit/loss from stocks that have
+          // already been SOLD (not part of investedValue/currentValue anymore,
+          // since those only reflect currently-held positions). Optional field —
+          // defaults to 0 when the backend hasn't started sending it yet, in
+          // which case sale proceeds are approximated instead (see estimateCashFlow).
+          if (b.STOCK) stock.push({ date: dateStr, _date: dt, investedValue: b.STOCK.investedValue, currentValue: b.STOCK.currentValue, holdingCount: b.STOCK.holdingCount, realizedPnL: isFinite(b.STOCK.realizedPnL) ? b.STOCK.realizedPnL : 0 });
+          if (b.ETF) etf.push({ date: dateStr, _date: dt, investedValue: b.ETF.investedValue, currentValue: b.ETF.currentValue, holdingCount: b.ETF.holdingCount, realizedPnL: isFinite(b.ETF.realizedPnL) ? b.ETF.realizedPnL : 0 });
           if (b.COMBINED) {
-            all.push({ date: dateStr, _date: dt, investedValue: b.COMBINED.investedValue, currentValue: b.COMBINED.currentValue, holdingCount: b.COMBINED.holdingCount });
+            all.push({ date: dateStr, _date: dt, investedValue: b.COMBINED.investedValue, currentValue: b.COMBINED.currentValue, holdingCount: b.COMBINED.holdingCount, realizedPnL: isFinite(b.COMBINED.realizedPnL) ? b.COMBINED.realizedPnL : 0 });
           } else if (b.STOCK || b.ETF) {
             const investedValue = (b.STOCK ? b.STOCK.investedValue : 0) + (b.ETF ? b.ETF.investedValue : 0);
             const currentValue = (b.STOCK ? b.STOCK.currentValue : 0) + (b.ETF ? b.ETF.currentValue : 0);
             const holdingCount = (b.STOCK ? b.STOCK.holdingCount : 0) + (b.ETF ? b.ETF.holdingCount : 0);
-            all.push({ date: dateStr, _date: dt, investedValue, currentValue, holdingCount });
+            const realizedPnL = (b.STOCK && isFinite(b.STOCK.realizedPnL) ? b.STOCK.realizedPnL : 0) + (b.ETF && isFinite(b.ETF.realizedPnL) ? b.ETF.realizedPnL : 0);
+            all.push({ date: dateStr, _date: dt, investedValue, currentValue, holdingCount, realizedPnL });
           }
         });
         const clean = arr => arr.filter(r => isFinite(r.currentValue) && isFinite(r.investedValue));
@@ -4842,29 +4848,92 @@
         return candidate || (rows.length ? rows[0] : null);
       }
 
+      function findEquityIndexAtOrBefore(rows, targetTime) {
+        let idx = 0;
+        for (let i = 0; i < rows.length; i++) {
+          if (rows[i]._date.getTime() <= targetTime) idx = i; else break;
+        }
+        return idx;
+      }
+
+      // ── Time-Weighted Return (TWR) helpers ──────────────────────────────
+      // Invested Value only tracks cost basis of CURRENTLY held positions, so
+      // a new buy inflates it and a sell deflates it — neither is a "return".
+      // TWR strips these cash flows out day by day so contributions/withdrawals
+      // (including booking profit on a sale) don't distort performance %.
+      //
+      // Per-day cash flow is estimated as:
+      //   ΔinvestedValue − ΔrealizedPnL
+      // Buy: ΔrealizedPnL = 0, so cash flow = cost basis added (correct).
+      // Sell: ΔrealizedPnL = profit/loss booked that day, so cash flow works
+      //   out to exactly the sale proceeds (cost basis returned + P&L booked),
+      //   not just the cost basis — that's what makes booked profit correct.
+      // If the backend doesn't send realizedPnL yet, we fall back to a
+      // proportional estimate of what was sold, using the prior day's
+      // mark-to-market ratio — less precise, but still far better than
+      // treating the whole cost-basis drop as a "loss".
+      function estimateCashFlow(prev, cur) {
+        const investedDelta = cur.investedValue - prev.investedValue;
+        if (isFinite(cur.realizedPnL) && isFinite(prev.realizedPnL)) {
+          const realizedDelta = cur.realizedPnL - prev.realizedPnL;
+          return investedDelta - realizedDelta;
+        }
+        if (investedDelta >= 0) return investedDelta; // net buy: full cost basis added
+        const soldFraction = prev.investedValue > 0 ? (-investedDelta) / prev.investedValue : 0;
+        return -(prev.currentValue * soldFraction); // net sell: approx proceeds removed
+      }
+
+      function computeDailyReturn(prev, cur) {
+        const cashflow = estimateCashFlow(prev, cur);
+        const adjustedStart = prev.currentValue + cashflow;
+        if (adjustedStart <= 0) return 0;
+        return (cur.currentValue - adjustedStart) / adjustedStart;
+      }
+
+      // Chains daily returns across rows[fromIdx..toIdx] (inclusive) into one TWR %.
+      function computeTWR(rows, fromIdx, toIdx) {
+        if (toIdx <= fromIdx) return 0;
+        let cum = 1;
+        for (let i = fromIdx + 1; i <= toIdx; i++) {
+          cum *= (1 + computeDailyReturn(rows[i - 1], rows[i]));
+        }
+        return (cum - 1) * 100;
+      }
+
+      // Net capital added/withdrawn across a range (sum of estimated cash flows).
+      // This replaces the old "Invested Value % change" badge, which showed a
+      // green "+3.63%" for simply buying more — that's not a gain, it's your
+      // own money moving in.
+      function computeNetCashFlow(rows, fromIdx, toIdx) {
+        let net = 0;
+        for (let i = fromIdx + 1; i <= toIdx; i++) net += estimateCashFlow(rows[i - 1], rows[i]);
+        return net;
+      }
+
       function computeEquityStats(filteredRows) {
         if (!filteredRows.length) return null;
-        const first = filteredRows[0], last = filteredRows[filteredRows.length - 1];
+        const last = filteredRows[filteredRows.length - 1];
         let peak = filteredRows[0];
         filteredRows.forEach(r => { if (r.currentValue > peak.currentValue) peak = r; });
-        const curPct = first.currentValue > 0 ? ((last.currentValue - first.currentValue) / first.currentValue) * 100 : null;
-        const investedPct = first.investedValue > 0 ? ((last.investedValue - first.investedValue) / first.investedValue) * 100 : null;
-        const totalReturn = last.currentValue - last.investedValue;
+        const curPct = computeTWR(filteredRows, 0, filteredRows.length - 1); // portfolio return, cash-flow adjusted
+        const netCashFlow = computeNetCashFlow(filteredRows, 0, filteredRows.length - 1);
+        const realizedPnL = isFinite(last.realizedPnL) ? last.realizedPnL : 0;
+        // Total Return = unrealized gain on current holdings + profit already booked on sales.
+        const totalReturn = (last.currentValue - last.investedValue) + realizedPnL;
         const totalReturnPct = last.investedValue > 0 ? (totalReturn / last.investedValue) * 100 : null;
-        return { first, last, peak, curPct, investedPct, totalReturn, totalReturnPct };
+        return { first: filteredRows[0], last, peak, curPct, netCashFlow, totalReturn, totalReturnPct };
       }
 
       function computeEquityPeriodPerformance(allRows) {
         if (!allRows.length) return [];
-        const last = allRows[allRows.length - 1];
+        const lastIdx = allRows.length - 1;
         const periods = [{ key: "1M", days: 30 }, { key: "3M", days: 91 }, { key: "6M", days: 182 }, { key: "1Y", days: 365 }];
         const out = periods.map(p => {
-          const base = findEquityValueAtOrBefore(allRows, last._date.getTime() - p.days * 86400000);
-          const pct = base && base.currentValue > 0 ? ((last.currentValue - base.currentValue) / base.currentValue) * 100 : null;
+          const baseIdx = findEquityIndexAtOrBefore(allRows, allRows[lastIdx]._date.getTime() - p.days * 86400000);
+          const pct = allRows.length > 1 ? computeTWR(allRows, baseIdx, lastIdx) : null;
           return { label: p.key, pct };
         });
-        const inception = allRows[0];
-        const inceptionPct = inception && inception.currentValue > 0 ? ((last.currentValue - inception.currentValue) / inception.currentValue) * 100 : null;
+        const inceptionPct = allRows.length > 1 ? computeTWR(allRows, 0, lastIdx) : null;
         out.push({ label: "Since Inception", pct: inceptionPct });
         return out;
       }
@@ -4872,6 +4941,14 @@
       function pctBadge(pct) {
         if (pct == null || !isFinite(pct)) return `<span class="equity-stat-sub muted">—</span>`;
         return `<span class="equity-stat-sub ${pct >= 0 ? "pos" : "neg"}">${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%</span>`;
+      }
+
+      // Invested Value isn't a performance metric, so this is deliberately NOT
+      // colored green/red or shown as a %. It just says how much capital moved.
+      function cashFlowBadge(net) {
+        if (net == null || !isFinite(net) || Math.abs(net) < 0.5) return `<span class="equity-stat-sub muted">No change</span>`;
+        const label = net > 0 ? "added" : "withdrawn";
+        return `<span class="equity-stat-sub muted">₹${fmtMoney(Math.abs(net))} ${label}</span>`;
       }
 
       function renderEquityLineChart(rows, opts) {
@@ -4959,7 +5036,7 @@
           const r = rows[idx];
           if (!r) return;
           hit.addEventListener("mousemove", e => {
-            const pl = r.currentValue - r.investedValue;
+            const pl = (r.currentValue - r.investedValue) + (isFinite(r.realizedPnL) ? r.realizedPnL : 0);
             const plPct = r.investedValue > 0 ? (pl / r.investedValue) * 100 : 0;
             tip.innerHTML = `
           <div class="fh-tooltip-date">${escHtml(fmtDate(r.date))}</div>
@@ -4996,7 +5073,7 @@
         if (!stats) { equityMiniStats.innerHTML = ""; return; }
         equityMiniStats.innerHTML = `
       <div class="equity-mini-stat"><div class="lbl">Current Value</div><div class="val">₹${fmtMoney(stats.last.currentValue)}</div>${pctBadge(stats.curPct)}</div>
-      <div class="equity-mini-stat"><div class="lbl">Invested Value</div><div class="val">₹${fmtMoney(stats.last.investedValue)}</div>${pctBadge(stats.investedPct)}</div>
+      <div class="equity-mini-stat"><div class="lbl">Invested Value</div><div class="val">₹${fmtMoney(stats.last.investedValue)}</div>${cashFlowBadge(stats.netCashFlow)}</div>
       <div class="equity-mini-stat"><div class="lbl">Peak Value</div><div class="val">₹${fmtMoney(stats.peak.currentValue)}</div><div class="sub" style="color:#6a80a0">${escHtml(fmtDate(stats.peak.date))}</div></div>
       <div class="equity-mini-stat"><div class="lbl">Total Return</div><div class="val" style="color:${stats.totalReturn >= 0 ? "#2DD4BF" : "#FF5C6C"}">${stats.totalReturn >= 0 ? "+" : "-"}₹${fmtMoney(Math.abs(stats.totalReturn))}</div>${pctBadge(stats.totalReturnPct)}</div>`;
         syncEquityRangeButtons();
@@ -5020,11 +5097,11 @@
       <div class="equity-modal-layout">
         <div class="equity-chart-col">
           <div class="fh-chart-wrap">${renderEquityLineChart(filtered, { w: 680, h: 230, gradId: "equityAreaGradModal" })}</div>
-          <div class="fh-footnote">Equity curve shows the historical value of your portfolio based on market data.</div>
+          <div class="fh-footnote">Equity curve shows the historical value of your portfolio based on market data. Return % figures are cash-flow adjusted (time-weighted), so buying or selling holdings doesn't distort them.</div>
         </div>
         <div class="equity-stats-col">
           <div class="equity-stat-card"><div class="fh-summary-lbl">Current Value</div><div class="fh-summary-val" style="color:#8B5CF6">₹${fmtMoney(stats.last.currentValue)}</div>${pctBadge(stats.curPct)}</div>
-          <div class="equity-stat-card"><div class="fh-summary-lbl">Invested Value</div><div class="fh-summary-val" style="color:#2DD4BF">₹${fmtMoney(stats.last.investedValue)}</div>${pctBadge(stats.investedPct)}</div>
+          <div class="equity-stat-card"><div class="fh-summary-lbl">Invested Value</div><div class="fh-summary-val" style="color:#2DD4BF">₹${fmtMoney(stats.last.investedValue)}</div>${cashFlowBadge(stats.netCashFlow)}</div>
           <div class="equity-stat-card"><div class="fh-summary-lbl">Peak Value</div><div class="fh-summary-val">₹${fmtMoney(stats.peak.currentValue)}</div><div class="equity-stat-sub muted">${escHtml(fmtDate(stats.peak.date))}</div></div>
           <div class="equity-stat-card"><div class="fh-summary-lbl">Total Return</div><div class="fh-summary-val ${stats.totalReturn >= 0 ? "buy" : "sell"}">${stats.totalReturn >= 0 ? "+" : "-"}₹${fmtMoney(Math.abs(stats.totalReturn))}</div>${pctBadge(stats.totalReturnPct)}</div>
           <div class="equity-perf-box">

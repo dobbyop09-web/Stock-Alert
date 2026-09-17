@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/historical-alerts.css">
        <link rel="stylesheet" href="css/universal-search.css">
     <style>.symbol-logo{object-fit:contain;background:#fff;border-radius:50%;}</style>
 
@@ -151,6 +152,15 @@
                     <div class="topbar-right">
                         <span id="refreshMsg"></span>
 
+                        <button id="historyAlertsBtn" class="btn-ghost btn-history">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 8a6 6 0 0 0-12 0c0 5-2 6-2 7h16c0-1-2-2-2-7" />
+                                <path d="M10.3 20a1.8 1.8 0 0 0 3.4 0" />
+                            </svg>
+                            Historical Alerts
+                        </button>
+
                         <button id="refreshBtn" class="btn-ghost btn-refresh">
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
@@ -271,6 +281,82 @@
             <h3 id="statusModalTitle">Saved!</h3>
             <p id="statusModalMsg">Your changes have been saved successfully.</p>
             <button type="button" class="btn-modal-ok" id="statusModalOk">OK</button>
+        </div>
+    </div>
+
+    <!-- ══ Historical Alerts modal ══ -->
+    <div class="ha-overlay" id="haOverlay" hidden>
+        <div class="ha-modal">
+            <div class="ha-header">
+                <div class="ha-title">
+                    <span class="ha-title-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8a6 6 0 0 0-12 0c0 5-2 6-2 7h16c0-1-2-2-2-7" />
+                            <path d="M10.3 20a1.8 1.8 0 0 0 3.4 0" />
+                        </svg>
+                    </span>
+                    <div>
+                        <h2>Historical Alerts</h2>
+                        <p>View and search past triggered price alerts.</p>
+                    </div>
+                </div>
+                <button type="button" class="ha-close" id="haCloseBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="ha-body">
+                <div class="ha-toolbar">
+                    <input type="text" id="haSearch" class="text-control" placeholder="Search symbol or company...">
+                    <select id="haMonth" class="select-control">
+                        <option value="">All Months</option>
+                    </select>
+                    <button id="haSortBtn" class="btn-ghost sort-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v18M7 21l-4-4M7 21l4-4M17 21V3M17 3l-4 4M17 3l4 4" /></svg>
+                        <span class="sort-label">Newest First</span>
+                    </button>
+                    <button id="haClearBtn" class="btn-ghost ha-clear-btn">Clear Filters</button>
+                </div>
+
+                <div class="ha-stats" id="haStats"></div>
+
+                <div class="ha-table-wrap" id="haTableWrap">
+                    <div class="ha-table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width:16%">Date &amp; Time</th>
+                                    <th style="width:14%">Symbol</th>
+                                    <th class="num" style="width:12%">Alert Price</th>
+                                    <th class="num" style="width:12%">Trigger Price</th>
+                                    <th class="num" style="width:12%">Current Price</th>
+                                    <th class="num" style="width:10%">Change</th>
+                                    <th style="width:12%">Group</th>
+                                    <th style="width:12%">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="haTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="ha-empty" id="haEmpty" style="display:none;">No historical alerts found.</div>
+            </div>
+
+            <div class="ha-footer">
+                <div class="ha-show-select">
+                    Show
+                    <select id="haPerPage" class="select-control">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                    entries
+                </div>
+                <div id="haShowingLine" class="showing"></div>
+                <div class="ha-pager" id="haPager"></div>
+            </div>
         </div>
     </div>
 

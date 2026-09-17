@@ -1047,11 +1047,15 @@
     const getRes = await fetch(`${API_BASE}/portfolio.json`, {
       headers: { Authorization: `Bearer ${sessionToken}` }
     });
-    let portfolio = { holdings: [], closedTransactions: [] };
+    let portfolio = { holdings: [], closedTransactions: [], deposits: [] };
     if (getRes.ok) {
       const raw = await getRes.json();
+      // Preserve every existing field (deposits, etc.) so mutating one
+      // part of the portfolio never silently drops the rest.
+      portfolio = { ...raw };
       portfolio.holdings           = Array.isArray(raw.holdings)           ? raw.holdings           : [];
       portfolio.closedTransactions = Array.isArray(raw.closedTransactions) ? raw.closedTransactions : [];
+      portfolio.deposits           = Array.isArray(raw.deposits)           ? raw.deposits           : [];
     } else if (getRes.status !== 404) {
       if (getRes.status === 401) { handleExpired(); return false; }
       throw new Error(`Portfolio GET failed: ${getRes.status}`);
