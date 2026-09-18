@@ -1744,13 +1744,41 @@
 
       } else if (action === "trigger-buy") {
         const buyPrice = parseFloat(currentOrder.conditionPrice);
+        const quantity = parseInt(currentOrder.quantity) || 1;
+        const buyDate  = todayISO();
         await mutatePortfolio(p => {
-          p.holdings.push({
-            symbol:   currentOrder.symbol,
-            quantity: parseInt(currentOrder.quantity) || 1,
-            buyPrice: buyPrice,
-            buyDate:  todayISO()
-          });
+          const symbol = (currentOrder.symbol || "").trim().toUpperCase();
+          const existingIndex = p.holdings.findIndex(h => (h.symbol || "").trim().toUpperCase() === symbol);
+          if (existingIndex !== -1) {
+            // Same stock already in holdings — merge into one entry instead of
+            // creating a duplicate row. Cost basis becomes the quantity-weighted
+            // average of the old and new lots; every individual purchase is kept
+            // in `lots` so the transaction history isn't lost.
+            const existing = p.holdings[existingIndex];
+            const existingQty = parseFloat(existing.quantity) || 0;
+            const existingBuyPrice = parseFloat(existing.buyPrice) || 0;
+
+            if (!Array.isArray(existing.lots) || !existing.lots.length) {
+              existing.lots = [{ quantity: existingQty, buyPrice: existingBuyPrice, buyDate: existing.buyDate || "" }];
+            }
+            existing.lots.push({ quantity, buyPrice, buyDate });
+
+            const totalQty = existingQty + quantity;
+            const avgBuyPrice = (existingQty * existingBuyPrice + quantity * buyPrice) / totalQty;
+
+            existing.quantity = totalQty;
+            existing.buyPrice = Math.round(avgBuyPrice * 100) / 100;
+            if (buyDate && (!existing.buyDate || new Date(buyDate) > new Date(existing.buyDate))) {
+              existing.buyDate = buyDate;
+            }
+          } else {
+            p.holdings.push({
+              symbol:   currentOrder.symbol,
+              quantity: quantity,
+              buyPrice: buyPrice,
+              buyDate:  buyDate
+            });
+          }
         });
         await patchGttStatus(orderId, "Triggered", { triggeredOn: nowISO() });
         const o = gttOrders.find(o=>o.id===orderId);
