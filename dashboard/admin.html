@@ -1745,6 +1745,10 @@
       display: flex;
     }
 
+    .lot-sell-overlay {
+      z-index: 200;
+    }
+
     .modal {
       background: #0f1c28;
       border: 1px solid rgba(255, 255, 255, .1);
@@ -1791,6 +1795,172 @@
       color: #4a6075;
       margin-bottom: 14px;
     }
+
+    /* Lots detail modal */
+    .lots-modal {
+      max-width: 720px;
+    }
+    .lots-head-row {
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .lots-head-id {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .lots-head-avatar {
+      flex-shrink: 0;
+    }
+    .lots-head-avatar .sym-avatar {
+      width: 40px;
+      height: 40px;
+      font-size: 15px;
+    }
+    .lots-head-row h2 { margin-bottom: 2px; }
+    .lots-head-row .hint { margin-bottom: 0; }
+
+    .lots-stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      background: #0c1822;
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .lots-stat {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .lots-stat-icon {
+      flex-shrink: 0;
+      width: 34px; height: 34px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .lots-stat-icon svg { width: 16px; height: 16px; }
+    .lots-stat-lbl {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: #52677b;
+      margin-bottom: 3px;
+    }
+    .lots-stat-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: #edf5ff;
+      white-space: nowrap;
+    }
+    .lots-stat-val.pos { color: #2dd4bf; }
+    .lots-stat-val.neg { color: #f87171; }
+
+    .lots-table-wrap {
+      max-height: 320px;
+      overflow-y: auto;
+      overflow-x: auto;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    .lots-table {
+      width: 100%;
+      min-width: 620px;
+      border-collapse: collapse;
+    }
+    .lots-table thead th {
+      position: sticky; top: 0;
+      background: #0c1822;
+      color: #52677b;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      padding: 8px 10px;
+      text-align: right;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .lots-table thead th:first-child,
+    .lots-table tbody td:first-child { text-align: left; }
+    .lots-table tbody td {
+      padding: 8px 10px;
+      font-size: 11px;
+      color: #dce8f4;
+      text-align: right;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      white-space: nowrap;
+    }
+    .lots-table tbody tr:last-child td { border-bottom: none; }
+    .lots-table td.pos { color: #2dd4bf; font-weight: 600; }
+    .lots-table td.neg { color: #f87171; font-weight: 600; }
+
+    /* Clickable holding row (multiple lots) */
+    tbody tr.holding-row-multi {
+      cursor: pointer;
+    }
+    tbody tr.holding-row-multi:hover td {
+      background: rgba(45, 212, 191, .06);
+    }
+    .lots-count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 15px;
+      height: 15px;
+      padding: 0 4px;
+      margin-left: 6px;
+      border-radius: 999px;
+      background: rgba(45, 212, 191, .16);
+      color: #2dd4bf;
+      font-size: 9px;
+      font-weight: 700;
+      vertical-align: middle;
+    }
+    button.lots-edit-btn {
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    button.lots-edit-btn:hover {
+      background: rgba(45, 212, 191, .28);
+    }
+    .sym-edit-cell {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    .sym-edit-cell input { flex: 1; min-width: 0; }
+
+    /* Editable lot row (edit mode inside lots modal) */
+    .lots-table input.cell {
+      width: 100%;
+      min-width: 84px;
+      text-align: right;
+    }
+    .lots-table input.cell[data-lot-f="buyDate"] { min-width: 120px; text-align: left; }
+    .lots-row-actions {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+    .lots-add-row {
+      padding: 10px 12px;
+      text-align: center;
+      border-top: 1px dashed rgba(255,255,255,.1);
+    }
+    .lots-add-btn {
+      background: transparent;
+      border: 1px dashed rgba(45,212,191,.4);
+      color: #2dd4bf;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+    .lots-add-btn:hover { background: rgba(45,212,191,.1); }
 
     .modal label {
       display: block;
@@ -3718,6 +3888,58 @@
       <div class="modal-actions">
         <button class="btn-modal-cancel" id="addHoldingCancelBtn">Cancel</button>
         <button class="btn-modal-confirm" id="addHoldingConfirmBtn">Add Holding</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lots detail modal -->
+  <div class="modal-overlay" id="lotsModal">
+    <div class="modal lots-modal">
+      <div class="modal-head-row lots-head-row">
+        <div class="lots-head-id">
+          <div class="lots-head-avatar" id="lotsModalAvatar"></div>
+          <div>
+            <h2 id="lotsModalTitle">Transactions</h2>
+            <p class="hint" id="lotsModalSubtitle"></p>
+          </div>
+        </div>
+        <button class="modal-close-x" id="lotsModalCloseX" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+        </button>
+      </div>
+
+      <div class="lots-stats-row" id="lotsModalStats"></div>
+
+      <div class="lots-table-wrap">
+        <table class="lots-table">
+          <thead><tr id="lotsModalHead"></tr></thead>
+          <tbody id="lotsModalBody"></tbody>
+        </table>
+        <div class="lots-add-row" id="lotsAddRow" style="display:none">
+          <button type="button" class="lots-add-btn" id="lotsAddBtn">+ Add purchase</button>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" id="lotsModalCloseBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lot sell modal (stacked above lots modal) -->
+  <div class="modal-overlay lot-sell-overlay" id="lotSellModal">
+    <div class="modal">
+      <h2>Sell shares</h2>
+      <p class="hint" id="lotSellLabel"></p>
+      <label for="lotSellQty">Quantity to sell</label>
+      <input type="number" step="any" min="0" id="lotSellQty">
+      <label for="lotSellPrice">Sell price</label>
+      <input type="number" step="any" min="0" id="lotSellPrice" placeholder="0.00">
+      <label for="lotSellDate">Sell date</label>
+      <input type="date" id="lotSellDate">
+      <div class="error-text" id="lotSellError"></div>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" id="lotSellCancelBtn">Cancel</button>
+        <button class="btn-modal-confirm" id="lotSellConfirmBtn">Confirm Sell</button>
       </div>
     </div>
   </div>
@@ -6198,8 +6420,10 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           const cvCls = currentValueClass(h);
 
           if (isEditing) {
+            const hasLotsEdit = Array.isArray(h.lots) && h.lots.length > 1;
+            const lotsEditBadge = hasLotsEdit ? `<button type="button" class="lots-count-badge lots-edit-btn" data-lots-edit="${i}" title="Edit transactions">${h.lots.length}</button>` : "";
             tr.innerHTML = `
-          <td><input type="text" class="cell" list="symbolList" value="${escAttr(h.symbol ?? '')}" data-i="${i}" data-f="symbol" placeholder="SYMBOL"></td>
+          <td><div class="sym-edit-cell"><input type="text" class="cell" list="symbolList" value="${escAttr(h.symbol ?? '')}" data-i="${i}" data-f="symbol" placeholder="SYMBOL">${lotsEditBadge}</div></td>
           <td class="sector-cell">${sectorHtml}</td>
           <td><input type="number" step="any" min="0" class="cell num" value="${numOrBlank(h.quantity)}" data-i="${i}" data-f="quantity" placeholder="1"></td>
           <td><input type="number" step="any" class="cell num" value="${numOrBlank(h.buyPrice)}" data-i="${i}" data-f="buyPrice" placeholder="0.00"></td>
@@ -6212,8 +6436,10 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           <td class="sell-date-cell visible"><button class="icon-btn" data-sell="${i}" title="Close position">Sell</button></td>
           <td class="remove-cell visible"><button class="icon-btn danger" data-remove="${i}" title="Remove">${ICON_TRASH}</button></td>`;
           } else {
+            const hasLots = Array.isArray(h.lots) && h.lots.length > 1;
+            const lotsBadge = hasLots ? `<span class="lots-count-badge">${h.lots.length}</span>` : "";
             tr.innerHTML = `
-          <td><div class="sym-badge">${symAvatarHtml(h.symbol)}<span style="font-weight:600;font-size:11px">${escHtml(h.symbol || "—")}</span></div></td>
+          <td><div class="sym-badge">${symAvatarHtml(h.symbol)}<span style="font-weight:600;font-size:11px">${escHtml(h.symbol || "—")}</span>${lotsBadge}</div></td>
           <td class="sector-cell">${sectorHtml}</td>
           <td class="num">${escHtml(String(qtyOf(h)))}</td>
           <td class="num">${fmtMoney(h.buyPrice)}</td>
@@ -6225,10 +6451,314 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           <td class="num profit-cell">${profitBadge}</td>
           <td class="num">${fmtMoney(h.targetAmount)}</td>
           <td>${fmtDate(h.buyDate)}</td>`;
+            if (hasLots) {
+              tr.classList.add("holding-row-multi");
+              tr.title = "Click to view all transactions for this holding";
+              tr.addEventListener("click", () => openLotsModal(h));
+            }
           }
           tbody.appendChild(tr);
         });
       }
+
+      // Lots detail modal
+      const lotsModal        = document.getElementById("lotsModal");
+      const lotsModalAvatar  = document.getElementById("lotsModalAvatar");
+      const lotsModalTitle   = document.getElementById("lotsModalTitle");
+      const lotsModalSubtitle= document.getElementById("lotsModalSubtitle");
+      const lotsModalStats   = document.getElementById("lotsModalStats");
+      const lotsModalHead    = document.getElementById("lotsModalHead");
+      const lotsModalBody    = document.getElementById("lotsModalBody");
+      const lotsModalCloseX  = document.getElementById("lotsModalCloseX");
+      const lotsModalCloseBtn= document.getElementById("lotsModalCloseBtn");
+      const lotsAddRow       = document.getElementById("lotsAddRow");
+      const lotsAddBtn       = document.getElementById("lotsAddBtn");
+
+      let lotsModalHolding  = null;   // the holding object currently open in the modal
+      let lotsModalEditable = false;
+
+      // Recompute a holding's aggregate quantity/buyPrice/buyDate from its lots.
+      // Returns false if the holding has no lots left (caller should remove it).
+      function recomputeHoldingFromLots(h) {
+        const lots = Array.isArray(h.lots) ? h.lots : [];
+        if (!lots.length) return false;
+        const totalQty = lots.reduce((s, l) => s + (parseFloat(l.quantity) || 0), 0);
+        if (totalQty <= 0) return false;
+        const totalCost = lots.reduce((s, l) => s + (parseFloat(l.quantity) || 0) * (parseFloat(l.buyPrice) || 0), 0);
+        h.quantity = totalQty;
+        h.buyPrice = Math.round((totalCost / totalQty) * 100) / 100;
+        const latest = lots.reduce((max, l) => {
+          const t = l.buyDate ? new Date(l.buyDate).getTime() : NaN;
+          return isFinite(t) && (!max || t > max.t) ? { t, d: l.buyDate } : max;
+        }, null);
+        if (latest) h.buyDate = latest.d;
+        return true;
+      }
+
+      function removeHoldingByRef(h) {
+        const idx = holdings.indexOf(h);
+        if (idx !== -1) holdings.splice(idx, 1);
+      }
+
+      function openLotsModal(h, editable) {
+        lotsModalHolding  = h;
+        lotsModalEditable = !!editable;
+        renderLotsModal();
+        lotsModal.classList.add("visible");
+      }
+
+      function renderLotsModal() {
+        const h = lotsModalHolding;
+        if (!h) { closeLotsModal(); return; }
+        const lots = Array.isArray(h.lots) ? h.lots : [];
+        const curPrice = curPriceOf(h);
+
+        lotsModalAvatar.innerHTML = symAvatarHtml(h.symbol);
+        lotsModalTitle.textContent = `${(h.symbol || "—").toUpperCase()} — Transactions`;
+
+        const totalQty = lots.reduce((s, l) => s + (parseFloat(l.quantity) || 0), 0);
+        lotsModalSubtitle.textContent = lotsModalEditable
+          ? `${lots.length} purchases · ${totalQty} shares total · avg. buy price ${fmtMoney(h.buyPrice)} · edit, remove or sell any purchase below`
+          : `${lots.length} purchases · ${totalQty} shares total · avg. buy price ${fmtMoney(h.buyPrice)}`;
+
+        const totalInvested = lots.reduce((s, l) => s + (parseFloat(l.quantity) || 0) * (parseFloat(l.buyPrice) || 0), 0);
+        const totalCurrentValue = isFinite(curPrice) ? totalQty * curPrice : NaN;
+        const totalPnl = isFinite(totalCurrentValue) ? totalCurrentValue - totalInvested : NaN;
+        const totalPnlPct = totalInvested > 0 && isFinite(totalPnl) ? (totalPnl / totalInvested) * 100 : NaN;
+        const pnlCls = isFinite(totalPnl) ? (totalPnl >= 0 ? "pos" : "neg") : "";
+
+        const stats = [
+          {
+            lbl: "Total Shares", val: `${totalQty}`, cls: "",
+            accent: "#5B9EFF", iconBg: "rgba(91,158,255,.14)",
+            icon: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/>'
+          },
+          {
+            lbl: "Total Invested", val: `₹${fmtMoney(totalInvested)}`, cls: "",
+            accent: "#8B5CF6", iconBg: "rgba(139,92,246,.14)",
+            icon: '<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'
+          },
+          {
+            lbl: "Current Value", val: isFinite(totalCurrentValue) ? `₹${fmtMoney(totalCurrentValue)}` : "—", cls: "",
+            accent: "#2dd4bf", iconBg: "rgba(45,212,191,.14)",
+            icon: '<path d="M3 3v18h18"/><path d="M18.7 8 12 14.7l-3.5-3.5L3 16.7"/>'
+          },
+          {
+            lbl: "Overall P&L",
+            val: isFinite(totalPnl) ? `${totalPnl >= 0 ? "+" : ""}₹${fmtMoney(totalPnl)} (${totalPnlPct >= 0 ? "+" : ""}${totalPnlPct.toFixed(2)}%)` : "—",
+            cls: pnlCls,
+            accent: pnlCls === "neg" ? "#f87171" : "#2dd4bf",
+            iconBg: pnlCls === "neg" ? "rgba(248,113,113,.14)" : "rgba(45,212,191,.14)",
+            icon: '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>'
+          }
+        ];
+        lotsModalStats.innerHTML = stats.map(s => `
+          <div class="lots-stat">
+            <div class="lots-stat-icon" style="background:${s.iconBg};color:${s.accent}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${s.icon}</svg>
+            </div>
+            <div>
+              <div class="lots-stat-lbl">${s.lbl}</div>
+              <div class="lots-stat-val ${s.cls}">${s.val}</div>
+            </div>
+          </div>`).join("");
+
+        lotsModalHead.innerHTML = lotsModalEditable
+          ? `<th>#</th><th>Buy Date</th><th>Qty</th><th>Buy Price</th><th>Invested</th><th>Current Value</th><th>P&amp;L</th><th></th>`
+          : `<th>#</th><th>Buy Date</th><th>Qty</th><th>Buy Price</th><th>Invested</th><th>Current Value</th><th>P&amp;L</th><th>P&amp;L %</th>`;
+
+        lotsModalBody.innerHTML = lots.map((l, idx) => {
+          const qty = parseFloat(l.quantity) || 0;
+          const price = parseFloat(l.buyPrice) || 0;
+          const invested = qty * price;
+          const curValue = isFinite(curPrice) ? qty * curPrice : NaN;
+          const pnl = isFinite(curValue) ? curValue - invested : NaN;
+          const pnlPct = invested > 0 && isFinite(pnl) ? (pnl / invested) * 100 : NaN;
+          const cls = isFinite(pnl) ? (pnl >= 0 ? "pos" : "neg") : "";
+
+          if (lotsModalEditable) {
+            return `<tr>
+              <td>${idx + 1}</td>
+              <td><input type="date" class="cell" data-lot-idx="${idx}" data-lot-f="buyDate" value="${escAttr(l.buyDate ?? '')}"></td>
+              <td><input type="number" step="any" min="0" class="cell num" data-lot-idx="${idx}" data-lot-f="quantity" value="${numOrBlank(l.quantity)}"></td>
+              <td><input type="number" step="any" min="0" class="cell num" data-lot-idx="${idx}" data-lot-f="buyPrice" value="${numOrBlank(l.buyPrice)}"></td>
+              <td class="num">${fmtMoney(invested)}</td>
+              <td class="num">${isFinite(curValue) ? fmtMoney(curValue) : "—"}</td>
+              <td class="num ${cls}">${isFinite(pnl) ? `${pnl >= 0 ? "+" : ""}₹${fmtMoney(pnl)}` : "—"}</td>
+              <td>
+                <div class="lots-row-actions">
+                  <button type="button" class="icon-btn" data-lot-sell="${idx}" title="Sell this purchase">Sell</button>
+                  <button type="button" class="icon-btn danger" data-lot-remove="${idx}" title="Remove this purchase">${ICON_TRASH}</button>
+                </div>
+              </td>
+            </tr>`;
+          }
+          return `<tr>
+            <td>${idx + 1}</td>
+            <td>${fmtDate(l.buyDate)}</td>
+            <td class="num">${qty}</td>
+            <td class="num">${fmtMoney(price)}</td>
+            <td class="num">${fmtMoney(invested)}</td>
+            <td class="num">${isFinite(curValue) ? fmtMoney(curValue) : "—"}</td>
+            <td class="num ${cls}">${isFinite(pnl) ? `${pnl >= 0 ? "+" : ""}₹${fmtMoney(pnl)}` : "—"}</td>
+            <td class="num ${cls}">${isFinite(pnlPct) ? `${pnlPct >= 0 ? "+" : ""}${pnlPct.toFixed(2)}%` : "—"}</td>
+          </tr>`;
+        }).join("");
+
+        lotsAddRow.style.display = lotsModalEditable ? "block" : "none";
+      }
+
+      function closeLotsModal() {
+        lotsModal.classList.remove("visible");
+        lotsModalHolding = null;
+      }
+      lotsModalCloseX.addEventListener("click", closeLotsModal);
+      lotsModalCloseBtn.addEventListener("click", closeLotsModal);
+      lotsModal.addEventListener("click", e => { if (e.target === lotsModal) closeLotsModal(); });
+
+      function markDirty() {
+        saveStatus.textContent = "You have unsaved changes";
+        saveStatus.className = "edit-banner-sub";
+      }
+
+      // Inline edits to a lot's date/qty/buyPrice
+      lotsModalBody.addEventListener("change", e => {
+        const input = e.target.closest("[data-lot-idx]");
+        if (!input || !lotsModalEditable || !lotsModalHolding) return;
+        const idx = parseInt(input.getAttribute("data-lot-idx"), 10);
+        const field = input.getAttribute("data-lot-f");
+        const lot = lotsModalHolding.lots[idx];
+        if (!lot) return;
+        if (field === "quantity" || field === "buyPrice") {
+          const v = parseFloat(input.value);
+          lot[field] = isFinite(v) ? v : 0;
+        } else {
+          lot[field] = input.value;
+        }
+        if (recomputeHoldingFromLots(lotsModalHolding) === false) {
+          removeHoldingByRef(lotsModalHolding);
+          closeLotsModal();
+        } else {
+          renderLotsModal();
+        }
+        renderTable();
+        markDirty();
+      });
+
+      // Remove / Sell buttons per lot
+      lotsModalBody.addEventListener("click", e => {
+        if (!lotsModalEditable || !lotsModalHolding) return;
+
+        const removeBtn = e.target.closest("[data-lot-remove]");
+        if (removeBtn) {
+          const idx = parseInt(removeBtn.getAttribute("data-lot-remove"), 10);
+          lotsModalHolding.lots.splice(idx, 1);
+          if (recomputeHoldingFromLots(lotsModalHolding) === false) {
+            removeHoldingByRef(lotsModalHolding);
+            closeLotsModal();
+          } else {
+            renderLotsModal();
+          }
+          renderTable();
+          markDirty();
+          return;
+        }
+
+        const sellBtn = e.target.closest("[data-lot-sell]");
+        if (sellBtn) {
+          const idx = parseInt(sellBtn.getAttribute("data-lot-sell"), 10);
+          openLotSellModal(idx);
+        }
+      });
+
+      // Add a new purchase (blank lot) directly from the modal
+      lotsAddBtn.addEventListener("click", () => {
+        if (!lotsModalHolding) return;
+        if (!Array.isArray(lotsModalHolding.lots)) lotsModalHolding.lots = [];
+        lotsModalHolding.lots.push({ quantity: 0, buyPrice: 0, buyDate: new Date().toISOString().slice(0, 10) });
+        renderLotsModal();
+        renderTable();
+        markDirty();
+      });
+
+      // --- Sell (partial or full) an individual lot ---
+      const lotSellModal      = document.getElementById("lotSellModal");
+      const lotSellLabel      = document.getElementById("lotSellLabel");
+      const lotSellQtyInput   = document.getElementById("lotSellQty");
+      const lotSellPriceInput = document.getElementById("lotSellPrice");
+      const lotSellDateInput  = document.getElementById("lotSellDate");
+      const lotSellError      = document.getElementById("lotSellError");
+      const lotSellCancelBtn  = document.getElementById("lotSellCancelBtn");
+      const lotSellConfirmBtn = document.getElementById("lotSellConfirmBtn");
+      let pendingSellLotIdx = null;
+
+      function openLotSellModal(lotIdx) {
+        const h = lotsModalHolding;
+        const lot = h && h.lots && h.lots[lotIdx];
+        if (!lot) return;
+        pendingSellLotIdx = lotIdx;
+        lotSellError.textContent = "";
+        const qty = parseFloat(lot.quantity) || 0;
+        lotSellLabel.textContent = `${(h.symbol || "This holding").toUpperCase()} · purchase of ${qty} share${qty === 1 ? "" : "s"} from ${fmtDate(lot.buyDate)}`;
+        lotSellQtyInput.value = numOrBlank(lot.quantity);
+        lotSellQtyInput.max = qty;
+        lotSellPriceInput.value = "";
+        lotSellDateInput.value = new Date().toISOString().slice(0, 10);
+        lotSellModal.classList.add("visible");
+        lotSellPriceInput.focus();
+      }
+      function closeLotSellModal() {
+        lotSellModal.classList.remove("visible");
+        pendingSellLotIdx = null;
+      }
+      function confirmLotSell() {
+        const h = lotsModalHolding;
+        const lot = h && h.lots && h.lots[pendingSellLotIdx];
+        if (!lot) { closeLotSellModal(); return; }
+
+        const lotQty = parseFloat(lot.quantity) || 0;
+        const sellQty = parseFloat(lotSellQtyInput.value);
+        const sellPrice = parseFloat(lotSellPriceInput.value);
+        const sellDate = lotSellDateInput.value;
+
+        if (!isFinite(sellQty) || sellQty <= 0 || sellQty > lotQty + 1e-9) {
+          lotSellError.textContent = `Enter a quantity between 1 and ${lotQty}.`; return;
+        }
+        if (!isFinite(sellPrice) || sellPrice < 0 || !sellDate) {
+          lotSellError.textContent = "Enter a valid sell price and date."; return;
+        }
+
+        closedTransactions.push({
+          symbol:    h.symbol || "",
+          quantity:  sellQty,
+          buyPrice:  parseFloat(lot.buyPrice) || 0,
+          buyDate:   lot.buyDate || "",
+          sellPrice: sellPrice,
+          sellDate:  sellDate
+        });
+
+        const remaining = lotQty - sellQty;
+        if (remaining <= 1e-9) {
+          h.lots.splice(pendingSellLotIdx, 1);
+        } else {
+          lot.quantity = remaining;
+        }
+
+        closeLotSellModal();
+
+        if (recomputeHoldingFromLots(h) === false) {
+          removeHoldingByRef(h);
+          closeLotsModal();
+        } else {
+          renderLotsModal();
+        }
+        renderTable();
+        markDirty();
+      }
+      lotSellCancelBtn.addEventListener("click", closeLotSellModal);
+      lotSellConfirmBtn.addEventListener("click", confirmLotSell);
+      lotSellModal.addEventListener("click", e => { if (e.target === lotSellModal) closeLotSellModal(); });
+
 
       // KPIs — injects the 4 standard cards BEFORE the FII card
       function computeKPIs() {
@@ -6486,6 +7016,12 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
 
       tbody.addEventListener("click", e => {
         if (!isEditing) return;
+        const lotsBtn = e.target.closest("[data-lots-edit]");
+        if (lotsBtn) {
+          const h = holdings[parseInt(lotsBtn.getAttribute("data-lots-edit"), 10)];
+          if (h) openLotsModal(h, true);
+          return;
+        }
         const sellBtn = e.target.closest("[data-sell]");
         if (sellBtn) { openSaleModal(parseInt(sellBtn.getAttribute("data-sell"), 10)); return; }
         const removeBtn = e.target.closest("[data-remove]");
@@ -6507,7 +7043,34 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
         if (!symbol || !isFinite(buyPrice) || buyPrice <= 0 || !isFinite(quantity) || quantity <= 0) {
           addHoldingError.textContent = "Enter a symbol, buy price and quantity."; return;
         }
-        holdings.push({ symbol, quantity, buyPrice, buyDate: buyDate || "", targetAmount: "" });
+        const existingIndex = holdings.findIndex(h => (h.symbol || "").trim().toUpperCase() === symbol);
+        if (existingIndex !== -1) {
+          // Same stock already in holdings — merge into one entry instead of
+          // creating a duplicate row. Cost basis becomes the quantity-weighted
+          // average of the old and new lots; every individual purchase is kept
+          // in `lots` so the transaction history isn't lost.
+          const existing = holdings[existingIndex];
+          const existingQty = qtyOf(existing);
+          const existingBuyPrice = parseFloat(existing.buyPrice) || 0;
+
+          if (!Array.isArray(existing.lots) || !existing.lots.length) {
+            existing.lots = [{ quantity: existingQty, buyPrice: existingBuyPrice, buyDate: existing.buyDate || "" }];
+          }
+          existing.lots.push({ quantity, buyPrice, buyDate: buyDate || "" });
+
+          const totalQty = existingQty + quantity;
+          const avgBuyPrice = (existingQty * existingBuyPrice + quantity * buyPrice) / totalQty;
+
+          existing.quantity = totalQty;
+          existing.buyPrice = Math.round(avgBuyPrice * 100) / 100;
+          // Reflect the most recent purchase date at the top level (used for
+          // "days held" / sorting), while `lots` still has the original dates.
+          if (buyDate && (!existing.buyDate || new Date(buyDate) > new Date(existing.buyDate))) {
+            existing.buyDate = buyDate;
+          }
+        } else {
+          holdings.push({ symbol, quantity, buyPrice, buyDate: buyDate || "", targetAmount: "" });
+        }
         closeAddHoldingModal(); renderTable();
         saveStatus.textContent = "You have unsaved changes"; saveStatus.className = "edit-banner-sub";
       }
