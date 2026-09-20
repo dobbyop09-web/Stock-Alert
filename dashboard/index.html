@@ -297,7 +297,7 @@
                     </span>
                     <div>
                         <h2>Historical Alerts</h2>
-                        <p>View and search past triggered price alerts.</p>
+                        <span id="haSubline">Loading…</span>
                     </div>
                 </div>
                 <button type="button" class="ha-close" id="haCloseBtn">
@@ -313,28 +313,45 @@
                     <select id="haMonth" class="select-control">
                         <option value="">All Months</option>
                     </select>
-                    <button id="haSortBtn" class="btn-ghost sort-btn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v18M7 21l-4-4M7 21l4-4M17 21V3M17 3l-4 4M17 3l4 4" /></svg>
-                        <span class="sort-label">Newest First</span>
-                    </button>
-                    <button id="haClearBtn" class="btn-ghost ha-clear-btn">Clear Filters</button>
+                    <select id="haGroup" class="select-control">
+                        <option value="">All Groups</option>
+                    </select>
+                    <select id="haStatus" class="select-control">
+                        <option value="">All</option>
+                        <option value="above">Above Alert</option>
+                        <option value="below">Below Alert</option>
+                    </select>
+                    <div class="ha-date-range">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></svg>
+                        <input type="date" id="haDateFrom">
+                        <span class="ha-date-sep">–</span>
+                        <input type="date" id="haDateTo">
+                    </div>
+                    <button id="haClearBtn" class="btn-ghost ha-clear-btn">Clear</button>
+                    <button id="haDeleteOlderBtn" class="btn-ghost ha-delete-older-btn">🗑 Delete older alerts</button>
                 </div>
 
-                <div class="ha-stats" id="haStats"></div>
+                <div class="ha-stats-row">
+                    <div class="ha-stats" id="haStats"></div>
+                    <div class="ha-group-breakdown" id="haGroupBreakdown"></div>
+                </div>
 
                 <div class="ha-table-wrap" id="haTableWrap">
                     <div class="ha-table-scroll">
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="width:16%">Date &amp; Time</th>
-                                    <th style="width:14%">Symbol</th>
-                                    <th class="num" style="width:12%">Alert Price</th>
-                                    <th class="num" style="width:12%">Trigger Price</th>
-                                    <th class="num" style="width:12%">Current Price</th>
-                                    <th class="num" style="width:10%">Change</th>
-                                    <th style="width:12%">Group</th>
-                                    <th style="width:12%">Actions</th>
+                                    <th style="width:3%"><input type="checkbox" id="haSelectAll"></th>
+                                    <th style="width:11%">Date / Time</th>
+                                    <th style="width:9%">Symbol</th>
+                                    <th style="width:16%">Company</th>
+                                    <th style="width:9%">Group</th>
+                                    <th class="num" style="width:8%">Alert</th>
+                                    <th class="num" style="width:8%">Trigger</th>
+                                    <th class="num" style="width:8%">Current</th>
+                                    <th class="num" style="width:11%">Vs Alert</th>
+                                    <th class="num" style="width:9%">Since Trigger</th>
+                                    <th style="width:8%">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="haTbody"></tbody>
@@ -356,6 +373,7 @@
                 </div>
                 <div id="haShowingLine" class="showing"></div>
                 <div class="ha-pager" id="haPager"></div>
+                <button id="haDeleteSelectedBtn" class="btn-ghost ha-delete-selected-btn" disabled>🗑 Delete selected</button>
             </div>
         </div>
     </div>
