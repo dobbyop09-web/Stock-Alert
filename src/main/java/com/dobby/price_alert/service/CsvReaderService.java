@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -128,11 +129,13 @@ public class CsvReaderService {
 
                                 .build();
 
+                DayOfWeek today = LocalDate.now().getDayOfWeek();
 
-                alertHistoryService.addAlert(
-                        historicalAlert
-                );
-
+                if (today != DayOfWeek.SATURDAY && today != DayOfWeek.SUNDAY) {
+                    alertHistoryService.addAlert(
+                            historicalAlert
+                    );
+                }
 
                 log.info(
                         "Historical alert saved: {} - {}",
