@@ -13,6 +13,7 @@ import com.dobby.price_alert.service.StockAlertService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 @Component
+@Order(1)
 public class AlertRunner implements CommandLineRunner {
 
     private static final Logger log =

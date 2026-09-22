@@ -14,6 +14,7 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
+import com.dobby.price_alert.dto.nse.derivatives.DerivativesResponse;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -32,6 +33,9 @@ public class NSEClient {
 
     @Value("${nse.index.baseurl}")
     private String baseIndexUrl;
+
+    @Value("${nse.base.futures-url}")
+    private String baseFuturesUrl;
 
     private String baseFiiUrl = "https://www.nseindia.com/api/fiidiiTradeReact";
 
@@ -160,7 +164,48 @@ public class NSEClient {
             log.error("Could not get the Fii Dii data {}: {}", body, e.getMessage());
             throw new RuntimeException("Bad JSON from NSE for Fii Dii", e);
         }
+    }
+    public DerivativesResponse getFutureData(String symbol) {
 
+        if (!isSessionWarm()) {
+            warmSession();
+        }
 
+        URI uri = UriComponentsBuilder
+                .fromUriString(baseFuturesUrl)
+                .queryParam("symbol", symbol)
+                .build()
+                .encode(StandardCharsets.UTF_8)
+                .toUri();
+
+        String referer = UriComponentsBuilder
+                .fromUriString("https://www.nseindia.com/get-quotes/derivatives")
+                .build()
+                .toUriString();
+
+        log.debug("Fetching NSE futures data for {} from {}", symbol, uri);
+
+        String body = getWithSessionRetry(uri, referer);
+
+        if (body == null || body.isBlank()) {
+            throw new RuntimeException(
+                    "Empty response from NSE for futures symbol " + symbol
+            );
+        }
+
+        try {
+            return objectMapper.readValue(body, DerivativesResponse.class);
+        } catch (Exception e) {
+            log.error(
+                    "Could not get futures data for {}: {}",
+                    symbol,
+                    e.getMessage()
+            );
+
+            throw new RuntimeException(
+                    "Bad JSON from NSE for futures symbol " + symbol,
+                    e
+            );
+        }
     }
 }
