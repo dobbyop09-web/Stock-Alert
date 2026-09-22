@@ -8,6 +8,7 @@ import com.dobby.price_alert.dto.nse.index.IndexResponseData;
 import com.dobby.price_alert.mapper.DashboardIndexMapper;
 import com.dobby.price_alert.service.R2UploadService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import tools.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@Order(2)
 public class IndexDataRunner implements CommandLineRunner {
     @Autowired
     private NSEClient client;
