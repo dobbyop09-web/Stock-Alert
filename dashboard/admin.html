@@ -2802,78 +2802,179 @@
 
     /* ── Equity Curve modal layout ── */
     .equity-modal-layout {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
       gap: 16px;
-      align-items: flex-start;
-      flex-wrap: wrap;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .equity-modal-layout { grid-template-columns: 1fr; }
     }
 
     .equity-chart-col {
-      flex: 1 1 420px;
-      min-width: 280px;
       display: flex;
       flex-direction: column;
       gap: 14px;
+      min-width: 0;
     }
 
     .equity-stats-col {
-      flex: 0 0 230px;
-      min-width: 200px;
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
+      align-content: start;
+      min-width: 0;
     }
 
     .equity-stat-card {
       background: rgba(255, 255, 255, .03);
       border: 1px solid rgba(255, 255, 255, .06);
       border-radius: 9px;
-      padding: 10px 12px;
+      padding: 12px 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .equity-stat-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .equity-stat-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      background: rgba(139, 92, 246, .14);
+      color: #8B5CF6;
+    }
+
+    .equity-stat-icon svg { width: 14px; height: 14px; }
+
+    .equity-stat-head .fh-summary-lbl { margin: 0; }
+
+    .equity-stat-val {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.15;
     }
 
     .equity-stat-sub {
-      font-size: 10px;
+      font-size: 10.5px;
       font-weight: 600;
-      margin-top: 4px;
     }
 
     .equity-stat-sub.pos { color: #2DD4BF; }
     .equity-stat-sub.neg { color: #FF5C6C; }
-    .equity-stat-sub.muted { color: #4a6075; }
+    .equity-stat-sub.muted { color: #6a80a0; }
 
-    .equity-perf-box {
-      background: rgba(255, 255, 255, .03);
-      border: 1px solid rgba(255, 255, 255, .06);
-      border-radius: 9px;
-      padding: 10px 12px;
+    /* ── Portfolio Breakdown (below chart) ── */
+    .equity-breakdown-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, .06);
     }
 
-    .equity-perf-grid {
+    .equity-breakdown-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .equity-breakdown-sub {
+      font-size: 11.5px;
+      color: #6a80a0;
+      margin-top: 2px;
+      margin-bottom: 12px;
+    }
+
+    .equity-breakdown-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px 12px;
-      margin-top: 8px;
+      gap: 14px;
+    }
+    .equity-breakdown-grid.single {
+      grid-template-columns: 1fr;
+    }
+    @media (max-width: 700px) {
+      .equity-breakdown-grid { grid-template-columns: 1fr; }
     }
 
-    .equity-perf-item {
+    .equity-breakdown-card {
+      background: rgba(255, 255, 255, .025);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+
+    .equity-bd-head {
       display: flex;
-      flex-direction: column;
-      gap: 2px;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
-    .equity-perf-item .lbl {
+    .equity-bd-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(45, 212, 191, .14);
+      color: #2DD4BF;
+      flex: 0 0 auto;
+    }
+    .equity-bd-icon svg { width: 17px; height: 17px; }
+    .equity-bd-icon.etf { background: rgba(139, 92, 246, .14); color: #8B5CF6; }
+
+    .equity-bd-name { font-size: 13.5px; font-weight: 800; color: #fff; }
+    .equity-bd-count { font-size: 11px; color: #6a80a0; margin-top: 1px; }
+
+    .equity-bd-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr) auto;
+      gap: 10px;
+      align-items: start;
+    }
+    @media (max-width: 560px) {
+      .equity-bd-metrics { grid-template-columns: 1fr 1fr; }
+    }
+
+    .equity-bd-metric .lbl {
       font-size: 10px;
       color: #6a80a0;
+      margin-bottom: 3px;
     }
 
-    .equity-perf-item .val {
-      font-size: 12.5px;
+    .equity-bd-metric .val {
+      font-size: 13px;
       font-weight: 700;
+      color: #fff;
       font-variant-numeric: tabular-nums;
     }
 
-    .equity-perf-item .val.pos { color: #2DD4BF; }
-    .equity-perf-item .val.neg { color: #FF5C6C; }
+    .equity-bd-metric .val.pos { color: #2DD4BF; }
+    .equity-bd-metric .val.neg { color: #FF5C6C; }
+    .equity-bd-metric .sub { font-size: 10px; color: #6a80a0; margin-top: 1px; }
+
+    .equity-bd-peak {
+      background: rgba(45, 212, 191, .1);
+      border: 1px solid rgba(45, 212, 191, .25);
+      border-radius: 8px;
+      padding: 6px 10px;
+      text-align: center;
+    }
+    .equity-bd-peak .lbl { font-size: 9.5px; color: #6a80a0; margin-bottom: 2px; }
+    .equity-bd-peak .val { font-size: 13px; font-weight: 800; color: #2DD4BF; }
 
     .fh-footnote {
       font-size: 10.5px;
@@ -4076,7 +4177,7 @@
 
   <!-- Equity Curve Modal -->
   <div class="fh-overlay" id="equityOverlay">
-    <div class="fh-modal" role="dialog" aria-modal="true" aria-labelledby="equityModalTitle" style="max-width:920px">
+    <div class="fh-modal" role="dialog" aria-modal="true" aria-labelledby="equityModalTitle" style="max-width:1180px">
       <div class="fh-head">
         <div class="fh-head-left">
           <div class="fh-head-icon"
@@ -5160,6 +5261,53 @@
         return out;
       }
 
+      // Peak Return / Max Drawdown: both scan the same per-date unrealized
+      // P&L % used in the chart tooltip (currentValue vs investedValue on
+      // that date, plus any booked profit) — Peak Return is the best point
+      // reached, Max Drawdown is the worst (largest loss in ₹ and %) point
+      // reached, each with the date it happened on.
+      function computeEquityExtraStats(rows) {
+        if (!rows.length) return { peakReturnPct: null, maxDrawdownPct: null, maxDrawdownAmount: null, maxDrawdownDate: null };
+        let peakReturnPct = -Infinity;
+        let worstPct = Infinity, worstAmount = null, worstDate = rows[0].date;
+        rows.forEach(r => {
+          const pl = (r.currentValue - r.investedValue) + (isFinite(r.realizedPnL) ? r.realizedPnL : 0);
+          if (r.investedValue > 0) {
+            const plPct = (pl / r.investedValue) * 100;
+            if (plPct > peakReturnPct) peakReturnPct = plPct;
+            if (plPct < worstPct) { worstPct = plPct; worstAmount = pl; worstDate = r.date; }
+          }
+        });
+        return {
+          peakReturnPct: isFinite(peakReturnPct) ? peakReturnPct : null,
+          maxDrawdownPct: isFinite(worstPct) ? worstPct : null,
+          maxDrawdownAmount: worstAmount,
+          maxDrawdownDate: worstDate
+        };
+      }
+
+      const EQ_ICON_WALLET = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`;
+      const EQ_ICON_COINS = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>`;
+      const EQ_ICON_TREND = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>`;
+      const EQ_ICON_PERCENT = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>`;
+      const EQ_ICON_PEAKVAL = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>`;
+      const EQ_ICON_DRAWDOWN = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+      const EQ_ICON_DONUT = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>`;
+      const EQ_ICON_USERS = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`;
+      const EQ_ICON_STOCKS = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>`;
+      const EQ_ICON_ETF = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`;
+
+      function equityStatCard(icon, label, value, subHtml, iconBg, iconColor) {
+        return `<div class="equity-stat-card">
+          <div class="equity-stat-head">
+            <div class="equity-stat-icon" style="background:${iconBg};color:${iconColor}">${icon}</div>
+            <div class="fh-summary-lbl">${escHtml(label)}</div>
+          </div>
+          <div class="equity-stat-val">${value}</div>
+          ${subHtml || ""}
+        </div>`;
+      }
+
       function pctBadge(pct) {
         if (pct == null || !isFinite(pct)) return `<span class="equity-stat-sub muted">—</span>`;
         return `<span class="equity-stat-sub ${pct >= 0 ? "pos" : "neg"}">${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%</span>`;
@@ -5315,28 +5463,82 @@
         const perf = computeEquityPeriodPerformance(hist);
         equityModalSub.textContent = `${fmtDate(filtered[0].date)} → ${fmtDate(filtered[filtered.length - 1].date)}`;
 
+        const extra = computeEquityExtraStats(filtered);
+        const totalCurrent = stats.last.currentValue;
+
+        const stockHistFull = portfolioHistoryByType.stock || [];
+        const etfHistFull = portfolioHistoryByType.etf || [];
+        const stockFiltered = filterEquityByRange(stockHistFull, equityRange);
+        const etfFiltered = filterEquityByRange(etfHistFull, equityRange);
+        const lastStock = stockFiltered.length ? stockFiltered[stockFiltered.length - 1] : null;
+        const lastEtf = etfFiltered.length ? etfFiltered[etfFiltered.length - 1] : null;
+        const stockAllocPct = lastStock && totalCurrent > 0 ? (lastStock.currentValue / totalCurrent) * 100 : null;
+        const etfAllocPct = lastEtf && totalCurrent > 0 ? (lastEtf.currentValue / totalCurrent) * 100 : null;
+        const stockCount = lastStock ? lastStock.holdingCount : 0;
+        const etfCount = lastEtf ? lastEtf.holdingCount : 0;
+        const showStock = equityType === "all" || equityType === "stock";
+        const showEtf = equityType === "all" || equityType === "etf";
+
+        const latestHoldingsVal = equityType === "etf" ? `${etfCount} ETF` : `${stockCount} Stocks`;
+        const latestHoldingsSub = equityType === "all" ? `<div class="equity-stat-sub muted">${etfCount} ETF</div>` : "";
+        const holdingsCountVal = equityType === "etf" ? etfCount : equityType === "stock" ? stockCount : (stats.last.holdingCount || 0);
+
+        const breakdownCards = [
+          showStock ? renderEquityBreakdownCard("Stocks", stockCount, lastStock, totalCurrent, stockFiltered, EQ_ICON_STOCKS, "") : "",
+          showEtf ? renderEquityBreakdownCard("ETFs", etfCount, lastEtf, totalCurrent, etfFiltered, EQ_ICON_ETF, "etf") : ""
+        ].join("");
+
         equityBody.innerHTML = `
       <div class="equity-modal-layout">
         <div class="equity-chart-col">
           <div class="fh-chart-wrap">${renderEquityLineChart(filtered, { w: 680, h: 230, gradId: "equityAreaGradModal" })}</div>
           <div class="fh-footnote">Equity curve shows the historical value of your portfolio based on market data. Return % figures are cash-flow adjusted (time-weighted), so buying or selling holdings doesn't distort them.</div>
-        </div>
-        <div class="equity-stats-col">
-          <div class="equity-stat-card"><div class="fh-summary-lbl">Current Value</div><div class="fh-summary-val" style="color:#8B5CF6">₹${fmtMoney(stats.last.currentValue)}</div>${pctBadge(stats.curPct)}</div>
-          <div class="equity-stat-card"><div class="fh-summary-lbl">Invested Value</div><div class="fh-summary-val" style="color:#2DD4BF">₹${fmtMoney(stats.last.investedValue)}</div>${cashFlowBadge(stats.netCashFlow)}</div>
-          <div class="equity-stat-card"><div class="fh-summary-lbl">Peak Value</div><div class="fh-summary-val">₹${fmtMoney(stats.peak.currentValue)}</div><div class="equity-stat-sub muted">${escHtml(fmtDate(stats.peak.date))}</div></div>
-          <div class="equity-stat-card"><div class="fh-summary-lbl">Total Return</div><div class="fh-summary-val ${stats.totalReturn >= 0 ? "buy" : "sell"}">${stats.totalReturn >= 0 ? "+" : "-"}₹${fmtMoney(Math.abs(stats.totalReturn))}</div>${pctBadge(stats.totalReturnPct)}</div>
-          <div class="equity-perf-box">
-            <div class="fh-summary-lbl">Period Performance</div>
-            <div class="equity-perf-grid">
-              ${perf.map(p => `<div class="equity-perf-item"><span class="lbl">${escHtml(p.label)}</span><span class="val ${p.pct == null ? "" : p.pct >= 0 ? "pos" : "neg"}">${p.pct == null ? "—" : (p.pct >= 0 ? "+" : "") + p.pct.toFixed(2) + "%"}</span></div>`).join("")}
+          <div class="equity-breakdown-section">
+            <div class="equity-breakdown-title">Portfolio Breakdown</div>
+            <div class="equity-breakdown-sub">Performance by asset type</div>
+            <div class="equity-breakdown-grid${showStock && showEtf ? "" : " single"}">
+              ${breakdownCards}
             </div>
           </div>
+        </div>
+        <div class="equity-stats-col">
+          ${equityStatCard(EQ_ICON_WALLET, "Current Value", `₹${fmtMoney(stats.last.currentValue)}`, pctBadge(stats.curPct), "rgba(139,92,246,.14)", "#8B5CF6")}
+          ${equityStatCard(EQ_ICON_COINS, "Invested Value", `₹${fmtMoney(stats.last.investedValue)}`, cashFlowBadge(stats.netCashFlow), "rgba(45,212,191,.14)", "#2DD4BF")}
+          ${equityStatCard(EQ_ICON_TREND, "Total Return", `${stats.totalReturn >= 0 ? "+" : "-"}₹${fmtMoney(Math.abs(stats.totalReturn))}`, `<div class="equity-stat-sub ${stats.totalReturn >= 0 ? "pos" : "neg"}">${stats.totalReturnPct == null ? "—" : (stats.totalReturnPct >= 0 ? "+" : "") + stats.totalReturnPct.toFixed(2) + "%"}</div>`, "rgba(255,92,108,.14)", "#FF5C6C")}
+          ${equityStatCard(EQ_ICON_PERCENT, "Peak Return", extra.peakReturnPct == null ? "—" : `${extra.peakReturnPct >= 0 ? "+" : ""}${extra.peakReturnPct.toFixed(2)}%`, `<div class="equity-stat-sub muted">Highest return in period</div>`, "rgba(139,92,246,.14)", "#8B5CF6")}
+          ${equityStatCard(EQ_ICON_PEAKVAL, "Peak Value", `₹${fmtMoney(stats.peak.currentValue)}`, `<div class="equity-stat-sub muted">${escHtml(fmtDate(stats.peak.date))}</div>`, "rgba(139,92,246,.14)", "#8B5CF6")}
+          ${equityStatCard(EQ_ICON_DRAWDOWN, "Max Drawdown", extra.maxDrawdownAmount == null ? "—" : `₹${fmtMoney(Math.abs(extra.maxDrawdownAmount))}`, extra.maxDrawdownPct == null ? "" : `<div class="equity-stat-sub ${extra.maxDrawdownAmount >= 0 ? "pos" : "neg"}">${extra.maxDrawdownAmount >= 0 ? "+" : ""}${extra.maxDrawdownPct.toFixed(2)}% (${escHtml(fmtDate(extra.maxDrawdownDate))})</div>`, "rgba(255,92,108,.14)", "#FF5C6C")}
+          ${equityType === "all" ? equityStatCard(EQ_ICON_DONUT, "Stock Allocation", stockAllocPct == null ? "—" : `${stockAllocPct.toFixed(1)}%`, lastStock ? `<div class="equity-stat-sub muted">₹${fmtMoney(lastStock.currentValue)} (Current Value)</div>` : "", "rgba(45,212,191,.14)", "#2DD4BF") : ""}
+          ${equityType === "all" ? equityStatCard(EQ_ICON_DONUT, "ETF Allocation", etfAllocPct == null ? "—" : `${etfAllocPct.toFixed(1)}%`, lastEtf ? `<div class="equity-stat-sub muted">₹${fmtMoney(lastEtf.currentValue)} (Current Value)</div>` : "", "rgba(139,92,246,.14)", "#8B5CF6") : ""}
+          ${equityStatCard(EQ_ICON_USERS, "Holdings Count", `${holdingsCountVal || 0}`, "", "rgba(255,255,255,.08)", "#c8d6e6")}
+          ${equityStatCard(EQ_ICON_STOCKS, "Latest Holdings", latestHoldingsVal, latestHoldingsSub, "rgba(255,255,255,.08)", "#c8d6e6")}
         </div>
       </div>`;
         wireEquityTooltips(filtered, "#equityBody .fh-chart-wrap", "equityModalTooltip", document.querySelector("#equityOverlay .fh-modal"));
         syncEquityRangeButtons();
         syncEquityTypeButtons();
+      }
+
+      function renderEquityBreakdownCard(name, count, last, totalCurrent, typeFiltered, icon, iconCls) {
+        if (!last) {
+          return `<div class="equity-breakdown-card">
+            <div class="equity-bd-head"><div class="equity-bd-icon ${iconCls}">${icon}</div><div><div class="equity-bd-name">${escHtml(name)}</div><div class="equity-bd-count">${count} holdings</div></div></div>
+            <div class="fh-empty" style="padding:6px 0">No data yet.</div>
+          </div>`;
+        }
+        const pnl = (last.currentValue - last.investedValue) + (isFinite(last.realizedPnL) ? last.realizedPnL : 0);
+        const pnlPct = last.investedValue > 0 ? (pnl / last.investedValue) * 100 : null;
+        const allocPct = totalCurrent > 0 ? (last.currentValue / totalCurrent) * 100 : null;
+        const typeExtra = computeEquityExtraStats(typeFiltered);
+        return `<div class="equity-breakdown-card">
+          <div class="equity-bd-head"><div class="equity-bd-icon ${iconCls}">${icon}</div><div><div class="equity-bd-name">${escHtml(name)}</div><div class="equity-bd-count">${count} holdings</div></div></div>
+          <div class="equity-bd-metrics">
+            <div class="equity-bd-metric"><div class="lbl">Current Value</div><div class="val">₹${fmtMoney(last.currentValue)}</div>${allocPct != null ? `<div class="sub">(${allocPct.toFixed(1)}%)</div>` : ""}</div>
+            <div class="equity-bd-metric"><div class="lbl">Invested Value</div><div class="val">₹${fmtMoney(last.investedValue)}</div></div>
+            <div class="equity-bd-metric"><div class="lbl">P&amp;L</div><div class="val ${pnl >= 0 ? "pos" : "neg"}">${pnl >= 0 ? "+" : "-"}₹${fmtMoney(Math.abs(pnl))}</div>${pnlPct != null ? `<div class="sub">(${pnlPct >= 0 ? "+" : ""}${pnlPct.toFixed(2)}%)</div>` : ""}</div>
+            <div class="equity-bd-peak"><div class="lbl">Peak Return</div><div class="val">${typeExtra.peakReturnPct == null ? "—" : `${typeExtra.peakReturnPct >= 0 ? "+" : ""}${typeExtra.peakReturnPct.toFixed(2)}%`}</div></div>
+          </div>
+        </div>`;
       }
 
       function syncEquityTypeButtons() {
