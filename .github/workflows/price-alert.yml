@@ -20,6 +20,12 @@ jobs:
       ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
+      CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
+      CONSUMER_ID: ${{ secrets.CONSUMER_ID }}
+      MOBILE: ${{ secrets.MOBILE }}
+      MPIN: ${{ secrets.MPIN }}
+      TOTP_SECRET: ${{ secrets.TOTP_SECRET }}
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
