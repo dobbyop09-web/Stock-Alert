@@ -67,7 +67,7 @@ public class AlertRunner implements CommandLineRunner {
         for (SheetType sheet : SheetType.values()) {
 
             dashboard.addAll(
-                    csvReaderService.readCsvAndCheckAlerts(
+                    csvReaderService.readCsvAndCheckKotakAlerts(
                             sheet.getSheetConfig(),
                             triggeredToday
                     )
