@@ -40,25 +40,5 @@ jobs:
       - name: Build
         run: mvn clean package -DskipTests
 
-      - name: Check Kotak environment
-        run: |
-          if [ -z "$CONSUMER_KEY" ]; then
-            echo "CONSUMER_KEY is NOT available"
-          else
-            echo "CONSUMER_KEY is available"
-          fi
-
-          if [ -z "$CONSUMER_ID" ]; then
-            echo "CONSUMER_ID is NOT available"
-          else
-            echo "CONSUMER_ID is available"
-          fi
-
-          if [ -z "$TOTP_SECRET" ]; then
-            echo "TOTP_SECRET is NOT available"
-          else
-            echo "TOTP_SECRET is available"
-          fi
-
       - name: Run Application
         run: java -jar target/*.jar

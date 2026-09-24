@@ -3,13 +3,10 @@ package com.dobby.price_alert.runners;
 import com.dobby.price_alert.constants.PortfolioConstants;
 import com.dobby.price_alert.constants.SheetType;
 import com.dobby.price_alert.dto.DashboardStock;
+import com.dobby.price_alert.dto.KotakScrip;
 import com.dobby.price_alert.dto.portfolio.PortfolioData;
 import com.dobby.price_alert.dto.portfolio.PortfolioSnapshot;
-import com.dobby.price_alert.service.CsvReaderService;
-import com.dobby.price_alert.service.DashBoardMetaDataService;
-import com.dobby.price_alert.service.DashboardJsonService;
-import com.dobby.price_alert.service.PortfolioSnapshotService;
-import com.dobby.price_alert.service.StockAlertService;
+import com.dobby.price_alert.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -20,6 +17,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Component
@@ -34,6 +32,7 @@ public class AlertRunner implements CommandLineRunner {
     private final DashBoardMetaDataService dashBoardMetaDataService;
     private final StockAlertService stockAlertService;
     private final PortfolioSnapshotService portfolioSnapshotService;
+    private final KotakScripLookupService kotakScripLookupService;
 
     private final List<DashboardStock> dashboard = new ArrayList<>();
 
@@ -42,13 +41,14 @@ public class AlertRunner implements CommandLineRunner {
             DashboardJsonService dashboardJsonService,
             DashBoardMetaDataService dashBoardMetaDataService,
             StockAlertService stockAlertService,
-            PortfolioSnapshotService portfolioSnapshotService
+            PortfolioSnapshotService portfolioSnapshotService, KotakScripLookupService kotakScripLookupService
     ) {
         this.csvReaderService = csvReaderService;
         this.dashboardJsonService = dashboardJsonService;
         this.dashBoardMetaDataService = dashBoardMetaDataService;
         this.stockAlertService = stockAlertService;
         this.portfolioSnapshotService = portfolioSnapshotService;
+        this.kotakScripLookupService = kotakScripLookupService;
     }
 
     @Override
@@ -64,12 +64,16 @@ public class AlertRunner implements CommandLineRunner {
         /*
          * Read all configured sheets.
          */
+        Map<String, KotakScrip> scripMap =
+                kotakScripLookupService.loadNseScripMap();
+
         for (SheetType sheet : SheetType.values()) {
 
             dashboard.addAll(
                     csvReaderService.readCsvAndCheckKotakAlerts(
                             sheet.getSheetConfig(),
-                            triggeredToday
+                            triggeredToday,
+                             scripMap
                     )
             );
         }
