@@ -71,7 +71,7 @@ public class CsvReaderService {
             double alert = Double.parseDouble(record.get("Alert Price"));
             double fib = Double.parseDouble(record.get("FIB"));
             MarketData marketData = new MarketData();
-            if(symbol.equals("NSE")) {
+            if(!symbol.equals("NSE")) {
               marketData=  marketDataService.getMarketData(symbol);
             }
             String companyName = marketData.getCompanyName();
