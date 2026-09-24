@@ -171,6 +171,28 @@
                             Refresh Now
                         </button>
 
+                        <div class="provider-toggle" id="providerToggle">
+                            <button type="button" class="provider-seg" data-value="KOTAK" id="providerSegKOTAK">
+                                <span class="provider-seg-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="9" />
+                                        <path d="M8.5 8c1.8 0 2.4 1.6 3.5 3.2C13 13 14.5 14 16 14" />
+                                        <path d="M15.5 8c-1.8 0-2.4 1.6-3.5 3.2C11 13 9.5 14 8 14" />
+                                    </svg>
+                                </span>
+                                <span>Kotak</span>
+                            </button>
+                            <button type="button" class="provider-seg" data-value="NSE" id="providerSegNSE">
+                                <span class="provider-seg-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 2.5l8.5 4.2v10.6L12 21.5l-8.5-4.2V6.7L12 2.5Z" />
+                                        <path d="M8.7 9.2l3.3 5.6 3.3-5.6" />
+                                    </svg>
+                                </span>
+                                <span>NSE</span>
+                            </button>
+                        </div>
+
                         <div class="auth-menu" id="authMenu">
                             <button id="loginBtn" class="auth-btn" disabled>
                                 <span class="auth-dot"></span>
@@ -281,6 +303,59 @@
             <h3 id="statusModalTitle">Saved!</h3>
             <p id="statusModalMsg">Your changes have been saved successfully.</p>
             <button type="button" class="btn-modal-ok" id="statusModalOk">OK</button>
+        </div>
+    </div>
+
+    <!-- ══ Market data provider modal ══ -->
+    <div class="modal-overlay" id="providerModal" hidden>
+        <div class="alert-modal provider-modal-box" id="providerModalBox">
+            <button type="button" class="provider-modal-close" id="providerCloseBtn" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+
+            <div class="provider-modal-head">
+                <span class="provider-modal-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10" />
+                        <polyline points="1 20 1 14 7 14" />
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                    </svg>
+                </span>
+                <h3>Change Price Source</h3>
+            </div>
+
+            <p>Select the source for stock prices and data.</p>
+
+            <div class="provider-options" id="providerOptions">
+                <button type="button" class="provider-option" data-value="KOTAK" id="providerOptKOTAK">
+                    <span class="provider-option-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="M8.5 8c1.8 0 2.4 1.6 3.5 3.2C13 13 14.5 14 16 14" />
+                            <path d="M15.5 8c-1.8 0-2.4 1.6-3.5 3.2C11 13 9.5 14 8 14" />
+                        </svg>
+                    </span>
+                    <span class="provider-option-title">Kotak</span>
+                </button>
+                <button type="button" class="provider-option" data-value="NSE" id="providerOptNSE">
+                    <span class="provider-option-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2.5l8.5 4.2v10.6L12 21.5l-8.5-4.2V6.7L12 2.5Z" />
+                            <path d="M8.7 9.2l3.3 5.6 3.3-5.6" />
+                        </svg>
+                    </span>
+                    <span class="provider-option-title">NSE</span>
+                </button>
+            </div>
+
+            <p class="provider-modal-msg" id="providerModalMsg"></p>
+
+            <div class="provider-modal-actions">
+                <button type="button" class="btn-ghost" id="providerCancelBtn">Cancel</button>
+                <button type="button" class="btn-primary" id="providerSaveBtn">Update</button>
+            </div>
         </div>
     </div>
 
