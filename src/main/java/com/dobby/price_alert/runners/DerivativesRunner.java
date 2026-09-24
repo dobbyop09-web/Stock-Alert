@@ -30,26 +30,26 @@ public class DerivativesRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        ClassPathResource resource =
-                new ClassPathResource("future-stocks.json");
-
-        try (InputStream inputStream = resource.getInputStream()) {
-
-            DerivativesStockList stockList =
-                    objectMapper.readValue(
-                            inputStream,
-                            DerivativesStockList.class
-                    );
-
-            Set<String> symbols =
-                    new LinkedHashSet<>(stockList.getStocks());
-
-            log.info(
-                    "Loaded {} unique derivative stocks",
-                    symbols.size()
-            );
-
-            service.fetchAndStoreDerivativesData(symbols);
-        }
+//        ClassPathResource resource =
+//                new ClassPathResource("future-stocks.json");
+//
+//        try (InputStream inputStream = resource.getInputStream()) {
+//
+//            DerivativesStockList stockList =
+//                    objectMapper.readValue(
+//                            inputStream,
+//                            DerivativesStockList.class
+//                    );
+//
+//            Set<String> symbols =
+//                    new LinkedHashSet<>(stockList.getStocks());
+//
+//            log.info(
+//                    "Loaded {} unique derivative stocks",
+//                    symbols.size()
+//            );
+//
+//            service.fetchAndStoreDerivativesData(symbols);
+//        }
     }
 }

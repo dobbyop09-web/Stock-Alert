@@ -271,7 +271,7 @@ public class CsvReaderService {
 
     public List<DashboardStock> readCsvAndCheckKotakAlerts(
             SheetConfig sheetConfig,
-            Set<String> triggeredToday) throws IOException {
+            Set<String> triggeredToday,  Map<String, KotakScrip> scripMap) throws IOException {
 
         log.info("Reading Kotak data for {}", sheetConfig.getName());
 
@@ -313,9 +313,6 @@ public class CsvReaderService {
          * 2. Resolve symbols against Kotak master
          * ---------------------------------------------------------
          */
-
-        Map<String, KotakScrip> scripMap =
-                kotakScripLookupService.loadNseScripMap();
 
         Map<String, KotakScrip> matchedScrips =
                 new HashMap<>();
@@ -370,10 +367,10 @@ public class CsvReaderService {
                         tokens
                 );
 
-        log.info(
-                "Kotak quotes returned: {}",
-                quotes.size()
-        );
+//        log.info(
+//                "Kotak quotes returned: {}",
+//                quotes.size()
+//        );
 
         /*
          * ---------------------------------------------------------
@@ -392,7 +389,6 @@ public class CsvReaderService {
             MarketData marketData =
                     kotakMarketDataService
                             .mapToMarketData(quote);
-            log.info("kotak symbol : "+ kotakSymbol);
             String symbol = kotakSymbol;
 
             int dashIndex = symbol.lastIndexOf("-");

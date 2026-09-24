@@ -22,7 +22,7 @@ public class KotakQuoteService {
     private final RestTemplate restTemplate;
     private final KotakNeoConfig config;
 
-    private static final long REQUEST_DELAY_MS = 300;
+    private static final long REQUEST_DELAY_MS = 60;
     private static final long RETRY_DELAY_MS = 2000;
     private static final int MAX_RETRIES = 2;
 
