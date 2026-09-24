@@ -3,8 +3,10 @@ package com.dobby.price_alert.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 @Configuration
+@Component
 public class KotakNeoConfig {
 
     @Value("${kotak.neo.consumer-key}")
