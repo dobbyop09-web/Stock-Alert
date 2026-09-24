@@ -3,7 +3,9 @@ package com.dobby.price_alert.constants;
 import com.dobby.price_alert.dto.SheetConfig;
 
 public enum SheetType {
-    DEFENCE("Defence", "1003001524"),
+    CAPITALMARKET("CapitalMarket", "1472211126"),
+
+     DEFENCE("Defence", "1003001524"),
 
     BANK("Bank", "1209852281"),
 
@@ -13,7 +15,6 @@ public enum SheetType {
 
     IT("It", "1604399595"),
 
-    CAPITALMARKET("CapitalMarket", "1472211126"),
     FMCG("Fmcg", "1254989583"),
 
     HEALTH("Health", "1954455770"),
@@ -22,7 +23,7 @@ public enum SheetType {
 
     ENERGY("OilEnergy", "1475720491"),
 
-//   SMALLCAP("Smallcap", "2029475330"),
+ //  SMALLCAP("Smallcap", "2029475330"),
 
     MISCELLANEOUS("Misc", "709000981"),
 
