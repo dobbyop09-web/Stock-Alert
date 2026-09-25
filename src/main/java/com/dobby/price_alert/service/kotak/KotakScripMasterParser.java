@@ -1,4 +1,4 @@
-package com.dobby.price_alert.service;
+package com.dobby.price_alert.service.kotak;
 
 import com.dobby.price_alert.dto.KotakScrip;
 import org.springframework.stereotype.Component;

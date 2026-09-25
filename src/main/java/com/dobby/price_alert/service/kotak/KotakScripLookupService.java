@@ -1,4 +1,4 @@
-package com.dobby.price_alert.service;
+package com.dobby.price_alert.service.kotak;
 
 import com.dobby.price_alert.dto.KotakScrip;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,10 +94,10 @@ public class KotakScripLookupService {
         String nseMaster;
 
         try {
-
+            String today = LocalDate.now().toString();
             nseMaster =
                     kotakScripMasterApiService.downloadNseCashMaster(
-                            "https://lapi.kotaksecurities.com/wso2-scripmaster/v1/prod/2026-09-24/transformed-v1/nse_cm-v1.csv"
+                            "https://lapi.kotaksecurities.com/wso2-scripmaster/v1/prod/"+today+"/transformed-v1/nse_cm-v1.csv"
                     );
 
             log.info("NSE master downloaded from Kotak API.");
@@ -146,6 +147,7 @@ public class KotakScripLookupService {
 
         Map<String, KotakScrip> scripMap =
                 new HashMap<>();
+        scripMap.put("NSE",new KotakScrip("544937","bse_cm","NSE","NSE-EQ","INE721I01024"));
 
         for (KotakScrip scrip : scrips) {
 
@@ -172,4 +174,6 @@ public class KotakScripLookupService {
 
         return scripMap;
     }
+
+
 }
