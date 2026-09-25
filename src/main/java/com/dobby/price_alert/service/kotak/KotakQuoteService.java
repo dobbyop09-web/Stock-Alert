@@ -1,4 +1,4 @@
-package com.dobby.price_alert.service;
+package com.dobby.price_alert.service.kotak;
 
 import com.dobby.price_alert.config.KotakNeoConfig;
 import com.dobby.price_alert.dto.kotak.KotakQuoteResponse;
@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -48,6 +49,11 @@ public class KotakQuoteService {
         for (int i = 0; i < tokens.size(); i++) {
 
             String token = tokens.get(i);
+            if(Objects.equals(token, "544937")){
+                exchangeSegment="bse_cm";
+            }else{
+                exchangeSegment="nse_cm";
+            }
 
             /*
              * Keep a gap between consecutive requests.

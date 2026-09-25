@@ -7,6 +7,7 @@ import com.dobby.price_alert.dto.KotakScrip;
 import com.dobby.price_alert.dto.portfolio.PortfolioData;
 import com.dobby.price_alert.dto.portfolio.PortfolioSnapshot;
 import com.dobby.price_alert.service.*;
+import com.dobby.price_alert.service.kotak.KotakScripLookupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -15,10 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @Order(1)
@@ -72,13 +70,15 @@ public class AlertRunner implements CommandLineRunner {
         /*
          * Read all configured sheets.
          */
+        Map<String, KotakScrip> scripMap = new HashMap<>();
+        if("KOTAK".equalsIgnoreCase(marketDataProvider)){
+             scripMap = kotakScripLookupService.loadNseScripMap();
+        }
 
 
         for (SheetType sheet : SheetType.values()) {
-
             if ("KOTAK".equalsIgnoreCase(marketDataProvider)) {
-                Map<String, KotakScrip> scripMap =
-                        kotakScripLookupService.loadNseScripMap();
+
                 dashboard.addAll(
                         csvReaderService.readCsvAndCheckKotakAlerts(
                                 sheet.getSheetConfig(),

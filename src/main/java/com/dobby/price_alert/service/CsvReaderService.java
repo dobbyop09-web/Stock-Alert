@@ -2,19 +2,20 @@ package com.dobby.price_alert.service;
 
 import com.dobby.price_alert.dto.*;
 import com.dobby.price_alert.dto.kotak.KotakQuoteResponse;
+import com.dobby.price_alert.service.kotak.KotakMarketDataService;
+import com.dobby.price_alert.service.kotak.KotakQuoteService;
+import com.dobby.price_alert.service.kotak.KotakScripLookupService;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.DayOfWeek;
 import java.time.Instant;
@@ -71,9 +72,11 @@ public class CsvReaderService {
             double alert = Double.parseDouble(record.get("Alert Price"));
             double fib = Double.parseDouble(record.get("FIB"));
             MarketData marketData = new MarketData();
-            if(!symbol.equals("NSE")) {
-              marketData=  marketDataService.getMarketData(symbol);
+            if(symbol.equals("NSE")) {
+               continue;
             }
+            marketData=  marketDataService.getMarketData(symbol);
+
             String companyName = marketData.getCompanyName();
             double dayLow = marketData.getDayLow();
             double current =marketData.getCurrentPrice();
@@ -354,6 +357,8 @@ public class CsvReaderService {
                 matchedScrips.size(),
                 tokens.size()
         );
+
+       // log.info("Tokens :"+ tokens );
 
         /*
          * ---------------------------------------------------------

@@ -1,4 +1,4 @@
-package com.dobby.price_alert.service;
+package com.dobby.price_alert.service.kotak;
 
 import com.dobby.price_alert.client.KotakSession;
 import com.dobby.price_alert.config.KotakNeoConfig;

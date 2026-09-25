@@ -1,9 +1,8 @@
-package com.dobby.price_alert.service;
+package com.dobby.price_alert.service.kotak;
 
 import com.dobby.price_alert.config.KotakNeoConfig;
 import dev.samstevens.totp.code.CodeGenerator;
 import dev.samstevens.totp.code.DefaultCodeGenerator;
-import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import org.springframework.stereotype.Service;
 
 @Service
