@@ -134,8 +134,17 @@
     #bulkDeleteBtn:disabled{opacity:.45;cursor:not-allowed}
 
     .sym-cell{display:flex;align-items:center;gap:8px}
-    .sym-cell-logo-wrap{width:24px;height:24px;position:relative;flex:0 0 24px}.sym-cell-logo{width:24px;height:24px;border-radius:50%;object-fit:contain;background:#fff;padding:2px;display:block}.sym-cell-fallback{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#0B0F11;flex-shrink:0}.sym-cell-text{display:flex;flex-direction:column;gap:2px;min-width:0}.sym-name{font-size:13px;font-weight:700;color:#EDF5FF}
+    .sym-cell-logo-wrap{width:24px;height:24px;position:relative;flex:0 0 24px}.sym-cell-logo{width:24px;height:24px;border-radius:50%;object-fit:contain;background:#fff;padding:2px;display:block}.sym-cell-fallback{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#0B0F11;flex-shrink:0}.sym-cell-text{display:flex;flex-direction:column;gap:2px;min-width:0}.sym-name-row{display:flex;align-items:center;gap:6px;min-width:0}.sym-name{font-size:13px;font-weight:700;color:#EDF5FF;white-space:nowrap}.broker-marker{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;font-size:8px;font-weight:800;line-height:1;color:#dce8f4;background:rgba(245,166,35,.10);border:1px solid rgba(245,166,35,.28);box-shadow:0 0 0 2px rgba(245,166,35,.03);flex:0 0 16px;cursor:default}.broker-marker:hover{background:rgba(245,166,35,.16);border-color:rgba(245,166,35,.42)}
     .sym-exch{font-size:10px;color:#3a5060;font-weight:500}
+
+    /* ── Broker scope / source UI ── */
+    .broker-scope-toggle{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 11px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#6f8498;cursor:pointer;user-select:none;transition:.18s;white-space:nowrap}.broker-scope-toggle:hover{border-color:rgba(245,166,35,.35);color:#dce8f4;background:rgba(245,166,35,.05)}.broker-scope-toggle:has(input:checked){border-color:rgba(245,166,35,.38);background:rgba(245,166,35,.07);color:#F5A623}.broker-scope-toggle input{appearance:none;-webkit-appearance:none;width:15px;height:15px;border:1px solid rgba(143,163,188,.45);border-radius:4px;background:rgba(255,255,255,.03);cursor:pointer;position:relative;flex:0 0 15px}.broker-scope-toggle input:checked{background:#F5A623;border-color:#F5A623}.broker-scope-toggle input:checked::after{content:"";position:absolute;left:4px;top:1px;width:5px;height:9px;border:solid #08111a;border-width:0 2px 2px 0;transform:rotate(45deg)}.broker-scope-toggle .scope-label{font-size:12px;font-weight:600}.broker-scope-toggle .scope-dot{width:6px;height:6px;border-radius:50%;background:#F5A623;opacity:.7}
+
+    /* ── Sortable headers ── */
+    .gtt-table th.sortable{cursor:pointer;user-select:none}.gtt-table th.sortable:hover{color:#8fa3bc}.th-sort-wrap{display:inline-flex;align-items:center;gap:4px}.th-sort-icon{display:inline-flex;align-items:center;justify-content:center;min-width:10px;color:#496276;font-size:9px;opacity:.6;transition:color .15s,opacity .15s}.gtt-table th.sortable:hover .th-sort-icon{opacity:.95}.gtt-table th.sort-active{color:#9fb5c8}.gtt-table th.sort-active .th-sort-icon{color:#2DD4BF;opacity:1}
+
+    /* ── Broker checkbox fields ── */
+    .broker-checkbox-field{display:flex;align-items:center;gap:9px;padding:9px 11px;border:1px solid rgba(255,255,255,.07);border-radius:8px;background:rgba(255,255,255,.025);color:#8fa3bc;cursor:pointer;transition:.18s}.broker-checkbox-field:hover{border-color:rgba(245,166,35,.28);background:rgba(245,166,35,.04);color:#cfe2f5}.broker-checkbox-field input{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1px solid rgba(143,163,188,.45);border-radius:4px;background:rgba(255,255,255,.03);cursor:pointer;position:relative;flex:0 0 16px}.broker-checkbox-field input:checked{background:#F5A623;border-color:#F5A623}.broker-checkbox-field input:checked::after{content:"";position:absolute;left:4px;top:1px;width:5px;height:9px;border:solid #08111a;border-width:0 2px 2px 0;transform:rotate(45deg)}.broker-checkbox-copy{display:flex;flex-direction:column;gap:2px}.broker-checkbox-title{font-size:11px;font-weight:650;color:#cfe2f5}.broker-checkbox-desc{font-size:9px;color:#4a6075}
     .type-pill{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700}
     .type-pill.buy{color:#2DD4BF}.type-pill.sell{color:#FF5C6C}
     .order-sub{font-size:10px;color:#4a6075;margin-top:1px}
@@ -372,19 +381,6 @@
             <path d="M14.5 19.5l3-3 2 1.5 3-4" />
           </svg>
         </a>
-        <a href="heatmap.html" class="sb-link" data-title="Heat Map">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
-            <rect x="3" y="3" width="5" height="5" />
-            <rect x="10" y="3" width="5" height="5" />
-            <rect x="17" y="3" width="4" height="5" />
-            <rect x="3" y="10" width="5" height="5" />
-            <rect x="10" y="10" width="5" height="5" />
-            <rect x="17" y="10" width="4" height="5" />
-            <rect x="3" y="17" width="5" height="4" />
-            <rect x="10" y="17" width="5" height="4" />
-            <rect x="17" y="17" width="4" height="4" />
-          </svg>
-        </a>
         <a href="admin.html" class="sb-link" data-title="Holdings">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
             stroke-linejoin="round">
@@ -584,6 +580,12 @@
                 </div>
               </div>
 
+              <label class="broker-scope-toggle" for="allBrokersToggle" title="Include broker-only GTT orders in the whole page">
+                <span class="scope-dot"></span>
+                <input type="checkbox" id="allBrokersToggle">
+                <span class="scope-label">All Brokers</span>
+              </label>
+
               <div class="toolbar-actions">
                 <button class="btn-reset" id="resetBtn">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -605,16 +607,16 @@
                   <th id="bulkSelectHeader" class="bulk-select-header" style="display:none;">
                     <input type="checkbox" id="selectAllBulk">
                   </th>
-                  <th>SYMBOL</th>
-                  <th>SECTOR</th>
-                  <th>TYPE</th>
-                  <th>CONDITION</th>
-                  <th>CMP</th>
-                  <th class="center" id="thToTrigger" style="cursor:pointer;user-select:none">TO TRIGGER <span id="toTriggerSortIcon" style="display:inline-block;margin-left:3px;opacity:.5">↕</span></th>
-                  <th>QTY / TRADE</th>
-                  <th class="right">AMOUNT</th>
-                  <th class="center">STATUS</th>
-                  <th>CREATED ON</th>
+                  <th class="sortable" data-sort-key="symbol"><span class="th-sort-wrap">SYMBOL <span class="th-sort-icon" data-sort-icon="symbol">↕</span></span></th>
+                  <th class="sortable" data-sort-key="sector"><span class="th-sort-wrap">SECTOR <span class="th-sort-icon" data-sort-icon="sector">↕</span></span></th>
+                  <th class="sortable" data-sort-key="type"><span class="th-sort-wrap">TYPE <span class="th-sort-icon" data-sort-icon="type">↕</span></span></th>
+                  <th class="sortable" data-sort-key="condition"><span class="th-sort-wrap">CONDITION <span class="th-sort-icon" data-sort-icon="condition">↕</span></span></th>
+                  <th class="sortable" data-sort-key="cmp"><span class="th-sort-wrap">CMP <span class="th-sort-icon" data-sort-icon="cmp">↕</span></span></th>
+                  <th class="sortable center" data-sort-key="toTrigger"><span class="th-sort-wrap">TO TRIGGER <span class="th-sort-icon" data-sort-icon="toTrigger">↕</span></span></th>
+                  <th class="sortable" data-sort-key="quantity"><span class="th-sort-wrap">QTY / TRADE <span class="th-sort-icon" data-sort-icon="quantity">↕</span></span></th>
+                  <th class="sortable right" data-sort-key="amount"><span class="th-sort-wrap">AMOUNT <span class="th-sort-icon" data-sort-icon="amount">↕</span></span></th>
+                  <th class="sortable center" data-sort-key="status"><span class="th-sort-wrap">STATUS <span class="th-sort-icon" data-sort-icon="status">↕</span></span></th>
+                  <th class="sortable" data-sort-key="createdOn"><span class="th-sort-wrap">CREATED ON <span class="th-sort-icon" data-sort-icon="createdOn">↕</span></span></th>
                   <th class="right">ACTION</th>
                 </tr>
               </thead>
@@ -672,6 +674,13 @@
     <input type="number" id="editCondPrice" step="0.01" min="0" placeholder="0.00">
     <label>Quantity</label>
     <input type="number" id="editQuantity" step="1" min="1" placeholder="1">
+    <label class="broker-checkbox-field" for="editKotakBroker" style="display:flex;margin-top:12px;text-transform:none;letter-spacing:0;font-size:inherit">
+      <input type="checkbox" id="editKotakBroker">
+      <span class="broker-checkbox-copy">
+        <span class="broker-checkbox-title">Also on Kotak</span>
+        <span class="broker-checkbox-desc">Mark this GTT as also placed on Kotak</span>
+      </span>
+    </label>
     <div class="error-text" id="editGttError"></div>
     <div class="modal-actions">
       <button class="btn-cancel-m" id="editGttCancelBtn">Cancel</button>
@@ -775,6 +784,16 @@
         <div class="form-group">
           <label class="form-label">Amount Required</label>
           <input type="text" id="gttAmountRequired" class="form-input" value="₹ 0.00" readonly aria-readonly="true" style="font-weight:700;color:#EDF5FF;cursor:default">
+        </div>
+
+        <div class="form-group span2">
+          <label class="broker-checkbox-field" for="gttKotakBroker">
+            <input type="checkbox" id="gttKotakBroker">
+            <span class="broker-checkbox-copy">
+              <span class="broker-checkbox-title">Also on Kotak</span>
+              <span class="broker-checkbox-desc">Store this GTT as being placed on Kotak as well</span>
+            </span>
+          </label>
         </div>
 
         <div class="form-group" id="buyPriceGroup">
@@ -909,7 +928,10 @@
   let gttType       = "Buy";
   let bulkDeleteMode = false;
   let selectedOrders = new Set();
-  let sortToTrigger  = null;
+  let showAllBrokers = false;
+  let sortKey = null;
+  let sortDirection = null;
+  const PRIMARY_BROKER = "Primary";
 
   /* ── DOM refs ── */
   const dashboard      = document.getElementById("dashboard");
@@ -925,6 +947,7 @@
   const gttActionModal = document.getElementById("gttActionModal");
   const createGttModal = document.getElementById("createGttModal");
   const editGttModal   = document.getElementById("editGttModal");
+  const allBrokersToggle = document.getElementById("allBrokersToggle");
 
   /* ══════════════════════════════════════
      CUSTOM DROPDOWN COMPONENT
@@ -1004,7 +1027,7 @@
   async function loadData() {
     if (!sessionToken) return;
     const tbody = document.getElementById("gttTbody");
-    tbody.innerHTML = `<tr class="loading-row"><td colspan="12"><div class="spinner" style="margin:0 auto"></div></td></tr>`;
+    tbody.innerHTML = `<tr class="loading-row"><td colspan="13"><div class="spinner" style="margin:0 auto"></div></td></tr>`;
     document.getElementById("gttEmpty").style.display = "none";
 
     try {
@@ -1148,6 +1171,45 @@
     return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   }
 
+  function getOrderBrokers(o) {
+    const raw = o && o.brokers != null ? o.brokers : (o && o.broker != null ? o.broker : []);
+    const list = Array.isArray(raw) ? raw : [raw];
+    return list.map(v => String(v || "").trim()).filter(Boolean);
+  }
+
+  function isKotakOrder(o) {
+    return getOrderBrokers(o).some(b => b.toLowerCase().includes("kotak"));
+  }
+
+  function getPersistedBrokers(o) {
+    const current = getOrderBrokers(o);
+    return current.length ? current.slice() : [PRIMARY_BROKER];
+  }
+
+  function buildBrokersForSave(existingOrder, kotakChecked) {
+    const brokers = getPersistedBrokers(existingOrder);
+    if (!brokers.some(b => b.toLowerCase() === PRIMARY_BROKER.toLowerCase())) brokers.unshift(PRIMARY_BROKER);
+    for (let i = brokers.length - 1; i >= 0; i--) {
+      if (!kotakChecked && brokers[i].toLowerCase().includes("kotak")) brokers.splice(i, 1);
+    }
+    if (kotakChecked && !brokers.some(b => b.toLowerCase().includes("kotak"))) brokers.push("Kotak");
+    return Array.from(new Set(brokers));
+  }
+
+  function isPrimaryBrokerOrder(o) {
+    const brokers = getOrderBrokers(o);
+    if (!brokers.length) return true;
+    return brokers.some(b => b.toLowerCase() === PRIMARY_BROKER.toLowerCase());
+  }
+
+  function getBrokerScopedOrders() {
+    return gttOrders.filter(o => showAllBrokers || isPrimaryBrokerOrder(o));
+  }
+
+  function buildBrokerMarker(o) {
+    return isKotakOrder(o) ? `<span class="broker-marker" title="Also on Kotak" aria-label="Also on Kotak">K</span>` : "";
+  }
+
   /* ── Amount calculation ── */
   function calcAmount(o) {
     const price = parseFloat(o.conditionPrice);
@@ -1264,29 +1326,59 @@
     return { cmpHtml, diffHtml };
   }
 
-  /* ── Filtering ── */
+  /* ── Filtering / Sorting ── */
+  function getSortValue(o, key) {
+    switch (key) {
+      case "symbol": return String(o.symbol || "").toUpperCase();
+      case "sector": { const match = getCmpForSymbol(o.symbol); return String(match?.sheet || "").toUpperCase(); }
+      case "type": return `${o.type || ""} ${o.orderType || ""}`.toUpperCase();
+      case "condition": { const v = parseFloat(o.conditionPrice); return isFinite(v) ? v : null; }
+      case "cmp": { const match = getCmpForSymbol(o.symbol); const v = match ? parseFloat(match.currentPrice) : NaN; return isFinite(v) ? v : null; }
+      case "toTrigger": return getDiffPercentValue(o);
+      case "quantity": { const v = parseInt(o.quantity); return isFinite(v) ? v : null; }
+      case "amount": return calcAmount(o);
+      case "status": return String(o.status || "").toUpperCase();
+      case "createdOn": { const v = o.createdOn ? new Date(o.createdOn).getTime() : NaN; return isFinite(v) ? v : null; }
+      default: return null;
+    }
+  }
+
+  function compareSortValues(a, b) {
+    const aMissing = a === null || a === undefined || a === "";
+    const bMissing = b === null || b === undefined || b === "";
+    if (aMissing || bMissing) return aMissing ? (bMissing ? 0 : 1) : -1;
+    if (typeof a === "number" && typeof b === "number") return a - b;
+    return String(a).localeCompare(String(b), undefined, { numeric:true, sensitivity:"base" });
+  }
+
+  function updateSortIndicators() {
+    document.querySelectorAll(".gtt-table th[data-sort-key]").forEach(th => {
+      const key = th.dataset.sortKey;
+      const icon = th.querySelector(".th-sort-icon");
+      const active = key === sortKey && !!sortDirection;
+      th.classList.toggle("sort-active", active);
+      th.setAttribute("aria-sort", active ? (sortDirection === "asc" ? "ascending" : "descending") : "none");
+      if (icon) icon.textContent = active ? (sortDirection === "asc" ? "▲" : "▼") : "↕";
+    });
+  }
+
   function getFiltered() {
-    let list = gttOrders.filter(o => {
+    let list = getBrokerScopedOrders().filter(o => {
       if (o.status !== activeTab) return false;
       const q = searchQ.toLowerCase();
       if (q && !(o.symbol||"").toLowerCase().includes(q) && !(o.type||"").toLowerCase().includes(q)) return false;
       if (filterType  && o.type      !== filterType)  return false;
-      if (filterOrder && o.orderType !== filterOrder)  return false;
-      if (filterSeg   && o.exchange  !== filterSeg)    return false;
+      if (filterOrder && o.orderType !== filterOrder) return false;
+      if (filterSeg   && o.exchange  !== filterSeg)   return false;
       return true;
     });
 
-    if (sortToTrigger) {
-      list = list.slice().sort((a, b) => {
-        const da = getDiffPercentValue(a);
-        const db = getDiffPercentValue(b);
-        if (da === null && db === null) return 0;
-        if (da === null) return 1;
-        if (db === null) return -1;
-        return sortToTrigger === "asc" ? da - db : db - da;
+    if (sortKey && sortDirection) {
+      list = list.slice().sort((a,b) => {
+        const cmp = compareSortValues(getSortValue(a,sortKey), getSortValue(b,sortKey));
+        return sortDirection === "asc" ? cmp : -cmp;
       });
     }
-
     return list;
   }
 
@@ -1310,7 +1402,7 @@
 
     const selectAll  = document.getElementById("selectAllBulk");
     if (!selectAll) return;
-    const tabOrders  = gttOrders.filter(o => o.status === activeTab);
+    const tabOrders  = getBrokerScopedOrders().filter(o => o.status === activeTab);
     selectAll.checked       = tabOrders.length > 0 && tabOrders.every(o => selectedOrders.has(o.id));
     selectAll.indeterminate = count > 0 && !tabOrders.every(o => selectedOrders.has(o.id)) && tabOrders.some(o => selectedOrders.has(o.id));
   }
@@ -1387,9 +1479,10 @@
   }
 
   function renderKPIs() {
-    const active    = gttOrders.filter(o => o.status === "Active");
-    const triggered = gttOrders.filter(o => o.status === "Triggered");
-    const total     = gttOrders.length;
+    const scoped    = getBrokerScopedOrders();
+    const active    = scoped.filter(o => o.status === "Active");
+    const triggered = scoped.filter(o => o.status === "Triggered");
+    const total     = scoped.length;
 
     // Filter active orders that are in the near category (≤ 2%)
     const near2Orders = active.filter(o => {
@@ -1483,9 +1576,10 @@
   }
 
   function renderCounts() {
-    document.getElementById("countActive").textContent    = gttOrders.filter(o=>o.status==="Active").length;
-    document.getElementById("countTriggered").textContent = gttOrders.filter(o=>o.status==="Triggered").length;
-    document.getElementById("countCancelled").textContent = gttOrders.filter(o=>o.status==="Cancelled").length;
+    const scoped = getBrokerScopedOrders();
+    document.getElementById("countActive").textContent    = scoped.filter(o=>o.status==="Active").length;
+    document.getElementById("countTriggered").textContent = scoped.filter(o=>o.status==="Triggered").length;
+    document.getElementById("countCancelled").textContent = scoped.filter(o=>o.status==="Cancelled").length;
   }
 
   function renderTable() {
@@ -1555,7 +1649,7 @@
 
       return `<tr data-id="${esc(o.id)}"${rowStyle}>
         ${selectCell}
-        <td><div class="sym-cell">${symbolLogoHtml(o.symbol)}<div class="sym-cell-text"><span class="sym-name">${esc(o.symbol)}</span><span class="sym-exch">${esc(o.exchange)}</span></div></div></td>
+        <td><div class="sym-cell">${symbolLogoHtml(o.symbol)}<div class="sym-cell-text"><span class="sym-name-row"><span class="sym-name">${esc(o.symbol)}</span>${buildBrokerMarker(o)}</span><span class="sym-exch">${esc(o.exchange)}</span></div></div></td>
         <td>${buildSectorCell(o.symbol)}</td>
         <td><div class="type-pill ${typeCls}">${esc(o.type)}</div><div class="order-sub">${esc(o.orderType)}</div></td>
         <td><div class="cond-cell"><span class="cond-op">${esc(conditionText)}</span><span class="cond-price">₹ ${fmtPrice(o.conditionPrice)}</span></div></td>
@@ -1815,6 +1909,7 @@
     if (!editingOrder) return;
     document.getElementById("editCondPrice").value = editingOrder.conditionPrice || "";
     document.getElementById("editQuantity").value  = editingOrder.quantity || "";
+    document.getElementById("editKotakBroker").checked = isKotakOrder(editingOrder);
     document.getElementById("editGttError").textContent = "";
     document.getElementById("editGttHint").textContent = `Editing ${editingOrder.symbol} (${editingOrder.type})`;
     editGttModal.classList.add("show");
@@ -1839,13 +1934,16 @@
     saveBtn.disabled = true;
     saveBtn.textContent = "Saving…";
 
-    const ok = await patchGttFields(editingOrder.id, { conditionPrice: price, quantity: qty });
+    const kotakChecked = document.getElementById("editKotakBroker").checked;
+    const updatedBrokers = buildBrokersForSave(editingOrder, kotakChecked);
+    const ok = await patchGttFields(editingOrder.id, { conditionPrice: price, quantity: qty, brokers: updatedBrokers });
     saveBtn.disabled = false;
     saveBtn.textContent = "Save Changes";
 
     if (ok) {
       editingOrder.conditionPrice = price;
       editingOrder.quantity = qty;
+      editingOrder.brokers = updatedBrokers;
       closeEditModal();
       showToast("GTT order updated successfully.", "success");
       render();
@@ -1934,7 +2032,7 @@
   // Select all bulk
   document.getElementById("selectAllBulk").addEventListener("change", e => {
     const checked = e.target.checked;
-    const tabOrders = gttOrders.filter(o => o.status === activeTab);
+    const tabOrders = getBrokerScopedOrders().filter(o => o.status === activeTab);
     if (checked) {
       tabOrders.forEach(o => selectedOrders.add(o.id));
     } else {
@@ -1943,19 +2041,18 @@
     renderTable();
   });
 
-  // Sort by To Trigger
-  document.getElementById("thToTrigger").addEventListener("click", () => {
-    if (sortToTrigger === null) sortToTrigger = "asc";
-    else if (sortToTrigger === "asc") sortToTrigger = "desc";
-    else sortToTrigger = null;
-
-    const icon = document.getElementById("toTriggerSortIcon");
-    if (sortToTrigger === "asc") icon.textContent = "▲";
-    else if (sortToTrigger === "desc") icon.textContent = "▼";
-    else icon.textContent = "↕";
-
-    renderTable();
+  // Sortable table headers: asc -> desc -> off
+  document.querySelectorAll(".gtt-table th[data-sort-key]").forEach(th => {
+    th.addEventListener("click", () => {
+      const key = th.dataset.sortKey;
+      if (sortKey !== key) { sortKey = key; sortDirection = "asc"; }
+      else if (sortDirection === "asc") sortDirection = "desc";
+      else { sortKey = null; sortDirection = null; }
+      updateSortIndicators();
+      renderTable();
+    });
   });
+  updateSortIndicators();
 
   // Filters & Search
   document.getElementById("searchInput").addEventListener("input", e => {
@@ -1976,13 +2073,22 @@
     onChange: val => { filterSeg = val; renderTable(); }
   });
 
+  allBrokersToggle.addEventListener("change", e => {
+    showAllBrokers = e.target.checked;
+    selectedOrders.clear();
+    render();
+  });
+
   document.getElementById("resetBtn").addEventListener("click", () => {
     document.getElementById("searchInput").value = "";
     searchQ = "";
     ddType.reset(); ddOrder.reset(); ddSeg.reset();
-    sortToTrigger = null;
-    document.getElementById("toTriggerSortIcon").textContent = "↕";
-    renderTable();
+    allBrokersToggle.checked = false;
+    showAllBrokers = false;
+    sortKey = null;
+    sortDirection = null;
+    updateSortIndicators();
+    render();
   });
 
   // Create GTT Modal
@@ -2045,6 +2151,7 @@
   };
 
   document.getElementById("createGttBtn").addEventListener("click", () => {
+    document.getElementById("gttKotakBroker").checked = false;
     createGttModal.classList.add("show");
     updateConditionLabel();
     updatePreview();
@@ -2090,6 +2197,7 @@
       targetPrice:    isFinite(tgtP) && tgtP > 0 ? tgtP : null,
       buyPrice:       gttType === "Sell" && isFinite(buyP) && buyP > 0 ? buyP : null,
       quantity:       qty,
+      brokers:        [PRIMARY_BROKER, ...(document.getElementById("gttKotakBroker").checked ? ["Kotak"] : [])],
       status:         "Active",
       createdOn:      nowISO()
     };
@@ -2183,6 +2291,8 @@
 
   /* ── Init ── */
   async function init() {
+    allBrokersToggle.checked = false;
+    showAllBrokers = false;
     await loadCompanyLogos();
     sessionToken = readToken();
     if (sessionToken) {
