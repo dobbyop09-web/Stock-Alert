@@ -580,10 +580,10 @@
                 </div>
               </div>
 
-              <label class="broker-scope-toggle" for="allBrokersToggle" title="Include broker-only GTT orders in the whole page">
+              <label class="broker-scope-toggle" for="allBrokersToggle" title="Show only GTT orders that are placed on Kotak">
                 <span class="scope-dot"></span>
                 <input type="checkbox" id="allBrokersToggle">
-                <span class="scope-label">All Brokers</span>
+                <span class="scope-label">Kotak Only</span>
               </label>
 
               <div class="toolbar-actions">
@@ -1202,8 +1202,14 @@
     return brokers.some(b => b.toLowerCase() === PRIMARY_BROKER.toLowerCase());
   }
 
+  // Broker scope: default view shows the primary broker's GTTs.
+  // When the broker checkbox is enabled, show only orders that exist on Kotak.
+  // This includes orders that are on both Primary and Kotak because they still
+  // represent a Kotak GTT and should be included in the broker-only view.
   function getBrokerScopedOrders() {
-    return gttOrders.filter(o => showAllBrokers || isPrimaryBrokerOrder(o));
+    return showAllBrokers
+      ? gttOrders.filter(o => isKotakOrder(o))
+      : gttOrders.filter(o => isPrimaryBrokerOrder(o));
   }
 
   function buildBrokerMarker(o) {
