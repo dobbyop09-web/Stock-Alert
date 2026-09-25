@@ -19,26 +19,12 @@ public class KotakMarketDataService {
         this.kotakQuoteService = kotakQuoteService;
     }
 
-    public Map<String, MarketData> getMarketData(
-            Map<String, String> symbolToToken) {
-
-        Map<String, MarketData> result =
-                new HashMap<>();
-
-        List<String> tokens =
-                symbolToToken.values()
-                        .stream()
-                        .toList();
-
-        List<KotakQuoteResponse> quotes =
-                kotakQuoteService.getOhlc(
-                        "nse_cm",
-                        tokens
+    public  MarketData getMarketData(String token) {
+        KotakQuoteResponse quotes =
+                kotakQuoteService.getQuote(
+                        token
                 );
-
-        // Mapping will come here.
-
-        return result;
+        return mapToMarketData(quotes);
     }
     public MarketData mapToMarketData(
             KotakQuoteResponse quote) {

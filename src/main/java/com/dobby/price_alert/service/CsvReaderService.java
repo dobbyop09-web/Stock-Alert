@@ -73,9 +73,11 @@ public class CsvReaderService {
             double fib = Double.parseDouble(record.get("FIB"));
             MarketData marketData = new MarketData();
             if(symbol.equals("NSE")) {
-               continue;
+               marketData= kotakMarketDataService.getMarketData("544937");
+            }else{
+                marketData=  marketDataService.getMarketData(symbol);
             }
-            marketData=  marketDataService.getMarketData(symbol);
+
 
             String companyName = marketData.getCompanyName();
             double dayLow = marketData.getDayLow();

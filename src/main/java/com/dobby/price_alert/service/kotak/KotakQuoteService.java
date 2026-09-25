@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -193,6 +194,63 @@ public class KotakQuoteService {
             log.warn(
                     "Kotak quote request thread interrupted."
             );
+        }
+    }
+    public KotakQuoteResponse getQuote(String token) {
+        String url =
+                "https://e22.kotaksecurities.com"
+                        + "/script-details/1.0/quotes/neosymbol/"
+                        + "bse_cm"
+                        + "|"
+                        + token
+                        + "/all";
+
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.set(
+                "Authorization",
+                config.getConsumerKey()
+        );
+
+        HttpEntity<Void> entity =
+                new HttpEntity<>(headers);
+
+        ResponseEntity<String> response =
+                restTemplate.exchange(
+                        url,
+                        HttpMethod.GET,
+                        entity,
+                        String.class
+                );
+
+        if (response.getBody() == null) {
+            return null;
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+
+            KotakQuoteResponse[] quotes =
+                    objectMapper.readValue(
+                            response.getBody(),
+                            KotakQuoteResponse[].class
+                    );
+
+            if (quotes.length == 0) {
+                return null;
+            }
+
+            return quotes[0];
+
+        } catch (Exception e) {
+
+            log.error(
+                    "Failed to parse Kotak quote for token: {}",
+                    token,
+                    e
+            );
+
+            return null;
         }
     }
 }
