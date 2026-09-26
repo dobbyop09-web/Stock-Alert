@@ -21,6 +21,7 @@ public class DashboardStock {
     private BigDecimal changePercent;
     private BigDecimal distance;
     private BigDecimal fib;
+    private BigDecimal dayLow;
     private String status;
     private String sheet;
     private Integer sheetRow;
