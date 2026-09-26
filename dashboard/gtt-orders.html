@@ -613,6 +613,7 @@
                   <th class="sortable" data-sort-key="condition"><span class="th-sort-wrap">CONDITION <span class="th-sort-icon" data-sort-icon="condition">↕</span></span></th>
                   <th class="sortable" data-sort-key="cmp"><span class="th-sort-wrap">CMP <span class="th-sort-icon" data-sort-icon="cmp">↕</span></span></th>
                   <th class="sortable center" data-sort-key="toTrigger"><span class="th-sort-wrap">TO TRIGGER <span class="th-sort-icon" data-sort-icon="toTrigger">↕</span></span></th>
+                  <th class="sortable center" data-sort-key="dayLow"><span class="th-sort-wrap">DAYLOW <span class="th-sort-icon" data-sort-icon="dayLow">↕</span></span></th>
                   <th class="sortable" data-sort-key="quantity"><span class="th-sort-wrap">QTY / TRADE <span class="th-sort-icon" data-sort-icon="quantity">↕</span></span></th>
                   <th class="sortable right" data-sort-key="amount"><span class="th-sort-wrap">AMOUNT <span class="th-sort-icon" data-sort-icon="amount">↕</span></span></th>
                   <th class="sortable center" data-sort-key="status"><span class="th-sort-wrap">STATUS <span class="th-sort-icon" data-sort-icon="status">↕</span></span></th>
@@ -1027,7 +1028,7 @@
   async function loadData() {
     if (!sessionToken) return;
     const tbody = document.getElementById("gttTbody");
-    tbody.innerHTML = `<tr class="loading-row"><td colspan="13"><div class="spinner" style="margin:0 auto"></div></td></tr>`;
+    tbody.innerHTML = `<tr class="loading-row"><td colspan="14"><div class="spinner" style="margin:0 auto"></div></td></tr>`;
     document.getElementById("gttEmpty").style.display = "none";
 
     try {
@@ -1332,6 +1333,37 @@
     return { cmpHtml, diffHtml };
   }
 
+  function getDayLowDiffPercentValue(o) {
+    const match = getCmpForSymbol(o.symbol);
+    if (!match) return null;
+    const dayLow = parseFloat(match.dayLow);
+    if (!isFinite(dayLow) || dayLow <= 0) return null;
+    const trigger = parseFloat(o.conditionPrice);
+    if (!isFinite(trigger) || trigger <= 0) return null;
+    return Math.abs(((trigger - dayLow) / dayLow) * 100);
+  }
+
+  function buildDayLowCell(o) {
+    const match  = getCmpForSymbol(o.symbol);
+    const dayLow = match ? parseFloat(match.dayLow) : NaN;
+
+    if (!match || !isFinite(dayLow) || dayLow <= 0) {
+      return `<div class="cmp-cell" style="align-items:center"><span class="cmp-price">—</span></div>`;
+    }
+
+    const trigger = parseFloat(o.conditionPrice);
+    let diffHtml = `<span class="diff-badge na">—</span>`;
+    if (isFinite(trigger) && trigger > 0) {
+      const diffPct = ((trigger - dayLow) / dayLow) * 100;
+      const absPct  = Math.abs(diffPct);
+      const arrow   = diffPct > 0.05 ? "▲" : (diffPct < -0.05 ? "▼" : "●");
+      const cls     = absPct <= 2 ? "close" : absPct <= 5 ? "near" : "far";
+      diffHtml = `<span class="diff-badge ${cls}">${arrow} ${absPct.toFixed(2)}%</span>`;
+    }
+
+    return `<div class="cmp-cell" style="align-items:center"><span class="cmp-price">₹ ${fmtPrice(dayLow)}</span>${diffHtml}</div>`;
+  }
+
   /* ── Filtering / Sorting ── */
   function getSortValue(o, key) {
     switch (key) {
@@ -1341,6 +1373,7 @@
       case "condition": { const v = parseFloat(o.conditionPrice); return isFinite(v) ? v : null; }
       case "cmp": { const match = getCmpForSymbol(o.symbol); const v = match ? parseFloat(match.currentPrice) : NaN; return isFinite(v) ? v : null; }
       case "toTrigger": return getDiffPercentValue(o);
+      case "dayLow": return getDayLowDiffPercentValue(o);
       case "quantity": { const v = parseInt(o.quantity); return isFinite(v) ? v : null; }
       case "amount": return calcAmount(o);
       case "status": return String(o.status || "").toUpperCase();
@@ -1612,6 +1645,7 @@
       const isBulkRow   = (isCancelled || isTriggered) && bulkDeleteMode;
 
       const { cmpHtml, diffHtml } = buildCmpAndDiffCells(o);
+      const dayLowHtml = buildDayLowCell(o);
       const amountHtml = buildAmountCell(o);
       const rawCondition = String(o.condition || "").trim();
       const conditionText = rawCondition.startsWith("Last Price")
@@ -1661,6 +1695,7 @@
         <td><div class="cond-cell"><span class="cond-op">${esc(conditionText)}</span><span class="cond-price">₹ ${fmtPrice(o.conditionPrice)}</span></div></td>
         <td>${cmpHtml}</td>
         <td class="center">${diffHtml}</td>
+        <td class="center">${dayLowHtml}</td>
         <td><div class="qty-cell"><span class="qty-num">${o.quantity}</span><span class="qty-type">${esc(o.tradeType)}</span></div></td>
         <td class="right">${amountHtml}</td>
         <td class="center"><span class="status-badge ${statusCls}">${esc(o.status)}</span></td>

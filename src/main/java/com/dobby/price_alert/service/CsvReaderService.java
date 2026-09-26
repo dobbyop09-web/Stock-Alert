@@ -189,6 +189,7 @@ public class CsvReaderService {
                             .sheetRow(rowNumber)
                             .screenerUrl(screenerUrl)
                             .fib(BigDecimal.valueOf(fib))
+                            .dayLow(BigDecimal.valueOf(dayLow))
                             .build()
             );
         }
@@ -611,6 +612,7 @@ public class CsvReaderService {
                             .fib(
                                     BigDecimal.valueOf(fib)
                             )
+                            .dayLow(BigDecimal.valueOf(dayLow))
                             .build()
             );
         }
