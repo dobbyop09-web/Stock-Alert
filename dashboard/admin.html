@@ -1404,6 +1404,75 @@
       -moz-appearance: textfield;
     }
 
+
+    /* ── Monthly Buying (view mode only) ── */
+    .table-toolbar-actions { display: flex; align-items: center; gap: 8px; }
+    .monthly-buy-btn {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 6px;
+      background: rgba(45, 212, 191, .08);
+      border: 1px solid rgba(45, 212, 191, .35);
+      color: #2dd4bf;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .monthly-buy-btn:hover { background: rgba(45, 212, 191, .16); }
+    .monthly-buy-btn svg { width: 14px; height: 14px; }
+
+    .mb-modal { max-width: 760px; }
+    .mb-head { display: flex; align-items: center; gap: 14px; }
+    .mb-head-icon {
+      width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+      background: rgba(45, 212, 191, .16); color: #2dd4bf;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mb-head-icon svg { width: 24px; height: 24px; }
+    .mb-head-row { align-items: center; margin-bottom: 14px; }
+    .mb-head-row .hint { margin-bottom: 0; }
+    .mb-month {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.12);
+      color: #dce8f4; font-size: 12px; font-weight: 600;
+      border-radius: 8px; padding: 8px 12px; margin-bottom: 14px; cursor: pointer;
+    }
+    .mb-month option { background: #0f1c28; }
+    .mb-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+    .mb-card { border-radius: 10px; padding: 12px; border: 1px solid; background: rgba(255,255,255,.02); }
+    .mb-card-top { display: flex; align-items: center; gap: 8px; font-size: 10px; color: #cfe2f5; margin-bottom: 8px; }
+    .mb-card-ico { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+    .mb-card-ico svg { width: 13px; height: 13px; }
+    .mb-card-val { font-size: 18px; font-weight: 700; color: #edf5ff; margin-bottom: 6px; white-space: nowrap; }
+    .mb-card-sub { font-size: 10px; color: #8fa3bc; }
+    .mb-card-sub.up { color: #2dd4bf; }
+    .mb-card-sub.down { color: #f87171; }
+    .mb-section-title { font-size: 12px; font-weight: 700; color: #edf5ff; margin-bottom: 8px; }
+    .mb-empty { padding: 28px 12px; text-align: center; font-size: 12px; color: #52677b; }
+    .mb-table thead th.left { text-align: left; }
+    .mb-sort { background: transparent; border: none; color: inherit; font: inherit; text-transform: inherit; letter-spacing: inherit; padding: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+    .mb-sort:hover { color: #dce8f4; }
+    .mb-sort.active { color: #2dd4bf; }
+    .mb-arrow { font-size: 9px; width: 9px; display: inline-block; opacity: .45; }
+    .mb-sort.active .mb-arrow { opacity: 1; }
+    .mb-table td.left { text-align: left; }
+    .mb-table .sym-badge { display: inline-flex; align-items: center; gap: 8px; }
+    .mb-table .sym-badge span { font-weight: 600; color: #edf5ff; }
+    .mb-table .sym-badge .mb-sold-tag { font-style: normal; font-size: 8px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 2px 6px; border-radius: 10px; color: #f59e0b; background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.3); }
+    .mb-table td.sym { font-weight: 600; color: #edf5ff; }
+    .mb-table td.buy { color: #2dd4bf; font-weight: 600; }
+
+    .mb-scroll { scrollbar-width: thin; scrollbar-color: rgba(143,163,188,.28) transparent; }
+    .mb-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .mb-scroll::-webkit-scrollbar-track { background: transparent; }
+    .mb-scroll::-webkit-scrollbar-thumb { background: rgba(143,163,188,.22); border-radius: 6px; }
+    .mb-scroll::-webkit-scrollbar-thumb:hover { background: rgba(45,212,191,.45); }
+    .mb-scroll::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+    .mb-scroll::-webkit-scrollbar-corner { background: transparent; }
+    @media (max-width: 720px) { .mb-cards { grid-template-columns: repeat(2, 1fr); } }
+
     /* Add holding button (toolbar) */
     .add-holding-btn {
       display: none;
@@ -3782,10 +3851,16 @@
               <div class="table-toolbar">
                 <span class="table-toolbar-title">Open Positions</span>
                
-                <button class="add-holding-btn" id="addRowBtn">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-                  Add Holding
-                </button>
+                <div class="table-toolbar-actions">
+                  <button class="monthly-buy-btn" id="monthlyBuyBtn" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5" /><polyline points="5 12 12 5 19 12" /></svg>
+                    Monthly Buying
+                  </button>
+                  <button class="add-holding-btn" id="addRowBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                    Add Holding
+                  </button>
+                </div>
               </div>
 
               <div class="table-scroll" id="tableView">
@@ -3973,6 +4048,45 @@
       <div class="modal-actions">
         <button class="btn-modal-cancel" id="addHoldingCancelBtn">Cancel</button>
         <button class="btn-modal-confirm" id="addHoldingConfirmBtn">Add Holding</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monthly Buying modal (view mode only) -->
+  <div class="modal-overlay" id="monthlyBuyModal">
+    <div class="modal lots-modal mb-modal">
+      <div class="modal-head-row mb-head-row">
+        <div class="mb-head">
+          <div class="mb-head-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5" /><polyline points="5 12 12 5 19 12" /></svg>
+          </div>
+          <div>
+            <h2>Monthly Buying (Portfolio)</h2>
+            <p class="hint">Stocks you bought in your portfolio during this month</p>
+          </div>
+        </div>
+        <button class="modal-close-x" id="monthlyBuyCloseX" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+        </button>
+      </div>
+
+      <select class="mb-month" id="monthlyBuyMonth" aria-label="Select month"></select>
+
+      <div class="mb-cards" id="monthlyBuyCards"></div>
+
+      <div class="mb-section-title">Top Buys This Month</div>
+      <div class="lots-table-wrap mb-scroll">
+        <table class="lots-table mb-table">
+          <thead>
+            <tr id="monthlyBuyHead"><th class="left"><button type="button" class="mb-sort" data-mb-sort="sym">Symbol<span class="mb-arrow">↕</span></button></th><th class="left"><button type="button" class="mb-sort" data-mb-sort="sector">Sector<span class="mb-arrow">↕</span></button></th><th class=""><button type="button" class="mb-sort" data-mb-sort="value">Buy Value (₹)<span class="mb-arrow">↕</span></button></th><th class=""><button type="button" class="mb-sort" data-mb-sort="qty">Qty<span class="mb-arrow">↕</span></button></th><th class=""><button type="button" class="mb-sort" data-mb-sort="avg">Avg Price (₹)<span class="mb-arrow">↕</span></button></th><th class=""><button type="button" class="mb-sort" data-mb-sort="date">Purchase Date<span class="mb-arrow">↕</span></button></th></tr>
+          </thead>
+          <tbody id="monthlyBuyBody"></tbody>
+        </table>
+        <div class="mb-empty" id="monthlyBuyEmpty" style="display:none">No purchases recorded for this month.</div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" id="monthlyBuyCloseBtn">Close</button>
       </div>
     </div>
   </div>
@@ -5943,6 +6057,7 @@
         editEntryBar.style.display = "none";
         editModeActions.style.display = "flex";
         addRowBtn.style.display = "inline-flex";
+        updateMonthlyBuyBtn();
         removeHeaderCell.classList.add("visible");
         sellDateHeaderCell.classList.add("visible");
         curPriceHeaderCell.style.display = "none";
@@ -5957,6 +6072,7 @@
         editEntryBar.style.display = sessionToken ? "block" : "none";
         editModeActions.style.display = "none";
         addRowBtn.style.display = "none";
+        if (typeof updateMonthlyBuyBtn === "function") updateMonthlyBuyBtn();
         removeHeaderCell.classList.remove("visible");
         sellDateHeaderCell.classList.remove("visible");
         curPriceHeaderCell.style.display = "";
@@ -6565,9 +6681,197 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
       function escAttr(s) { return String(s).replace(/"/g, "&quot;"); }
       function escHtml(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
+
+      // ── Monthly Buying (view mode only) ─────────────────────────────
+      const monthlyBuyBtn      = document.getElementById("monthlyBuyBtn");
+      const monthlyBuyModal    = document.getElementById("monthlyBuyModal");
+      const monthlyBuyMonth    = document.getElementById("monthlyBuyMonth");
+      const monthlyBuyCards    = document.getElementById("monthlyBuyCards");
+      const monthlyBuyBody     = document.getElementById("monthlyBuyBody");
+      const monthlyBuyEmpty    = document.getElementById("monthlyBuyEmpty");
+
+      // Visible only when signed in, not editing, and there is something to show.
+      function updateMonthlyBuyBtn() {
+        if (!monthlyBuyBtn) return;
+        const show = !isEditing && !!sessionToken && holdings.length > 0;
+        monthlyBuyBtn.style.display = show ? "inline-flex" : "none";
+        if (!show) closeMonthlyBuyModal();
+      }
+
+      // Every purchase: open holdings (lot by lot) + sold lots (closedTransactions).
+ function collectPurchases() {
+  const out = [];
+
+  // symbol|month combos that were sold
+  const soldKeys = new Set();
+  closedTransactions.forEach(t => {
+    const sym = (t.symbol || "").toUpperCase();
+    const sp = parseFloat(t.sellPrice);
+    if (sym && isFinite(sp) && /^\d{4}-\d{2}/.test(t.buyDate || "")) {
+      soldKeys.add(sym + "|" + String(t.buyDate).slice(0, 7));
+    }
+  });
+
+  holdings.forEach(h => {
+    const sym = (h.symbol || "").toUpperCase();
+    if (!sym) return;
+    const lots = Array.isArray(h.lots) && h.lots.length ? h.lots : [h];
+    lots.forEach(l => {
+      const date = l.buyDate || "";
+      if (soldKeys.has(sym + "|" + String(date).slice(0, 7))) return; // month already sold
+      out.push({ sym, date, qty: parseFloat(l.quantity) || 0, price: parseFloat(l.buyPrice) || 0 });
+    });
+  });
+
+  closedTransactions.forEach(t => {
+    const sym = (t.symbol || "").toUpperCase();
+    if (!sym) return;
+    const sp = parseFloat(t.sellPrice);
+    out.push({ sym, date: t.buyDate || "", qty: parseFloat(t.quantity) || 0, price: parseFloat(t.buyPrice) || 0, sellPrice: isFinite(sp) ? sp : null });
+  });
+
+  return out.filter(p => /^\d{4}-\d{2}/.test(p.date) && p.qty > 0);
+}
+      const monthKey = d => String(d).slice(0, 7);
+      function prevMonthKey(k) {
+        let [y, m] = k.split("-").map(Number);
+        m -= 1; if (m === 0) { m = 12; y -= 1; }
+        return `${y}-${String(m).padStart(2, "0")}`;
+      }
+      function monthLabel(k) {
+        const [y, m] = k.split("-").map(Number);
+        return new Date(y, m - 1, 1).toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+      }
+      function mbTotals(purchases, key) {
+        const rows = purchases.filter(p => monthKey(p.date) === key);
+        const value = rows.reduce((s, p) => s + p.qty * p.price, 0);
+        const qty = rows.reduce((s, p) => s + p.qty, 0);
+        // Current value: live price for shares still held, sale price for sold lots
+        // (falls back to buy price when no live price is available).
+        const curValue = rows.reduce((s, p) => {
+          const c = p.sellPrice != null ? p.sellPrice : parseFloat((symbolDataMap[p.sym] || {}).currentPrice);
+          return s + p.qty * (isFinite(c) ? c : p.price);
+        }, 0);
+        const sold = rows.filter(p => p.sellPrice != null);
+        const booked = sold.reduce((s, p) => s + p.qty * (p.sellPrice - p.price), 0);
+        const symbols = new Set(rows.map(r => r.sym));
+        return { rows, value, qty, curValue, booked, soldCount: sold.length, symbols, avgInvested: symbols.size ? value / symbols.size : 0 };
+      }
+      function mbDelta(cur, prev) {
+        if (!prev) return { text: cur ? "new this month" : "—", cls: "" };
+        const pct = ((cur - prev) / prev) * 100;
+        return { text: `${pct >= 0 ? "▲ +" : "▼ "}${pct.toFixed(1)}% vs last month`, cls: pct >= 0 ? "up" : "down" };
+      }
+      function mbReturn(curValue, invested) {
+        if (!invested) return { text: "—", cls: "" };
+        const pct = ((curValue - invested) / invested) * 100;
+        return { text: `${pct >= 0 ? "▲ +" : "▼ "}${pct.toFixed(2)}% return`, cls: pct >= 0 ? "up" : "down" };
+      }
+      const fmtInt = n => Math.round(n).toLocaleString("en-IN");
+      const fmtQty = n => (Math.round(n * 100) / 100).toLocaleString("en-IN");
+
+      function renderMonthlyBuy() {
+        const purchases = collectPurchases();
+        const key = monthlyBuyMonth.value;
+        const cur = mbTotals(purchases, key), prev = mbTotals(purchases, prevMonthKey(key));
+
+        // Stocks whose very first purchase falls in this month
+        const firstMonth = {};
+        purchases.forEach(p => { const k = monthKey(p.date); if (!firstMonth[p.sym] || k < firstMonth[p.sym]) firstMonth[p.sym] = k; });
+        const newCount = [...cur.symbols].filter(s => firstMonth[s] === key).length;
+
+        const cards = [
+          { lbl: "Total Bought Value", val: "₹" + fmtInt(cur.value), d: mbDelta(cur.value, prev.value), c: "#2dd4bf", bg: "rgba(45,212,191,.14)",
+            icon: '<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>' },
+          { lbl: "Total Stocks Bought", val: String(cur.symbols.size), d: { text: `(${newCount} new)`, cls: "" }, c: "#5B9EFF", bg: "rgba(91,158,255,.14)",
+            icon: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/>' },
+          { lbl: "Current Value", val: "₹" + fmtInt(cur.curValue), d: mbReturn(cur.curValue, cur.value),
+            extra: cur.soldCount ? { text: `Booked ${cur.booked >= 0 ? "+" : "−"}₹${fmtInt(Math.abs(cur.booked))} on sold`, cls: cur.booked >= 0 ? "up" : "down" } : null, c: "#8B5CF6", bg: "rgba(139,92,246,.14)",
+            icon: '<path d="M3 3v18h18"/><path d="M18.7 8 12 14.7l-3.5-3.5L3 16.7"/>' },
+          { lbl: "Avg. Invested Value", val: "₹" + fmtInt(cur.avgInvested), d: mbDelta(cur.avgInvested, prev.avgInvested), c: "#f59e0b", bg: "rgba(245,158,11,.14)",
+            icon: '<rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 13h2"/><path d="M2 10h20"/>' }
+        ];
+        monthlyBuyCards.innerHTML = cards.map(x => `
+          <div class="mb-card" style="border-color:${x.c}55">
+            <div class="mb-card-top"><span class="mb-card-ico" style="background:${x.bg};color:${x.c}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${x.icon}</svg></span>${x.lbl}</div>
+            <div class="mb-card-val">${x.val}</div>
+            <div class="mb-card-sub ${x.d.cls}">${x.d.text}</div>
+            ${x.extra ? `<div class="mb-card-sub ${x.extra.cls}" style="margin-top:3px" title="Realised profit/loss on lots from this month that you have since sold">${x.extra.text}</div>` : ""}
+          </div>`).join("");
+
+        // Per-symbol aggregation for the table
+       const bySym = {};
+cur.rows.forEach(p => {
+  const a = bySym[p.sym] || (bySym[p.sym] = { sym: p.sym, value: 0, qty: 0, date: "", sold: false });
+  a.value += p.qty * p.price; a.qty += p.qty;
+  if (p.sellPrice != null) a.sold = true;
+  if (p.date > a.date) a.date = p.date;
+});
+const rows = Object.values(bySym).map(r => {
+  const sd = symbolDataMap[r.sym];
+  return { ...r, avg: r.value / r.qty, sector: (sd && sd.sector) || "", exited: r.sold };
+});
+        const { field, dir } = monthlyBuySort, m = dir === "asc" ? 1 : -1;
+        rows.sort((x, y) => {
+          const a = x[field], b = y[field];
+          const c = typeof a === "string" ? a.localeCompare(b) : a - b;
+          return (c || x.sym.localeCompare(y.sym)) * m;
+        });
+
+        document.querySelectorAll("#monthlyBuyHead .mb-sort").forEach(btn => {
+          const on = btn.dataset.mbSort === field;
+          btn.classList.toggle("active", on);
+          btn.querySelector(".mb-arrow").textContent = on ? (dir === "asc" ? "▲" : "▼") : "↕";
+        });
+
+        monthlyBuyEmpty.style.display = rows.length ? "none" : "block";
+        monthlyBuyBody.innerHTML = rows.map(r => `<tr>
+            <td class="left"><div class="sym-badge">${symAvatarHtml(r.sym)}<span>${escHtml(r.sym)}</span>${r.exited ? `<em class="mb-sold-tag" title="Not in your current holdings — fully sold">Sold</em>` : ""}</div></td>
+            <td class="left">${sectorCellHtml(r.sym)}</td>
+            <td class="buy">${fmtMoney(r.value)}</td>
+            <td>${fmtQty(r.qty)}</td>
+            <td>${fmtMoney(r.avg)}</td>
+            <td>${fmtDate(r.date)}</td>
+          </tr>`).join("");
+      }
+
+      let monthlyBuySort = { field: "value", dir: "desc" };
+      document.getElementById("monthlyBuyHead").addEventListener("click", e => {
+        const btn = e.target.closest("[data-mb-sort]");
+        if (!btn) return;
+        const f = btn.dataset.mbSort;
+        if (monthlyBuySort.field === f) monthlyBuySort.dir = monthlyBuySort.dir === "asc" ? "desc" : "asc";
+        else monthlyBuySort = { field: f, dir: (f === "sym" || f === "sector") ? "asc" : "desc" };
+        renderMonthlyBuy();
+      });
+
+      function openMonthlyBuyModal() {
+        if (isEditing) return;
+        const purchases = collectPurchases();
+        const now = new Date();
+        const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+        const keys = new Set(purchases.map(p => monthKey(p.date)));
+        keys.add(thisMonth);
+        const sorted = [...keys].sort().reverse();
+        monthlyBuyMonth.innerHTML = sorted.map(k => `<option value="${k}">${monthLabel(k)}</option>`).join("");
+        monthlyBuyMonth.value = thisMonth;
+        monthlyBuySort = { field: "value", dir: "desc" };
+        renderMonthlyBuy();
+        monthlyBuyModal.classList.add("visible");
+      }
+      function closeMonthlyBuyModal() { monthlyBuyModal.classList.remove("visible"); }
+
+      monthlyBuyBtn.addEventListener("click", openMonthlyBuyModal);
+      monthlyBuyMonth.addEventListener("change", renderMonthlyBuy);
+      document.getElementById("monthlyBuyCloseX").addEventListener("click", closeMonthlyBuyModal);
+      document.getElementById("monthlyBuyCloseBtn").addEventListener("click", closeMonthlyBuyModal);
+      monthlyBuyModal.addEventListener("click", e => { if (e.target === monthlyBuyModal) closeMonthlyBuyModal(); });
+      document.addEventListener("keydown", e => { if (e.key === "Escape" && monthlyBuyModal.classList.contains("visible")) closeMonthlyBuyModal(); });
+
       // Render table
       function renderTable() {
         tbody.innerHTML = "";
+        updateMonthlyBuyBtn();
         updateEtfToggleVisibility();
         const visibleIndices = getVisibleHoldingIndices();
         rebuildAvatarColorMap(visibleIndices.map(i => holdings[i].symbol));
