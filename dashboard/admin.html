@@ -6699,23 +6699,39 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
       }
 
       // Every purchase: open holdings (lot by lot) + sold lots (closedTransactions).
-      function collectPurchases() {
-        const out = [];
-        holdings.forEach(h => {
-          const sym = (h.symbol || "").toUpperCase();
-          if (!sym) return;
-          const lots = Array.isArray(h.lots) && h.lots.length ? h.lots : [h];
-          lots.forEach(l => out.push({ sym, date: l.buyDate || "", qty: parseFloat(l.quantity) || 0, price: parseFloat(l.buyPrice) || 0 }));
-        });
-        closedTransactions.forEach(t => {
-          const sym = (t.symbol || "").toUpperCase();
-          if (!sym) return;
-          const sp = parseFloat(t.sellPrice);
-          out.push({ sym, date: t.buyDate || "", qty: parseFloat(t.quantity) || 0, price: parseFloat(t.buyPrice) || 0, sellPrice: isFinite(sp) ? sp : null });
-        });
-        return out.filter(p => /^\d{4}-\d{2}/.test(p.date) && p.qty > 0);
-      }
+ function collectPurchases() {
+  const out = [];
 
+  // symbol|month combos that were sold
+  const soldKeys = new Set();
+  closedTransactions.forEach(t => {
+    const sym = (t.symbol || "").toUpperCase();
+    const sp = parseFloat(t.sellPrice);
+    if (sym && isFinite(sp) && /^\d{4}-\d{2}/.test(t.buyDate || "")) {
+      soldKeys.add(sym + "|" + String(t.buyDate).slice(0, 7));
+    }
+  });
+
+  holdings.forEach(h => {
+    const sym = (h.symbol || "").toUpperCase();
+    if (!sym) return;
+    const lots = Array.isArray(h.lots) && h.lots.length ? h.lots : [h];
+    lots.forEach(l => {
+      const date = l.buyDate || "";
+      if (soldKeys.has(sym + "|" + String(date).slice(0, 7))) return; // month already sold
+      out.push({ sym, date, qty: parseFloat(l.quantity) || 0, price: parseFloat(l.buyPrice) || 0 });
+    });
+  });
+
+  closedTransactions.forEach(t => {
+    const sym = (t.symbol || "").toUpperCase();
+    if (!sym) return;
+    const sp = parseFloat(t.sellPrice);
+    out.push({ sym, date: t.buyDate || "", qty: parseFloat(t.quantity) || 0, price: parseFloat(t.buyPrice) || 0, sellPrice: isFinite(sp) ? sp : null });
+  });
+
+  return out.filter(p => /^\d{4}-\d{2}/.test(p.date) && p.qty > 0);
+}
       const monthKey = d => String(d).slice(0, 7);
       function prevMonthKey(k) {
         let [y, m] = k.split("-").map(Number);
@@ -6784,17 +6800,17 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           </div>`).join("");
 
         // Per-symbol aggregation for the table
-        const bySym = {};
-        cur.rows.forEach(p => {
-          const a = bySym[p.sym] || (bySym[p.sym] = { sym: p.sym, value: 0, qty: 0, date: "" });
-          a.value += p.qty * p.price; a.qty += p.qty;
-          if (p.date > a.date) a.date = p.date;
-        });
-        const heldSet = new Set(holdings.map(h => (h.symbol || "").toUpperCase()));
-        const rows = Object.values(bySym).map(r => {
-          const sd = symbolDataMap[r.sym];
-          return { ...r, avg: r.value / r.qty, sector: (sd && sd.sector) || "", exited: !heldSet.has(r.sym) };
-        });
+       const bySym = {};
+cur.rows.forEach(p => {
+  const a = bySym[p.sym] || (bySym[p.sym] = { sym: p.sym, value: 0, qty: 0, date: "", sold: false });
+  a.value += p.qty * p.price; a.qty += p.qty;
+  if (p.sellPrice != null) a.sold = true;
+  if (p.date > a.date) a.date = p.date;
+});
+const rows = Object.values(bySym).map(r => {
+  const sd = symbolDataMap[r.sym];
+  return { ...r, avg: r.value / r.qty, sector: (sd && sd.sector) || "", exited: r.sold };
+});
         const { field, dir } = monthlyBuySort, m = dir === "asc" ? 1 : -1;
         rows.sort((x, y) => {
           const a = x[field], b = y[field];
