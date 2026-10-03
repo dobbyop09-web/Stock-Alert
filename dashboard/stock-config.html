@@ -428,7 +428,8 @@ const CONFIG_URL = `${API_BASE}/stock-config.json`;
 const TOKEN_KEY = "cfg_token";
 
 let sessionToken = null;
-let configData = [];       // from /stock-config.json
+let configData = [];       // from /stock-config.json (persisted)
+let feedOnly = [];         // rows present in /dashboard-data but missing from the config (not persisted unless edited)
 let liveData = {};         // symbol -> row from /dashboard-data
 let companyLogos = {};     // symbol -> logo url (logo.json)
 let activeSheet = "";
@@ -559,7 +560,29 @@ async function submitLogin() {
 function logout() { clearToken(); sessionToken = null; updateAuthUI(false, ""); }
 
 /* ── Load data ── */
-const realRows = () => configData.filter(r => r.symbol !== "__placeholder__");
+const PH = "__placeholder__";
+const allRowsRaw = () => [...configData, ...feedOnly];
+const realRows = () => allRowsRaw().filter(r => r.symbol !== PH);
+const sheetNames = () => [...new Set(allRowsRaw().map(r => r.sheet).filter(Boolean))];   // includes empty sheets
+// move a feed-only row into the persisted config (when the user edits it); returns its index in configData
+function ensureInConfig(sym) {
+  let i = configData.findIndex(r => r.symbol === sym);
+  if (i < 0) {
+    const j = feedOnly.findIndex(r => r.symbol === sym);
+    if (j >= 0) { configData.push(feedOnly.splice(j, 1)[0]); i = configData.length - 1; }
+  }
+  return i;
+}
+// any sheet (known or brand new) gets a stable colour + icon
+const EXTRA_COLORS = ["#F59E0B","#06B6D4","#A78BFA","#34D399","#F43F5E","#84CC16","#FB7185","#22D3EE","#E879F9","#FDBA74"];
+function sectorColor(name) {
+  const k = String(name||"").toLowerCase();
+  if (SECTOR_COLORS[k]) return SECTOR_COLORS[k];
+  if (!k) return SECTOR_COLOR_DEFAULT;
+  let h = 0; for (let i = 0; i < k.length; i++) h = (h*31 + k.charCodeAt(i)) >>> 0;
+  return EXTRA_COLORS[h % EXTRA_COLORS.length];
+}
+const sectorIcon = name => SECTOR_ICONS[String(name||"").toLowerCase()] || SECTOR_ICON_DEFAULT;
 
 async function loadConfig() {
   try {
@@ -567,14 +590,22 @@ async function loadConfig() {
       fetch(CONFIG_URL + "?t=" + Date.now()),
       fetch(`${API_BASE}/dashboard-data?t=${Date.now()}`)
     ]);
-    if (cfgRes.ok) {
-      configData = await cfgRes.json();
-    }
+    let feedRows = [];
+    if (cfgRes.ok) configData = await cfgRes.json();
     if (liveRes.ok) {
-      const rows = await liveRes.json();
+      feedRows = await liveRes.json();
       liveData = {};
-      rows.forEach(r => { if (r.symbol) liveData[r.symbol.toUpperCase()] = r; });
+      feedRows.forEach(r => { if (r.symbol) liveData[r.symbol.toUpperCase()] = r; });
     }
+    // one canonical spelling per sheet (config wins), so "ETF" / "Etf" never split into two sectors
+    const canon = {};
+    const canonical = n => { const k = String(n||"").toLowerCase(); return k ? (canon[k] ||= n) : n; };
+    configData.forEach(r => { if (r.sheet) r.sheet = canonical(r.sheet); });
+    // rows the feed knows about but the config doesn't (e.g. a newly added sheet such as ETF)
+    const inConfig = new Set(configData.map(r => String(r.symbol||"").toUpperCase()));
+    feedOnly = feedRows
+      .filter(r => r.symbol && r.sheet && !inConfig.has(r.symbol.toUpperCase()))
+      .map(r => ({ symbol: r.symbol, companyName: r.companyName || r.symbol, alertPrice: r.alertPrice, sheet: canonical(r.sheet), screenerUrl: r.screenerUrl || "" }));
     $("lastUpdatedEl").style.display = "flex";
     $("lastUpdatedText").textContent = "Last Updated: " + new Date().toLocaleTimeString();
     refreshAll();
@@ -589,7 +620,7 @@ function refreshAll() { updateKPIs(); renderSheetTabs(); render(); }
 function updateKPIs() {
   const rows = realRows();
   const triggered = rows.filter(r => rowInfo(r).status === "Triggered").length;
-  const sheets = new Set(rows.map(r => r.sheet).filter(Boolean)).size;
+  const sheets = sheetNames().length;
   $("kpiTotal").textContent = rows.length;
   $("kpiTriggered").textContent = triggered;
   $("kpiSheets").textContent = sheets;
@@ -617,10 +648,11 @@ function renderSheetTabs() {
   const q = searchQuery.toLowerCase();
   const stat = {}, hit = {};
   const tot = { n: 0, trig: 0, near: 0 };
+  sheetNames().forEach(n => { stat[n] = { n: 0, trig: 0, near: 0 }; });   // empty sheets still get a sidebar entry
   rows.forEach(r => {
     if (!r.sheet) return;
     const st = rowInfo(r).status;
-    const o = stat[r.sheet] ||= { n: 0, trig: 0, near: 0 };
+    const o = stat[r.sheet];
     o.n++; tot.n++;
     if (st === "Triggered") { o.trig++; tot.trig++; }
     else if (st === "Near") { o.near++; tot.near++; }
@@ -637,7 +669,7 @@ function renderSheetTabs() {
       <span class="sp-count" title="Total alerts">${o.n}</span></button>`;
   };
   $("sheetTabs").innerHTML = item("", "All Sectors", tot, null, SECTOR_ICONS.misc)
-    + names.map(n => { const k = n.toLowerCase(); return item(n, n, stat[n], SECTOR_COLORS[k] || SECTOR_COLOR_DEFAULT, SECTOR_ICONS[k] || SECTOR_ICON_DEFAULT); }).join("")
+    + names.map(n => { const k = n.toLowerCase(); return item(n, n, stat[n], sectorColor(n), sectorIcon(n)); }).join("")
     + (q && !names.length ? '<div class="sp-empty">No matching sectors</div>' : "");
 }
 
@@ -701,8 +733,8 @@ const money = v => "₹" + Number(v).toLocaleString("en-IN", { minimumFractionDi
 function sectorBadge(sheet) {
   const key = String(sheet||"").toLowerCase();
   if (!key) return '<span style="color:#3a5060">—</span>';
-  const color = SECTOR_COLORS[key] || SECTOR_COLOR_DEFAULT;
-  const icon = SECTOR_ICONS[key] || SECTOR_ICON_DEFAULT;
+  const color = sectorColor(sheet);
+  const icon = sectorIcon(sheet);
   return `<span class="sector-badge" style="color:${color};background:linear-gradient(135deg,${hexToRgba(color,.22)},${hexToRgba(color,.06)});border-color:${hexToRgba(color,.28)}">${icon}${esc(sheet)}</span>`;
 }
 
@@ -749,8 +781,9 @@ async function saveInline(tr) {
   const sym = tr.dataset.sym;
   const v = parseFloat(tr.querySelector(".inline-input")?.value);
   if (isNaN(v) || v <= 0) { showToast("Enter a valid alert price", true); return; }
-  const idx = configData.findIndex(r => r.symbol === sym);
-  if (idx >= 0 && Number(configData[idx].alertPrice) !== v) {
+  const cur = realRows().find(r => r.symbol === sym);
+  if (cur && Number(cur.alertPrice) !== v) {
+    const idx = ensureInConfig(sym);
     configData[idx] = { ...configData[idx], alertPrice: v };
     if (!newSymbols.has(sym)) updatedSymbols.add(sym);
     inlineEdit = null;
@@ -822,7 +855,7 @@ document.addEventListener("click", e => {
 
 /* ── Create / Edit alert ── */
 function fillSheetSelect(selected) {
-  const sheets = [...new Set(realRows().map(r => r.sheet).filter(Boolean))].sort();
+  const sheets = sheetNames().sort();
   $("alertSheet").innerHTML = '<option value="">Select sheet</option>' + sheets.map(s => `<option value="${esc(s)}"${s===selected?" selected":""}>${esc(s)}</option>`).join("");
 }
 function openCreateAlert(preSheet) {
@@ -839,7 +872,7 @@ function openCreateAlert(preSheet) {
 }
 function openEditAlert(symbol) {
   if (!sessionToken) { openLoginModal(); return; }
-  const row = configData.find(r => r.symbol === symbol);
+  const row = realRows().find(r => r.symbol === symbol);
   if (!row) return;
   editingSymbol = symbol;
   $("alertModalTitle").textContent = "Edit Alert";
@@ -869,14 +902,15 @@ async function submitAlertModal() {
   btn.disabled = true; btn.textContent = wasEditing ? "Saving…" : "Creating…";
   try {
     if (wasEditing) {
-      const idx = configData.findIndex(r => r.symbol === editingSymbol);
+      const idx = ensureInConfig(editingSymbol);
       if (idx >= 0) configData[idx] = { ...configData[idx], symbol:sym, companyName:company, alertPrice:price, sheet, screenerUrl:screener };
       if (editingSymbol !== sym) { if (newSymbols.delete(editingSymbol)) newSymbols.add(sym); updatedSymbols.delete(editingSymbol); }
       if (!newSymbols.has(sym)) updatedSymbols.add(sym);
       await saveConfigToAPI();
       showToast("Alert updated successfully!");
     } else {
-      if (configData.find(r => r.symbol === sym)) { errEl.textContent = `${sym} already exists in config.`; return; }
+      if (realRows().find(r => r.symbol === sym)) { errEl.textContent = `${sym} already exists in config.`; return; }
+      configData = configData.filter(r => !(r.symbol === PH && r.sheet === sheet));   // sheet is no longer empty
       configData.push({ symbol:sym, companyName:company, alertPrice:price, sheet, screenerUrl:screener });
       newSymbols.add(sym);
       await saveConfigToAPI();
@@ -895,6 +929,7 @@ function deleteAlert(symbol, sheet) {
   if (!sessionToken) { openLoginModal(); return; }
   if (!confirm(`Delete alert for ${symbol}?`)) return;
   configData = configData.filter(r => !(r.symbol === symbol && r.sheet === sheet));
+  feedOnly = feedOnly.filter(r => !(r.symbol === symbol && r.sheet === sheet));
   newSymbols.delete(symbol); updatedSymbols.delete(symbol);
   saveConfigToAPI();
   refreshAll();
@@ -933,12 +968,12 @@ function addStockToNewSheet() {
 async function submitSheetModal() {
   const name = $("sheetName").value.trim(), errEl = $("sheetError");
   if (!name) { errEl.textContent = "Sheet name is required."; return; }
-  if (configData.find(r => r.sheet?.toLowerCase() === name.toLowerCase())) { errEl.textContent = "Sheet already exists."; return; }
+  if (sheetNames().some(n => n.toLowerCase() === name.toLowerCase())) { errEl.textContent = "Sheet already exists."; return; }
   const btn = $("sheetModalSubmit");
   btn.disabled = true; btn.textContent = "Creating…";
   try {
     newSheetStocks.forEach(s => { configData.push({ symbol:s.symbol, companyName:s.symbol, alertPrice:s.alertPrice, sheet:name }); newSymbols.add(s.symbol); });
-    if (!newSheetStocks.length) configData.push({ symbol:"__placeholder__", companyName:"Placeholder", alertPrice:0, sheet:name });
+    if (!newSheetStocks.length) configData.push({ symbol:PH, companyName:"Placeholder", alertPrice:0, sheet:name });
     await saveConfigToAPI();
     closeSheetModal(); refreshAll();
     showToast(`Sheet "${name}" created!`);
