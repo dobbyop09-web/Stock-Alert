@@ -4,6 +4,7 @@ import com.dobby.price_alert.constants.PortfolioConstants;
 import com.dobby.price_alert.constants.SheetType;
 import com.dobby.price_alert.dto.DashboardStock;
 import com.dobby.price_alert.dto.KotakScrip;
+import com.dobby.price_alert.dto.StockConfig;
 import com.dobby.price_alert.dto.portfolio.PortfolioData;
 import com.dobby.price_alert.dto.portfolio.PortfolioSnapshot;
 import com.dobby.price_alert.service.*;
@@ -32,6 +33,8 @@ public class AlertRunner implements CommandLineRunner {
     private final PortfolioSnapshotService portfolioSnapshotService;
     private final KotakScripLookupService kotakScripLookupService;
     private final MarketDataToggleService marketDataToggleService;
+    private final StockConfigService stockConfigService;
+    private final JsonStockConfigService jsonStockConfigService;
 
     private final List<DashboardStock> dashboard = new ArrayList<>();
 
@@ -40,7 +43,7 @@ public class AlertRunner implements CommandLineRunner {
             DashboardJsonService dashboardJsonService,
             DashBoardMetaDataService dashBoardMetaDataService,
             StockAlertService stockAlertService,
-            PortfolioSnapshotService portfolioSnapshotService, KotakScripLookupService kotakScripLookupService, MarketDataToggleService marketDataToggleService
+            PortfolioSnapshotService portfolioSnapshotService, KotakScripLookupService kotakScripLookupService, MarketDataToggleService marketDataToggleService, StockConfigService stockConfigService, JsonStockConfigService jsonStockConfigService
     ) {
         this.csvReaderService = csvReaderService;
         this.dashboardJsonService = dashboardJsonService;
@@ -49,6 +52,8 @@ public class AlertRunner implements CommandLineRunner {
         this.portfolioSnapshotService = portfolioSnapshotService;
         this.kotakScripLookupService = kotakScripLookupService;
         this.marketDataToggleService = marketDataToggleService;
+        this.stockConfigService = stockConfigService;
+        this.jsonStockConfigService = jsonStockConfigService;
     }
 
     @Override
@@ -67,36 +72,56 @@ public class AlertRunner implements CommandLineRunner {
 
         log.info("Market data provider: {}", marketDataProvider);
 
+        List<StockConfig> stockConfigs =
+                stockConfigService.loadStockConfig();
+
+        log.info(
+                "Loaded {} stocks from stock-config.json",
+                stockConfigs.size()
+        );
+
+        log.info("Processing stocks from stock-config.json...");
+
+        dashboard.addAll(
+                jsonStockConfigService.processStocks(
+                        triggeredToday
+                )
+        );
+
+        log.info(
+                "JSON stock processing completed. Records: {}",
+                dashboard.size()
+        );
         /*
          * Read all configured sheets.
          */
-        Map<String, KotakScrip> scripMap = new HashMap<>();
-        if("KOTAK".equalsIgnoreCase(marketDataProvider)){
-             scripMap = kotakScripLookupService.loadNseScripMap();
-        }
+       // Map<String, KotakScrip> scripMap = new HashMap<>();
+       // if("KOTAK".equalsIgnoreCase(marketDataProvider)){
+         //    scripMap = kotakScripLookupService.loadNseScripMap();
+       // }
 
 
-        for (SheetType sheet : SheetType.values()) {
-            if ("KOTAK".equalsIgnoreCase(marketDataProvider)) {
-
-                dashboard.addAll(
-                        csvReaderService.readCsvAndCheckKotakAlerts(
-                                sheet.getSheetConfig(),
-                                triggeredToday,
-                                scripMap
-                        )
-                );
-
-            } else {
-
-                dashboard.addAll(
-                        csvReaderService.readCsvAndCheckAlerts(
-                                sheet.getSheetConfig(),
-                                triggeredToday
-                        )
-                );
-            }
-        }
+//        for (SheetType sheet : SheetType.values()) {
+//            if ("KOTAK".equalsIgnoreCase(marketDataProvider)) {
+//
+//                dashboard.addAll(
+//                        csvReaderService.readCsvAndCheckKotakAlerts(
+//                                sheet.getSheetConfig(),
+//                                triggeredToday,
+//                                scripMap
+//                        )
+//                );
+//
+//            } else {
+//
+//                dashboard.addAll(
+//                        csvReaderService.readCsvAndCheckAlerts(
+//                                sheet.getSheetConfig(),
+//                                triggeredToday
+//                        )
+//                );
+//            }
+//        }
 
         log.info("Preparing to write dashboard JSON...");
         log.info("Total dashboard records: {}", dashboard.size());

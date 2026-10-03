@@ -1,0 +1,2066 @@
+[
+  {
+    "symbol": "MCX",
+    "companyName": "Multi Commodity Exchange of India Limited",
+    "alertPrice": 2949.0,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "KFINTECH",
+    "companyName": "Kfin Technologies Limited",
+    "alertPrice": 803.0,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "CAMS",
+    "companyName": "Computer Age Management Services Limited",
+    "alertPrice": 640.0,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "CDSL",
+    "companyName": "Central Depository Services (India) Limited",
+    "alertPrice": 1150.0,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "BSE",
+    "companyName": "BSE Limited",
+    "alertPrice": 2967.0,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "ANGELONE",
+    "companyName": "Angel One Limited",
+    "alertPrice": 262.0,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "HDFCAMC",
+    "companyName": "HDFC Asset Management Company Limited",
+    "alertPrice": 2100.0,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "ICICIAMC",
+    "companyName": "ICICI Prudential Asset Management Company Limited",
+    "alertPrice": 2850.0,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "GROWW",
+    "companyName": "Billionbrains Garage Ventures Limited",
+    "alertPrice": 172.0,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "NAM-INDIA",
+    "companyName": "Nippon Life India Asset Management Limited",
+    "alertPrice": 1014.0,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "IEX",
+    "companyName": "Indian Energy Exchange Limited",
+    "alertPrice": 98.5,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "ANANDRATHI",
+    "companyName": "Anand Rathi Wealth Limited",
+    "alertPrice": 1943.0,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "360ONE",
+    "companyName": "360 ONE WAM LIMITED",
+    "alertPrice": 958.0,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "NUVAMA",
+    "companyName": "Nuvama Wealth Management Limited",
+    "alertPrice": 1525.0,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "PRUDENT",
+    "companyName": "Prudent Corporate Advisory Services Limited",
+    "alertPrice": 2950.0,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "NSE",
+    "companyName": "NSE",
+    "alertPrice": 1500.0,
+    "sheet": "CapitalMarket"
+  },
+  {
+    "symbol": "BEL",
+    "companyName": "Bharat Electronics Limited",
+    "alertPrice": 365.0,
+    "sheet": "Defence"
+  },
+  {
+    "symbol": "HAL",
+    "companyName": "Hindustan Aeronautics Limited",
+    "alertPrice": 4370.0,
+    "sheet": "Defence"
+  },
+  {
+    "symbol": "SOLARINDS",
+    "companyName": "Solar Industries India Limited",
+    "alertPrice": 17800.0,
+    "sheet": "Defence"
+  },
+  {
+    "symbol": "MAZDOCK",
+    "companyName": "Mazagon Dock Shipbuilders Limited",
+    "alertPrice": 2000.0,
+    "sheet": "Defence"
+  },
+  {
+    "symbol": "GRSE",
+    "companyName": "Garden Reach Shipbuilders & Engineers Limited",
+    "alertPrice": 1960.0,
+    "sheet": "Defence"
+  },
+  {
+    "symbol": "PARAS",
+    "companyName": "Paras Defence and Space Technologies Limited",
+    "alertPrice": 1190.0,
+    "sheet": "Defence"
+  },
+  {
+    "symbol": "DATAPATTNS",
+    "companyName": "Data Patterns (India) Limited",
+    "alertPrice": 3990.0,
+    "sheet": "Defence"
+  },
+  {
+    "symbol": "ASTRAMICRO",
+    "companyName": "Astra Microwave Products Limited",
+    "alertPrice": 1537.0,
+    "sheet": "Defence"
+  },
+  {
+    "symbol": "APOLLO",
+    "companyName": "Apollo Micro Systems Limited",
+    "alertPrice": 360.0,
+    "sheet": "Defence"
+  },
+  {
+    "symbol": "MTARTECH",
+    "companyName": "Mtar Technologies Limited",
+    "alertPrice": 6300.0,
+    "sheet": "Defence"
+  },
+  {
+    "symbol": "COCHINSHIP",
+    "companyName": "Cochin Shipyard Limited",
+    "alertPrice": 1225.0,
+    "sheet": "Defence"
+  },
+  {
+    "symbol": "HDFCBANK",
+    "companyName": "HDFC Bank Limited",
+    "alertPrice": 659.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "ICICIBANK",
+    "companyName": "ICICI Bank Limited",
+    "alertPrice": 1255.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "SBIN",
+    "companyName": "State Bank of India",
+    "alertPrice": 940.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "BAJFINANCE",
+    "companyName": "Bajaj Finance Limited",
+    "alertPrice": 936.55,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "LICI",
+    "companyName": "Life Insurance Corporation Of India",
+    "alertPrice": 375.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "M&MFIN",
+    "companyName": "Mahindra & Mahindra Financial Services Limited",
+    "alertPrice": 292.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "MUTHOOTFIN",
+    "companyName": "Muthoot Finance Limited",
+    "alertPrice": 2536.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "CHOLAFIN",
+    "companyName": "Cholamandalam Investment and Finance Company Limited",
+    "alertPrice": 1480.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "BAJAJHLDNG",
+    "companyName": "Bajaj Holdings & Investment Limited",
+    "alertPrice": 10350.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "BAJAJFINSV",
+    "companyName": "Bajaj Finserv Limited",
+    "alertPrice": 1690.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "AUBANK",
+    "companyName": "AU Small Finance Bank Limited",
+    "alertPrice": 970.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "BAJAJHFL",
+    "companyName": "Bajaj Housing Finance Limited",
+    "alertPrice": 80.79,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "MAHABANK",
+    "companyName": "Bank of Maharashtra",
+    "alertPrice": 75.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "IOB",
+    "companyName": "Indian Overseas Bank",
+    "alertPrice": 30.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "SUNDARMFIN",
+    "companyName": "Sundaram Finance Limited",
+    "alertPrice": 4200.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "HUDCO",
+    "companyName": "Housing & Urban Development Corporation Limited",
+    "alertPrice": 140.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "TATAINVEST",
+    "companyName": "Tata Investment Corporation Limited",
+    "alertPrice": 580.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "CHOLAHLDNG",
+    "companyName": "Cholamandalam Financial Holdings Limited",
+    "alertPrice": 1290.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "TVSHLTD",
+    "companyName": "TVS Holdings Limited",
+    "alertPrice": 11439.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "KARURVYSYA",
+    "companyName": "Karur Vysya Bank Limited",
+    "alertPrice": 300.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "AADHARHFC",
+    "companyName": "Aadhar Housing Finance Limited",
+    "alertPrice": 413.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "CGCL",
+    "companyName": "Capri Global Capital Limited",
+    "alertPrice": 222.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "CUB",
+    "companyName": "City Union Bank Limited",
+    "alertPrice": 191.14,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "CHOICEIN",
+    "companyName": "Choice International Limited",
+    "alertPrice": 652.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "MAHSCOOTER",
+    "companyName": "Maharashtra Scooters Limited",
+    "alertPrice": 11400.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "HOMEFIRST",
+    "companyName": "Home First Finance Company India Limited",
+    "alertPrice": 1030.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "AAVAS",
+    "companyName": "Aavas Financiers Limited",
+    "alertPrice": 1070.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "TSFINV",
+    "companyName": "TSF INVESTMENTS LIMITED",
+    "alertPrice": 394.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "SBFC",
+    "companyName": "SBFC Finance Limited",
+    "alertPrice": 79.67,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "IDFCFIRSTB",
+    "companyName": "IDFC First Bank Limited",
+    "alertPrice": 76.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "CREDITACC",
+    "companyName": "CREDITACCESS GRAMEEN LIMITED",
+    "alertPrice": 1130.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "POONAWALLA",
+    "companyName": "Poonawalla Fincorp Limited",
+    "alertPrice": 419.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "AXISBANK",
+    "companyName": "Axis Bank Limited",
+    "alertPrice": 1160.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "ICICIGI",
+    "companyName": "ICICI Lombard General Insurance Company Limited",
+    "alertPrice": 1395.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "SBILIFE",
+    "companyName": "SBI Life Insurance Company Limited",
+    "alertPrice": 1575.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "HDFCLIFE",
+    "companyName": "HDFC Life Insurance Company Limited",
+    "alertPrice": 480.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "SHRIRAMFIN",
+    "companyName": "Shriram Finance Limited",
+    "alertPrice": 929.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "TATACAP",
+    "companyName": "Tata Capital Limited",
+    "alertPrice": 310.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "LTF",
+    "companyName": "L&T Finance Limited",
+    "alertPrice": 257.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "MANAPPURAM",
+    "companyName": "Manappuram Finance Limited",
+    "alertPrice": 297.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "IIFL",
+    "companyName": "IIFL Finance Limited",
+    "alertPrice": 555.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "PAISALO",
+    "companyName": "Paisalo Digital Limited",
+    "alertPrice": 62.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "PFC",
+    "companyName": "Power Finance Corporation Limited",
+    "alertPrice": 298.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "ABCAPITAL",
+    "companyName": "Aditya Birla Capital Limited",
+    "alertPrice": 359.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "HDBFS",
+    "companyName": "HDB Financial Services Limited",
+    "alertPrice": 550.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "CRISIL",
+    "companyName": "Crisil Limited",
+    "alertPrice": 4340.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "PNBHOUSING",
+    "companyName": "PNB Housing Finance Limited",
+    "alertPrice": 1016.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "KOTAKBANK",
+    "companyName": "Kotak Mahindra Bank Limited",
+    "alertPrice": 366.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "UNIONBANK",
+    "companyName": "Union Bank of India",
+    "alertPrice": 156.5,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "BANKBARODA",
+    "companyName": "Bank of Baroda",
+    "alertPrice": 210.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "PNB",
+    "companyName": "Punjab National Bank",
+    "alertPrice": 98.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "CANBK",
+    "companyName": "Canara Bank",
+    "alertPrice": 113.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "INDIANB",
+    "companyName": "Indian Bank",
+    "alertPrice": 761.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "IDBI",
+    "companyName": "IDBI Bank Limited",
+    "alertPrice": 72.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "UJJIVANSFB",
+    "companyName": "Ujjivan Small Finance Bank Limited",
+    "alertPrice": 56.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "JIOFIN",
+    "companyName": "Jio Financial Services Limited",
+    "alertPrice": 201.0,
+    "sheet": "Bank"
+  },
+  {
+    "symbol": "MARUTI",
+    "companyName": "Maruti Suzuki India Limited",
+    "alertPrice": 10850.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "M&M",
+    "companyName": "Mahindra & Mahindra Limited",
+    "alertPrice": 2785.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "BAJAJ-AUTO",
+    "companyName": "Bajaj Auto Limited",
+    "alertPrice": 9800.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "HYUNDAI",
+    "companyName": "Hyundai Motor India Limited",
+    "alertPrice": 1950.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "EICHERMOT",
+    "companyName": "Eicher Motors Limited",
+    "alertPrice": 6800.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "HEROMOTOCO",
+    "companyName": "Hero MotoCorp Limited",
+    "alertPrice": 4975.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "FORCEMOT",
+    "companyName": "FORCE MOTORS LTD",
+    "alertPrice": 16500.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "ASHOKLEY",
+    "companyName": "Ashok Leyland Limited",
+    "alertPrice": 148.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "TVSMOTOR",
+    "companyName": "TVS Motor Company Limited",
+    "alertPrice": 3620.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "UNOMINDA",
+    "companyName": "UNO Minda Limited",
+    "alertPrice": 1075.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "BHARATFORG",
+    "companyName": "Bharat Forge Limited",
+    "alertPrice": 1713.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "BOSCHLTD",
+    "companyName": "Bosch Limited",
+    "alertPrice": 41000.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "SCHAEFFLER",
+    "companyName": "Schaeffler India Limited",
+    "alertPrice": 3700.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "ATHERENERG",
+    "companyName": "Ather Energy Limited",
+    "alertPrice": 1342.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "SONACOMS",
+    "companyName": "Sona BLW Precision Forgings Limited",
+    "alertPrice": 750.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "ENDURANCE",
+    "companyName": "Endurance Technologies Limited",
+    "alertPrice": 2490.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "CRAFTSMAN",
+    "companyName": "Craftsman Automation Limited",
+    "alertPrice": 9150.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "SANSERA",
+    "companyName": "Sansera Engineering Limited",
+    "alertPrice": 3450.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "SHRIPISTON",
+    "companyName": "SPR Auto Technologies Limited",
+    "alertPrice": 4039.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "GABRIEL",
+    "companyName": "Gabriel India Limited",
+    "alertPrice": 1190.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "JBMA",
+    "companyName": "JBM Auto Limited",
+    "alertPrice": 514.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "OLECTRA",
+    "companyName": "Olectra Greentech Limited",
+    "alertPrice": 1060.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "LUMAXTECH",
+    "companyName": "Lumax Auto Technologies Limited",
+    "alertPrice": 1817.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "LUMAXIND",
+    "companyName": "Lumax Industries Limited",
+    "alertPrice": 5313.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "SHARDAMOTR",
+    "companyName": "Sharda Motor Industries Limited",
+    "alertPrice": 815.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "TMCV",
+    "companyName": "Tata Motors Limited",
+    "alertPrice": 398.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "APOLLOTYRE",
+    "companyName": "Apollo Tyres Limited",
+    "alertPrice": 378.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "CEATLTD",
+    "companyName": "CEAT Limited",
+    "alertPrice": 3140.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "BELRISE",
+    "companyName": "Belrise Industries Limited",
+    "alertPrice": 211.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "MINDACORP",
+    "companyName": "Minda Corporation Limited",
+    "alertPrice": 633.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "PRICOLLTD",
+    "companyName": "Pricol Limited",
+    "alertPrice": 677.0,
+    "sheet": "Auto"
+  },
+  {
+    "symbol": "WAAREEENER",
+    "companyName": "Waaree Energies Limited",
+    "alertPrice": 2142.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "POLYCAB",
+    "companyName": "Polycab India Limited",
+    "alertPrice": 7338.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "DIXON",
+    "companyName": "Dixon Technologies (India) Limited",
+    "alertPrice": 11553.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "PREMIERENE",
+    "companyName": "Premier Energies Limited",
+    "alertPrice": 841.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "APARINDS",
+    "companyName": "Apar Industries Limited",
+    "alertPrice": 15270.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "POWERINDIA",
+    "companyName": "Hitachi Energy India Limited",
+    "alertPrice": 27500.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "BHEL",
+    "companyName": "Bharat Heavy Electricals Limited",
+    "alertPrice": 367.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "SIEMENS",
+    "companyName": "Siemens Limited",
+    "alertPrice": 3600.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "GVT&D",
+    "companyName": "GE Vernova T&D India Limited",
+    "alertPrice": 3971.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "KEI",
+    "companyName": "KEI Industries Limited",
+    "alertPrice": 4068.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "NAVINFLUOR",
+    "companyName": "Navin Fluorine International Limited",
+    "alertPrice": 7400.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "WELCORP",
+    "companyName": "Welspun Corp Limited",
+    "alertPrice": 2132.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "ESCORTS",
+    "companyName": "Escorts Kubota Limited",
+    "alertPrice": 2375.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "PTCIL",
+    "companyName": "PTC Industries Limited",
+    "alertPrice": 19839.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "EMMVEE",
+    "companyName": "Emmvee Photovoltaic Power Limited",
+    "alertPrice": 297.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "KPIL",
+    "companyName": "Kalpataru Projects International Limited",
+    "alertPrice": 1250.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "HBLENGINE",
+    "companyName": "HBL Engineering Limited",
+    "alertPrice": 628.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "JYOTICNC",
+    "companyName": "Jyoti CNC Automation Limited",
+    "alertPrice": 910.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "TDPOWERSYS",
+    "companyName": "TD Power Systems Limited",
+    "alertPrice": 644.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "TECHNOE",
+    "companyName": "Techno Electric & Engineering Company Limited",
+    "alertPrice": 876.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "WAAREERTL",
+    "companyName": "Waaree Renewable Technologies Limited",
+    "alertPrice": 781.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "TARIL",
+    "companyName": "Transformers And Rectifiers (India) Limited",
+    "alertPrice": 261.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "CIEINDIA",
+    "companyName": "CIE Automotive India Limited",
+    "alertPrice": 330.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "GRINDWELL",
+    "companyName": "Grindwell Norton Limited",
+    "alertPrice": 1820.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "ABB",
+    "companyName": "ABB India Limited",
+    "alertPrice": 5930.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "ULTRACEMCO",
+    "companyName": "UltraTech Cement Limited",
+    "alertPrice": 10100.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "GRASIM",
+    "companyName": "Grasim Industries Limited",
+    "alertPrice": 2874.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "AMBUJACEM",
+    "companyName": "Ambuja Cements Limited",
+    "alertPrice": 343.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "SHREECEM",
+    "companyName": "SHREE CEMENT LIMITED",
+    "alertPrice": 20255.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "JKCEMENT",
+    "companyName": "JK Cement Limited",
+    "alertPrice": 4675.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "DALBHARAT",
+    "companyName": "Dalmia Bharat Limited",
+    "alertPrice": 1610.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "KAYNES",
+    "companyName": "Kaynes Technology India Limited",
+    "alertPrice": 3151.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "CGPOWER",
+    "companyName": "CG Power and Industrial Solutions Limited",
+    "alertPrice": 825.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "MOSCHIP",
+    "companyName": "Moschip Technologies Limited",
+    "alertPrice": 190.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "FLUOROCHEM",
+    "companyName": "Gujarat Fluorochemicals Limited",
+    "alertPrice": 4090.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "SRF",
+    "companyName": "SRF Limited",
+    "alertPrice": 2410.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "RRKABEL",
+    "companyName": "R R Kabel Limited",
+    "alertPrice": 2190.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "CPPLUS",
+    "companyName": "Aditya Infotech Limited",
+    "alertPrice": 3250.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "SYRMA",
+    "companyName": "Syrma SGS Technology Limited",
+    "alertPrice": 1305.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "VOLTAMP",
+    "companyName": "Voltamp Transformers Limited",
+    "alertPrice": 9050.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "NBCC",
+    "companyName": "NBCC (India) Limited",
+    "alertPrice": 73.5,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "LT",
+    "companyName": "Larsen & Toubro Limited",
+    "alertPrice": 3538.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "JSWINFRA",
+    "companyName": "JSW Infrastructure Limited",
+    "alertPrice": 295.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "PIDILITIND",
+    "companyName": "Pidilite Industries Limited",
+    "alertPrice": 1417.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "HAVELLS",
+    "companyName": "Havells India Limited",
+    "alertPrice": 975.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "AIAENG",
+    "companyName": "AIA Engineering Limited",
+    "alertPrice": 3500.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "HAPPYFORGE",
+    "companyName": "Happy Forgings Limited",
+    "alertPrice": 1810.0,
+    "sheet": "Manufacturing"
+  },
+  {
+    "symbol": "PERSISTENT",
+    "companyName": "Persistent Systems Limited",
+    "alertPrice": 5010.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "TCS",
+    "companyName": "Tata Consultancy Services Limited",
+    "alertPrice": 2020.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "INFY",
+    "companyName": "Infosys Limited",
+    "alertPrice": 975.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "HCLTECH",
+    "companyName": "HCL Technologies Limited",
+    "alertPrice": 1108.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "TECHM",
+    "companyName": "Tech Mahindra Limited",
+    "alertPrice": 1490.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "LTM",
+    "companyName": "LTM Limited",
+    "alertPrice": 3652.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "POLICYBZR",
+    "companyName": "PB Fintech Limited",
+    "alertPrice": 885.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "NAUKRI",
+    "companyName": "Info Edge (India) Limited",
+    "alertPrice": 1177.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "COFORGE",
+    "companyName": "Coforge Limited",
+    "alertPrice": 1590.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "NETWEB",
+    "companyName": "Netweb Technologies India Limited",
+    "alertPrice": 4075.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "AFFLE",
+    "companyName": "Affle 3i Limited",
+    "alertPrice": 1440.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "PINELABS",
+    "companyName": "Pine Labs Limited",
+    "alertPrice": 147.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "FSL",
+    "companyName": "Firstsource Solutions Limited",
+    "alertPrice": 235.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "KPITTECH",
+    "companyName": "KPIT Technologies Limited",
+    "alertPrice": 470.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "ECLERX",
+    "companyName": "eClerx Services Limited",
+    "alertPrice": 1690.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "RATEGAIN",
+    "companyName": "Rategain Travel Technologies Limited",
+    "alertPrice": 742.0,
+    "sheet": "It"
+  },
+  {
+    "symbol": "NESTLEIND",
+    "companyName": "Nestle India Limited",
+    "alertPrice": 1290.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "ETERNAL",
+    "companyName": "ETERNAL LIMITED",
+    "alertPrice": 296.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "TATACONSUM",
+    "companyName": "TATA CONSUMER PRODUCTS LIMITED",
+    "alertPrice": 940.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "VMM",
+    "companyName": "Vishal Mega Mart Limited",
+    "alertPrice": 96.34,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "RADICO",
+    "companyName": "Radico Khaitan Limited",
+    "alertPrice": 4150.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "GODFRYPHLP",
+    "companyName": "Godfrey Phillips India Limited",
+    "alertPrice": 1656.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "GILLETTE",
+    "companyName": "Gillette India Limited",
+    "alertPrice": 6641.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "CCL",
+    "companyName": "CCL Products (India) Limited",
+    "alertPrice": 967.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "HONASA",
+    "companyName": "Honasa Consumer Limited",
+    "alertPrice": 411.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "SHAILY",
+    "companyName": "Shaily Engineering Plastics Limited",
+    "alertPrice": 2730.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "LTFOODS",
+    "companyName": "LT Foods Limited",
+    "alertPrice": 375.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "TI",
+    "companyName": "Tilaknagar Industries Limited",
+    "alertPrice": 477.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "CARTRADE",
+    "companyName": "Cartrade Tech Limited",
+    "alertPrice": 2720.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "HINDUNILVR",
+    "companyName": "Hindustan Unilever Limited",
+    "alertPrice": 1742.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "HNDFDS",
+    "companyName": "Hindustan Foods Limited",
+    "alertPrice": 540.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "VBL",
+    "companyName": "Varun Beverages Limited",
+    "alertPrice": 390.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "BRITANNIA",
+    "companyName": "Britannia Industries Limited",
+    "alertPrice": 4635.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "MARICO",
+    "companyName": "Marico Limited",
+    "alertPrice": 760.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "GODREJCP",
+    "companyName": "Godrej Consumer Products Limited",
+    "alertPrice": 810.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "UNITDSPR",
+    "companyName": "United Spirits Limited",
+    "alertPrice": 1240.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "DMART",
+    "companyName": "Avenue Supermarts Limited",
+    "alertPrice": 3465.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "NYKAA",
+    "companyName": "FSN E-Commerce Ventures Limited",
+    "alertPrice": 303.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "JUBLFOOD",
+    "companyName": "Jubilant Foodworks Limited",
+    "alertPrice": 395.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "METROBRAND",
+    "companyName": "Metro Brands Limited",
+    "alertPrice": 680.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "ITC",
+    "companyName": "ITC Limited",
+    "alertPrice": 251.0,
+    "sheet": "Fmcg"
+  },
+  {
+    "symbol": "SUNPHARMA",
+    "companyName": "Sun Pharmaceutical Industries Limited",
+    "alertPrice": 1738.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "TORNTPHARM",
+    "companyName": "Torrent Pharmaceuticals Limited",
+    "alertPrice": 4450.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "APOLLOHOSP",
+    "companyName": "Apollo Hospitals Enterprise Limited",
+    "alertPrice": 7601.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "ZYDUSWELL",
+    "companyName": "Zydus Wellness Limited",
+    "alertPrice": 461.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "LUPIN",
+    "companyName": "Lupin Limited",
+    "alertPrice": 1726.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "MAXHEALTH",
+    "companyName": "Max Healthcare Institute Limited",
+    "alertPrice": 830.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "FORTIS",
+    "companyName": "Fortis Healthcare Limited",
+    "alertPrice": 702.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "AJANTPHARM",
+    "companyName": "Ajanta Pharma Limited",
+    "alertPrice": 3328.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "NH",
+    "companyName": "Narayana Hrudayalaya Ltd.",
+    "alertPrice": 1559.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "MEDANTA",
+    "companyName": "Global Health Limited",
+    "alertPrice": 1286.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "EMCURE",
+    "companyName": "Emcure Pharmaceuticals Limited",
+    "alertPrice": 1780.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "ACUTAAS",
+    "companyName": "Acutaas Chemicals Limited",
+    "alertPrice": 2915.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "LALPATHLAB",
+    "companyName": "Dr. Lal Path Labs Ltd.",
+    "alertPrice": 1756.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "CUPID",
+    "companyName": "Cupid Limited",
+    "alertPrice": 240.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "NEULANDLAB",
+    "companyName": "Neuland Laboratories Limited",
+    "alertPrice": 20900.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "ASTRAZEN",
+    "companyName": "AstraZeneca Pharma India Limited",
+    "alertPrice": 5930.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "CAPLIPOINT",
+    "companyName": "Caplin Point Laboratories Limited",
+    "alertPrice": 2226.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "POLYMED",
+    "companyName": "Poly Medicure Limited",
+    "alertPrice": 1500.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "SHILPAMED",
+    "companyName": "Shilpa Medicare Limited",
+    "alertPrice": 740.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "ASTERDM",
+    "companyName": "Aster DM Quality Care Limited",
+    "alertPrice": 660.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "DIVISLAB",
+    "companyName": "Divi's Laboratories Limited",
+    "alertPrice": 8090.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "CIPLA",
+    "companyName": "Cipla Limited",
+    "alertPrice": 1331.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "MANKIND",
+    "companyName": "Mankind Pharma Limited",
+    "alertPrice": 2150.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "ZYDUSLIFE",
+    "companyName": "Zydus Lifesciences Limited",
+    "alertPrice": 1019.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "DRREDDY",
+    "companyName": "Dr. Reddy's Laboratories Limited",
+    "alertPrice": 1077.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "LAURUSLABS",
+    "companyName": "Laurus Labs Limited",
+    "alertPrice": 1610.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "ALKEM",
+    "companyName": "Alkem Laboratories Limited",
+    "alertPrice": 4800.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "GLENMARK",
+    "companyName": "Glenmark Pharmaceuticals Limited",
+    "alertPrice": 2180.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "ABBOTINDIA",
+    "companyName": "Abbott India Limited",
+    "alertPrice": 23730.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "IPCALAB",
+    "companyName": "IPCA Laboratories Limited",
+    "alertPrice": 1599.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "WOCKPHARMA",
+    "companyName": "Wockhardt Limited",
+    "alertPrice": 1754.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "SAILIFE",
+    "companyName": "Sai Life Sciences Limited",
+    "alertPrice": 1302.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "RUBICON",
+    "companyName": "Rubicon Research Limited",
+    "alertPrice": 1464.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "ERIS",
+    "companyName": "Eris Lifesciences Limited",
+    "alertPrice": 1144.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "PFIZER",
+    "companyName": "Pfizer Limited",
+    "alertPrice": 3484.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "GRANULES",
+    "companyName": "Granules India Limited",
+    "alertPrice": 802.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "KIMS",
+    "companyName": "Krishna Institute of Medical Sciences Limited",
+    "alertPrice": 717.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "AGARWALEYE",
+    "companyName": "Dr. Agarwal's Health Care Limited",
+    "alertPrice": 447.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "PARKHOSPS",
+    "companyName": "Park Medi World Limited",
+    "alertPrice": 255.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "JLHL",
+    "companyName": "Jupiter Life Line Hospitals Limited",
+    "alertPrice": 245.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "SENORES",
+    "companyName": "Senores Pharmaceuticals Limited",
+    "alertPrice": 1310.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "APLLTD",
+    "companyName": "Alembic Pharmaceuticals Limited",
+    "alertPrice": 710.0,
+    "sheet": "Health"
+  },
+  {
+    "symbol": "NATIONALUM",
+    "companyName": "National Aluminium Company Limited",
+    "alertPrice": 291.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "VEDL",
+    "companyName": "Vedanta Limited",
+    "alertPrice": 230.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "HINDZINC",
+    "companyName": "Hindustan Zinc Limited",
+    "alertPrice": 534.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "HINDALCO",
+    "companyName": "Hindalco Industries Limited",
+    "alertPrice": 862.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "JINDALSTEL",
+    "companyName": "JINDAL STEEL LIMITED",
+    "alertPrice": 1024.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "TATASTEEL",
+    "companyName": "Tata Steel Limited",
+    "alertPrice": 175.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "SAIL",
+    "companyName": "Steel Authority of India Limited",
+    "alertPrice": 168.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "JSWSTEEL",
+    "companyName": "JSW Steel Limited",
+    "alertPrice": 1110.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "HINDCOPPER",
+    "companyName": "Hindustan Copper Limited",
+    "alertPrice": 403.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "JSL",
+    "companyName": "Jindal Stainless Limited",
+    "alertPrice": 691.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "LLOYDSME",
+    "companyName": "Lloyds Metals And Energy Limited",
+    "alertPrice": 1650.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "APLAPOLLO",
+    "companyName": "APL Apollo Tubes Limited",
+    "alertPrice": 1902.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "GRAVITA",
+    "companyName": "Gravita India Limited",
+    "alertPrice": 1363.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "NMDC",
+    "companyName": "NMDC Limited",
+    "alertPrice": 73.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "ADANIENT",
+    "companyName": "Adani Enterprises Limited",
+    "alertPrice": 2700.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "KIOCL",
+    "companyName": "KIOCL Limited",
+    "alertPrice": 291.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "SARDAEN",
+    "companyName": "Sarda Energy & Minerals Limited",
+    "alertPrice": 465.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "SHYAMMETL",
+    "companyName": "Shyam Metalics and Energy Limited",
+    "alertPrice": 980.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "USHAMART",
+    "companyName": "Usha Martin Limited",
+    "alertPrice": 470.0,
+    "sheet": "Metal"
+  },
+  {
+    "symbol": "JSWENERGY",
+    "companyName": "JSW Energy Limited",
+    "alertPrice": 470.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "SUZLON",
+    "companyName": "Suzlon Energy Limited",
+    "alertPrice": 38.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "KIRLOSENG",
+    "companyName": "Kirloskar Oil Engines Limited",
+    "alertPrice": 1900.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "INOXWIND",
+    "companyName": "Inox Wind Limited",
+    "alertPrice": 64.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "RELIANCE",
+    "companyName": "Reliance Industries Limited",
+    "alertPrice": 1150.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "ONGC",
+    "companyName": "Oil & Natural Gas Corporation Limited",
+    "alertPrice": 208.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "TATAPOWER",
+    "companyName": "Tata Power Company Limited",
+    "alertPrice": 338.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "NHPC",
+    "companyName": "NHPC Limited",
+    "alertPrice": 67.88,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "NTPC",
+    "companyName": "NTPC Limited",
+    "alertPrice": 306.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "ADANIPOWER",
+    "companyName": "Adani Power Limited",
+    "alertPrice": 190.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "POWERGRID",
+    "companyName": "Power Grid Corporation of India Limited",
+    "alertPrice": 252.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "COALINDIA",
+    "companyName": "Coal India Limited",
+    "alertPrice": 376.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "BPCL",
+    "companyName": "Bharat Petroleum Corporation Limited",
+    "alertPrice": 287.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "NLCINDIA",
+    "companyName": "NLC India Limited",
+    "alertPrice": 240.5,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "ACMESOLAR",
+    "companyName": "Acme Solar Holdings Limited",
+    "alertPrice": 350.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "CESC",
+    "companyName": "CESC Limited",
+    "alertPrice": 120.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "IOC",
+    "companyName": "Indian Oil Corporation Limited",
+    "alertPrice": 118.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "HINDPETRO",
+    "companyName": "Hindustan Petroleum Corporation Limited",
+    "alertPrice": 333.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "MRPL",
+    "companyName": "Mangalore Refinery and Petrochemicals Limited",
+    "alertPrice": 140.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "CHENNPETRO",
+    "companyName": "Chennai Petroleum Corporation Limited",
+    "alertPrice": 1186.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "GAIL",
+    "companyName": "GAIL (India) Limited",
+    "alertPrice": 164.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "OIL",
+    "companyName": "Oil India Limited",
+    "alertPrice": 403.0,
+    "sheet": "OilEnergy"
+  },
+  {
+    "symbol": "TRENT",
+    "companyName": "Trent Limited",
+    "alertPrice": 2460.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "CUMMINSIND",
+    "companyName": "Cummins India Limited",
+    "alertPrice": 4600.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "BHARTIARTL",
+    "companyName": "Bharti Airtel Limited",
+    "alertPrice": 1580.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "ADANIPORTS",
+    "companyName": "Adani Ports and Special Economic Zone Limited",
+    "alertPrice": 1591.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "TITAN",
+    "companyName": "Titan Company Limited",
+    "alertPrice": 4450.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "INDHOTEL",
+    "companyName": "The Indian Hotels Company Limited",
+    "alertPrice": 655.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "IRCTC",
+    "companyName": "Indian Railway Catering And Tourism Corporation Limited",
+    "alertPrice": 437.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "KALYANKJIL",
+    "companyName": "Kalyan Jewellers India Limited",
+    "alertPrice": 445.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "DELHIVERY",
+    "companyName": "Delhivery Limited",
+    "alertPrice": 379.9,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "URBANCO",
+    "companyName": "Urban Company Limited",
+    "alertPrice": 128.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "THANGAMAYL",
+    "companyName": "Thangamayil Jewellery Limited",
+    "alertPrice": 4630.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "CHALET",
+    "companyName": "Chalet Hotels Limited",
+    "alertPrice": 781.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "TBOTEK",
+    "companyName": "TBO Tek Limited",
+    "alertPrice": 1470.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "PRIVISCL",
+    "companyName": "Privi Speciality Chemicals Limited",
+    "alertPrice": 3100.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "SHADOWFAX",
+    "companyName": "Shadowfax Technologies Limited",
+    "alertPrice": 211.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "NAZARA",
+    "companyName": "Nazara Technologies Limited",
+    "alertPrice": 330.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "INDIAMART",
+    "companyName": "Indiamart Intermesh Limited",
+    "alertPrice": 1562.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "BLS",
+    "companyName": "BLS International Services Limited",
+    "alertPrice": 200.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "WEWORK",
+    "companyName": "WeWork India Management Limited",
+    "alertPrice": 631.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "RAILTEL",
+    "companyName": "Railtel Corporation Of India Limited",
+    "alertPrice": 220.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "AEGISLOG",
+    "companyName": "Aegis Logistics Limited",
+    "alertPrice": 1101.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "AEGISVOPAK",
+    "companyName": "Aegis Vopak Terminals Limited",
+    "alertPrice": 252.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "GESHIP",
+    "companyName": "The Great Eastern Shipping Company Limited",
+    "alertPrice": 1297.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "PAYTM",
+    "companyName": "One 97 Communications Limited",
+    "alertPrice": 1410.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "ASIANPAINT",
+    "companyName": "Asian Paints Limited",
+    "alertPrice": 2257.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "BERGEPAINT",
+    "companyName": "Berger Paints (I) Limited",
+    "alertPrice": 412.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "LENSKART",
+    "companyName": "Lenskart Solutions Limited",
+    "alertPrice": 557.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "CHAMBLFERT",
+    "companyName": "Chambal Fertilizers & Chemicals Limited",
+    "alertPrice": 380.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "BHARTIHEXA",
+    "companyName": "Bharti Hexacom Limited",
+    "alertPrice": 1280.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "GODREJIND",
+    "companyName": "Godrej Industries Limited",
+    "alertPrice": 927.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "INDIGO",
+    "companyName": "InterGlobe Aviation Limited",
+    "alertPrice": 4430.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "PCJEWELLER",
+    "companyName": "PC Jeweller Limited",
+    "alertPrice": 10.39,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "WABAG",
+    "companyName": "VA Tech Wabag Limited",
+    "alertPrice": 1890.0,
+    "sheet": "Misc"
+  },
+  {
+    "symbol": "LODHA",
+    "companyName": "Lodha Developers Limited",
+    "alertPrice": 972.0,
+    "sheet": "Reality"
+  },
+  {
+    "symbol": "PHOENIXLTD",
+    "companyName": "The Phoenix Mills Limited",
+    "alertPrice": 1736.0,
+    "sheet": "Reality"
+  },
+  {
+    "symbol": "PRESTIGE",
+    "companyName": "Prestige Estates Projects Limited",
+    "alertPrice": 1325.0,
+    "sheet": "Reality"
+  },
+  {
+    "symbol": "ANANTRAJ",
+    "companyName": "Anant Raj Limited",
+    "alertPrice": 562.0,
+    "sheet": "Reality"
+  },
+  {
+    "symbol": "SOBHA",
+    "companyName": "Sobha Limited",
+    "alertPrice": 1130.0,
+    "sheet": "Reality"
+  },
+  {
+    "symbol": "DLF",
+    "companyName": "DLF Limited",
+    "alertPrice": 562.0,
+    "sheet": "Reality"
+  },
+  {
+    "symbol": "OBEROIRLTY",
+    "companyName": "Oberoi Realty Limited",
+    "alertPrice": 1590.0,
+    "sheet": "Reality"
+  },
+  {
+    "symbol": "GODREJPROP",
+    "companyName": "Godrej Properties Limited",
+    "alertPrice": 1532.0,
+    "sheet": "Reality"
+  },
+  {
+    "symbol": "BRIGADE",
+    "companyName": "Brigade Enterprises Limited",
+    "alertPrice": 549.0,
+    "sheet": "Reality"
+  },
+  {
+    "symbol": "MOCAPITAL",
+    "companyName": "Motilal Oswal Mutual Fund - Motilal Oswal Nifty Capital Market ETF",
+    "alertPrice": 49.71,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "AUTOBEES",
+    "companyName": "Nippon India Mutual Fund - Nippon India Nifty Auto ETF",
+    "alertPrice": 266.0,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "MODEFENCE",
+    "companyName": "Motilal Oswal Mutual Fund - Motilal Oswal Nifty India Defence ETF",
+    "alertPrice": 98.92,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "ITBEES",
+    "companyName": "Nippon India Mutual Fund - Nippon India ETF Nifty IT",
+    "alertPrice": 30.0,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "OILIETF",
+    "companyName": "ICICI Prudential Mutual Fund - ICICI Prudential Nifty Oil & Gas ETF",
+    "alertPrice": 10.0,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "HDFCSML250",
+    "companyName": "HDFC Mutual Fund - HDFC NIFTY Smallcap 250 ETF",
+    "alertPrice": 173.0,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "PHARMABEES",
+    "companyName": "Nippon India Mutual Fund - Nippon India Nifty Pharma ETF",
+    "alertPrice": 11.0,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "METALIETF",
+    "companyName": "ICICI Prudential Mutual Fund - ICICI Prudential Nifty Metal ETF",
+    "alertPrice": 1.0,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "CONSUMBEES",
+    "companyName": "Nippon India ETF Nifty India Consumption",
+    "alertPrice": 1.0,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "FMCGIETF",
+    "companyName": "ICICI PRUDENTIAL MUTUAL FUND - ICICI Prudential Nifty FMCG ETF",
+    "alertPrice": 1.0,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "CPSEETF",
+    "companyName": "CPSE ETF",
+    "alertPrice": 1.0,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "MON100",
+    "companyName": "Motilal Oswal Mutual Fund - Motilal Oswal NASDAQ 100 ETF",
+    "alertPrice": 305.0,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "BANKBEES",
+    "companyName": "Nippon India ETF Nifty Bank BeES",
+    "alertPrice": 548.0,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "GOLDBEES",
+    "companyName": "NIPPON INDIA ETF GOLD BEES",
+    "alertPrice": 116.0,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "SILVERBEES",
+    "companyName": "Nippon India Mutual Fund - Nippon India Silver ETF",
+    "alertPrice": 203.0,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "SILVERIETF",
+    "companyName": "ICICI Prudential Mutual Fund - ICICI Prudential Silver ETF",
+    "alertPrice": 1.0,
+    "sheet": "Etf"
+  },
+  {
+    "symbol": "PSUBNKBEES",
+    "companyName": "Nippon India ETF Nifty PSU Bank BeES",
+    "alertPrice": 1.0,
+    "sheet": "Etf"
+  }
+]

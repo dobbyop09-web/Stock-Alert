@@ -116,13 +116,6 @@ function rowHtml(r) {
             <td class="num" style="color:${color};font-weight:bold">${fmtPct(r.distance)}</td>
             <td><span class="badge ${badge}">${statusIcon}${r.status}</span></td>
             <td><span class="sector-badge" style="color:${sectorColor};background:linear-gradient(135deg, ${hexToRgba(sectorColor, .22)}, ${hexToRgba(sectorColor, .06)});border-color:${hexToRgba(sectorColor, .28)}">${sectorIcon}${r.sheet || "—"}</span></td>
-             <td>
-    <button class="icon-btn" onclick="editAlert('${r.symbol}',this)">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-        </svg>
-    </button>
-</td>
         </tr> 
     `;
 }

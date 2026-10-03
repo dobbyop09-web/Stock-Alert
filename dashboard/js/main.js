@@ -2,16 +2,12 @@ import { initAuth } from "./auth.js";
 import { initFilters } from "./filters.js";
 import { initRefresh } from "./refresh.js";
 import { loadDashboard } from "./data-loader.js";
-import { editAlert, saveAlert } from "./alerts.js";
 import { renderTicker } from './ticker.js';
 import { initHistoricalAlerts } from "./historical-alerts.js";
 import { initProvider } from "./provider.js";
 
-
-// editAlert/saveAlert are invoked via inline onclick="" attributes generated
-// in render.js template strings, so they must exist on window.
-window.editAlert = editAlert;
-window.saveAlert = saveAlert;
+// editAlert/saveAlert have been moved to stock-config.html.
+// They are no longer rendered in index.html rows, so no window globals needed.
 
 initAuth();
 initFilters();

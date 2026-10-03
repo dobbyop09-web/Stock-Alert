@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stock Alert Configuration</title>
+  <style>
+    :root { --watch: #2DD4BF; --triggered: #FF5C6C; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; font-size: 13px; background: #0b1520; color: #dce8f4; }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    input, select { font-family: inherit; }
+
+    .shell { display: flex; height: 100vh; overflow: hidden; }
+    .sb { width: 60px; flex-shrink: 0; background: #07111a; border-right: 1px solid rgba(255,255,255,.06); display: flex; flex-direction: column; position: relative; z-index: 1000; }
+    .sb-nav { display: flex; flex-direction: column; padding: 12px 0; gap: 8px; height: 100%; }
+    .sb-link { width: 44px; height: 44px; margin: 4px auto; display: flex; align-items: center; justify-content: center; padding: 0; border-radius: 14px; position: relative; color: #7f92a6; transition: background .18s, color .18s, transform .18s; }
+    .sb-link:hover { background: #122233; color: #fff; transform: translateY(-1px); }
+    .sb-link.active { background: rgba(45,212,191,.12); border: 1px solid rgba(45,212,191,.18); box-shadow: inset 0 0 0 1px rgba(45,212,191,.04), 0 0 16px rgba(45,212,191,.08); color: #2DD4BF; }
+    .sb-link svg { width: 20px; height: 20px; display: block; }
+    .sb-link::after { content: attr(data-title); position: absolute; left: 58px; top: 50%; transform: translateY(-50%) translateX(-8px); background: #111c28; color: #fff; font-size: 13px; font-weight: 500; white-space: nowrap; padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,.08); box-shadow: 0 8px 24px rgba(0,0,0,.35); opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; z-index: 999; }
+    .sb-link:hover::after { opacity: 1; transform: translateY(-50%) translateX(0); }
+
+    .app-main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; min-width: 0; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 20px; height: 60px; border-bottom: 1px solid rgba(255,255,255,.07); background: #0b1520; flex-shrink: 0; }
+    .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .topbar-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(45,212,191,.1); border: 1px solid rgba(45,212,191,.18); display: flex; align-items: center; justify-content: center; color: #2DD4BF; flex-shrink: 0; }
+    .topbar-icon svg { width: 18px; height: 18px; }
+    .topbar-title h1 { font-size: 16px; font-weight: 700; color: #edf5ff; }
+    .topbar-title p { font-size: 11px; color: #4a6075; margin-top: 1px; }
+    .topbar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+    .btn-primary { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; background: #2DD4BF; color: #0b1520; font-size: 12px; font-weight: 600; cursor: pointer; border: none; transition: opacity .18s; }
+    .btn-primary:hover { opacity: .88; }
+    .btn-ghost { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 8px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); color: #dce8f4; font-size: 12px; cursor: pointer; transition: background .18s; }
+    .btn-ghost:hover { background: rgba(255,255,255,.1); }
+    .btn-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.04); color: #7f92a6; cursor: pointer; transition: background .18s, color .18s; flex-shrink: 0; }
+    .btn-icon:hover { background: rgba(255,255,255,.1); color: #fff; }
+    .btn-icon.edit:hover { color: #2DD4BF; border-color: rgba(45,212,191,.3); }
+
+    .sign-in-btn, .sign-out-btn { align-items: center; gap: 7px; padding: 7px 14px; border-radius: 8px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); color: #dce8f4; font-size: 12px; cursor: pointer; transition: background .18s; }
+    .sign-in-btn { display: inline-flex; }
+    .sign-out-btn { display: none; }
+    .sign-in-btn:hover, .sign-out-btn:hover { background: rgba(255,255,255,.1); }
+    .whoami-chip { display: none; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 20px; background: rgba(45,212,191,.08); border: 1px solid rgba(45,212,191,.18); font-size: 11px; color: #2DD4BF; }
+    .whoami-chip svg { width: 12px; height: 12px; }
+    .last-updated { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #4a6075; }
+    .last-updated svg { width: 13px; height: 13px; }
+
+    .cfg-body { display: flex; flex: 1; min-height: 0; overflow: hidden; }
+    .cfg-main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+
+    /* KPI cards (clickable filters) */
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 16px 20px 12px; flex-shrink: 0; }
+    .kpi-card { background: #0e1d2b; border: 1px solid rgba(255,255,255,.07); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; transition: border-color .18s, background .18s, transform .18s; user-select: none; }
+    .kpi-card.clickable { cursor: pointer; }
+    .kpi-card.clickable:hover { background: #112334; transform: translateY(-1px); border-color: rgba(255,255,255,.14); }
+    .kpi-card.active { border-color: #2DD4BF; background: rgba(45,212,191,.07); box-shadow: 0 0 0 1px rgba(45,212,191,.25), 0 0 18px rgba(45,212,191,.08); }
+    .kpi-card.active.red { border-color: #FF5C6C; background: rgba(255,92,108,.07); box-shadow: 0 0 0 1px rgba(255,92,108,.25), 0 0 18px rgba(255,92,108,.08); }
+    .kpi-card.active.purple { border-color: #8B5CF6; background: rgba(139,92,246,.07); box-shadow: 0 0 0 1px rgba(139,92,246,.25), 0 0 18px rgba(139,92,246,.08); }
+    .kpi-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .kpi-icon svg { width: 20px; height: 20px; }
+    .kpi-icon.blue, .kpi-icon.teal { background: rgba(45,212,191,.1); color: #2DD4BF; }
+    .kpi-icon.red { background: rgba(255,92,108,.1); color: #FF5C6C; }
+    .kpi-icon.purple { background: rgba(139,92,246,.1); color: #8B5CF6; }
+    .kpi-val { font-size: 22px; font-weight: 800; color: #edf5ff; line-height: 1; }
+    .kpi-label { font-size: 11px; color: #4a6075; margin-top: 2px; }
+
+
+    .cfg-table-wrap { flex: 1; min-height: 0; overflow: hidden; margin: 0 20px 16px; background: #0e1d2b; border: 1px solid rgba(255,255,255,.07); border-radius: 10px; display: flex; flex-direction: column; }
+    .cfg-table-scroll { flex: 1; overflow-y: auto; overflow-x: auto; }
+    .cfg-table-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
+    .cfg-table-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 4px; }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead th { position: sticky; top: 0; z-index: 2; background: #0a1622; padding: 10px 14px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #4a6075; border-bottom: 1px solid rgba(255,255,255,.07); white-space: nowrap; }
+    thead th.num { text-align: right; }
+    thead th.sortable { cursor: pointer; user-select: none; transition: color .15s; }
+    thead th.sortable:hover { color: #8fa3bc; }
+    thead th .sort-ic { display: inline-block; min-width: 10px; margin-left: 4px; font-size: 9px; opacity: .55; }
+    thead th.sort-active { color: #9fb5c8; }
+    thead th.sort-active .sort-ic { color: #2DD4BF; opacity: 1; }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,.04); transition: background .12s; }
+    tbody tr:hover { background: rgba(255,255,255,.025); }
+    tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
+    tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+
+    /* Symbol logo / avatar */
+    .sym-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; flex-shrink: 0; overflow: hidden; }
+    .sym-logo-wrap { width: 28px; height: 28px; position: relative; flex: 0 0 28px; }
+    .sym-logo { width: 28px; height: 28px; border-radius: 50%; object-fit: contain; background: #fff; padding: 2px; display: block; }
+    .stock-link { display: flex; align-items: center; gap: 8px; }
+    .sym-text { font-size: 12px; font-weight: 600; color: #dce8f4; }
+    .company-name { font-size: 11px; color: #6b8197; max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: middle; }
+
+    .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .badge svg { width: 11px; height: 11px; }
+    .b-triggered { background: rgba(255,92,108,.12); color: #FF5C6C; border: 1px solid rgba(255,92,108,.25); }
+    .b-near { background: rgba(245,166,35,.1); color: #F5A623; border: 1px solid rgba(245,166,35,.25); }
+    .b-watch { background: rgba(45,212,191,.1); color: #2DD4BF; border: 1px solid rgba(45,212,191,.25); }
+    .b-far { background: rgba(90,112,128,.08); color: #5a7080; border: 1px solid rgba(90,112,128,.2); }
+
+    .price { font-size: 12px; font-weight: 600; color: #edf5ff; }
+    .change-pct { font-size: 10px; font-weight: 600; }
+    .change-pct.up { color: var(--watch); }
+    .change-pct.down { color: var(--triggered); }
+    .price-cell { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.35; }
+
+    .action-cell { display: flex; align-items: center; gap: 5px; justify-content: flex-end; }
+    .dot-menu { position: relative; }
+    .dot-menu-btn { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.04); color: #7f92a6; cursor: pointer; }
+    .dot-menu-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
+    .dot-menu-popup { position: absolute; right: 0; top: 32px; z-index: 50; background: #0f1c28; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.4); min-width: 160px; padding: 4px; display: none; }
+    .dot-menu-popup.open { display: block; }
+    .dot-menu-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; color: #dce8f4; transition: background .12s; width: 100%; text-align: left; border: none; background: none; font-family: inherit; }
+    .dot-menu-item:hover { background: rgba(255,255,255,.06); }
+    .dot-menu-item.danger { color: #FF5C6C; }
+    .dot-menu-item svg { width: 13px; height: 13px; }
+
+
+
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.65); align-items: center; justify-content: center; z-index: 1000; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: #0f1c28; border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 24px; width: 100%; max-width: 420px; position: relative; }
+    .modal-box h2 { font-size: 15px; font-weight: 700; color: #edf5ff; margin-bottom: 4px; }
+    .modal-box .modal-hint { font-size: 11px; color: #4a6075; margin-bottom: 18px; }
+    .modal-close { position: absolute; top: 14px; right: 14px; width: 28px; height: 28px; border-radius: 6px; background: rgba(255,255,255,.06); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #7f92a6; }
+    .modal-close:hover { background: rgba(255,255,255,.12); color: #fff; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #4a6075; margin-bottom: 5px; }
+    .form-group label span.req { color: #FF5C6C; }
+    .form-control { width: 100%; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 7px; padding: 8px 11px; color: #dce8f4; font-size: 12px; outline: none; transition: border-color .18s; }
+    .form-control:focus { border-color: #2DD4BF; }
+    .form-control::placeholder { color: #4a6075; }
+    select.form-control option { background: #0f1c28; }
+    .market-type-row { display: flex; gap: 8px; }
+    .mtype-btn { flex: 1; padding: 8px; border-radius: 7px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); color: #7f92a6; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .18s; }
+    .mtype-btn.active { background: rgba(45,212,191,.12); border-color: rgba(45,212,191,.3); color: #2DD4BF; }
+    .modal-actions { display: flex; gap: 8px; margin-top: 20px; }
+    .modal-actions button { flex: 1; padding: 9px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn-cancel { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); color: #dce8f4; }
+    .btn-cancel:hover { background: rgba(255,255,255,.1); }
+    .btn-confirm { background: #2DD4BF; border: none; color: #0b1520; }
+    .btn-confirm:hover { opacity: .88; }
+    .stock-add-row { display: flex; gap: 8px; margin-bottom: 10px; }
+    .stock-add-row .form-control { flex: 1; }
+    .stocks-list { display: flex; flex-direction: column; gap: 6px; max-height: 160px; overflow-y: auto; margin-top: 8px; }
+    .stock-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); border-radius: 7px; font-size: 12px; }
+    .stock-item-sym { font-weight: 700; color: #dce8f4; flex: 1; }
+    .stock-item-price { color: #4a6075; }
+    .stock-item-del { color: #FF5C6C; background: none; border: none; cursor: pointer; font-size: 14px; padding: 0 2px; }
+    .error-text { font-size: 11px; color: #FF5C6C; margin-top: 4px; min-height: 14px; }
+    .login-modal { max-width: 300px; }
+    .login-modal h2 { font-size: 14px; }
+
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(16px); background: #0f1c28; border: 1px solid rgba(45,212,191,.3); border-radius: 10px; padding: 10px 18px; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: #2DD4BF; box-shadow: 0 8px 32px rgba(0,0,0,.4); z-index: 2000; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast svg { width: 16px; height: 16px; }
+    .toast.error { color: #FF5C6C; border-color: rgba(255,92,108,.3); }
+
+    .loading-row td { text-align: center; padding: 32px; color: #4a6075; }
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.1); border-top-color: #2DD4BF; border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .auth-gate { display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 12px; text-align: center; padding: 40px; }
+    .auth-gate.visible { display: flex; }
+    .auth-gate h2 { font-size: 16px; font-weight: 700; color: #edf5ff; }
+    .auth-gate p { font-size: 12px; color: #4a6075; max-width: 280px; line-height: 1.6; }
+
+    @media (max-width: 900px) { .kpi-row { grid-template-columns: repeat(2, 1fr); } .cfg-body { flex-direction: column; overflow-y: auto; } .sector-panel { width: auto; margin: 12px 12px 0; max-height: 240px; } .cfg-main { overflow: visible; } .cfg-table-wrap { min-height: 420px; } }
+    @media (max-width: 600px) {
+      .kpi-row { gap: 8px; padding: 12px 12px 8px; }
+      .cfg-table-wrap { margin: 0 12px 12px; }
+    }
+
+    /* Sector sidebar */
+    .sector-panel { width: 300px; flex-shrink: 0; margin: 16px 0 16px 16px; background: #0b1825; border: 1px solid rgba(255,255,255,.07); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+    .sp-search { display: flex; align-items: center; gap: 8px; padding: 9px 12px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08); border-radius: 10px; }
+    .sp-search svg { width: 14px; height: 14px; color: #4a6075; flex-shrink: 0; }
+    .sp-search input { background: none; border: none; outline: none; color: #dce8f4; font-size: 12px; width: 100%; }
+    .sp-search input::placeholder { color: #4a6075; }
+    .sp-title { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #4a6075; padding: 0 4px; }
+    .sp-list { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; min-height: 0; flex: 1; }
+    .sp-list::-webkit-scrollbar { width: 4px; }
+    .sp-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 4px; }
+    .sp-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 12px; cursor: pointer; color: #6b8197; border: 1px solid transparent; transition: background .15s, color .15s; text-align: left; width: 100%; }
+    .sp-item:hover { background: rgba(255,255,255,.04); color: #dce8f4; }
+    .sp-item.active { background: linear-gradient(135deg, rgba(45,212,191,.18), rgba(45,212,191,.05)); border-color: rgba(45,212,191,.2); color: #2DD4BF; font-weight: 700; }
+    .sp-ico { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sp-ico svg { width: 16px; height: 16px; }
+    .sp-name { flex: 1; font-size: 13px; font-weight: inherit; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sp-count { font-size: 11px; color: #4a6075; font-variant-numeric: tabular-nums; }
+    .sp-item.active .sp-count { color: #2DD4BF; font-weight: 700; }
+    .sp-chip { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .sp-chip svg { width: 12px; height: 12px; }
+    .sp-chip.trig { color: #FF5C6C; }
+    .sp-chip.near { color: #F5A623; }
+    .sp-chip.zero { opacity: .35; }
+    .sp-count { min-width: 22px; text-align: right; }
+    .sector-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; padding: 3px 10px 3px 8px; border-radius: 16px; border: 1px solid; white-space: nowrap; }
+    .sector-badge svg { width: 12px; height: 12px; flex-shrink: 0; }
+    .sp-empty { font-size: 11px; color: #4a6075; padding: 8px 10px; }
+
+    /* Table header bar */
+    .tbl-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,.07); flex-wrap: wrap; flex-shrink: 0; }
+    .tbl-showing { font-size: 12px; color: #6b8197; }
+    .tbl-showing b { color: #dce8f4; font-weight: 600; }
+    .tbl-actions { display: flex; gap: 8px; }
+    .tb-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 8px; background: rgba(45,212,191,.08); border: 1px solid rgba(45,212,191,.25); color: #2DD4BF; font-size: 12px; font-weight: 600; cursor: pointer; transition: background .15s; }
+    .tb-btn:hover { background: rgba(45,212,191,.16); }
+    .tb-btn.primary { background: #2DD4BF; color: #0b1520; border-color: #2DD4BF; }
+    .tb-btn.primary:hover { opacity: .88; background: #2DD4BF; }
+    .tb-btn.sort { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.1); color: #dce8f4; }
+    .tb-btn.sort svg { color: #2DD4BF; }
+    .tb-btn.sort:hover { background: rgba(255,255,255,.09); }
+    .tb-btn.sort.active { background: rgba(45,212,191,.12); border-color: rgba(45,212,191,.4); color: #2DD4BF; }
+    .tb-btn .sb-arrow { font-size: 11px; opacity: .8; }
+    input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+    input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .inline-input { width: 96px; background: rgba(255,255,255,.05); border: 1px solid #2DD4BF; border-radius: 6px; padding: 5px 8px; color: #edf5ff; font-size: 12px; text-align: right; outline: none; font-variant-numeric: tabular-nums; box-shadow: 0 0 0 3px rgba(45,212,191,.12); }
+    .btn-icon.save { color: #2DD4BF; border-color: rgba(45,212,191,.4); background: rgba(45,212,191,.1); }
+    .btn-icon.save:hover { background: rgba(45,212,191,.2); color: #2DD4BF; }
+    .btn-icon.cancel:hover { color: #FF5C6C; border-color: rgba(255,92,108,.3); }
+    .kpi-sub { font-size: 10px; color: #8B5CF6; margin-top: 3px; font-weight: 600; }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sb">
+    <nav class="sb-nav">
+      <a href="index.html" class="sb-link" data-title="Dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10a6 6 0 0 0-12 0c0 7-3 7-3 8h18c0-1-3-1-3-8"/><path d="M10 21h4"/><circle cx="18.5" cy="5.5" r="2.2" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a href="watchlist.html" class="sb-link" data-title="Market Watchlist">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+      </a>
+      <a href="admin.html" class="sb-link" data-title="Holdings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9h-9V3Z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15V3.5Z"/></svg>
+      </a>
+      <a href="realized-profit.html" class="sb-link" data-title="Realised P&L">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,17 8,12 12,15 20,7"/><polyline points="15,7 20,7 20,12"/></svg>
+      </a>
+      <a href="gtt-orders.html" class="sb-link" data-title="GTT Orders">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg>
+      </a>
+      <a href="all-transactions.html" class="sb-link" data-title="All Trades">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5V3Z"/><path d="M15 3v5h4"/><path d="M8 11h6M8 14h4"/></svg>
+      </a>
+    </nav>
+  </aside>
+
+  <div class="app-main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        <div class="topbar-title">
+          <h1>Stock Alert Configuration</h1>
+          <p>Manage your stock alerts, add new alerts, or create new sheets directly from here.</p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="last-updated" id="lastUpdatedEl" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span id="lastUpdatedText"></span>
+        </div>
+        <div class="whoami-chip" id="whoamiChip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span id="whoamiText"></span>
+        </div>
+        <button class="sign-in-btn" id="signInBtn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Sign in
+        </button>
+        <button class="sign-out-btn" id="signOutBtn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign out
+        </button>
+      </div>
+    </header>
+
+    <div class="cfg-body">
+      <aside class="sector-panel">
+        <div class="sp-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="cfgSearch" placeholder="Search symbol or sector...">
+        </div>
+        <div class="sp-title">Sectors</div>
+        <div class="sp-list" id="sheetTabs"></div>
+      </aside>
+      <div class="cfg-main">
+
+        <!-- KPI Row: cards act as filters -->
+        <div class="kpi-row" id="kpiRow">
+          <div class="kpi-card clickable" data-filter="all" title="Show all alerts">
+            <div class="kpi-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 5-2 6-2 7h16c0-1-2-2-2-7"/><path d="M10.3 20a1.8 1.8 0 0 0 3.4 0"/></svg></div>
+            <div><div class="kpi-val" id="kpiTotal">—</div><div class="kpi-label">Total Alerts</div></div>
+          </div>
+          <div class="kpi-card clickable red" data-filter="Triggered" title="Show triggered alerts only">
+            <div class="kpi-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.3 20a1.8 1.8 0 0 0 3.4 0"/><path d="M18 8a6 6 0 0 0-12 0c0 5-2 6-2 7h16c0-1-2-2-2-7"/></svg></div>
+            <div><div class="kpi-val" id="kpiTriggered" style="color:#FF5C6C">—</div><div class="kpi-label">Triggered Alerts</div></div>
+          </div>
+          <div class="kpi-card teal" id="kpiSheetsCard">
+            <div class="kpi-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></svg></div>
+            <div><div class="kpi-val" id="kpiSheets">—</div><div class="kpi-label">Sheets</div></div>
+          </div>
+          <div class="kpi-card clickable purple" data-filter="Session" title="Show alerts added or updated this session">
+            <div class="kpi-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg></div>
+            <div><div class="kpi-val" id="kpiNew" style="color:#8B5CF6">0</div><div class="kpi-label">New Alerts</div><div class="kpi-sub" id="kpiUpdated"></div></div>
+          </div>
+        </div>
+
+        <div class="auth-gate" id="authGate">
+          <div style="width:52px;height:52px;border-radius:50%;background:rgba(45,212,191,.1);border:1px solid rgba(45,212,191,.18);display:flex;align-items:center;justify-content:center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h2>Sign in to Continue</h2>
+          <p>You need to sign in to access configuration and make changes to your alerts.</p>
+          <button class="btn-primary" id="authGateSignIn" style="margin-top:4px">Continue with Google</button>
+        </div>
+
+        <div class="cfg-table-wrap" id="cfgTableWrap">
+          <div class="tbl-bar">
+            <div class="tbl-showing" id="tblShowing">Showing: <b>All</b></div>
+            <div class="tbl-actions">
+              <button class="tb-btn sort" data-sort="change" data-first="-1" title="Sort by day change"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg><span>Day Change</span><span class="sb-arrow">↕</span></button>
+              <button class="tb-btn sort" data-sort="closest" data-first="1" title="Sort by closest to alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg><span>Closest to alert</span><span class="sb-arrow">↕</span></button>
+              <button class="tb-btn" id="addAlertBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Alert</button>
+              <button class="tb-btn primary" id="addSheetBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Sheet</button>
+            </div>
+          </div>
+          <div class="cfg-table-scroll">
+            <table>
+              <thead>
+                <tr id="theadRow">
+                  <th class="sortable" data-sort="symbol" style="width:21%">Symbol<span class="sort-ic">↕</span></th>
+                  <th class="sortable num" data-sort="price" style="width:14%">Current<span class="sort-ic">↕</span></th>
+                  <th class="sortable num" data-sort="alert" style="width:13%">Alert<span class="sort-ic">↕</span></th>
+                  <th class="sortable num" data-sort="distance" style="width:10%">Distance<span class="sort-ic">↕</span></th>
+                  <th class="sortable" data-sort="status" style="width:12%">Status<span class="sort-ic">↕</span></th>
+                  <th class="sortable" data-sort="sector" style="width:17%">Sector<span class="sort-ic">↕</span></th>
+                  <th class="num" style="width:13%">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="cfgTbody">
+                <tr class="loading-row"><td colspan="7"><div style="display:flex;align-items:center;justify-content:center;gap:8px"><div class="spinner"></div> Loading…</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-box login-modal">
+    <button class="modal-close" id="loginCloseBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <h2>Sign in</h2>
+    <p class="modal-hint">Admin access required to edit configuration.</p>
+    <div class="form-group"><label>Username <span class="req">*</span></label><input type="text" id="loginUsername" class="form-control" autocomplete="username" placeholder="username"></div>
+    <div class="form-group"><label>Password <span class="req">*</span></label><input type="password" id="loginPassword" class="form-control" autocomplete="current-password" placeholder="••••••••"></div>
+    <div class="error-text" id="loginError"></div>
+    <div class="modal-actions"><button class="btn-cancel" id="loginCancelBtn">Cancel</button><button class="btn-confirm" id="loginSubmitBtn">Sign in</button></div>
+  </div>
+</div>
+
+<!-- Create / Edit Alert Modal -->
+<div class="modal-overlay" id="alertModal">
+  <div class="modal-box">
+    <button class="modal-close" id="alertModalClose"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <h2 id="alertModalTitle">Create New Alert</h2>
+    <p class="modal-hint" id="alertModalHint">Add a new stock alert to an existing sheet.</p>
+    <div class="form-group"><label>Symbol <span class="req">*</span></label><input type="text" id="alertSymbol" class="form-control" placeholder="e.g. TCS"></div>
+    <div class="form-group"><label>Company Name <span class="req">*</span></label><input type="text" id="alertCompany" class="form-control" placeholder="Enter company name"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="form-group"><label>Alert Price <span class="req">*</span></label><input type="number" id="alertPrice" class="form-control" placeholder="Enter alert price"></div>
+      <div class="form-group"><label>Sheet <span class="req">*</span></label><select id="alertSheet" class="form-control"><option value="">Select sheet</option></select></div>
+    </div>
+    <div class="form-group"><label>Screener URL <span style="color:#4a6075;font-weight:400">(Optional)</span></label><input type="text" id="alertScreener" class="form-control" placeholder="Enter screener URL"></div>
+    <div class="error-text" id="alertError"></div>
+    <div class="modal-actions"><button class="btn-cancel" id="alertModalCancel">Cancel</button><button class="btn-confirm" id="alertModalSubmit">Create Alert</button></div>
+  </div>
+</div>
+
+<!-- Create Sheet Modal -->
+<div class="modal-overlay" id="sheetModal">
+  <div class="modal-box">
+    <button class="modal-close" id="sheetModalClose"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <h2>Add New Sheet</h2>
+    <p class="modal-hint">Create a new sheet with your own stocks and alerts.</p>
+    <div class="form-group"><label>Sheet Name <span class="req">*</span></label><input type="text" id="sheetName" class="form-control" placeholder="Enter sheet name"></div>
+    <div class="form-group">
+      <label>Market Type</label>
+      <div class="market-type-row">
+        <button class="mtype-btn active" data-mtype="Equity">Equity</button>
+        <button class="mtype-btn" data-mtype="ETF">ETF</button>
+        <button class="mtype-btn" data-mtype="Others">Others</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Add Stocks</label>
+      <div class="stock-add-row">
+        <input type="text" id="newStockSym" class="form-control" placeholder="Symbol (e.g. TCS)">
+        <input type="number" id="newStockPrice" class="form-control" placeholder="Alert price">
+        <button class="btn-ghost" id="addStockToSheetBtn" style="padding:7px 10px;white-space:nowrap">+ Add</button>
+      </div>
+      <div class="stocks-list" id="newSheetStocksList"></div>
+    </div>
+    <div class="error-text" id="sheetError"></div>
+    <div class="modal-actions"><button class="btn-cancel" id="sheetModalCancel">Cancel</button><button class="btn-confirm" id="sheetModalSubmit">Create Sheet</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+const API_BASE = "https://tiny-art-8473.dobbyop09.workers.dev";
+const CONFIG_URL = `${API_BASE}/stock-config.json`;
+const TOKEN_KEY = "cfg_token";
+
+let sessionToken = null;
+let configData = [];       // from /stock-config.json
+let liveData = {};         // symbol -> row from /dashboard-data
+let companyLogos = {};     // symbol -> logo url (logo.json)
+let activeSheet = "";
+let searchQuery = "";
+let kpiFilter = "all";     // all | Triggered | Session
+let inlineEdit = null;     // symbol being edited in-row
+let sortKey = "";          // symbol | company | alert | price | distance | status
+let sortDir = 1;           // 1 asc, -1 desc
+let newSymbols = new Set();
+let updatedSymbols = new Set();
+let editingSymbol = null;
+let newSheetStocks = [];
+let selectedMtype = "Equity";
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+
+/* ── Sector icons / colors (same set as GTT Orders page) ── */
+const SVG_O = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">';
+const SECTOR_ICONS = {
+  auto: SVG_O+'<path d="M3 13l2-5a2 2 0 0 1 2-1.3h10a2 2 0 0 1 2 1.3l2 5"/><rect x="2" y="13" width="20" height="6" rx="1.5"/><circle cx="7" cy="19" r="1.6"/><circle cx="17" cy="19" r="1.6"/></svg>',
+  bank: SVG_O+'<path d="M3 10l9-6 9 6"/><path d="M5 10v9M10 10v9M14 10v9M19 10v9"/><path d="M3 21h18"/></svg>',
+  capitalmarket: SVG_O+'<path d="M4 19V10M10 19V5M16 19v-7M20 19V3"/></svg>',
+  defence: SVG_O+'<path d="M12 2l8 3.5v5.4c0 5-3.4 8.6-8 11.1-4.6-2.5-8-6.1-8-11.1V5.5L12 2Z"/></svg>',
+  fmcg: SVG_O+'<circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/><path d="M2.5 3h2.4l2.4 12.6a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H6"/></svg>',
+  health: SVG_O+'<path d="M20.8 8.6c0 5.6-8.8 10.9-8.8 10.9S3.2 14.2 3.2 8.6a4.6 4.6 0 0 1 8.8-1.9 4.6 4.6 0 0 1 8.8 1.9Z"/></svg>',
+  it: SVG_O+'<rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>',
+  manufacturing: SVG_O+'<path d="M3 21V11l6 4V11l6 4V8l6 4v9H3Z"/></svg>',
+  metal: SVG_O+'<circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="9" ry="3.6"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(120 12 12)"/></svg>',
+  misc: SVG_O+'<rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></svg>',
+  oilenergy: SVG_O+'<path d="M12 2s6 6.5 6 11.5a6 6 0 0 1-12 0C6 8.5 12 2 12 2Z"/></svg>',
+  etf: SVG_O+'<path d="M12 3a9 9 0 1 0 9 9h-9V3Z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15V3.5Z"/></svg>',
+  reality: SVG_O+'<path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/></svg>',
+};
+const SECTOR_ICON_DEFAULT = SVG_O+'<rect x="3" y="3" width="18" height="18" rx="3"/></svg>';
+const SECTOR_COLORS = {
+  bank:"#2DD4BF", manufacturing:"#5B9EFF", fmcg:"#FACC15", health:"#4ADE80", metal:"#8BC34A", capitalmarket:"#38BDF8",
+  oilenergy:"#FB923C", defence:"#E5484D", etf:"#E6B17E", auto:"#818CF8", misc:"#C026D3", it:"#C084FC", reality:"#F472B6"
+};
+const SECTOR_COLOR_DEFAULT = "#9CA3AF";
+const hexToRgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`; };
+
+/* ── Logos (logo.json, same loader as GTT Orders page) ── */
+async function loadCompanyLogos() {
+  try {
+    const res = await fetch("logo.json", { cache: "no-cache" });
+    if (!res.ok) throw new Error("logo.json request failed");
+    const data = await res.json();
+    companyLogos = Object.fromEntries(Object.entries(data || {}).map(([s, u]) => [String(s).trim().toUpperCase(), String(u || "").trim()]));
+  } catch (e) { companyLogos = {}; console.warn("Unable to load logo.json", e); }
+}
+const AVATAR_PALETTE = ["#2563EB","#DC2626","#059669","#D97706","#7C3AED","#DB2777","#0891B2","#65A30D","#4F46E5","#EA580C","#0D9488","#9333EA"];
+function avatarColor(s) { s = String(s||"?"); let h = 0; for (let i=0;i<s.length;i++) h = (h*31+s.charCodeAt(i))>>>0; return AVATAR_PALETTE[h%AVATAR_PALETTE.length]; }
+function symbolLogoHtml(symbol) {
+  const key = String(symbol||"").trim().toUpperCase();
+  const url = companyLogos[key];
+  const letter = esc((key.match(/[A-Za-z0-9]/)||["?"])[0]);
+  const fb = `<div class="sym-avatar" style="background:${avatarColor(key)}">${letter}</div>`;
+  if (!url) return fb;
+  return `<span class="sym-logo-wrap"><img class="sym-logo" src="${esc(url)}" alt="${esc(key)}" loading="lazy"><div class="sym-avatar" style="display:none;background:${avatarColor(key)}">${letter}</div></span>`;
+}
+function bindLogoFallbacks(container) {
+  container.querySelectorAll("img.sym-logo").forEach(img => {
+    const show = () => { img.style.display = "none"; const f = img.nextElementSibling; if (f) f.style.display = "flex"; };
+    img.addEventListener("error", show, { once: true });
+    if (img.complete && img.naturalWidth === 0) show();
+  });
+}
+
+/* ── Distance / status (dynamic: recomputed when the alert price differs from the feed) ── */
+function rowInfo(r) {
+  const live = liveData[String(r.symbol||"").toUpperCase()];
+  const alertPrice = Number(r.alertPrice);
+  if (!live || live.currentPrice == null) return { live, price: null, change: null, distance: null, status: "Far" };
+  const price = Number(live.currentPrice);
+  const unchanged = Number(live.alertPrice) === alertPrice;
+  if (unchanged && live.status && live.distance != null) {
+    return { live, price, change: live.changePercent, distance: Number(live.distance), status: live.status };
+  }
+  if (!alertPrice) return { live, price, change: live.changePercent, distance: null, status: "Far" };
+  const distance = ((price - alertPrice) / alertPrice) * 100;
+  const low = live.dayLow != null ? Number(live.dayLow) : null;
+  let status;
+  if (distance <= 0 || (low != null && low <= alertPrice)) status = "Triggered";
+  else if (distance <= 5) status = "Near";
+  else if (distance <= 15) status = "Watch";
+  else status = "Far";
+  return { live, price, change: live.changePercent, distance, status };
+}
+
+/* ── Token helpers ── */
+const saveToken = t => { try { sessionStorage.setItem(TOKEN_KEY, t); } catch(e){} };
+const readToken = () => { try { return sessionStorage.getItem(TOKEN_KEY); } catch(e){ return null; } };
+const clearToken = () => { try { sessionStorage.removeItem(TOKEN_KEY); } catch(e){} };
+
+const $ = id => document.getElementById(id);
+const signInBtn = $("signInBtn"), signOutBtn = $("signOutBtn"), whoamiChip = $("whoamiChip"), whoamiText = $("whoamiText");
+const authGate = $("authGate"), cfgTableWrap = $("cfgTableWrap");
+
+function updateAuthUI(loggedIn, username) {
+  signInBtn.style.display = loggedIn ? "none" : "inline-flex";
+  signOutBtn.style.display = loggedIn ? "inline-flex" : "none";
+  whoamiChip.style.display = loggedIn ? "flex" : "none";
+  if (loggedIn && username) whoamiText.textContent = username;
+  authGate.classList.toggle("visible", !loggedIn);
+  cfgTableWrap.style.display = loggedIn ? "flex" : "none";
+}
+
+function openLoginModal() {
+  $("loginError").textContent = ""; $("loginUsername").value = ""; $("loginPassword").value = "";
+  $("loginModal").classList.add("open");
+  setTimeout(() => $("loginUsername").focus(), 80);
+}
+function closeLoginModal() { $("loginModal").classList.remove("open"); }
+
+async function submitLogin() {
+  const u = $("loginUsername").value.trim(), p = $("loginPassword").value, errEl = $("loginError"), btn = $("loginSubmitBtn");
+  if (!u || !p) { errEl.textContent = "Enter username and password."; return; }
+  errEl.textContent = ""; btn.disabled = true; btn.textContent = "Signing in…";
+  try {
+    const res = await fetch(`${API_BASE}/login`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({username:u,password:p}) });
+    if (!res.ok) { errEl.textContent = "Invalid credentials."; return; }
+    const data = await res.json();
+    sessionToken = data.token; saveToken(data.token);
+    closeLoginModal(); updateAuthUI(true, data.username || u); render();
+  } catch(e) { errEl.textContent = "Could not reach server."; }
+  finally { btn.disabled = false; btn.textContent = "Sign in"; }
+}
+function logout() { clearToken(); sessionToken = null; updateAuthUI(false, ""); }
+
+/* ── Load data ── */
+const realRows = () => configData.filter(r => r.symbol !== "__placeholder__");
+
+async function loadConfig() {
+  try {
+    const [cfgRes, liveRes] = await Promise.all([
+      fetch(CONFIG_URL + "?t=" + Date.now()),
+      fetch(`${API_BASE}/dashboard-data?t=${Date.now()}`)
+    ]);
+    if (cfgRes.ok) {
+      configData = await cfgRes.json();
+    }
+    if (liveRes.ok) {
+      const rows = await liveRes.json();
+      liveData = {};
+      rows.forEach(r => { if (r.symbol) liveData[r.symbol.toUpperCase()] = r; });
+    }
+    $("lastUpdatedEl").style.display = "flex";
+    $("lastUpdatedText").textContent = "Last Updated: " + new Date().toLocaleTimeString();
+    refreshAll();
+  } catch(e) {
+    console.error("Failed to load config:", e);
+    $("cfgTbody").innerHTML = '<tr class="loading-row"><td colspan="7" style="color:#FF5C6C">Failed to load configuration data.</td></tr>';
+  }
+}
+function refreshAll() { updateKPIs(); renderSheetTabs(); render(); }
+
+/* ── KPIs ── */
+function updateKPIs() {
+  const rows = realRows();
+  const triggered = rows.filter(r => rowInfo(r).status === "Triggered").length;
+  const sheets = new Set(rows.map(r => r.sheet).filter(Boolean)).size;
+  $("kpiTotal").textContent = rows.length;
+  $("kpiTriggered").textContent = triggered;
+  $("kpiSheets").textContent = sheets;
+  $("kpiNew").textContent = newSymbols.size;
+  $("kpiUpdated").textContent = `${updatedSymbols.size} updated this session`;
+  const labels = document.querySelectorAll("#kpiRow .kpi-label");
+  labels[0].textContent = `across ${sheets} sheets`;
+  labels[1].textContent = "need attention";
+  labels[2].textContent = "predefined sheets";
+  labels[3].textContent = "added this session";
+  document.querySelectorAll("#kpiRow .kpi-card[data-filter]").forEach(c => c.classList.toggle("active", c.dataset.filter === kpiFilter && kpiFilter !== "all"));
+}
+
+$("kpiRow").addEventListener("click", e => {
+  const card = e.target.closest(".kpi-card[data-filter]");
+  if (!card) return;
+  const f = card.dataset.filter;
+  kpiFilter = (f === "all" || kpiFilter === f) ? "all" : f;  // click again to clear
+  updateKPIs(); render();
+});
+
+/* ── Sheet tabs ── */
+function renderSheetTabs() {
+  const rows = realRows();
+  const q = searchQuery.toLowerCase();
+  const stat = {}, hit = {};
+  const tot = { n: 0, trig: 0, near: 0 };
+  rows.forEach(r => {
+    if (!r.sheet) return;
+    const st = rowInfo(r).status;
+    const o = stat[r.sheet] ||= { n: 0, trig: 0, near: 0 };
+    o.n++; tot.n++;
+    if (st === "Triggered") { o.trig++; tot.trig++; }
+    else if (st === "Near") { o.near++; tot.near++; }
+    if (q && (r.symbol?.toLowerCase().includes(q) || r.companyName?.toLowerCase().includes(q))) hit[r.sheet] = true;
+  });
+  const names = Object.keys(stat).filter(n => !q || n.toLowerCase().includes(q) || hit[n]);
+  const item = (name, label, o, color, icon) => {
+    const bg = color ? `background:linear-gradient(135deg,${hexToRgba(color,.38)},${hexToRgba(color,.14)});color:${color}` : "background:linear-gradient(135deg,rgba(45,212,191,.4),rgba(45,212,191,.15));color:#2DD4BF";
+    return `<button class="sp-item ${activeSheet===name?"active":""}" data-sheet="${esc(name)}">
+      <span class="sp-ico" style="${bg}">${icon}</span>
+      <span class="sp-name">${esc(label)}</span>
+      <span class="sp-chip trig ${o.trig?"":"zero"}" title="Triggered">${STATUS_ICONS.Triggered}${o.trig}</span>
+      <span class="sp-chip near ${o.near?"":"zero"}" title="Near">${STATUS_ICONS.Near}${o.near}</span>
+      <span class="sp-count" title="Total alerts">${o.n}</span></button>`;
+  };
+  $("sheetTabs").innerHTML = item("", "All Sectors", tot, null, SECTOR_ICONS.misc)
+    + names.map(n => { const k = n.toLowerCase(); return item(n, n, stat[n], SECTOR_COLORS[k] || SECTOR_COLOR_DEFAULT, SECTOR_ICONS[k] || SECTOR_ICON_DEFAULT); }).join("")
+    + (q && !names.length ? '<div class="sp-empty">No matching sectors</div>' : "");
+}
+
+/* ── Sorting ── */
+const STATUS_RANK = { Triggered:0, Near:1, Watch:2, Far:3 };
+function sortValue(r, info, key) {
+  switch (key) {
+    case "symbol": return String(r.symbol||"").toUpperCase();
+    case "sector": return String(r.sheet||"").toLowerCase();
+    case "alert": return Number(r.alertPrice);
+    case "price": return info.price;
+    case "distance": return info.distance;
+    case "change": return info.change == null ? null : Number(info.change);
+    case "closest": return info.distance == null ? null : Math.abs(info.distance);
+    case "status": return STATUS_RANK[info.status] ?? 9;
+  }
+}
+function applySort(items) {
+  if (!sortKey) return items;
+  return items.slice().sort((a, b) => {
+    const va = sortValue(a.r, a.info, sortKey), vb = sortValue(b.r, b.info, sortKey);
+    if (va == null && vb == null) return 0;
+    if (va == null) return 1;           // empty values always last
+    if (vb == null) return -1;
+    return (typeof va === "string" ? va.localeCompare(vb) : va - vb) * sortDir;
+  });
+}
+function updateSortHeaders() {
+  document.querySelectorAll("#theadRow th.sortable").forEach(th => {
+    const active = th.dataset.sort === sortKey;
+    th.classList.toggle("sort-active", active);
+    th.querySelector(".sort-ic").textContent = active ? (sortDir === 1 ? "▲" : "▼") : "↕";
+  });
+  document.querySelectorAll(".tb-btn.sort").forEach(b => {
+    const active = b.dataset.sort === sortKey;
+    b.classList.toggle("active", active);
+    b.querySelector(".sb-arrow").textContent = active ? (sortDir === 1 ? "↑" : "↓") : "↕";
+  });
+}
+// cycle: first direction -> opposite -> off
+function setSort(key, firstDir) {
+  if (sortKey === key) { if (sortDir === firstDir) sortDir = -firstDir; else { sortKey = ""; sortDir = 1; } }
+  else { sortKey = key; sortDir = firstDir; }
+  render();
+}
+$("theadRow").addEventListener("click", e => {
+  const th = e.target.closest("th.sortable");
+  if (th) setSort(th.dataset.sort, 1);
+});
+document.querySelectorAll(".tb-btn.sort").forEach(b => b.addEventListener("click", () => setSort(b.dataset.sort, +b.dataset.first)));
+
+/* ── Main render ── */
+const STATUS_ICONS = {
+  Triggered: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 5-2 6-2 7h16c0-1-2-2-2-7"/><path d="M10.3 20a1.8 1.8 0 0 0 3.4 0"/></svg>',
+  Near: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>',
+  Watch: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z"/><circle cx="12" cy="12" r="2.5"/></svg>',
+  Far: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="8.5" y1="12" x2="15.5" y2="12"/></svg>'
+};
+const money = v => "₹" + Number(v).toLocaleString("en-IN", { minimumFractionDigits:2, maximumFractionDigits:2 });
+
+function sectorBadge(sheet) {
+  const key = String(sheet||"").toLowerCase();
+  if (!key) return '<span style="color:#3a5060">—</span>';
+  const color = SECTOR_COLORS[key] || SECTOR_COLOR_DEFAULT;
+  const icon = SECTOR_ICONS[key] || SECTOR_ICON_DEFAULT;
+  return `<span class="sector-badge" style="color:${color};background:linear-gradient(135deg,${hexToRgba(color,.22)},${hexToRgba(color,.06)});border-color:${hexToRgba(color,.28)}">${icon}${esc(sheet)}</span>`;
+}
+
+const ICON_EDIT = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>';
+const ICON_SAVE = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>';
+const ICON_X = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+
+function rowHtml(r, info) {
+  const { price, change, distance, status } = info;
+  const badgeCls = { Triggered:"b-triggered", Near:"b-near", Watch:"b-watch", Far:"b-far" }[status];
+  const distColor = { Triggered:"#FF5C6C", Near:"#F5A623", Watch:"#2DD4BF", Far:"#5a7080" }[status];
+  const chgStr = change != null ? `<span class="change-pct ${change>=0?"up":"down"}">${change>=0?"+":""}${Number(change).toFixed(2)}%</span>` : "";
+  const distStr = distance != null ? `<span style="color:${distColor};font-weight:700">${distance>0?"+":""}${distance.toFixed(1)}%</span>` : "—";
+  const s = esc(r.symbol), sh = esc(r.sheet || "");
+  const editing = inlineEdit === r.symbol;
+  const alertCell = editing ? `<input class="inline-input" type="number" step="any" min="0" value="${esc(r.alertPrice)}">` : money(r.alertPrice);
+  const actions = editing
+    ? `<button class="btn-icon save" data-act="save-inline" title="Save (Enter)">${ICON_SAVE}</button><button class="btn-icon cancel" data-act="cancel-inline" title="Cancel (Esc)">${ICON_X}</button>`
+    : `<button class="btn-icon edit" data-act="inline" title="Edit alert price">${ICON_EDIT}</button>
+       <div class="dot-menu">
+         <button class="dot-menu-btn" data-act="menu">
+           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+         </button>
+         <div class="dot-menu-popup">
+           <button class="dot-menu-item" data-act="edit">${ICON_EDIT.replace('width="12" height="12"','')}Edit Alert</button>
+           <button class="dot-menu-item" data-act="create"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Create New Alert</button>
+           <button class="dot-menu-item" data-act="sheet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Add New Sheet</button>
+           <button class="dot-menu-item danger" data-act="delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4"/></svg>Delete</button>
+         </div>
+       </div>`;
+  return `
+    <tr data-sym="${s}" data-sheet="${sh}">
+      <td><div class="stock-link" title="${esc(r.companyName||"")}">${symbolLogoHtml(r.symbol)}<span class="sym-text">${s}</span></div></td>
+      <td class="num">${price!=null?`<div class="price-cell"><span class="price">${money(price)}</span>${chgStr}</div>`:"—"}</td>
+      <td class="num">${alertCell}</td>
+      <td class="num">${distStr}</td>
+      <td><span class="badge ${badgeCls}">${STATUS_ICONS[status]}${status}</span></td>
+      <td>${sectorBadge(r.sheet)}</td>
+      <td><div class="action-cell">${actions}</div></td>
+    </tr>`;
+}
+
+async function saveInline(tr) {
+  const sym = tr.dataset.sym;
+  const v = parseFloat(tr.querySelector(".inline-input")?.value);
+  if (isNaN(v) || v <= 0) { showToast("Enter a valid alert price", true); return; }
+  const idx = configData.findIndex(r => r.symbol === sym);
+  if (idx >= 0 && Number(configData[idx].alertPrice) !== v) {
+    configData[idx] = { ...configData[idx], alertPrice: v };
+    if (!newSymbols.has(sym)) updatedSymbols.add(sym);
+    inlineEdit = null;
+    refreshAll();                       // distance / status / counts recalculate instantly
+    await saveConfigToAPI();
+    showToast(`${sym} alert price updated`);
+  } else { inlineEdit = null; render(); }
+}
+
+function render() {
+  const tbody = $("cfgTbody");
+  const q = searchQuery.toLowerCase();
+  updateSortHeaders();
+
+  let items = [];
+  realRows().forEach(r => {
+    if (activeSheet && r.sheet !== activeSheet) return;
+    if (q && !r.symbol?.toLowerCase().includes(q) && !r.companyName?.toLowerCase().includes(q) && !(r.sheet||"").toLowerCase().includes(q)) return;
+    const info = rowInfo(r);
+    if (kpiFilter === "Triggered" && info.status !== "Triggered") return;
+    if (kpiFilter === "Session" && !newSymbols.has(r.symbol) && !updatedSymbols.has(r.symbol)) return;
+    items.push({ r, info });
+  });
+
+  const note = kpiFilter === "Triggered" ? " · Triggered only" : kpiFilter === "Session" ? " · This session" : "";
+  $("tblShowing").innerHTML = `Showing: <b>${esc(activeSheet || "All")}</b> · <b>${items.length}</b> Stocks${note}`;
+  if (!items.length) {
+    tbody.innerHTML = '<tr class="loading-row"><td colspan="7" style="color:#4a6075">No alerts found.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = applySort(items).map(({ r, info }) => rowHtml(r, info)).join("");
+  bindLogoFallbacks(tbody);
+  const inp = tbody.querySelector(".inline-input");
+  if (inp) { inp.focus(); inp.select(); }
+}
+
+/* ── Table click delegation (row actions, dot menu, collapse) ── */
+$("cfgTbody").addEventListener("click", e => {
+  const actEl = e.target.closest("[data-act]");
+  const tr = e.target.closest("tr[data-sym]");
+  if (!actEl || !tr) return;
+  const sym = tr.dataset.sym, sheet = tr.dataset.sheet, act = actEl.dataset.act;
+  if (act === "menu") {
+    const pop = actEl.nextElementSibling;
+    document.querySelectorAll(".dot-menu-popup.open").forEach(p => { if (p !== pop) p.classList.remove("open"); });
+    pop.classList.toggle("open");
+    return;
+  }
+  document.querySelectorAll(".dot-menu-popup.open").forEach(p => p.classList.remove("open"));
+  if (act === "inline") {
+    if (!sessionToken) { openLoginModal(); return; }
+    inlineEdit = sym; render();
+  }
+  else if (act === "save-inline") saveInline(tr);
+  else if (act === "cancel-inline") { inlineEdit = null; render(); }
+  else if (act === "edit") openEditAlert(sym);
+  else if (act === "create") openCreateAlert(sheet);
+  else if (act === "sheet") openAddSheet();
+  else if (act === "delete") deleteAlert(sym, sheet);
+});
+$("cfgTbody").addEventListener("keydown", e => {
+  if (!e.target.classList.contains("inline-input")) return;
+  if (e.key === "Enter") saveInline(e.target.closest("tr"));
+  else if (e.key === "Escape") { inlineEdit = null; render(); }
+});
+document.addEventListener("click", e => {
+  if (!e.target.closest(".dot-menu")) document.querySelectorAll(".dot-menu-popup.open").forEach(p => p.classList.remove("open"));
+});
+
+/* ── Create / Edit alert ── */
+function fillSheetSelect(selected) {
+  const sheets = [...new Set(realRows().map(r => r.sheet).filter(Boolean))].sort();
+  $("alertSheet").innerHTML = '<option value="">Select sheet</option>' + sheets.map(s => `<option value="${esc(s)}"${s===selected?" selected":""}>${esc(s)}</option>`).join("");
+}
+function openCreateAlert(preSheet) {
+  if (!sessionToken) { openLoginModal(); return; }
+  editingSymbol = null;
+  $("alertModalTitle").textContent = "Create New Alert";
+  $("alertModalHint").textContent = "Add a new stock alert to an existing sheet.";
+  $("alertModalSubmit").textContent = "Create Alert";
+  ["alertSymbol","alertCompany","alertPrice","alertScreener"].forEach(id => $(id).value = "");
+  $("alertError").textContent = "";
+  fillSheetSelect(preSheet);
+  $("alertModal").classList.add("open");
+  setTimeout(() => $("alertSymbol").focus(), 80);
+}
+function openEditAlert(symbol) {
+  if (!sessionToken) { openLoginModal(); return; }
+  const row = configData.find(r => r.symbol === symbol);
+  if (!row) return;
+  editingSymbol = symbol;
+  $("alertModalTitle").textContent = "Edit Alert";
+  $("alertModalHint").textContent = "Modify alert price, company name, or sheet.";
+  $("alertModalSubmit").textContent = "Save Changes";
+  $("alertSymbol").value = row.symbol;
+  $("alertCompany").value = row.companyName || "";
+  $("alertPrice").value = row.alertPrice || "";
+  $("alertScreener").value = row.screenerUrl || "";
+  $("alertError").textContent = "";
+  fillSheetSelect(row.sheet);
+  $("alertModal").classList.add("open");
+  setTimeout(() => $("alertPrice").focus(), 80);
+}
+function closeAlertModal() { $("alertModal").classList.remove("open"); }
+
+async function submitAlertModal() {
+  const sym = $("alertSymbol").value.trim().toUpperCase();
+  const company = $("alertCompany").value.trim();
+  const price = parseFloat($("alertPrice").value);
+  const sheet = $("alertSheet").value;
+  const screener = $("alertScreener").value.trim();
+  const errEl = $("alertError");
+  if (!sym || !company || isNaN(price) || !sheet) { errEl.textContent = "Please fill all required fields."; return; }
+  const btn = $("alertModalSubmit");
+  const wasEditing = !!editingSymbol;
+  btn.disabled = true; btn.textContent = wasEditing ? "Saving…" : "Creating…";
+  try {
+    if (wasEditing) {
+      const idx = configData.findIndex(r => r.symbol === editingSymbol);
+      if (idx >= 0) configData[idx] = { ...configData[idx], symbol:sym, companyName:company, alertPrice:price, sheet, screenerUrl:screener };
+      if (editingSymbol !== sym) { if (newSymbols.delete(editingSymbol)) newSymbols.add(sym); updatedSymbols.delete(editingSymbol); }
+      if (!newSymbols.has(sym)) updatedSymbols.add(sym);
+      await saveConfigToAPI();
+      showToast("Alert updated successfully!");
+    } else {
+      if (configData.find(r => r.symbol === sym)) { errEl.textContent = `${sym} already exists in config.`; return; }
+      configData.push({ symbol:sym, companyName:company, alertPrice:price, sheet, screenerUrl:screener });
+      newSymbols.add(sym);
+      await saveConfigToAPI();
+      showToast("Alert created successfully!");
+    }
+    closeAlertModal();
+    refreshAll();   // distance + status + counts recalculate from the new alert price
+  } catch(e) {
+    errEl.textContent = "Failed to save. Check connection.";
+  } finally {
+    btn.disabled = false; btn.textContent = wasEditing ? "Save Changes" : "Create Alert";
+  }
+}
+
+function deleteAlert(symbol, sheet) {
+  if (!sessionToken) { openLoginModal(); return; }
+  if (!confirm(`Delete alert for ${symbol}?`)) return;
+  configData = configData.filter(r => !(r.symbol === symbol && r.sheet === sheet));
+  newSymbols.delete(symbol); updatedSymbols.delete(symbol);
+  saveConfigToAPI();
+  refreshAll();
+  showToast(`${symbol} deleted.`);
+}
+
+/* ── Add sheet ── */
+function openAddSheet() {
+  if (!sessionToken) { openLoginModal(); return; }
+  newSheetStocks = []; selectedMtype = "Equity";
+  ["sheetName","newStockSym","newStockPrice"].forEach(id => $(id).value = "");
+  $("sheetError").textContent = "";
+  document.querySelectorAll(".mtype-btn").forEach(b => b.classList.toggle("active", b.dataset.mtype === "Equity"));
+  $("newSheetStocksList").innerHTML = "";
+  $("sheetModal").classList.add("open");
+  setTimeout(() => $("sheetName").focus(), 80);
+}
+function closeSheetModal() { $("sheetModal").classList.remove("open"); }
+function renderNewSheetStocks() {
+  $("newSheetStocksList").innerHTML = newSheetStocks.map((s,i) => `
+    <div class="stock-item"><span class="stock-item-sym">${esc(s.symbol)}</span><span class="stock-item-price">₹${esc(s.alertPrice)}</span>
+    <button class="stock-item-del" data-i="${i}">×</button></div>`).join("");
+}
+$("newSheetStocksList").addEventListener("click", e => {
+  const b = e.target.closest(".stock-item-del");
+  if (b) { newSheetStocks.splice(+b.dataset.i, 1); renderNewSheetStocks(); }
+});
+function addStockToNewSheet() {
+  const sym = $("newStockSym").value.trim().toUpperCase();
+  const price = parseFloat($("newStockPrice").value);
+  if (!sym || isNaN(price)) return;
+  newSheetStocks.push({ symbol: sym, alertPrice: price });
+  $("newStockSym").value = ""; $("newStockPrice").value = "";
+  renderNewSheetStocks();
+}
+async function submitSheetModal() {
+  const name = $("sheetName").value.trim(), errEl = $("sheetError");
+  if (!name) { errEl.textContent = "Sheet name is required."; return; }
+  if (configData.find(r => r.sheet?.toLowerCase() === name.toLowerCase())) { errEl.textContent = "Sheet already exists."; return; }
+  const btn = $("sheetModalSubmit");
+  btn.disabled = true; btn.textContent = "Creating…";
+  try {
+    newSheetStocks.forEach(s => { configData.push({ symbol:s.symbol, companyName:s.symbol, alertPrice:s.alertPrice, sheet:name }); newSymbols.add(s.symbol); });
+    if (!newSheetStocks.length) configData.push({ symbol:"__placeholder__", companyName:"Placeholder", alertPrice:0, sheet:name });
+    await saveConfigToAPI();
+    closeSheetModal(); refreshAll();
+    showToast(`Sheet "${name}" created!`);
+  } catch(e) { errEl.textContent = "Failed to create sheet."; }
+  finally { btn.disabled = false; btn.textContent = "Create Sheet"; }
+}
+
+/* ── Persist config ── */
+async function saveConfigToAPI() {
+  if (!sessionToken) return;
+  try {
+    await fetch(`${API_BASE}/stock-config.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionToken}` },
+      body: JSON.stringify(configData)
+    });
+  } catch(e) { console.warn("Could not persist config to API:", e); }
+}
+
+let toastTimer;
+function showToast(msg, isError) {
+  const el = $("toast");
+  $("toastMsg").textContent = msg;
+  el.classList.toggle("error", !!isError);
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2800);
+}
+
+/* ── Events ── */
+$("sheetTabs").addEventListener("click", e => {
+  const tab = e.target.closest(".sp-item");
+  if (!tab) return;
+  activeSheet = tab.dataset.sheet;
+  renderSheetTabs(); render();
+});
+$("cfgSearch").addEventListener("input", e => { searchQuery = e.target.value.trim(); renderSheetTabs(); render(); });
+
+$("addAlertBtn").addEventListener("click", () => openCreateAlert(activeSheet));
+$("addSheetBtn").addEventListener("click", openAddSheet);
+
+$("alertModalClose").addEventListener("click", closeAlertModal);
+$("alertModalCancel").addEventListener("click", closeAlertModal);
+$("alertModalSubmit").addEventListener("click", submitAlertModal);
+$("sheetModalClose").addEventListener("click", closeSheetModal);
+$("sheetModalCancel").addEventListener("click", closeSheetModal);
+$("sheetModalSubmit").addEventListener("click", submitSheetModal);
+$("addStockToSheetBtn").addEventListener("click", addStockToNewSheet);
+$("newStockPrice").addEventListener("keydown", e => { if (e.key === "Enter") addStockToNewSheet(); });
+document.querySelectorAll(".mtype-btn").forEach(b => b.addEventListener("click", () => {
+  selectedMtype = b.dataset.mtype;
+  document.querySelectorAll(".mtype-btn").forEach(x => x.classList.toggle("active", x === b));
+}));
+
+$("loginCancelBtn").addEventListener("click", closeLoginModal);
+$("loginCloseBtn").addEventListener("click", closeLoginModal);
+$("loginSubmitBtn").addEventListener("click", submitLogin);
+$("loginPassword").addEventListener("keydown", e => { if (e.key === "Enter") submitLogin(); });
+$("signInBtn").addEventListener("click", openLoginModal);
+$("authGateSignIn").addEventListener("click", openLoginModal);
+$("signOutBtn").addEventListener("click", logout);
+
+["loginModal","alertModal","sheetModal"].forEach(id => {
+  $(id).addEventListener("click", e => { if (e.target.id === id) $(id).classList.remove("open"); });
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape") ["loginModal","alertModal","sheetModal"].forEach(id => $(id).classList.remove("open")); });
+
+/* ── Init ── */
+(async () => {
+  sessionToken = readToken();
+  updateAuthUI(!!sessionToken, "Admin");
+  await Promise.all([loadCompanyLogos(), loadConfig()]);
+  if (!sessionToken) {   // read-only view still shows the table
+    cfgTableWrap.style.display = "flex";
+    authGate.classList.remove("visible");
+  }
+})();
+</script>
+</body>
+</html>

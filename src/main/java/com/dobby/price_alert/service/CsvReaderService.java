@@ -17,26 +17,15 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.time.DayOfWeek;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
 
 @Component
 public class CsvReaderService {
-    @Autowired
-    private TelegramService telegramService;
-
-    @Autowired
-    private StockAlertService stockAlertService;
 
     @Autowired
     private MarketDataService marketDataService;
-
-    @Autowired
-    private AlertHistoryService alertHistoryService;
 
     @Autowired
     private KotakScripLookupService kotakScripLookupService;
@@ -46,6 +35,9 @@ public class CsvReaderService {
 
     @Autowired
     private KotakMarketDataService kotakMarketDataService;
+
+    @Autowired
+    private StockProcessingService stockProcessingService;
 
 
     private static final ZoneId INDIA_ZONE =
@@ -78,121 +70,21 @@ public class CsvReaderService {
                 marketData=  marketDataService.getMarketData(symbol);
             }
 
-
-            String companyName = marketData.getCompanyName();
-            double dayLow = marketData.getDayLow();
-            double current =marketData.getCurrentPrice();
-            double prevClose = marketData.getPreviousPrice();
-            double marketCap = marketData.getMarketCap();
-
-            String screenerUrl ="https://www.screener.in/company/" + symbol + "/consolidated";
-            AlertStatus  alertStatus = stockAlertService.shouldSendAlert(sheetConfig.getName(), symbol, dayLow, alert,triggeredToday);
-            if (alertStatus.isShouldSend()) {
-                StockMessageDto dto = StockMessageDto.builder().stockName(symbol).currentPrice(current).targetPrice(alert).screenerUrl(screenerUrl).sheetName(sheetConfig.getName()).build();
-                String message = MessageFormat.format(dto);
-                telegramService.sendMessage(message);
-                HistoricalAlert historicalAlert =
-                        HistoricalAlert.builder()
-
-                                .date(
-                                        LocalDate.now(
-                                                INDIA_ZONE
-                                        ).toString()
-                                )
-
-                                .triggeredAt(
-                                        Instant.now().toString()
-                                )
-
-                                .symbol(symbol)
-
-                                .companyName(companyName)
-
-                                .sheet(
-                                        sheetConfig.getName()
-                                )
-
-                                .alertPrice(
-                                        BigDecimal.valueOf(
-                                                alert
-                                        )
-                                )
-
-                                /*
-                                 * The alert was triggered because
-                                 * dayLow reached/broke the alert price.
-                                 */
-                                .triggerPrice(
-                                        BigDecimal.valueOf(
-                                                dayLow
-                                        )
-                                )
-
-                                .currentPrice(
-                                        BigDecimal.valueOf(
-                                                current
-                                        )
-                                )
-
-                                .watchlist(
-                                        sheetConfig.getName()
-                                )
-
-                                .screenerUrl(
-                                        screenerUrl
-                                )
-
-                                .build();
-
-                DayOfWeek today = LocalDate.now().getDayOfWeek();
-
-                if (today != DayOfWeek.SATURDAY && today != DayOfWeek.SUNDAY) {
-                    alertHistoryService.addAlert(
-                            historicalAlert
+            DashboardStock dashboardStock =
+                    stockProcessingService.processStock(
+                            symbol,
+                            marketData.getCompanyName(),
+                            sheetConfig.getName(),
+                            BigDecimal.valueOf(alert),
+                            marketData,
+                            triggeredToday,
+                            rowNumber,
+                            BigDecimal.valueOf(fib)
                     );
-                }
 
-                log.info(
-                        "Historical alert saved: {} - {}",
-                        sheetConfig.getName(),
-                        symbol
-                );
-
-
-            }
-            double distance = ((current - alert) / alert) * 100;
-            double changePerc = ((current-prevClose)/prevClose)*100;
-            String status;
-
-            if (alertStatus.isTriggeredToday()) {
-                status = "Triggered";
-            } else if (distance <= 5) {
-                status = "Near";
-            } else if (distance <= 15) {
-                status = "Watch";
-            } else {
-                status = "Far";
-            }
-
-            dashboardStocks.add(
-                    DashboardStock.builder()
-                            .symbol(symbol)
-                            .companyName(companyName)
-                            .currentPrice(BigDecimal.valueOf(current))
-                            .alertPrice(BigDecimal.valueOf(alert))
-                            .distance(BigDecimal.valueOf(distance))
-                            .status(status)
-                            .sheet(sheetConfig.getName())
-                            .previousClose(BigDecimal.valueOf(prevClose))
-                            .marketCap(BigDecimal.valueOf(marketCap))
-                            .changePercent(BigDecimal.valueOf(changePerc))
-                            .sheetRow(rowNumber)
-                            .screenerUrl(screenerUrl)
-                            .fib(BigDecimal.valueOf(fib))
-                            .dayLow(BigDecimal.valueOf(dayLow))
-                            .build()
-            );
+            dashboardStocks.add(dashboardStock);
         }
+
         return dashboardStocks;
     }
     public void testKotakForCsvStocks(
@@ -308,8 +200,7 @@ public class CsvReaderService {
 
             csvRecords.add(record);
 
-            String symbol =
-                    record.get("Symbol");
+            String symbol = record.get("Symbol");
 
             symbols.add(symbol);
         }
@@ -374,12 +265,6 @@ public class CsvReaderService {
                         "nse_cm",
                         tokens
                 );
-
-//        log.info(
-//                "Kotak quotes returned: {}",
-//                quotes.size()
-//        );
-
         /*
          * ---------------------------------------------------------
          * 5. Convert quotes into MarketData
@@ -419,204 +304,37 @@ public class CsvReaderService {
 
         for (CSVRecord record : csvRecords) {
 
-            int rowNumber =
-                    (int) record.getRecordNumber() + 1;
+            int rowNumber = (int) record.getRecordNumber() + 1;
 
-            String symbol =
-                    record.get("Symbol");
+            String symbol = record.get("Symbol");
 
-            double alert =
-                    Double.parseDouble(
-                            record.get("Alert Price")
-                    );
+            double alert = Double.parseDouble(record.get("Alert Price"));
 
-            double fib =
-                    Double.parseDouble(
-                            record.get("FIB")
-                    );
+            double fib = Double.parseDouble(record.get("FIB"));
 
-            MarketData marketData =
-                    marketDataMap.get(symbol);
+            MarketData marketData = marketDataMap.get(symbol);
 
             if (marketData == null) {
-
-                log.warn(
-                        "No Kotak market data found for {}",
-                        symbol
-                );
-
+                log.warn("No Kotak market data found for {}", symbol);
                 continue;
             }
 
-            double current =
-                    marketData.getCurrentPrice();
-
-            double dayLow =
-                    marketData.getDayLow();
-
-            double prevClose =
-                    marketData.getPreviousPrice();
-
-            double marketCap =
-                    marketData.getMarketCap();
-
-            String companyName =
-                    marketData.getCompanyName();
-
-            /*
-             * -----------------------------------------------------
-             * Alert logic
-             * -----------------------------------------------------
-             */
-
-            String screenerUrl =
-                    "https://www.screener.in/company/"
-                            + symbol
-                            + "/consolidated";
-
-            AlertStatus alertStatus =
-                    stockAlertService.shouldSendAlert(
-                            sheetConfig.getName(),
+            DashboardStock dashboardStock =
+                    stockProcessingService.processStock(
                             symbol,
-                            dayLow,
-                            alert,
-                            triggeredToday
+                            marketData.getCompanyName(),
+                            sheetConfig.getName(),
+                            BigDecimal.valueOf(alert),
+                            marketData,
+                            triggeredToday,
+                            rowNumber,
+                            BigDecimal.valueOf(fib)
                     );
 
-            if (alertStatus.isShouldSend()) {
-
-                StockMessageDto dto =
-                        StockMessageDto.builder()
-                                .stockName(symbol)
-                                .currentPrice(current)
-                                .targetPrice(alert)
-                                .screenerUrl(screenerUrl)
-                                .sheetName(sheetConfig.getName())
-                                .build();
-
-                String message =
-                        MessageFormat.format(dto);
-
-                telegramService.sendMessage(message);
-
-                HistoricalAlert historicalAlert =
-                        HistoricalAlert.builder()
-                                .date(
-                                        LocalDate.now(
-                                                INDIA_ZONE
-                                        ).toString()
-                                )
-                                .triggeredAt(
-                                        Instant.now().toString()
-                                )
-                                .symbol(symbol)
-                                .companyName(companyName)
-                                .sheet(sheetConfig.getName())
-                                .alertPrice(
-                                        BigDecimal.valueOf(alert)
-                                )
-                                .triggerPrice(
-                                        BigDecimal.valueOf(dayLow)
-                                )
-                                .currentPrice(
-                                        BigDecimal.valueOf(current)
-                                )
-                                .watchlist(
-                                        sheetConfig.getName()
-                                )
-                                .screenerUrl(screenerUrl)
-                                .build();
-
-                DayOfWeek today =
-                        LocalDate.now().getDayOfWeek();
-
-                if (today != DayOfWeek.SATURDAY
-                        && today != DayOfWeek.SUNDAY) {
-
-                    alertHistoryService.addAlert(
-                            historicalAlert
-                    );
-                }
-
-                log.info(
-                        "Historical alert saved: {} - {}",
-                        sheetConfig.getName(),
-                        symbol
-                );
-            }
-
-            /*
-             * -----------------------------------------------------
-             * Dashboard calculations
-             * -----------------------------------------------------
-             */
-
-            double distance =
-                    ((current - alert) / alert) * 100;
-
-            double changePerc =
-                    ((current - prevClose)
-                            / prevClose) * 100;
-
-            String status;
-
-            if (alertStatus.isTriggeredToday()) {
-
-                status = "Triggered";
-
-            } else if (distance <= 5) {
-
-                status = "Near";
-
-            } else if (distance <= 15) {
-
-                status = "Watch";
-
-            } else {
-
-                status = "Far";
-            }
-
-            /*
-             * -----------------------------------------------------
-             * Dashboard stock
-             * -----------------------------------------------------
-             */
-
-            dashboardStocks.add(
-                    DashboardStock.builder()
-                            .symbol(symbol)
-                            .companyName(companyName)
-                            .currentPrice(
-                                    BigDecimal.valueOf(current)
-                            )
-                            .alertPrice(
-                                    BigDecimal.valueOf(alert)
-                            )
-                            .distance(
-                                    BigDecimal.valueOf(distance)
-                            )
-                            .status(status)
-                            .sheet(sheetConfig.getName())
-                            .previousClose(
-                                    BigDecimal.valueOf(prevClose)
-                            )
-                            .marketCap(
-                                    BigDecimal.valueOf(marketCap)
-                            )
-                            .changePercent(
-                                    BigDecimal.valueOf(changePerc)
-                            )
-                            .sheetRow(rowNumber)
-                            .screenerUrl(screenerUrl)
-                            .fib(
-                                    BigDecimal.valueOf(fib)
-                            )
-                            .dayLow(BigDecimal.valueOf(dayLow))
-                            .build()
-            );
+            dashboardStocks.add(dashboardStock);
         }
 
         return dashboardStocks;
+
     }
 }
