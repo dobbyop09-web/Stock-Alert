@@ -177,17 +177,13 @@
                             </button>
                         </div>
 
-                        <div class="auth-menu" id="authMenu">
-                            <button id="loginBtn" class="auth-btn" disabled>
-                                <span class="auth-dot"></span>
-                                <span id="loginBtnText">Loading Google Sign-In…</span>
-                                <svg class="auth-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 12,15 18,9" /></svg>
-                            </button>
-                            <div class="auth-dropdown" id="authDropdown" hidden>
-                                <button type="button" id="signOutGoogleBtn" class="auth-dropdown-item">Sign out</button>
-                            </div>
-                        </div>
-                        <span id="authStatus"></span>
+                        <a href="stock-config.html" class="btn-ghost" style="display:flex;align-items:center;gap:6px;text-decoration:none;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                            </svg>
+                            Configure
+                        </a>
                     </div>
                 </div>
 
@@ -251,13 +247,12 @@
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th style="width:22%">Symbol</th>
-                                            <th class="num" style="width:18%">Current</th>
+                                            <th style="width:24%">Symbol</th>
+                                            <th class="num" style="width:20%">Current</th>
                                             <th id="alertHeader" class="num" style="width:18%">Alert</th>
                                             <th class="num" style="width:16%">Distance</th>
-                                            <th style="width:18%">Status</th>
+                                            <th style="width:14%">Status</th>
                                             <th style="width:8%">Sector</th>
-                                            <th style="width:8%">Edit</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbody"></tbody>
@@ -437,8 +432,6 @@
         </div>
     </div>
 
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    
     <script type="module" src="js/main.js"></script>
      <script src="js/universal-search.js"></script>
 </body>
