@@ -51,7 +51,6 @@
     .cfg-body { display: flex; flex: 1; min-height: 0; overflow: hidden; }
     .cfg-main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
 
-    /* KPI cards (clickable filters) */
     .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 16px 20px 12px; flex-shrink: 0; }
     .kpi-card { background: #0e1d2b; border: 1px solid rgba(255,255,255,.07); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; transition: border-color .18s, background .18s, transform .18s; user-select: none; }
     .kpi-card.clickable { cursor: pointer; }
@@ -66,7 +65,6 @@
     .kpi-icon.purple { background: rgba(139,92,246,.1); color: #8B5CF6; }
     .kpi-val { font-size: 22px; font-weight: 800; color: #edf5ff; line-height: 1; }
     .kpi-label { font-size: 11px; color: #4a6075; margin-top: 2px; }
-
 
     .cfg-table-wrap { flex: 1; min-height: 0; overflow: hidden; margin: 0 20px 16px; background: #0e1d2b; border: 1px solid rgba(255,255,255,.07); border-radius: 10px; display: flex; flex-direction: column; }
     .cfg-table-scroll { flex: 1; overflow-y: auto; overflow-x: auto; }
@@ -86,14 +84,13 @@
     tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
     tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
 
-
-    /* Symbol logo / avatar */
     .sym-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; flex-shrink: 0; overflow: hidden; }
     .sym-logo-wrap { width: 28px; height: 28px; position: relative; flex: 0 0 28px; }
     .sym-logo { width: 28px; height: 28px; border-radius: 50%; object-fit: contain; background: #fff; padding: 2px; display: block; }
     .stock-link { display: flex; align-items: center; gap: 8px; }
     .sym-text { font-size: 12px; font-weight: 600; color: #dce8f4; }
-    .company-name { font-size: 11px; color: #6b8197; max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: middle; }
+    .sym-link { color: #dce8f4; text-decoration: none; transition: color .15s; }
+    .sym-link:hover { color: #2DD4BF; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(45,212,191,.6); }
 
     .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
     .badge svg { width: 11px; height: 11px; }
@@ -112,14 +109,12 @@
     .dot-menu { position: relative; }
     .dot-menu-btn { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.04); color: #7f92a6; cursor: pointer; }
     .dot-menu-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
-    .dot-menu-popup { position: absolute; right: 0; top: 32px; z-index: 50; background: #0f1c28; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.4); min-width: 160px; padding: 4px; display: none; }
+    .dot-menu-popup { position: absolute; right: 0; top: 32px; z-index: 50; background: #0f1c28; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.4); min-width: 170px; padding: 4px; display: none; }
     .dot-menu-popup.open { display: block; }
     .dot-menu-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; color: #dce8f4; transition: background .12s; width: 100%; text-align: left; border: none; background: none; font-family: inherit; }
     .dot-menu-item:hover { background: rgba(255,255,255,.06); }
     .dot-menu-item.danger { color: #FF5C6C; }
     .dot-menu-item svg { width: 13px; height: 13px; }
-
-
 
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.65); align-items: center; justify-content: center; z-index: 1000; }
     .modal-overlay.open { display: flex; }
@@ -144,6 +139,8 @@
     .btn-cancel:hover { background: rgba(255,255,255,.1); }
     .btn-confirm { background: #2DD4BF; border: none; color: #0b1520; }
     .btn-confirm:hover { opacity: .88; }
+    .btn-confirm.danger { background: #FF5C6C; color: #fff; }
+    .btn-confirm.danger:hover { opacity: .88; }
     .stock-add-row { display: flex; gap: 8px; margin-bottom: 10px; }
     .stock-add-row .form-control { flex: 1; }
     .stocks-list { display: flex; flex-direction: column; gap: 6px; max-height: 160px; overflow-y: auto; margin-top: 8px; }
@@ -169,12 +166,6 @@
     .auth-gate h2 { font-size: 16px; font-weight: 700; color: #edf5ff; }
     .auth-gate p { font-size: 12px; color: #4a6075; max-width: 280px; line-height: 1.6; }
 
-    @media (max-width: 900px) { .kpi-row { grid-template-columns: repeat(2, 1fr); } .cfg-body { flex-direction: column; overflow-y: auto; } .sector-panel { width: auto; margin: 12px 12px 0; max-height: 240px; } .cfg-main { overflow: visible; } .cfg-table-wrap { min-height: 420px; } }
-    @media (max-width: 600px) {
-      .kpi-row { gap: 8px; padding: 12px 12px 8px; }
-      .cfg-table-wrap { margin: 0 12px 12px; }
-    }
-
     /* Sector sidebar */
     .sector-panel { width: 300px; flex-shrink: 0; margin: 16px 0 16px 16px; background: #0b1825; border: 1px solid rgba(255,255,255,.07); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
     .sp-search { display: flex; align-items: center; gap: 8px; padding: 9px 12px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08); border-radius: 10px; }
@@ -185,7 +176,7 @@
     .sp-list { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; min-height: 0; flex: 1; }
     .sp-list::-webkit-scrollbar { width: 4px; }
     .sp-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 4px; }
-    .sp-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 12px; cursor: pointer; color: #6b8197; border: 1px solid transparent; transition: background .15s, color .15s; text-align: left; width: 100%; }
+    .sp-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 12px; cursor: pointer; color: #6b8197; border: 1px solid transparent; transition: background .15s, color .15s; text-align: left; width: 100%; position: relative; }
     .sp-item:hover { background: rgba(255,255,255,.04); color: #dce8f4; }
     .sp-item.active { background: linear-gradient(135deg, rgba(45,212,191,.18), rgba(45,212,191,.05)); border-color: rgba(45,212,191,.2); color: #2DD4BF; font-weight: 700; }
     .sp-ico { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -203,6 +194,13 @@
     .sector-badge svg { width: 12px; height: 12px; flex-shrink: 0; }
     .sp-empty { font-size: 11px; color: #4a6075; padding: 8px 10px; }
 
+    /* Delete sheet button on sidebar */
+    .sp-delete-btn { width: 22px; height: 22px; border-radius: 5px; display: flex; align-items: center; justify-content: center; background: none; border: none; color: #5a7080; cursor: pointer; flex-shrink: 0; opacity: 0; transition: opacity .15s, background .15s, color .15s; pointer-events: none; }
+    .sp-item:hover .sp-delete-btn { opacity: 1; pointer-events: auto; }
+    .sp-item.active .sp-delete-btn { opacity: 0.5; pointer-events: auto; }
+    .sp-delete-btn:hover { background: rgba(255,92,108,.15); color: #FF5C6C !important; opacity: 1 !important; }
+    .sp-delete-btn svg { width: 12px; height: 12px; }
+
     /* Table header bar */
     .tbl-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,.07); flex-wrap: wrap; flex-shrink: 0; }
     .tbl-showing { font-size: 12px; color: #6b8197; }
@@ -217,6 +215,14 @@
     .tb-btn.sort:hover { background: rgba(255,255,255,.09); }
     .tb-btn.sort.active { background: rgba(45,212,191,.12); border-color: rgba(45,212,191,.4); color: #2DD4BF; }
     .tb-btn .sb-arrow { font-size: 11px; opacity: .8; }
+    .manage-sheet-wrap { position: relative; }
+    .manage-sheet-popup { display: none; position: absolute; right: 0; top: calc(100% + 6px); z-index: 100; background: #0f1c28; border: 1px solid rgba(255,255,255,.1); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.4); min-width: 180px; padding: 4px; }
+    .manage-sheet-popup.open { display: block; }
+    .manage-sheet-item { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; color: #dce8f4; transition: background .12s; width: 100%; text-align: left; border: none; background: none; font-family: inherit; }
+    .manage-sheet-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .manage-sheet-item:hover { background: rgba(255,255,255,.06); }
+    .manage-sheet-item.danger { color: #FF5C6C; }
+    .manage-sheet-item.danger:hover { background: rgba(255,92,108,.1); }
     input[type=number] { -moz-appearance: textfield; appearance: textfield; }
     input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     .inline-input { width: 96px; background: rgba(255,255,255,.05); border: 1px solid #2DD4BF; border-radius: 6px; padding: 5px 8px; color: #edf5ff; font-size: 12px; text-align: right; outline: none; font-variant-numeric: tabular-nums; box-shadow: 0 0 0 3px rgba(45,212,191,.12); }
@@ -224,6 +230,20 @@
     .btn-icon.save:hover { background: rgba(45,212,191,.2); color: #2DD4BF; }
     .btn-icon.cancel:hover { color: #FF5C6C; border-color: rgba(255,92,108,.3); }
     .kpi-sub { font-size: 10px; color: #8B5CF6; margin-top: 3px; font-weight: 600; }
+
+    /* Delete sheet confirm modal */
+    .delete-sheet-modal { max-width: 360px; }
+    .delete-sheet-modal .warning-icon { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,92,108,.1); border: 1px solid rgba(255,92,108,.2); display: flex; align-items: center; justify-content: center; color: #FF5C6C; margin-bottom: 14px; }
+    .delete-sheet-modal .warning-icon svg { width: 22px; height: 22px; }
+
+    /* Move stock modal */
+    .move-stock-info { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); border-radius: 8px; margin-bottom: 16px; font-size: 12px; }
+    .move-stock-info .sym { font-weight: 700; color: #edf5ff; }
+    .move-stock-info .from-sheet { color: #4a6075; }
+    .move-arrow { color: #2DD4BF; font-size: 16px; margin: 0 4px; }
+
+    @media (max-width: 900px) { .kpi-row { grid-template-columns: repeat(2, 1fr); } .cfg-body { flex-direction: column; overflow-y: auto; } .sector-panel { width: auto; margin: 12px 12px 0; max-height: 240px; } .cfg-main { overflow: visible; } .cfg-table-wrap { min-height: 420px; } }
+    @media (max-width: 600px) { .kpi-row { gap: 8px; padding: 12px 12px 8px; } .cfg-table-wrap { margin: 0 12px 12px; } }
   </style>
 </head>
 <body>
@@ -240,7 +260,7 @@
       <a href="admin.html" class="sb-link" data-title="Holdings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9h-9V3Z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15V3.5Z"/></svg>
       </a>
-      <a href="realized-profit.html" class="sb-link" data-title="Realised P&L">
+      <a href="realized-profit.html" class="sb-link" data-title="Realised P&amp;L">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,17 8,12 12,15 20,7"/><polyline points="15,7 20,7 20,12"/></svg>
       </a>
       <a href="gtt-orders.html" class="sb-link" data-title="GTT Orders">
@@ -294,7 +314,6 @@
       </aside>
       <div class="cfg-main">
 
-        <!-- KPI Row: cards act as filters -->
         <div class="kpi-row" id="kpiRow">
           <div class="kpi-card clickable" data-filter="all" title="Show all alerts">
             <div class="kpi-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 5-2 6-2 7h16c0-1-2-2-2-7"/><path d="M10.3 20a1.8 1.8 0 0 0 3.4 0"/></svg></div>
@@ -330,7 +349,23 @@
               <button class="tb-btn sort" data-sort="change" data-first="-1" title="Sort by day change"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg><span>Day Change</span><span class="sb-arrow">↕</span></button>
               <button class="tb-btn sort" data-sort="closest" data-first="1" title="Sort by closest to alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg><span>Closest to alert</span><span class="sb-arrow">↕</span></button>
               <button class="tb-btn" id="addAlertBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Alert</button>
-              <button class="tb-btn primary" id="addSheetBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Sheet</button>
+              <div class="manage-sheet-wrap" id="manageSheetWrap">
+                <button class="tb-btn primary" id="manageSheetBtn">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></svg>
+                  Manage Sheets
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="manage-sheet-popup" id="manageSheetPopup">
+                  <button class="manage-sheet-item" id="addSheetBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Add New Sheet
+                  </button>
+                  <button class="manage-sheet-item danger" id="deleteSheetBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                    Delete a Sheet
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="cfg-table-scroll">
@@ -417,6 +452,56 @@
   </div>
 </div>
 
+<!-- Delete Sheet Modal -->
+<div class="modal-overlay" id="deleteSheetModal">
+  <div class="modal-box delete-sheet-modal">
+    <button class="modal-close" id="deleteSheetClose"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <div class="warning-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+    </div>
+    <h2>Delete Sheet</h2>
+    <p class="modal-hint">Choose a sheet to permanently delete. All alerts inside it will be removed.</p>
+    <div class="form-group">
+      <label>Select Sheet <span class="req">*</span></label>
+      <select id="deleteSheetSelect" class="form-control">
+        <option value="">— pick a sheet —</option>
+      </select>
+    </div>
+    <div id="deleteSheetWarning" style="display:none;background:rgba(255,92,108,.06);border:1px solid rgba(255,92,108,.18);border-radius:8px;padding:10px 14px;margin-bottom:4px;font-size:12px;color:#FF5C6C;line-height:1.6"></div>
+    <div class="error-text" id="deleteSheetError"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="deleteSheetCancel">Cancel</button>
+      <button class="btn-confirm danger" id="deleteSheetConfirm" disabled>Delete Sheet</button>
+    </div>
+  </div>
+</div>
+
+<!-- ★ NEW: Move Stock Modal -->
+<div class="modal-overlay" id="moveModal">
+  <div class="modal-box" style="max-width:360px">
+    <button class="modal-close" id="moveModalClose"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <h2>Move Stock to Another Sheet</h2>
+    <p class="modal-hint">Select the destination sheet for this stock.</p>
+    <div class="move-stock-info">
+      <div>
+        <div class="sym" id="moveSymLabel">—</div>
+        <div class="from-sheet" id="moveFromLabel">—</div>
+      </div>
+      <span class="move-arrow">→</span>
+      <div style="flex:1">
+        <select id="moveTargetSheet" class="form-control">
+          <option value="">Select destination sheet</option>
+        </select>
+      </div>
+    </div>
+    <div class="error-text" id="moveError"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="moveModalCancel">Cancel</button>
+      <button class="btn-confirm" id="moveModalSubmit">Move Stock</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
   <span id="toastMsg"></span>
@@ -428,25 +513,27 @@ const CONFIG_URL = `${API_BASE}/stock-config.json`;
 const TOKEN_KEY = "cfg_token";
 
 let sessionToken = null;
-let configData = [];       // from /stock-config.json (persisted)
-let feedOnly = [];         // rows present in /dashboard-data but missing from the config (not persisted unless edited)
-let liveData = {};         // symbol -> row from /dashboard-data
-let companyLogos = {};     // symbol -> logo url (logo.json)
+let configData = [];
+let feedOnly = [];
+let liveData = {};
+let companyLogos = {};
 let activeSheet = "";
 let searchQuery = "";
-let kpiFilter = "all";     // all | Triggered | Session
-let inlineEdit = null;     // symbol being edited in-row
-let sortKey = "";          // symbol | company | alert | price | distance | status
-let sortDir = 1;           // 1 asc, -1 desc
+let kpiFilter = "all";
+let inlineEdit = null;
+let sortKey = "";
+let sortDir = 1;
 let newSymbols = new Set();
 let updatedSymbols = new Set();
 let editingSymbol = null;
 let newSheetStocks = [];
 let selectedMtype = "Equity";
+let deletingSheet = null;   // ★ sheet name being deleted
+let movingSymbol = null;    // ★ symbol being moved
+let movingFromSheet = null; // ★ original sheet of the stock
 
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 
-/* ── Sector icons / colors (same set as GTT Orders page) ── */
 const SVG_O = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">';
 const SECTOR_ICONS = {
   auto: SVG_O+'<path d="M3 13l2-5a2 2 0 0 1 2-1.3h10a2 2 0 0 1 2 1.3l2 5"/><rect x="2" y="13" width="20" height="6" rx="1.5"/><circle cx="7" cy="19" r="1.6"/><circle cx="17" cy="19" r="1.6"/></svg>',
@@ -462,6 +549,7 @@ const SECTOR_ICONS = {
   oilenergy: SVG_O+'<path d="M12 2s6 6.5 6 11.5a6 6 0 0 1-12 0C6 8.5 12 2 12 2Z"/></svg>',
   etf: SVG_O+'<path d="M12 3a9 9 0 1 0 9 9h-9V3Z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15V3.5Z"/></svg>',
   reality: SVG_O+'<path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/></svg>',
+  nbfc: SVG_O+'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h3"/><circle cx="15.5" cy="16.5" r="2.5"/><path d="M15.5 15v3"/></svg>',
 };
 const SECTOR_ICON_DEFAULT = SVG_O+'<rect x="3" y="3" width="18" height="18" rx="3"/></svg>';
 const SECTOR_COLORS = {
@@ -471,7 +559,6 @@ const SECTOR_COLORS = {
 const SECTOR_COLOR_DEFAULT = "#9CA3AF";
 const hexToRgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`; };
 
-/* ── Logos (logo.json, same loader as GTT Orders page) ── */
 async function loadCompanyLogos() {
   try {
     const res = await fetch("logo.json", { cache: "no-cache" });
@@ -498,7 +585,6 @@ function bindLogoFallbacks(container) {
   });
 }
 
-/* ── Distance / status (dynamic: recomputed when the alert price differs from the feed) ── */
 function rowInfo(r) {
   const live = liveData[String(r.symbol||"").toUpperCase()];
   const alertPrice = Number(r.alertPrice);
@@ -519,7 +605,6 @@ function rowInfo(r) {
   return { live, price, change: live.changePercent, distance, status };
 }
 
-/* ── Token helpers ── */
 const saveToken = t => { try { sessionStorage.setItem(TOKEN_KEY, t); } catch(e){} };
 const readToken = () => { try { return sessionStorage.getItem(TOKEN_KEY); } catch(e){ return null; } };
 const clearToken = () => { try { sessionStorage.removeItem(TOKEN_KEY); } catch(e){} };
@@ -559,12 +644,10 @@ async function submitLogin() {
 }
 function logout() { clearToken(); sessionToken = null; updateAuthUI(false, ""); }
 
-/* ── Load data ── */
 const PH = "__placeholder__";
 const allRowsRaw = () => [...configData, ...feedOnly];
 const realRows = () => allRowsRaw().filter(r => r.symbol !== PH);
-const sheetNames = () => [...new Set(allRowsRaw().map(r => r.sheet).filter(Boolean))];   // includes empty sheets
-// move a feed-only row into the persisted config (when the user edits it); returns its index in configData
+const sheetNames = () => [...new Set(allRowsRaw().map(r => r.sheet).filter(Boolean))];
 function ensureInConfig(sym) {
   let i = configData.findIndex(r => r.symbol === sym);
   if (i < 0) {
@@ -573,7 +656,6 @@ function ensureInConfig(sym) {
   }
   return i;
 }
-// any sheet (known or brand new) gets a stable colour + icon
 const EXTRA_COLORS = ["#F59E0B","#06B6D4","#A78BFA","#34D399","#F43F5E","#84CC16","#FB7185","#22D3EE","#E879F9","#FDBA74"];
 function sectorColor(name) {
   const k = String(name||"").toLowerCase();
@@ -597,11 +679,9 @@ async function loadConfig() {
       liveData = {};
       feedRows.forEach(r => { if (r.symbol) liveData[r.symbol.toUpperCase()] = r; });
     }
-    // one canonical spelling per sheet (config wins), so "ETF" / "Etf" never split into two sectors
     const canon = {};
     const canonical = n => { const k = String(n||"").toLowerCase(); return k ? (canon[k] ||= n) : n; };
     configData.forEach(r => { if (r.sheet) r.sheet = canonical(r.sheet); });
-    // rows the feed knows about but the config doesn't (e.g. a newly added sheet such as ETF)
     const inConfig = new Set(configData.map(r => String(r.symbol||"").toUpperCase()));
     feedOnly = feedRows
       .filter(r => r.symbol && r.sheet && !inConfig.has(r.symbol.toUpperCase()))
@@ -616,7 +696,6 @@ async function loadConfig() {
 }
 function refreshAll() { updateKPIs(); renderSheetTabs(); render(); }
 
-/* ── KPIs ── */
 function updateKPIs() {
   const rows = realRows();
   const triggered = rows.filter(r => rowInfo(r).status === "Triggered").length;
@@ -638,17 +717,16 @@ $("kpiRow").addEventListener("click", e => {
   const card = e.target.closest(".kpi-card[data-filter]");
   if (!card) return;
   const f = card.dataset.filter;
-  kpiFilter = (f === "all" || kpiFilter === f) ? "all" : f;  // click again to clear
+  kpiFilter = (f === "all" || kpiFilter === f) ? "all" : f;
   updateKPIs(); render();
 });
 
-/* ── Sheet tabs ── */
 function renderSheetTabs() {
   const rows = realRows();
   const q = searchQuery.toLowerCase();
   const stat = {}, hit = {};
   const tot = { n: 0, trig: 0, near: 0 };
-  sheetNames().forEach(n => { stat[n] = { n: 0, trig: 0, near: 0 }; });   // empty sheets still get a sidebar entry
+  sheetNames().forEach(n => { stat[n] = { n: 0, trig: 0, near: 0 }; });
   rows.forEach(r => {
     if (!r.sheet) return;
     const st = rowInfo(r).status;
@@ -659,21 +737,117 @@ function renderSheetTabs() {
     if (q && (r.symbol?.toLowerCase().includes(q) || r.companyName?.toLowerCase().includes(q))) hit[r.sheet] = true;
   });
   const names = Object.keys(stat).filter(n => !q || n.toLowerCase().includes(q) || hit[n]);
-  const item = (name, label, o, color, icon) => {
+
+  // ★ Delete button SVG
+  const DEL_BTN = `<button class="sp-delete-btn" data-act="delete-sheet" title="Delete this sheet">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+    </svg></button>`;
+
+  const item = (name, label, o, color, icon, showDelete) => {
     const bg = color ? `background:linear-gradient(135deg,${hexToRgba(color,.38)},${hexToRgba(color,.14)});color:${color}` : "background:linear-gradient(135deg,rgba(45,212,191,.4),rgba(45,212,191,.15));color:#2DD4BF";
     return `<button class="sp-item ${activeSheet===name?"active":""}" data-sheet="${esc(name)}">
       <span class="sp-ico" style="${bg}">${icon}</span>
       <span class="sp-name">${esc(label)}</span>
       <span class="sp-chip trig ${o.trig?"":"zero"}" title="Triggered">${STATUS_ICONS.Triggered}${o.trig}</span>
       <span class="sp-chip near ${o.near?"":"zero"}" title="Near">${STATUS_ICONS.Near}${o.near}</span>
-      <span class="sp-count" title="Total alerts">${o.n}</span></button>`;
+      <span class="sp-count" title="Total alerts">${o.n}</span>
+      ${showDelete ? DEL_BTN : ""}</button>`;
   };
-  $("sheetTabs").innerHTML = item("", "All Sectors", tot, null, SECTOR_ICONS.misc)
-    + names.map(n => { const k = n.toLowerCase(); return item(n, n, stat[n], sectorColor(n), sectorIcon(n)); }).join("")
+
+  $("sheetTabs").innerHTML =
+    item("", "All Sectors", tot, null, SECTOR_ICONS.misc || SECTOR_ICON_DEFAULT, false)
+    + names.map(n => item(n, n, stat[n], sectorColor(n), sectorIcon(n), true)).join("")
     + (q && !names.length ? '<div class="sp-empty">No matching sectors</div>' : "");
 }
 
-/* ── Sorting ── */
+// Delete sheet
+function openDeleteSheet(preselect) {
+  if (!sessionToken) { openLoginModal(); return; }
+  deletingSheet = null;
+  const sel = $("deleteSheetSelect");
+  const names = sheetNames().sort();
+  sel.innerHTML = '<option value="">— pick a sheet —</option>'
+    + names.map(n => `<option value="${esc(n)}"${n === preselect ? " selected" : ""}>${esc(n)}</option>`).join("");
+  $("deleteSheetWarning").style.display = "none";
+  $("deleteSheetWarning").textContent = "";
+  $("deleteSheetError").textContent = "";
+  $("deleteSheetConfirm").disabled = true;
+  $("deleteSheetModal").classList.add("open");
+  // if preselected, trigger the change logic
+  if (preselect) { sel.value = preselect; updateDeleteSheetPreview(); }
+}
+function updateDeleteSheetPreview() {
+  const sel = $("deleteSheetSelect");
+  const name = sel.value;
+  const warn = $("deleteSheetWarning");
+  const btn = $("deleteSheetConfirm");
+  if (!name) { warn.style.display = "none"; btn.disabled = true; deletingSheet = null; return; }
+  deletingSheet = name;
+  const count = realRows().filter(r => r.sheet === name).length;
+  warn.style.display = "block";
+  warn.innerHTML = `⚠ <b>"${esc(name)}"</b> contains <b>${count} alert${count !== 1 ? "s" : ""}</b>. They will all be permanently deleted. This cannot be undone.`;
+  btn.disabled = false;
+}
+function closeDeleteSheet() { $("deleteSheetModal").classList.remove("open"); deletingSheet = null; }
+async function confirmDeleteSheet() {
+  if (!deletingSheet) return;
+  const btn = $("deleteSheetConfirm");
+  btn.disabled = true; btn.textContent = "Deleting…";
+  try {
+    // capture symbols before removing rows
+    const toRemove = new Set(realRows().filter(r => r.sheet === deletingSheet).map(r => r.symbol));
+    configData = configData.filter(r => r.sheet !== deletingSheet);
+    feedOnly = feedOnly.filter(r => r.sheet !== deletingSheet);
+    toRemove.forEach(sym => { newSymbols.delete(sym); updatedSymbols.delete(sym); });
+    if (activeSheet === deletingSheet) activeSheet = "";
+    await saveConfigToAPI();
+    showToast(`Sheet "${deletingSheet}" deleted.`);
+    closeDeleteSheet();
+    refreshAll();
+  } catch(e) {
+    $("deleteSheetError").textContent = "Failed to delete. Check connection.";
+  } finally {
+    btn.disabled = false; btn.textContent = "Delete Sheet";
+  }
+}
+
+// ★ Move stock
+function openMoveModal(symbol, fromSheet) {
+  if (!sessionToken) { openLoginModal(); return; }
+  movingSymbol = symbol;
+  movingFromSheet = fromSheet;
+  $("moveSymLabel").textContent = symbol;
+  $("moveFromLabel").textContent = `Currently in: ${fromSheet || "—"}`;
+  $("moveError").textContent = "";
+  const others = sheetNames().filter(n => n !== fromSheet).sort();
+  $("moveTargetSheet").innerHTML = '<option value="">Select destination sheet</option>'
+    + others.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join("");
+  $("moveModal").classList.add("open");
+}
+function closeMoveModal() { $("moveModal").classList.remove("open"); movingSymbol = null; movingFromSheet = null; }
+async function submitMoveModal() {
+  const target = $("moveTargetSheet").value;
+  if (!target) { $("moveError").textContent = "Please select a destination sheet."; return; }
+  const btn = $("moveModalSubmit");
+  btn.disabled = true; btn.textContent = "Moving…";
+  try {
+    const idx = ensureInConfig(movingSymbol);
+    if (idx >= 0) {
+      configData[idx] = { ...configData[idx], sheet: target };
+      if (!newSymbols.has(movingSymbol)) updatedSymbols.add(movingSymbol);
+    }
+    await saveConfigToAPI();
+    showToast(`${movingSymbol} moved to "${target}".`);
+    closeMoveModal();
+    refreshAll();
+  } catch(e) {
+    $("moveError").textContent = "Failed to move. Check connection.";
+  } finally {
+    btn.disabled = false; btn.textContent = "Move Stock";
+  }
+}
+
 const STATUS_RANK = { Triggered:0, Near:1, Watch:2, Far:3 };
 function sortValue(r, info, key) {
   switch (key) {
@@ -692,7 +866,7 @@ function applySort(items) {
   return items.slice().sort((a, b) => {
     const va = sortValue(a.r, a.info, sortKey), vb = sortValue(b.r, b.info, sortKey);
     if (va == null && vb == null) return 0;
-    if (va == null) return 1;           // empty values always last
+    if (va == null) return 1;
     if (vb == null) return -1;
     return (typeof va === "string" ? va.localeCompare(vb) : va - vb) * sortDir;
   });
@@ -709,7 +883,6 @@ function updateSortHeaders() {
     b.querySelector(".sb-arrow").textContent = active ? (sortDir === 1 ? "↑" : "↓") : "↕";
   });
 }
-// cycle: first direction -> opposite -> off
 function setSort(key, firstDir) {
   if (sortKey === key) { if (sortDir === firstDir) sortDir = -firstDir; else { sortKey = ""; sortDir = 1; } }
   else { sortKey = key; sortDir = firstDir; }
@@ -721,7 +894,6 @@ $("theadRow").addEventListener("click", e => {
 });
 document.querySelectorAll(".tb-btn.sort").forEach(b => b.addEventListener("click", () => setSort(b.dataset.sort, +b.dataset.first)));
 
-/* ── Main render ── */
 const STATUS_ICONS = {
   Triggered: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 5-2 6-2 7h16c0-1-2-2-2-7"/><path d="M10.3 20a1.8 1.8 0 0 0 3.4 0"/></svg>',
   Near: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>',
@@ -741,6 +913,19 @@ function sectorBadge(sheet) {
 const ICON_EDIT = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>';
 const ICON_SAVE = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>';
 const ICON_X = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+const ICON_MOVE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+
+const ICON_EXT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+
+function symbolCell(r, info) {
+  // screenerUrl: prefer config row, fall back to live feed
+  const url = (r.screenerUrl || "").trim() || (info.live?.screenerUrl || "").trim();
+  const logo = symbolLogoHtml(r.symbol);
+  const nameEl = url
+    ? `<a class="sym-text sym-link" href="${esc(url)}" target="_blank" rel="noopener" title="Open ${esc(r.symbol)} in Screener">${esc(r.symbol)}</a>`
+    : `<span class="sym-text">${esc(r.symbol)}</span>`;
+  return `<div class="stock-link" title="${esc(r.companyName||"")}">${logo}${nameEl}</div>`;
+}
 
 function rowHtml(r, info) {
   const { price, change, distance, status } = info;
@@ -760,6 +945,7 @@ function rowHtml(r, info) {
          </button>
          <div class="dot-menu-popup">
            <button class="dot-menu-item" data-act="edit">${ICON_EDIT.replace('width="12" height="12"','')}Edit Alert</button>
+           <button class="dot-menu-item" data-act="move">${ICON_MOVE}Move to Sheet</button>
            <button class="dot-menu-item" data-act="create"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Create New Alert</button>
            <button class="dot-menu-item" data-act="sheet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Add New Sheet</button>
            <button class="dot-menu-item danger" data-act="delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4"/></svg>Delete</button>
@@ -767,7 +953,7 @@ function rowHtml(r, info) {
        </div>`;
   return `
     <tr data-sym="${s}" data-sheet="${sh}">
-      <td><div class="stock-link" title="${esc(r.companyName||"")}">${symbolLogoHtml(r.symbol)}<span class="sym-text">${s}</span></div></td>
+      <td>${symbolCell(r, info)}</td>
       <td class="num">${price!=null?`<div class="price-cell"><span class="price">${money(price)}</span>${chgStr}</div>`:"—"}</td>
       <td class="num">${alertCell}</td>
       <td class="num">${distStr}</td>
@@ -787,7 +973,7 @@ async function saveInline(tr) {
     configData[idx] = { ...configData[idx], alertPrice: v };
     if (!newSymbols.has(sym)) updatedSymbols.add(sym);
     inlineEdit = null;
-    refreshAll();                       // distance / status / counts recalculate instantly
+    refreshAll();
     await saveConfigToAPI();
     showToast(`${sym} alert price updated`);
   } else { inlineEdit = null; render(); }
@@ -820,7 +1006,22 @@ function render() {
   if (inp) { inp.focus(); inp.select(); }
 }
 
-/* ── Table click delegation (row actions, dot menu, collapse) ── */
+// ★ Sidebar click: handles both sheet selection AND delete-sheet button
+$("sheetTabs").addEventListener("click", e => {
+  // Delete sheet button takes priority
+  const delBtn = e.target.closest("[data-act='delete-sheet']");
+  if (delBtn) {
+    e.stopPropagation();
+    const sheetItem = delBtn.closest(".sp-item");
+    if (sheetItem) openDeleteSheet(sheetItem.dataset.sheet);
+    return;
+  }
+  const tab = e.target.closest(".sp-item");
+  if (!tab) return;
+  activeSheet = tab.dataset.sheet;
+  renderSheetTabs(); render();
+});
+
 $("cfgTbody").addEventListener("click", e => {
   const actEl = e.target.closest("[data-act]");
   const tr = e.target.closest("tr[data-sym]");
@@ -840,6 +1041,7 @@ $("cfgTbody").addEventListener("click", e => {
   else if (act === "save-inline") saveInline(tr);
   else if (act === "cancel-inline") { inlineEdit = null; render(); }
   else if (act === "edit") openEditAlert(sym);
+  else if (act === "move") openMoveModal(sym, sheet);   // ★
   else if (act === "create") openCreateAlert(sheet);
   else if (act === "sheet") openAddSheet();
   else if (act === "delete") deleteAlert(sym, sheet);
@@ -853,7 +1055,6 @@ document.addEventListener("click", e => {
   if (!e.target.closest(".dot-menu")) document.querySelectorAll(".dot-menu-popup.open").forEach(p => p.classList.remove("open"));
 });
 
-/* ── Create / Edit alert ── */
 function fillSheetSelect(selected) {
   const sheets = sheetNames().sort();
   $("alertSheet").innerHTML = '<option value="">Select sheet</option>' + sheets.map(s => `<option value="${esc(s)}"${s===selected?" selected":""}>${esc(s)}</option>`).join("");
@@ -910,14 +1111,14 @@ async function submitAlertModal() {
       showToast("Alert updated successfully!");
     } else {
       if (realRows().find(r => r.symbol === sym)) { errEl.textContent = `${sym} already exists in config.`; return; }
-      configData = configData.filter(r => !(r.symbol === PH && r.sheet === sheet));   // sheet is no longer empty
+      configData = configData.filter(r => !(r.symbol === PH && r.sheet === sheet));
       configData.push({ symbol:sym, companyName:company, alertPrice:price, sheet, screenerUrl:screener });
       newSymbols.add(sym);
       await saveConfigToAPI();
       showToast("Alert created successfully!");
     }
     closeAlertModal();
-    refreshAll();   // distance + status + counts recalculate from the new alert price
+    refreshAll();
   } catch(e) {
     errEl.textContent = "Failed to save. Check connection.";
   } finally {
@@ -936,7 +1137,6 @@ function deleteAlert(symbol, sheet) {
   showToast(`${symbol} deleted.`);
 }
 
-/* ── Add sheet ── */
 function openAddSheet() {
   if (!sessionToken) { openLoginModal(); return; }
   newSheetStocks = []; selectedMtype = "Equity";
@@ -981,7 +1181,6 @@ async function submitSheetModal() {
   finally { btn.disabled = false; btn.textContent = "Create Sheet"; }
 }
 
-/* ── Persist config ── */
 async function saveConfigToAPI() {
   if (!sessionToken) return;
   try {
@@ -1003,17 +1202,11 @@ function showToast(msg, isError) {
   toastTimer = setTimeout(() => el.classList.remove("show"), 2800);
 }
 
-/* ── Events ── */
-$("sheetTabs").addEventListener("click", e => {
-  const tab = e.target.closest(".sp-item");
-  if (!tab) return;
-  activeSheet = tab.dataset.sheet;
-  renderSheetTabs(); render();
-});
 $("cfgSearch").addEventListener("input", e => { searchQuery = e.target.value.trim(); renderSheetTabs(); render(); });
-
 $("addAlertBtn").addEventListener("click", () => openCreateAlert(activeSheet));
-$("addSheetBtn").addEventListener("click", openAddSheet);
+$("addSheetBtn").addEventListener("click", () => { $("manageSheetPopup").classList.remove("open"); openAddSheet(); });
+$("manageSheetBtn").addEventListener("click", e => { e.stopPropagation(); $("manageSheetPopup").classList.toggle("open"); });
+document.addEventListener("click", e => { if (!e.target.closest("#manageSheetWrap")) $("manageSheetPopup").classList.remove("open"); });
 
 $("alertModalClose").addEventListener("click", closeAlertModal);
 $("alertModalCancel").addEventListener("click", closeAlertModal);
@@ -1036,17 +1229,30 @@ $("signInBtn").addEventListener("click", openLoginModal);
 $("authGateSignIn").addEventListener("click", openLoginModal);
 $("signOutBtn").addEventListener("click", logout);
 
-["loginModal","alertModal","sheetModal"].forEach(id => {
+// Delete sheet modal events
+$("deleteSheetBtn").addEventListener("click", () => { $("manageSheetPopup").classList.remove("open"); openDeleteSheet(activeSheet || ""); });
+$("deleteSheetSelect").addEventListener("change", updateDeleteSheetPreview);
+$("deleteSheetClose").addEventListener("click", closeDeleteSheet);
+$("deleteSheetCancel").addEventListener("click", closeDeleteSheet);
+$("deleteSheetConfirm").addEventListener("click", confirmDeleteSheet);
+
+// ★ Move modal events
+$("moveModalClose").addEventListener("click", closeMoveModal);
+$("moveModalCancel").addEventListener("click", closeMoveModal);
+$("moveModalSubmit").addEventListener("click", submitMoveModal);
+
+["loginModal","alertModal","sheetModal","deleteSheetModal","moveModal"].forEach(id => {
   $(id).addEventListener("click", e => { if (e.target.id === id) $(id).classList.remove("open"); });
 });
-document.addEventListener("keydown", e => { if (e.key === "Escape") ["loginModal","alertModal","sheetModal"].forEach(id => $(id).classList.remove("open")); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") ["loginModal","alertModal","sheetModal","deleteSheetModal","moveModal"].forEach(id => $(id).classList.remove("open"));
+});
 
-/* ── Init ── */
 (async () => {
   sessionToken = readToken();
   updateAuthUI(!!sessionToken, "Admin");
   await Promise.all([loadCompanyLogos(), loadConfig()]);
-  if (!sessionToken) {   // read-only view still shows the table
+  if (!sessionToken) {
     cfgTableWrap.style.display = "flex";
     authGate.classList.remove("visible");
   }
