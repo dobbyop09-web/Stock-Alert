@@ -65,6 +65,8 @@
     .kpi-card.active.amber { border-color: #F5A623; background: rgba(245,166,35,.07); box-shadow: 0 0 0 1px rgba(245,166,35,.25), 0 0 18px rgba(245,166,35,.08); }
     .kpi-icon.amber { background: rgba(245,166,35,.1); color: #F5A623; }
     .dist-was { display:block; font-size:10px; font-weight:600; color:#5a7080; margin-top:2px; }
+    .kpi-card.active.orange { border-color: #FB923C; background: rgba(251,146,60,.07); box-shadow: 0 0 0 1px rgba(251,146,60,.25), 0 0 18px rgba(251,146,60,.08); }
+    .kpi-icon.orange { background: rgba(251,146,60,.1); color: #FB923C; }
     .kpi-icon.purple { background: rgba(139,92,246,.1); color: #8B5CF6; }
     .kpi-val { font-size: 22px; font-weight: 800; color: #edf5ff; line-height: 1; }
     .kpi-label { font-size: 11px; color: #4a6075; margin-top: 2px; }
@@ -166,6 +168,7 @@
 
     .auth-gate { display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 12px; text-align: center; padding: 40px; }
     .auth-gate.visible { display: flex; }
+    body.logged-out .sector-panel, body.logged-out .kpi-row, body.logged-out .cfg-table-wrap { display: none !important; }
     .auth-gate h2 { font-size: 16px; font-weight: 700; color: #edf5ff; }
     .auth-gate p { font-size: 12px; color: #4a6075; max-width: 280px; line-height: 1.6; }
 
@@ -213,6 +216,11 @@
     .tb-btn:hover { background: rgba(45,212,191,.16); }
     .tb-btn.primary { background: #2DD4BF; color: #0b1520; border-color: #2DD4BF; }
     .tb-btn.primary:hover { opacity: .88; background: #2DD4BF; }
+    .tb-btn.filt { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.1); color: #dce8f4; }
+    .tb-btn.filt svg { color: #F5A623; }
+    .tb-btn.filt:hover { background: rgba(255,255,255,.09); }
+    .tb-btn.filt.active { background: rgba(245,166,35,.12); border-color: rgba(245,166,35,.45); color: #F5A623; }
+    .filt-count { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 8px; background: rgba(245,166,35,.15); color: #F5A623; }
     .tb-btn.sort { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.1); color: #dce8f4; }
     .tb-btn.sort svg { color: #2DD4BF; }
     .tb-btn.sort:hover { background: rgba(255,255,255,.09); }
@@ -249,7 +257,7 @@
     @media (max-width: 600px) { .kpi-row { gap: 8px; padding: 12px 12px 8px; } .cfg-table-wrap { margin: 0 12px 12px; } }
   </style>
 </head>
-<body>
+<body class="logged-out">
 <div class="shell">
 
   <aside class="sb">
@@ -330,9 +338,9 @@
             <div class="kpi-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></div>
             <div><div class="kpi-val" id="kpiUpdatedToday" style="color:#F5A623">0</div><div class="kpi-label">updated today</div><div class="kpi-sub" id="kpiUpdatedTodaySub" style="color:#F5A623"></div></div>
           </div>
-          <div class="kpi-card clickable purple" data-filter="Session" title="Show alerts added or updated this session">
-            <div class="kpi-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg></div>
-            <div><div class="kpi-val" id="kpiNew" style="color:#8B5CF6">0</div><div class="kpi-label">New Alerts</div><div class="kpi-sub" id="kpiUpdated"></div></div>
+          <div class="kpi-card clickable orange" data-filter="Near2" title="Stocks within 2% above their alert price (not yet triggered)">
+            <div class="kpi-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg></div>
+            <div><div class="kpi-val" id="kpiNear2" style="color:#FB923C">0</div><div class="kpi-label">near alert</div><div class="kpi-sub" id="kpiNear2Sub" style="color:#FB923C">within 2% of alert</div></div>
           </div>
         </div>
 
@@ -351,6 +359,7 @@
             <div class="tbl-actions">
               <button class="tb-btn sort" data-sort="change" data-first="-1" title="Sort by day change"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg><span>Day Change</span><span class="sb-arrow">↕</span></button>
               <button class="tb-btn sort" data-sort="closest" data-first="1" title="Sort by closest to alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg><span>Closest to alert</span><span class="sb-arrow">↕</span></button>
+              <button class="tb-btn filt" id="updatedOnlyBtn" title="Show only stocks whose alert was updated (distance differs from dashboard data)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>Updated <span id="updatedOnlyCount" class="filt-count">0</span></button>
               <button class="tb-btn" id="addAlertBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Alert</button>
               <div class="manage-sheet-wrap" id="manageSheetWrap">
                 <button class="tb-btn primary" id="manageSheetBtn">
@@ -523,6 +532,7 @@ let companyLogos = {};
 let activeSheet = "";
 let searchQuery = "";
 let kpiFilter = "all";
+let updatedOnly = false;
 let inlineEdit = null;
 let sortKey = "";
 let sortDir = 1;
@@ -622,7 +632,9 @@ function updateAuthUI(loggedIn, username) {
   whoamiChip.style.display = loggedIn ? "flex" : "none";
   if (loggedIn && username) whoamiText.textContent = username;
   authGate.classList.toggle("visible", !loggedIn);
+  document.body.classList.toggle("logged-out", !loggedIn);
   cfgTableWrap.style.display = loggedIn ? "flex" : "none";
+  if (!loggedIn) { const lu = $("lastUpdatedEl"); if (lu) lu.style.display = "none"; }
 }
 
 function openLoginModal() {
@@ -641,19 +653,23 @@ async function submitLogin() {
     if (!res.ok) { errEl.textContent = "Invalid credentials."; return; }
     const data = await res.json();
     sessionToken = data.token; saveToken(data.token);
-    closeLoginModal(); updateAuthUI(true, data.username || u); render();
+    closeLoginModal(); updateAuthUI(true, data.username || u); await loadConfig();
   } catch(e) { errEl.textContent = "Could not reach server."; }
   finally { btn.disabled = false; btn.textContent = "Sign in"; }
 }
-function logout() { clearToken(); sessionToken = null; updateAuthUI(false, ""); }
+function logout() {
+  clearToken(); sessionToken = null;
+  configData = []; feedOnly = []; liveData = {}; activeSheet = ""; searchQuery = ""; kpiFilter = "all"; updatedOnly = false; inlineEdit = null;
+  $("sheetTabs").innerHTML = ""; $("cfgTbody").innerHTML = "";
+  updateAuthUI(false, "");
+}
 
 const PH = "__placeholder__";
-// "Updated today": stock is Triggered in dashboard-data.json, but its distance
-// recomputed from the current stock-config.json alert price is different.
+// "Updated": distance recomputed from the current stock-config.json alert price
+// differs from the distance stored in dashboard-data.json (any status).
 function updatedTodayInfo(r) {
   const live = liveData[String(r.symbol||"").toUpperCase()];
   if (!live || live.currentPrice == null) return null;
-  if (String(live.status||"").toLowerCase() !== "triggered") return null;
   const cfgAlert = Number(r.alertPrice), feedAlert = Number(live.alertPrice);
   const price = Number(live.currentPrice);
   if (!cfgAlert || !price) return null;
@@ -662,7 +678,14 @@ function updatedTodayInfo(r) {
   const cfgDist = ((price - cfgAlert) / cfgAlert) * 100;
   if (feedDist == null) return null;
   if (Math.abs(cfgDist - feedDist) < 0.005) return null;
-  return { prevDistance: feedDist, newDistance: cfgDist, prevAlert: feedAlert, newAlert: cfgAlert };
+  return { prevStatus: live.status || "", prevDistance: feedDist, newDistance: cfgDist, prevAlert: feedAlert, newAlert: cfgAlert };
+}
+
+// Near: not triggered, and price is within NEAR_PCT% above the alert price (config-based distance)
+const NEAR_PCT = 2;
+function isNearAlert(r) {
+  const i = rowInfo(r);
+  return i.status !== "Triggered" && i.distance != null && i.distance > 0 && i.distance <= NEAR_PCT;
 }
 
 const allRowsRaw = () => [...configData, ...feedOnly];
@@ -720,18 +743,20 @@ function updateKPIs() {
   const rows = realRows();
   const triggered = rows.filter(r => rowInfo(r).status === "Triggered").length;
   const sheets = sheetNames().length;
-  const updatedToday = rows.filter(r => updatedTodayInfo(r)).length;
+  const updatedToday = rows.filter(r => updatedTodayInfo(r) && String(updatedTodayInfo(r).prevStatus).toLowerCase() === "triggered").length;
+  const updAll = rows.filter(r => updatedTodayInfo(r)).length;
+  $("updatedOnlyCount").textContent = updAll;
+  $("updatedOnlyBtn").classList.toggle("active", updatedOnly);
   $("kpiTotal").textContent = rows.length;
   $("kpiTriggered").textContent = triggered;
   $("kpiUpdatedToday").textContent = updatedToday;
   $("kpiUpdatedTodaySub").textContent = "triggered, alert revised";
-  $("kpiNew").textContent = newSymbols.size;
-  $("kpiUpdated").textContent = `${updatedSymbols.size} updated this session`;
+  $("kpiNear2").textContent = rows.filter(isNearAlert).length;
   const labels = document.querySelectorAll("#kpiRow .kpi-label");
   labels[0].textContent = `across ${sheets} sheets`;
   labels[1].textContent = "need attention";
   labels[2].textContent = "updated today";
-  labels[3].textContent = "added this session";
+  labels[3].textContent = "near alert";
   document.querySelectorAll("#kpiRow .kpi-card[data-filter]").forEach(c => c.classList.toggle("active", c.dataset.filter === kpiFilter && kpiFilter !== "all"));
 }
 
@@ -914,6 +939,7 @@ $("theadRow").addEventListener("click", e => {
   const th = e.target.closest("th.sortable");
   if (th) setSort(th.dataset.sort, 1);
 });
+$("updatedOnlyBtn").addEventListener("click", () => { updatedOnly = !updatedOnly; updateKPIs(); render(); });
 document.querySelectorAll(".tb-btn.sort").forEach(b => b.addEventListener("click", () => setSort(b.dataset.sort, +b.dataset.first)));
 
 const STATUS_ICONS = {
@@ -1014,13 +1040,15 @@ function render() {
     if (q && !r.symbol?.toLowerCase().includes(q) && !r.companyName?.toLowerCase().includes(q) && !(r.sheet||"").toLowerCase().includes(q)) return;
     const info = rowInfo(r);
     if (kpiFilter === "Triggered" && info.status !== "Triggered") return;
-    if (kpiFilter === "UpdatedToday" && !updatedTodayInfo(r)) return;
-    if (kpiFilter === "Session" && !newSymbols.has(r.symbol) && !updatedSymbols.has(r.symbol)) return;
+    if (kpiFilter === "UpdatedToday") { const u = updatedTodayInfo(r); if (!u || String(u.prevStatus).toLowerCase() !== "triggered") return; }
+    if (updatedOnly && !updatedTodayInfo(r)) return;
+    if (kpiFilter === "Near2" && !isNearAlert(r)) return;
     items.push({ r, info });
   });
 
-  const note = kpiFilter === "Triggered" ? " · Triggered only" : kpiFilter === "Session" ? " · This session" : kpiFilter === "UpdatedToday" ? " · Updated today" : "";
-  $("tblShowing").innerHTML = `Showing: <b>${esc(activeSheet || "All")}</b> · <b>${items.length}</b> Stocks${note}`;
+  const note = kpiFilter === "Triggered" ? " · Triggered only" : kpiFilter === "Near2" ? ` · Within ${NEAR_PCT}% of alert` : kpiFilter === "UpdatedToday" ? " · Updated today" : "";
+  const note2 = updatedOnly ? " · Updated only" : "";
+  $("tblShowing").innerHTML = `Showing: <b>${esc(activeSheet || "All")}</b> · <b>${items.length}</b> Stocks${note}${note2}`;
   if (!items.length) {
     tbody.innerHTML = '<tr class="loading-row"><td colspan="7" style="color:#4a6075">No alerts found.</td></tr>';
     return;
@@ -1276,11 +1304,8 @@ document.addEventListener("keydown", e => {
 (async () => {
   sessionToken = readToken();
   updateAuthUI(!!sessionToken, "Admin");
-  await Promise.all([loadCompanyLogos(), loadConfig()]);
-  if (!sessionToken) {
-    cfgTableWrap.style.display = "flex";
-    authGate.classList.remove("visible");
-  }
+  if (sessionToken) await Promise.all([loadCompanyLogos(), loadConfig()]);
+  else loadCompanyLogos();
 })();
 </script>
 </body>
