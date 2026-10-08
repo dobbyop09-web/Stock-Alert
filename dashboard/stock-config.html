@@ -62,6 +62,9 @@
     .kpi-icon svg { width: 20px; height: 20px; }
     .kpi-icon.blue, .kpi-icon.teal { background: rgba(45,212,191,.1); color: #2DD4BF; }
     .kpi-icon.red { background: rgba(255,92,108,.1); color: #FF5C6C; }
+    .kpi-card.active.amber { border-color: #F5A623; background: rgba(245,166,35,.07); box-shadow: 0 0 0 1px rgba(245,166,35,.25), 0 0 18px rgba(245,166,35,.08); }
+    .kpi-icon.amber { background: rgba(245,166,35,.1); color: #F5A623; }
+    .dist-was { display:block; font-size:10px; font-weight:600; color:#5a7080; margin-top:2px; }
     .kpi-icon.purple { background: rgba(139,92,246,.1); color: #8B5CF6; }
     .kpi-val { font-size: 22px; font-weight: 800; color: #edf5ff; line-height: 1; }
     .kpi-label { font-size: 11px; color: #4a6075; margin-top: 2px; }
@@ -323,9 +326,9 @@
             <div class="kpi-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.3 20a1.8 1.8 0 0 0 3.4 0"/><path d="M18 8a6 6 0 0 0-12 0c0 5-2 6-2 7h16c0-1-2-2-2-7"/></svg></div>
             <div><div class="kpi-val" id="kpiTriggered" style="color:#FF5C6C">—</div><div class="kpi-label">Triggered Alerts</div></div>
           </div>
-          <div class="kpi-card teal" id="kpiSheetsCard">
-            <div class="kpi-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></svg></div>
-            <div><div class="kpi-val" id="kpiSheets">—</div><div class="kpi-label">Sheets</div></div>
+          <div class="kpi-card clickable amber" data-filter="UpdatedToday" title="Triggered stocks (dashboard-data) whose distance changed vs stock-config">
+            <div class="kpi-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></div>
+            <div><div class="kpi-val" id="kpiUpdatedToday" style="color:#F5A623">0</div><div class="kpi-label">updated today</div><div class="kpi-sub" id="kpiUpdatedTodaySub" style="color:#F5A623"></div></div>
           </div>
           <div class="kpi-card clickable purple" data-filter="Session" title="Show alerts added or updated this session">
             <div class="kpi-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg></div>
@@ -645,6 +648,23 @@ async function submitLogin() {
 function logout() { clearToken(); sessionToken = null; updateAuthUI(false, ""); }
 
 const PH = "__placeholder__";
+// "Updated today": stock is Triggered in dashboard-data.json, but its distance
+// recomputed from the current stock-config.json alert price is different.
+function updatedTodayInfo(r) {
+  const live = liveData[String(r.symbol||"").toUpperCase()];
+  if (!live || live.currentPrice == null) return null;
+  if (String(live.status||"").toLowerCase() !== "triggered") return null;
+  const cfgAlert = Number(r.alertPrice), feedAlert = Number(live.alertPrice);
+  const price = Number(live.currentPrice);
+  if (!cfgAlert || !price) return null;
+  const feedDist = live.distance != null ? Number(live.distance)
+    : (feedAlert ? ((price - feedAlert) / feedAlert) * 100 : null);
+  const cfgDist = ((price - cfgAlert) / cfgAlert) * 100;
+  if (feedDist == null) return null;
+  if (Math.abs(cfgDist - feedDist) < 0.005) return null;
+  return { prevDistance: feedDist, newDistance: cfgDist, prevAlert: feedAlert, newAlert: cfgAlert };
+}
+
 const allRowsRaw = () => [...configData, ...feedOnly];
 const realRows = () => allRowsRaw().filter(r => r.symbol !== PH);
 const sheetNames = () => [...new Set(allRowsRaw().map(r => r.sheet).filter(Boolean))];
@@ -700,15 +720,17 @@ function updateKPIs() {
   const rows = realRows();
   const triggered = rows.filter(r => rowInfo(r).status === "Triggered").length;
   const sheets = sheetNames().length;
+  const updatedToday = rows.filter(r => updatedTodayInfo(r)).length;
   $("kpiTotal").textContent = rows.length;
   $("kpiTriggered").textContent = triggered;
-  $("kpiSheets").textContent = sheets;
+  $("kpiUpdatedToday").textContent = updatedToday;
+  $("kpiUpdatedTodaySub").textContent = "triggered, alert revised";
   $("kpiNew").textContent = newSymbols.size;
   $("kpiUpdated").textContent = `${updatedSymbols.size} updated this session`;
   const labels = document.querySelectorAll("#kpiRow .kpi-label");
   labels[0].textContent = `across ${sheets} sheets`;
   labels[1].textContent = "need attention";
-  labels[2].textContent = "predefined sheets";
+  labels[2].textContent = "updated today";
   labels[3].textContent = "added this session";
   document.querySelectorAll("#kpiRow .kpi-card[data-filter]").forEach(c => c.classList.toggle("active", c.dataset.filter === kpiFilter && kpiFilter !== "all"));
 }
@@ -932,7 +954,9 @@ function rowHtml(r, info) {
   const badgeCls = { Triggered:"b-triggered", Near:"b-near", Watch:"b-watch", Far:"b-far" }[status];
   const distColor = { Triggered:"#FF5C6C", Near:"#F5A623", Watch:"#2DD4BF", Far:"#5a7080" }[status];
   const chgStr = change != null ? `<span class="change-pct ${change>=0?"up":"down"}">${change>=0?"+":""}${Number(change).toFixed(2)}%</span>` : "";
-  const distStr = distance != null ? `<span style="color:${distColor};font-weight:700">${distance>0?"+":""}${distance.toFixed(1)}%</span>` : "—";
+  const ut = updatedTodayInfo(r);
+  const distStr = (distance != null ? `<span style="color:${distColor};font-weight:700">${distance>0?"+":""}${distance.toFixed(1)}%</span>` : "—")
+    + (ut ? `<span class="dist-was" title="Distance in dashboard-data before your update">was ${ut.prevDistance>0?"+":""}${ut.prevDistance.toFixed(1)}%</span>` : "");
   const s = esc(r.symbol), sh = esc(r.sheet || "");
   const editing = inlineEdit === r.symbol;
   const alertCell = editing ? `<input class="inline-input" type="number" step="any" min="0" value="${esc(r.alertPrice)}">` : money(r.alertPrice);
@@ -990,11 +1014,12 @@ function render() {
     if (q && !r.symbol?.toLowerCase().includes(q) && !r.companyName?.toLowerCase().includes(q) && !(r.sheet||"").toLowerCase().includes(q)) return;
     const info = rowInfo(r);
     if (kpiFilter === "Triggered" && info.status !== "Triggered") return;
+    if (kpiFilter === "UpdatedToday" && !updatedTodayInfo(r)) return;
     if (kpiFilter === "Session" && !newSymbols.has(r.symbol) && !updatedSymbols.has(r.symbol)) return;
     items.push({ r, info });
   });
 
-  const note = kpiFilter === "Triggered" ? " · Triggered only" : kpiFilter === "Session" ? " · This session" : "";
+  const note = kpiFilter === "Triggered" ? " · Triggered only" : kpiFilter === "Session" ? " · This session" : kpiFilter === "UpdatedToday" ? " · Updated today" : "";
   $("tblShowing").innerHTML = `Showing: <b>${esc(activeSheet || "All")}</b> · <b>${items.length}</b> Stocks${note}`;
   if (!items.length) {
     tbody.innerHTML = '<tr class="loading-row"><td colspan="7" style="color:#4a6075">No alerts found.</td></tr>';
