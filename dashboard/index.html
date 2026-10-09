@@ -26,6 +26,44 @@
             border-radius: 50%;
             display: block;
         }
+
+        /* ── Topbar action buttons (Historical Alerts / Refresh Now / Configure) ── */
+        .topbar-right .btn-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(45, 212, 191, .22);
+            background: rgba(45, 212, 191, .07);
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1;
+            white-space: nowrap;
+            text-decoration: none;
+            transition: border-color .15s, background .15s, color .15s;
+        }
+        .topbar-right .btn-top svg {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+            color: var(--text);
+        }
+        .topbar-right .btn-top:hover {
+            border-color: var(--accent);
+            background: rgba(45, 212, 191, .14);
+            color: var(--accent);
+        }
+        .topbar-right .btn-top:hover svg { color: var(--accent); }
+        .topbar-right .btn-top:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+            border-color: rgba(255, 255, 255, .09);
+            background: rgba(255, 255, 255, .02);
+            color: var(--muted);
+        }
+        .topbar-right .btn-top:disabled svg { color: var(--muted); }
         .sym-avatar-letter {
             width: 100%;
             height: 100%;
@@ -136,18 +174,17 @@
                     <div class="topbar-right">
                         <span id="refreshMsg"></span>
 
-                        <button id="historyAlertsBtn" class="btn-ghost btn-history">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M18 8a6 6 0 0 0-12 0c0 5-2 6-2 7h16c0-1-2-2-2-7" />
-                                <path d="M10.3 20a1.8 1.8 0 0 0 3.4 0" />
+                        <button id="historyAlertsBtn" class="btn-ghost btn-history btn-top">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="9" />
+                                <polyline points="12 7 12 12 15 14" />
                             </svg>
                             Historical Alerts
                         </button>
 
-                        <button id="refreshBtn" class="btn-ghost btn-refresh">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
+                        <button id="refreshBtn" class="btn-ghost btn-refresh btn-top">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="23 4 23 10 17 10" />
                                 <polyline points="1 20 1 14 7 14" />
                                 <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
@@ -155,30 +192,8 @@
                             Refresh Now
                         </button>
 
-                        <div class="provider-toggle" id="providerToggle">
-                            <button type="button" class="provider-seg" data-value="KOTAK" id="providerSegKOTAK">
-                                <span class="provider-seg-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="9" />
-                                        <path d="M8.5 8c1.8 0 2.4 1.6 3.5 3.2C13 13 14.5 14 16 14" />
-                                        <path d="M15.5 8c-1.8 0-2.4 1.6-3.5 3.2C11 13 9.5 14 8 14" />
-                                    </svg>
-                                </span>
-                                <span>Kotak</span>
-                            </button>
-                            <button type="button" class="provider-seg" data-value="NSE" id="providerSegNSE">
-                                <span class="provider-seg-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M12 2.5l8.5 4.2v10.6L12 21.5l-8.5-4.2V6.7L12 2.5Z" />
-                                        <path d="M8.7 9.2l3.3 5.6 3.3-5.6" />
-                                    </svg>
-                                </span>
-                                <span>NSE</span>
-                            </button>
-                        </div>
-
-                        <a href="stock-config.html" class="btn-ghost" style="display:flex;align-items:center;gap:6px;text-decoration:none;">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <a href="stock-config.html" class="btn-ghost btn-top">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="3"/>
                                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
                             </svg>
@@ -282,59 +297,6 @@
             <h3 id="statusModalTitle">Saved!</h3>
             <p id="statusModalMsg">Your changes have been saved successfully.</p>
             <button type="button" class="btn-modal-ok" id="statusModalOk">OK</button>
-        </div>
-    </div>
-
-    <!-- ══ Market data provider modal ══ -->
-    <div class="modal-overlay" id="providerModal" hidden>
-        <div class="alert-modal provider-modal-box" id="providerModalBox">
-            <button type="button" class="provider-modal-close" id="providerCloseBtn" aria-label="Close">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-            </button>
-
-            <div class="provider-modal-head">
-                <span class="provider-modal-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="23 4 23 10 17 10" />
-                        <polyline points="1 20 1 14 7 14" />
-                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-                    </svg>
-                </span>
-                <h3>Change Price Source</h3>
-            </div>
-
-            <p>Select the source for stock prices and data.</p>
-
-            <div class="provider-options" id="providerOptions">
-                <button type="button" class="provider-option" data-value="KOTAK" id="providerOptKOTAK">
-                    <span class="provider-option-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="9" />
-                            <path d="M8.5 8c1.8 0 2.4 1.6 3.5 3.2C13 13 14.5 14 16 14" />
-                            <path d="M15.5 8c-1.8 0-2.4 1.6-3.5 3.2C11 13 9.5 14 8 14" />
-                        </svg>
-                    </span>
-                    <span class="provider-option-title">Kotak</span>
-                </button>
-                <button type="button" class="provider-option" data-value="NSE" id="providerOptNSE">
-                    <span class="provider-option-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 2.5l8.5 4.2v10.6L12 21.5l-8.5-4.2V6.7L12 2.5Z" />
-                            <path d="M8.7 9.2l3.3 5.6 3.3-5.6" />
-                        </svg>
-                    </span>
-                    <span class="provider-option-title">NSE</span>
-                </button>
-            </div>
-
-            <p class="provider-modal-msg" id="providerModalMsg"></p>
-
-            <div class="provider-modal-actions">
-                <button type="button" class="btn-ghost" id="providerCancelBtn">Cancel</button>
-                <button type="button" class="btn-primary" id="providerSaveBtn">Update</button>
-            </div>
         </div>
     </div>
 

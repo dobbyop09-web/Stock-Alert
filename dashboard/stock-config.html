@@ -48,6 +48,21 @@
     .last-updated { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #4a6075; }
     .last-updated svg { width: 13px; height: 13px; }
 
+    /* ── Price source toggle (Kotak / NSE) ── */
+    .provider-toggle { display: inline-flex; align-items: center; gap: 4px; padding: 4px; border-radius: 999px; background: #122233; border: 1px solid rgba(255,255,255,.07); }
+    .provider-seg { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px; border: 1px solid transparent; background: transparent; color: #5a7080; font-size: 12px; font-weight: 700; transition: background .15s, color .15s, border-color .15s, box-shadow .15s; }
+    .provider-seg svg { width: 15px; height: 15px; }
+    .provider-seg:hover { color: #dce8f4; }
+    .provider-seg.active { background: linear-gradient(135deg, rgba(45,212,191,.35), rgba(45,212,191,.12)); border-color: rgba(45,212,191,.45); color: #edf5ff; box-shadow: 0 0 14px rgba(45,212,191,.25); }
+    .provider-seg.active svg { color: #2DD4BF; }
+    body.logged-out .provider-toggle { display: none; }
+    .provider-options { display: flex; gap: 10px; margin-bottom: 6px; }
+    .provider-option { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,.1); background: #122233; color: #dce8f4; font-size: 14px; font-weight: 700; transition: border-color .15s, background .15s, box-shadow .15s, color .15s; }
+    .provider-option svg { width: 16px; height: 16px; }
+    .provider-option:hover { border-color: rgba(255,255,255,.25); }
+    .provider-option.selected { border-color: transparent; background: linear-gradient(135deg, #34E4A0, #16B37B); color: #06231A; box-shadow: 0 0 18px rgba(45,212,191,.3); }
+    .provider-modal-msg { min-height: 16px; font-size: 12px; margin-top: 10px; color: #FF5C6C; }
+
     .cfg-body { display: flex; flex: 1; min-height: 0; overflow: hidden; }
     .cfg-main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
 
@@ -236,6 +251,9 @@
     .manage-sheet-item.danger:hover { background: rgba(255,92,108,.1); }
     input[type=number] { -moz-appearance: textfield; appearance: textfield; }
     input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    tbody td.alert-cell { cursor: cell; }
+    tbody td.alert-cell:not(.editing):hover { background: rgba(45,212,191,.06); box-shadow: inset 0 0 0 1px rgba(45,212,191,.3); }
+    tbody td.alert-cell.editing { background: rgba(45,212,191,.06); }
     .inline-input { width: 96px; background: rgba(255,255,255,.05); border: 1px solid #2DD4BF; border-radius: 6px; padding: 5px 8px; color: #edf5ff; font-size: 12px; text-align: right; outline: none; font-variant-numeric: tabular-nums; box-shadow: 0 0 0 3px rgba(45,212,191,.12); }
     .btn-icon.save { color: #2DD4BF; border-color: rgba(45,212,191,.4); background: rgba(45,212,191,.1); }
     .btn-icon.save:hover { background: rgba(45,212,191,.2); color: #2DD4BF; }
@@ -255,6 +273,29 @@
 
     @media (max-width: 900px) { .kpi-row { grid-template-columns: repeat(2, 1fr); } .cfg-body { flex-direction: column; overflow-y: auto; } .sector-panel { width: auto; margin: 12px 12px 0; max-height: 240px; } .cfg-main { overflow: visible; } .cfg-table-wrap { min-height: 420px; } }
     @media (max-width: 600px) { .kpi-row { gap: 8px; padding: 12px 12px 8px; } .cfg-table-wrap { margin: 0 12px 12px; } }
+
+    /* ── Topbar controls: one height, one radius, one type size ── */
+    .topbar-right { gap: 10px; }
+    .topbar-right .last-updated { font-size: 12px; color: #5a7080; margin-right: 4px; white-space: nowrap; }
+    .topbar-right .last-updated svg { width: 14px; height: 14px; }
+
+    .topbar-right .provider-toggle { height: 34px; padding: 3px; gap: 2px; border-radius: 10px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); }
+    .topbar-right .provider-seg { height: 26px; padding: 0 14px; border-radius: 7px; font-size: 12px; font-weight: 600; color: #7f92a6; border: 1px solid transparent; box-shadow: none; }
+    .topbar-right .provider-seg svg { display: none; }
+    .topbar-right .provider-seg:hover { color: #dce8f4; }
+    .topbar-right .provider-seg.active { background: rgba(45,212,191,.14); border-color: rgba(45,212,191,.3); color: #2DD4BF; box-shadow: none; }
+
+    .topbar-right .whoami-chip,
+    .topbar-right .sign-in-btn,
+    .topbar-right .sign-out-btn { height: 34px; padding: 0 14px; border-radius: 10px; font-size: 12px; font-weight: 600; line-height: 1; white-space: nowrap; }
+    .topbar-right .whoami-chip { background: rgba(45,212,191,.07); border: 1px solid rgba(45,212,191,.22); color: #2DD4BF; gap: 7px; }
+    .topbar-right .whoami-chip svg,
+    .topbar-right .sign-in-btn svg,
+    .topbar-right .sign-out-btn svg { width: 14px; height: 14px; }
+    .topbar-right .sign-in-btn,
+    .topbar-right .sign-out-btn { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); color: #dce8f4; }
+    .topbar-right .sign-in-btn:hover,
+    .topbar-right .sign-out-btn:hover { background: rgba(45,212,191,.1); border-color: rgba(45,212,191,.35); color: #2DD4BF; }
   </style>
 </head>
 <body class="logged-out">
@@ -298,6 +339,10 @@
         <div class="last-updated" id="lastUpdatedEl" style="display:none">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           <span id="lastUpdatedText"></span>
+        </div>
+        <div class="provider-toggle" id="providerToggle">
+          <button type="button" class="provider-seg" data-value="KOTAK"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 8c1.8 0 2.4 1.6 3.5 3.2C13 13 14.5 14 16 14"/><path d="M15.5 8c-1.8 0-2.4 1.6-3.5 3.2C11 13 9.5 14 8 14"/></svg><span>Kotak</span></button>
+          <button type="button" class="provider-seg" data-value="NSE"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l8.5 4.2v10.6L12 21.5l-8.5-4.2V6.7L12 2.5Z"/><path d="M8.7 9.2l3.3 5.6 3.3-5.6"/></svg><span>NSE</span></button>
         </div>
         <div class="whoami-chip" id="whoamiChip">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -401,6 +446,21 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Price Source Modal -->
+<div class="modal-overlay" id="providerModal">
+  <div class="modal-box">
+    <button class="modal-close" id="providerCloseBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <h2>Change Price Source</h2>
+    <p class="modal-hint">Select the source for stock prices and data.</p>
+    <div class="provider-options">
+      <button type="button" class="provider-option" data-value="KOTAK"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 8c1.8 0 2.4 1.6 3.5 3.2C13 13 14.5 14 16 14"/><path d="M15.5 8c-1.8 0-2.4 1.6-3.5 3.2C11 13 9.5 14 8 14"/></svg><span>Kotak</span></button>
+      <button type="button" class="provider-option" data-value="NSE"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l8.5 4.2v10.6L12 21.5l-8.5-4.2V6.7L12 2.5Z"/><path d="M8.7 9.2l3.3 5.6 3.3-5.6"/></svg><span>NSE</span></button>
+    </div>
+    <div class="provider-modal-msg" id="providerModalMsg"></div>
+    <div class="modal-actions"><button class="btn-cancel" id="providerCancelBtn">Cancel</button><button class="btn-confirm" id="providerSaveBtn">Update</button></div>
   </div>
 </div>
 
@@ -1005,7 +1065,7 @@ function rowHtml(r, info) {
     <tr data-sym="${s}" data-sheet="${sh}">
       <td>${symbolCell(r, info)}</td>
       <td class="num">${price!=null?`<div class="price-cell"><span class="price">${money(price)}</span>${chgStr}</div>`:"—"}</td>
-      <td class="num">${alertCell}</td>
+      <td class="num alert-cell${editing ? " editing" : ""}" ${editing ? "" : 'title="Click to edit"'}>${alertCell}</td>
       <td class="num">${distStr}</td>
       <td><span class="badge ${badgeCls}">${STATUS_ICONS[status]}${status}</span></td>
       <td>${sectorBadge(r.sheet)}</td>
@@ -1103,6 +1163,43 @@ $("cfgTbody").addEventListener("keydown", e => {
   if (!e.target.classList.contains("inline-input")) return;
   if (e.key === "Enter") saveInline(e.target.closest("tr"));
   else if (e.key === "Escape") { inlineEdit = null; render(); }
+  else if (e.key === "Tab") {
+    // Excel-style: Tab / Shift+Tab saves and jumps to the next / previous row's alert cell
+    e.preventDefault();
+    const tr = e.target.closest("tr");
+    const other = e.shiftKey ? tr.previousElementSibling : tr.nextElementSibling;
+    const nextSym = other && other.dataset.sym;
+    saveInline(tr);
+    if (nextSym && inlineEdit === null) { inlineEdit = nextSym; render(); if (!$("cfgTbody").querySelector(".inline-input")) inlineEdit = null; }
+  }
+});
+
+// ── Excel-style editing: click an Alert cell to edit, click away to save ──
+$("cfgTbody").addEventListener("mousedown", e => {
+  // keep focus on the input while using the save / cancel buttons so blur doesn't pre-empt the click
+  if (e.target.closest('[data-act="save-inline"], [data-act="cancel-inline"]')) { e.preventDefault(); return; }
+  const td = e.target.closest("td.alert-cell");
+  if (!td || e.target.closest(".inline-input")) return;
+  const tr = td.closest("tr[data-sym]");
+  if (!tr) return;
+  e.preventDefault();
+  if (!sessionToken) { openLoginModal(); return; }
+  const sym = tr.dataset.sym;
+  if (inlineEdit === sym) return;
+  if (inlineEdit) {                                  // moving from another cell: commit it first
+    const oldTr = $("cfgTbody").querySelector(`tr[data-sym="${CSS.escape(inlineEdit)}"]`);
+    if (oldTr) saveInline(oldTr);
+    if (inlineEdit) return;                          // old value was invalid, stay on it
+  }
+  inlineEdit = sym; render();
+});
+$("cfgTbody").addEventListener("focusout", e => {
+  if (!e.target.classList.contains("inline-input")) return;
+  const tr = e.target.closest("tr");
+  if (!tr || inlineEdit !== tr.dataset.sym) return;  // already saved / cancelled
+  const v = parseFloat(e.target.value);
+  if (isNaN(v) || v <= 0) { inlineEdit = null; render(); showToast("Invalid alert price, change discarded", true); return; }
+  saveInline(tr);
 });
 document.addEventListener("click", e => {
   if (!e.target.closest(".dot-menu")) document.querySelectorAll(".dot-menu-popup.open").forEach(p => p.classList.remove("open"));
@@ -1300,6 +1397,83 @@ $("moveModalSubmit").addEventListener("click", submitMoveModal);
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") ["loginModal","alertModal","sheetModal","deleteSheetModal","moveModal"].forEach(id => $(id).classList.remove("open"));
 });
+
+// ── Price source toggle (Kotak / NSE) — moved here from index.html ──
+const TOGGLE_URL = `${API_BASE}/toggle`;
+let currentProvider = null;
+let pendingProvider = null;
+
+function paintProviderToggle() {
+  document.querySelectorAll(".provider-seg").forEach(b => b.classList.toggle("active", b.dataset.value === currentProvider));
+}
+function paintProviderModal() {
+  document.querySelectorAll(".provider-option").forEach(b => b.classList.toggle("selected", b.dataset.value === pendingProvider));
+}
+async function fetchProvider() {
+  try {
+    const res = await fetch(`${TOGGLE_URL}?t=${Date.now()}`);
+    if (!res.ok) throw new Error(`Status ${res.status}`);
+    const data = await res.json();
+    currentProvider = data.marketDataProvider || null;
+  } catch (e) {
+    console.error("Failed to load market data provider", e);
+    currentProvider = null;
+  }
+  paintProviderToggle();
+}
+function openProviderModal(value) {
+  pendingProvider = value;
+  $("providerModalMsg").textContent = "";
+  $("providerSaveBtn").disabled = false;
+  $("providerSaveBtn").textContent = "Update";
+  paintProviderModal();
+  $("providerModal").classList.add("open");
+}
+function closeProviderModal() {
+  $("providerModal").classList.remove("open");
+  pendingProvider = null;
+}
+async function confirmProviderSwitch() {
+  if (!pendingProvider) return;
+  const value = pendingProvider;
+  const btn = $("providerSaveBtn");
+  btn.disabled = true;
+  btn.textContent = "Updating...";
+  $("providerModalMsg").textContent = "";
+  try {
+    const res = await fetch(TOGGLE_URL, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ marketDataProvider: value })
+    });
+    if (!res.ok) {
+      let msg = "Something went wrong.";
+      try { msg = (await res.json()).error || msg; } catch { /* no body */ }
+      throw new Error(msg);
+    }
+    currentProvider = value;
+    paintProviderToggle();
+    closeProviderModal();
+  } catch (e) {
+    console.error("Failed to save market data provider", e);
+    $("providerModalMsg").textContent = e.message || "Failed to update. Try again.";
+    btn.disabled = false;
+    btn.textContent = "Update";
+  }
+}
+document.querySelectorAll(".provider-seg").forEach(b => b.addEventListener("click", () => {
+  if (b.dataset.value !== currentProvider) openProviderModal(b.dataset.value);
+}));
+document.querySelectorAll(".provider-option").forEach(b => b.addEventListener("click", () => {
+  pendingProvider = b.dataset.value;
+  paintProviderModal();
+}));
+$("providerCloseBtn").addEventListener("click", closeProviderModal);
+$("providerCancelBtn").addEventListener("click", closeProviderModal);
+$("providerSaveBtn").addEventListener("click", confirmProviderSwitch);
+$("providerModal").addEventListener("click", e => { if (e.target.id === "providerModal") closeProviderModal(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeProviderModal(); });
+fetchProvider();
 
 (async () => {
   sessionToken = readToken();
