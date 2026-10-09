@@ -296,6 +296,123 @@
     .topbar-right .sign-out-btn { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); color: #dce8f4; }
     .topbar-right .sign-in-btn:hover,
     .topbar-right .sign-out-btn:hover { background: rgba(45,212,191,.1); border-color: rgba(45,212,191,.35); color: #2DD4BF; }
+
+    /* ── Topbar Logo Manager button ── */
+    .logo-mgr-btn { display: none; align-items: center; gap: 7px; height: 34px; padding: 0 14px; border-radius: 10px; background: rgba(45,212,191,.07); border: 1px solid rgba(45,212,191,.22); color: #2DD4BF; font-size: 12px; font-weight: 600; line-height: 1; white-space: nowrap; transition: background .18s, border-color .18s; }
+    .logo-mgr-btn svg { width: 14px; height: 14px; }
+    .logo-mgr-btn:hover { background: rgba(45,212,191,.14); border-color: rgba(45,212,191,.45); }
+
+    /* ── Symbol Logo Manager modal ── */
+    .lm-box { width: min(1100px, 94vw); max-width: none; max-height: 90vh; padding: 0; display: flex; overflow: hidden; background: #0b1825; }
+    .lm-main { flex: 1; min-width: 0; padding: 24px; display: flex; flex-direction: column; overflow: hidden; }
+    .lm-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; padding-right: 40px; }
+    .lm-head-ico { width: 48px; height: 48px; border-radius: 12px; background: rgba(45,212,191,.12); border: 1px solid rgba(45,212,191,.22); color: #2DD4BF; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .lm-head-ico svg { width: 24px; height: 24px; }
+    .lm-head h2 { font-size: 17px; margin-bottom: 3px; }
+    .lm-head p { font-size: 12px; color: #6b8197; }
+    .lm-toolbar { display: flex; gap: 12px; margin-bottom: 16px; }
+    .lm-search { flex: 1; display: flex; align-items: center; gap: 10px; padding: 0 14px; height: 40px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; transition: border-color .18s; }
+    .lm-search:focus-within { border-color: #2DD4BF; }
+    .lm-search svg { width: 15px; height: 15px; color: #5a7080; flex-shrink: 0; }
+    .lm-search input { flex: 1; background: none; border: none; outline: none; color: #dce8f4; font-size: 13px; min-width: 0; }
+    .lm-search input::placeholder { color: #4a6075; }
+    .lm-select { height: 40px; min-width: 150px; padding: 0 12px; border-radius: 10px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); color: #dce8f4; font-size: 13px; outline: none; }
+    .lm-select option { background: #0f1c28; }
+    .lm-add { height: 40px; padding: 0 18px; border-radius: 10px; background: #2DD4BF; color: #0b1520; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; transition: opacity .18s; }
+    .lm-add:hover { opacity: .88; }
+    .lm-add svg { width: 15px; height: 15px; }
+    .lm-table-wrap { border: 1px solid rgba(255,255,255,.08); border-radius: 12px; overflow: auto; background: rgba(255,255,255,.015); flex: 1; min-height: 0; }
+    .lm-table-wrap::-webkit-scrollbar { width: 5px; height: 5px; }
+    .lm-table-wrap::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 4px; }
+    .lm-table { width: 100%; border-collapse: collapse; }
+    .lm-table thead th { position: sticky; top: 0; background: #0a1622; padding: 13px 16px; font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #6b8197; text-align: left; border-bottom: 1px solid rgba(255,255,255,.08); z-index: 1; }
+    .lm-table tbody tr { border-bottom: 1px solid rgba(255,255,255,.05); transition: background .12s; }
+    .lm-table tbody tr:last-child { border-bottom: none; }
+    .lm-table tbody tr:hover { background: rgba(255,255,255,.03); }
+    .lm-table tbody tr.selected { background: rgba(45,212,191,.07); box-shadow: inset 0 0 0 1px rgba(45,212,191,.45); }
+    .lm-table td { padding: 10px 16px; font-size: 13px; vertical-align: middle; }
+    .lm-sym { font-weight: 700; color: #edf5ff; }
+    .lm-url { color: #9fb5c8; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; }
+    .lm-url.none { color: #4a6075; }
+    .lm-logo { width: 36px; height: 36px; position: relative; display: block; }
+    .lm-logo img { width: 36px; height: 36px; border-radius: 50%; background: #fff; padding: 2px; object-fit: contain; display: block; }
+    .lm-logo .sym-avatar { width: 36px; height: 36px; font-size: 12px; }
+    .lm-actions { display: flex; align-items: center; gap: 10px; }
+    .lm-edit-btn { height: 34px; padding: 0 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.03); color: #dce8f4; font-size: 12.5px; font-weight: 500; display: inline-flex; align-items: center; gap: 7px; transition: border-color .18s, color .18s, background .18s; }
+    .lm-edit-btn svg { width: 13px; height: 13px; }
+    .lm-edit-btn:hover { border-color: rgba(45,212,191,.5); color: #2DD4BF; background: rgba(45,212,191,.06); }
+    .lm-kebab { width: 28px; height: 34px; border-radius: 6px; color: #7f92a6; display: flex; align-items: center; justify-content: center; transition: background .15s, color .15s; }
+    .lm-kebab:hover { background: rgba(255,255,255,.08); color: #fff; }
+    .lm-kebab svg { width: 16px; height: 16px; }
+    .lm-empty { text-align: center; padding: 40px 16px !important; color: #4a6075; }
+    .lm-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; flex-shrink: 0; }
+    .lm-count { font-size: 12px; color: #8fa3bc; }
+    .lm-pager { display: flex; align-items: center; gap: 8px; }
+    .lm-pg { min-width: 34px; height: 34px; padding: 0 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.03); color: #dce8f4; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; transition: border-color .18s, color .18s; }
+    .lm-pg:hover:not(:disabled):not(.active) { border-color: rgba(45,212,191,.5); color: #2DD4BF; }
+    .lm-pg.active { background: rgba(45,212,191,.16); border-color: #2DD4BF; color: #2DD4BF; }
+    .lm-pg:disabled { opacity: .35; cursor: default; }
+    .lm-pg svg { width: 14px; height: 14px; }
+    .lm-dots { color: #6b8197; padding: 0 2px; }
+
+    .lm-side { width: 340px; flex-shrink: 0; margin: 20px 20px 20px 0; padding: 20px; border-radius: 14px; background: #0f1c28; border: 1px solid rgba(255,255,255,.08); display: none; flex-direction: column; overflow-y: auto; position: relative; }
+    .lm-box.editing .lm-side { display: flex; }
+    .lm-box.editing > .modal-close { display: none; }
+    .lm-box > .modal-close { z-index: 2; }
+    .lm-box.editing .lm-main { padding-right: 20px; }
+    .lm-side-close { position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; border-radius: 6px; color: #7f92a6; display: flex; align-items: center; justify-content: center; }
+    .lm-side-close:hover { background: rgba(255,255,255,.1); color: #fff; }
+    .lm-side h3 { font-size: 16px; font-weight: 700; color: #edf5ff; margin-bottom: 14px; padding-right: 34px; }
+    .lm-side-id { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; font-weight: 700; color: #edf5ff; font-size: 13px; min-height: 36px; }
+    .lm-side-id .lm-logo { width: 36px; height: 36px; }
+    .lm-side textarea.form-control { resize: none; line-height: 1.5; min-height: 64px; font-size: 13px; padding: 10px 12px; }
+    .lm-side input.form-control { font-size: 13px; padding: 10px 12px; }
+    .lm-side input.form-control[readonly] { color: #8fa3bc; cursor: default; }
+    .lm-side .form-group label { font-size: 11.5px; text-transform: none; letter-spacing: .02em; color: #dce8f4; font-weight: 600; }
+    .lm-preview { height: 112px; border-radius: 10px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.02); display: flex; align-items: center; justify-content: center; color: #4a6075; font-size: 12px; }
+    .lm-preview img { width: 78px; height: 78px; border-radius: 50%; background: #fff; padding: 4px; object-fit: contain; display: block; }
+    .lm-open { display: inline-flex; align-items: center; gap: 8px; color: #2DD4BF; font-size: 13px; margin-top: 12px; align-self: flex-start; }
+    .lm-open svg { width: 15px; height: 15px; }
+    .lm-open.disabled { opacity: .35; pointer-events: none; }
+    .lm-side-actions { margin-top: auto; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.08); display: flex; gap: 12px; }
+    .lm-side-actions button { flex: 1; height: 40px; border-radius: 8px; font-size: 13px; font-weight: 600; }
+    .lm-side-actions .btn-confirm:disabled { opacity: .55; cursor: default; }
+    .lm-side-id:empty { display: none; }
+    .lm-sym-hint { font-size: 12px; margin-top: 7px; min-height: 0; display: none; align-items: center; gap: 6px; }
+    .lm-sym-hint.show { display: flex; }
+    .lm-sym-hint.ok { color: #4ADE80; }
+    .lm-sym-hint.warn { color: #F5A623; }
+    .lm-sym-hint.dup { color: #FF5C6C; }
+    .lm-sym-hint button { color: #2DD4BF; font-weight: 600; font-size: 12px; text-decoration: underline; }
+    .lm-suggest { display: none; margin-top: 8px; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; background: rgba(255,255,255,.03); max-height: 190px; overflow-y: auto; }
+    .lm-suggest.show { display: block; }
+    .lm-suggest::-webkit-scrollbar { width: 4px; }
+    .lm-suggest::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 4px; }
+    .lm-sg { width: 100%; display: flex; align-items: center; gap: 10px; padding: 7px 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,.05); transition: background .12s; }
+    .lm-sg:last-child { border-bottom: none; }
+    .lm-sg:hover { background: rgba(255,255,255,.06); }
+    .lm-sg .lm-logo, .lm-sg .lm-logo img, .lm-sg .lm-logo .sym-avatar { width: 24px; height: 24px; font-size: 9px; }
+    .lm-sg-name { flex: 1; min-width: 0; font-size: 12.5px; font-weight: 700; color: #edf5ff; }
+    .lm-sg-name small { display: block; font-weight: 400; font-size: 11px; color: #6b8197; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .lm-sg-tag { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 10px; flex-shrink: 0; }
+    .lm-sg-tag.has { background: rgba(255,92,108,.12); color: #FF5C6C; }
+    .lm-sg-tag.none { background: rgba(245,166,35,.12); color: #F5A623; }
+    .lm-menu { position: fixed; z-index: 1200; min-width: 170px; background: #122233; border: 1px solid rgba(255,255,255,.12); border-radius: 10px; padding: 5px; box-shadow: 0 12px 32px rgba(0,0,0,.5); display: none; }
+    .lm-menu.open { display: block; }
+    .lm-menu button { width: 100%; display: flex; align-items: center; gap: 9px; padding: 9px 11px; border-radius: 7px; color: #dce8f4; font-size: 12.5px; text-align: left; }
+    .lm-menu button svg { width: 14px; height: 14px; color: #7f92a6; }
+    .lm-menu button:hover { background: rgba(255,255,255,.07); }
+    .lm-menu button.danger, .lm-menu button.danger svg { color: #FF5C6C; }
+    .lm-menu button.danger:hover { background: rgba(255,92,108,.12); }
+    @media (max-width: 900px) {
+      .lm-box { flex-direction: column; overflow-y: auto; }
+      .lm-main { overflow: visible; padding: 18px; }
+      .lm-side { width: auto; margin: 0 18px 18px; }
+      .lm-box.editing .lm-main { padding-right: 18px; }
+      .lm-toolbar { flex-wrap: wrap; }
+      .lm-search { flex-basis: 100%; }
+      .lm-foot { flex-direction: column; align-items: flex-start; }
+    }
   </style>
 </head>
 <body class="logged-out">
@@ -332,22 +449,17 @@
         </div>
         <div class="topbar-title">
           <h1>Stock Alert Configuration</h1>
-          <p>Manage your stock alerts, add new alerts, or create new sheets directly from here.</p>
         </div>
       </div>
       <div class="topbar-right">
-        <div class="last-updated" id="lastUpdatedEl" style="display:none">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span id="lastUpdatedText"></span>
-        </div>
         <div class="provider-toggle" id="providerToggle">
           <button type="button" class="provider-seg" data-value="KOTAK"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 8c1.8 0 2.4 1.6 3.5 3.2C13 13 14.5 14 16 14"/><path d="M15.5 8c-1.8 0-2.4 1.6-3.5 3.2C11 13 9.5 14 8 14"/></svg><span>Kotak</span></button>
           <button type="button" class="provider-seg" data-value="NSE"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l8.5 4.2v10.6L12 21.5l-8.5-4.2V6.7L12 2.5Z"/><path d="M8.7 9.2l3.3 5.6 3.3-5.6"/></svg><span>NSE</span></button>
         </div>
-        <div class="whoami-chip" id="whoamiChip">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span id="whoamiText"></span>
-        </div>
+        <button type="button" class="logo-mgr-btn" id="logoMgrBtn" title="Manage symbol logos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.8"/><path d="M21 15l-4.5-4.5L6 21"/></svg>
+          Logo Manager
+        </button>
         <button class="sign-in-btn" id="signInBtn">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
           Sign in
@@ -395,7 +507,7 @@
           </div>
           <h2>Sign in to Continue</h2>
           <p>You need to sign in to access configuration and make changes to your alerts.</p>
-          <button class="btn-primary" id="authGateSignIn" style="margin-top:4px">Continue with Google</button>
+          <button class="btn-primary" id="authGateSignIn" style="margin-top:4px">Password dalo</button>
         </div>
 
         <div class="cfg-table-wrap" id="cfgTableWrap">
@@ -574,6 +686,47 @@
   </div>
 </div>
 
+<!-- Symbol Logo Manager Modal -->
+<div class="modal-overlay" id="logoModal">
+  <div class="modal-box lm-box" id="lmBox">
+    <button class="modal-close" id="lmClose" title="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <div class="lm-main">
+      <div class="lm-head">
+        <div class="lm-head-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.8"/><path d="M21 15l-4.5-4.5L6 21"/></svg></div>
+        <div><h2>Symbol Logo Manager</h2><p>Manage logo image URLs displayed beside stock symbols.</p></div>
+      </div>
+      <div class="lm-toolbar">
+        <label class="lm-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="lmSearch" placeholder="Search symbol or company..." autocomplete="off"></label>
+        <select class="lm-select" id="lmFilter"><option value="all">All logos</option><option value="has">With logo</option><option value="none">No logo</option></select>
+        <button class="lm-add" id="lmAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Logo</button>
+      </div>
+      <div class="lm-table-wrap">
+        <table class="lm-table">
+          <thead><tr><th>Symbol</th><th>Logo Preview</th><th>Image URL</th><th>Actions</th></tr></thead>
+          <tbody id="lmBody"></tbody>
+        </table>
+      </div>
+      <div class="lm-foot"><div class="lm-count" id="lmCount"></div><div class="lm-pager" id="lmPager"></div></div>
+    </div>
+    <aside class="lm-side" id="lmSide">
+      <button class="lm-side-close" id="lmSideClose" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <h3 id="lmSideTitle">Edit Logo Link</h3>
+      <div class="lm-side-id" id="lmSideId"></div>
+      <div class="form-group"><label>Symbol</label><input type="text" id="lmSymInput" class="form-control" placeholder="Type to search existing symbols…" autocomplete="off"><div class="lm-sym-hint" id="lmSymHint"></div><div class="lm-suggest" id="lmSuggest"></div></div>
+      <div class="form-group"><label>Logo image URL</label><textarea id="lmUrlInput" class="form-control" rows="2" placeholder="https://..." spellcheck="false"></textarea></div>
+      <div class="form-group" style="margin-bottom:0"><label>Logo Preview</label><div class="lm-preview" id="lmPreview">No preview</div></div>
+      <a class="lm-open disabled" id="lmOpenLink" href="#" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Open link</a>
+      <div class="error-text" id="lmError" style="margin-top:10px"></div>
+      <div class="lm-side-actions"><button class="btn-cancel" id="lmCancel">Cancel</button><button class="btn-confirm" id="lmSave">Save changes</button></div>
+    </aside>
+  </div>
+</div>
+<div class="lm-menu" id="lmMenu">
+  <button type="button" data-act="open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Open link</button>
+  <button type="button" data-act="copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy URL</button>
+  <button type="button" data-act="remove" class="danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Remove logo</button>
+</div>
+
 <div class="toast" id="toast">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
   <span id="toastMsg"></span>
@@ -632,13 +785,20 @@ const SECTOR_COLORS = {
 const SECTOR_COLOR_DEFAULT = "#9CA3AF";
 const hexToRgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`; };
 
+const LOGO_URL = `${API_BASE}/logo.json`;
 async function loadCompanyLogos() {
-  try {
-    const res = await fetch("logo.json", { cache: "no-cache" });
-    if (!res.ok) throw new Error("logo.json request failed");
-    const data = await res.json();
-    companyLogos = Object.fromEntries(Object.entries(data || {}).map(([s, u]) => [String(s).trim().toUpperCase(), String(u || "").trim()]));
-  } catch (e) { companyLogos = {}; console.warn("Unable to load logo.json", e); }
+  let data = null;
+  // Worker copy is the source of truth (edited via Logo Manager); fall back to a static logo.json
+  for (const src of [LOGO_URL, "logo.json"]) {
+    try {
+      const res = await fetch(src + (src === LOGO_URL ? "?t=" + Date.now() : ""), { cache: "no-cache" });
+      if (!res.ok) continue;
+      data = await res.json();
+      break;
+    } catch (e) { /* try next */ }
+  }
+  if (!data || typeof data !== "object") console.warn("Unable to load logo.json");
+  companyLogos = Object.fromEntries(Object.entries(data || {}).map(([s, u]) => [String(s).trim().toUpperCase(), String(u || "").trim()]));
 }
 const AVATAR_PALETTE = ["#2563EB","#DC2626","#059669","#D97706","#7C3AED","#DB2777","#0891B2","#65A30D","#4F46E5","#EA580C","#0D9488","#9333EA"];
 function avatarColor(s) { s = String(s||"?"); let h = 0; for (let i=0;i<s.length;i++) h = (h*31+s.charCodeAt(i))>>>0; return AVATAR_PALETTE[h%AVATAR_PALETTE.length]; }
@@ -683,18 +843,17 @@ const readToken = () => { try { return sessionStorage.getItem(TOKEN_KEY); } catc
 const clearToken = () => { try { sessionStorage.removeItem(TOKEN_KEY); } catch(e){} };
 
 const $ = id => document.getElementById(id);
-const signInBtn = $("signInBtn"), signOutBtn = $("signOutBtn"), whoamiChip = $("whoamiChip"), whoamiText = $("whoamiText");
+const signInBtn = $("signInBtn"), signOutBtn = $("signOutBtn"), logoMgrBtn = $("logoMgrBtn");
 const authGate = $("authGate"), cfgTableWrap = $("cfgTableWrap");
 
 function updateAuthUI(loggedIn, username) {
   signInBtn.style.display = loggedIn ? "none" : "inline-flex";
   signOutBtn.style.display = loggedIn ? "inline-flex" : "none";
-  whoamiChip.style.display = loggedIn ? "flex" : "none";
-  if (loggedIn && username) whoamiText.textContent = username;
+  logoMgrBtn.style.display = loggedIn ? "inline-flex" : "none";
+  if (!loggedIn) closeLogoMgr();
   authGate.classList.toggle("visible", !loggedIn);
   document.body.classList.toggle("logged-out", !loggedIn);
   cfgTableWrap.style.display = loggedIn ? "flex" : "none";
-  if (!loggedIn) { const lu = $("lastUpdatedEl"); if (lu) lu.style.display = "none"; }
 }
 
 function openLoginModal() {
@@ -789,8 +948,6 @@ async function loadConfig() {
     feedOnly = feedRows
       .filter(r => r.symbol && r.sheet && !inConfig.has(r.symbol.toUpperCase()))
       .map(r => ({ symbol: r.symbol, companyName: r.companyName || r.symbol, alertPrice: r.alertPrice, sheet: canonical(r.sheet), screenerUrl: r.screenerUrl || "" }));
-    $("lastUpdatedEl").style.display = "flex";
-    $("lastUpdatedText").textContent = "Last Updated: " + new Date().toLocaleTimeString();
     refreshAll();
   } catch(e) {
     console.error("Failed to load config:", e);
@@ -1474,6 +1631,227 @@ $("providerSaveBtn").addEventListener("click", confirmProviderSwitch);
 $("providerModal").addEventListener("click", e => { if (e.target.id === "providerModal") closeProviderModal(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeProviderModal(); });
 fetchProvider();
+
+// ── Symbol Logo Manager ──
+const LM_PAGE_SIZE = 8;
+let lmPage = 1, lmEditing = null /* symbol string | "" for add | null closed */, lmMenuSym = null, lmPreviewTimer = null;
+
+const lmLogoHtml = sym => {
+  const key = String(sym).toUpperCase(), url = companyLogos[key];
+  const letter = esc((key.match(/[A-Za-z0-9]/) || ["?"])[0]);
+  const fb = `<div class="sym-avatar" style="background:${avatarColor(key)}">${letter}</div>`;
+  if (!url) return `<span class="lm-logo">${fb}</span>`;
+  return `<span class="lm-logo"><img src="${esc(url)}" alt="${esc(key)}" loading="lazy"><div class="sym-avatar" style="display:none;background:${avatarColor(key)}">${letter}</div></span>`;
+};
+function lmBindFallbacks(root) {
+  root.querySelectorAll(".lm-logo img").forEach(img => {
+    const show = () => { img.style.display = "none"; const f = img.nextElementSibling; if (f) f.style.display = "flex"; };
+    img.addEventListener("error", show, { once: true });
+    if (img.complete && img.naturalWidth === 0) show();
+  });
+}
+function lmAllSymbols() {
+  const names = {};
+  realRows().forEach(r => { const k = String(r.symbol || "").trim().toUpperCase(); if (k) names[k] = r.companyName || ""; });
+  Object.keys(companyLogos).forEach(k => { if (!(k in names)) names[k] = ""; });
+  return Object.keys(names).sort().map(sym => ({ sym, company: names[sym], url: companyLogos[sym] || "" }));
+}
+function lmFiltered() {
+  const q = $("lmSearch").value.trim().toLowerCase(), f = $("lmFilter").value;
+  return lmAllSymbols().filter(r =>
+    (!q || r.sym.toLowerCase().includes(q) || r.company.toLowerCase().includes(q)) &&
+    (f === "all" || (f === "has" ? !!r.url : !r.url)));
+}
+function lmRender() {
+  const rows = lmFiltered(), total = rows.length, pages = Math.max(1, Math.ceil(total / LM_PAGE_SIZE));
+  lmPage = Math.min(Math.max(1, lmPage), pages);
+  const start = (lmPage - 1) * LM_PAGE_SIZE, slice = rows.slice(start, start + LM_PAGE_SIZE);
+  const editIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+  const dots = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>';
+  $("lmBody").innerHTML = slice.length ? slice.map(r => `
+    <tr class="${lmEditing === r.sym ? "selected" : ""}">
+      <td><span class="lm-sym">${esc(r.sym)}</span></td>
+      <td>${lmLogoHtml(r.sym)}</td>
+      <td><div class="lm-url ${r.url ? "" : "none"}" title="${esc(r.url)}">${r.url ? esc(r.url.replace(/^https?:\/\//, "")) : "No logo linked"}</div></td>
+      <td><div class="lm-actions">
+        <button class="lm-edit-btn" data-edit="${esc(r.sym)}">${editIco}Edit</button>
+        <button class="lm-kebab" data-menu="${esc(r.sym)}" title="More">${dots}</button>
+      </div></td>
+    </tr>`).join("") : '<tr><td colspan="4" class="lm-empty">No symbols match.</td></tr>';
+  lmBindFallbacks($("lmBody"));
+  $("lmCount").textContent = total ? `Showing ${start + 1}–${start + slice.length} of ${total} symbols` : "Showing 0 symbols";
+  // pager
+  const chev = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="${d ? "9 18 15 12 9 6" : "15 18 9 12 15 6"}"/></svg>`;
+  const nums = [];
+  if (pages <= 6) for (let i = 1; i <= pages; i++) nums.push(i);
+  else {
+    nums.push(1);
+    const a = Math.max(2, Math.min(lmPage - 1, pages - 3)), b = Math.min(pages - 1, a + 2);
+    if (a > 2) nums.push("…");
+    for (let i = a; i <= b; i++) nums.push(i);
+    if (b < pages - 1) nums.push("…");
+    nums.push(pages);
+  }
+  $("lmPager").innerHTML =
+    `<button class="lm-pg" data-pg="${lmPage - 1}" ${lmPage === 1 ? "disabled" : ""}>${chev(0)}</button>` +
+    nums.map(n => n === "…" ? '<span class="lm-dots">…</span>' : `<button class="lm-pg ${n === lmPage ? "active" : ""}" data-pg="${n}">${n}</button>`).join("") +
+    `<button class="lm-pg" data-pg="${lmPage + 1}" ${lmPage === pages ? "disabled" : ""}>${chev(1)}</button>`;
+}
+
+function lmCheckSymbol() {
+  const hint = $("lmSymHint"), box = $("lmSuggest");
+  const isAdd = lmEditing === "";
+  const q = $("lmSymInput").value.trim().toUpperCase();
+  hint.className = "lm-sym-hint"; hint.innerHTML = ""; box.className = "lm-suggest"; box.innerHTML = "";
+  $("lmSave").disabled = false;
+  if (!isAdd || !q) return;
+  const all = lmAllSymbols();
+  const exact = all.find(r => r.sym === q);
+  const matches = all.filter(r => r.sym.includes(q) || r.company.toUpperCase().includes(q))
+    .sort((a, b) => (b.sym.startsWith(q)) - (a.sym.startsWith(q)) || a.sym.localeCompare(b.sym)).slice(0, 8);
+  if (exact && exact.url) {
+    hint.className = "lm-sym-hint show dup";
+    hint.innerHTML = `✕ ${esc(q)} already has a logo. <button type="button" data-lm-edit="${esc(q)}">Edit it instead</button>`;
+    $("lmSave").disabled = true;
+  } else if (exact) {
+    hint.className = "lm-sym-hint show warn";
+    hint.textContent = `${q} is in your stock list but has no logo yet — you can add it.`;
+  } else {
+    hint.className = "lm-sym-hint show ok";
+    hint.textContent = `✓ ${q} is not added yet.`;
+  }
+  const others = matches.filter(r => !(exact && r.sym === q && false));
+  if (others.length) {
+    box.className = "lm-suggest show";
+    box.innerHTML = others.map(r => `<button type="button" class="lm-sg" data-sg="${esc(r.sym)}">${lmLogoHtml(r.sym)}<span class="lm-sg-name">${esc(r.sym)}${r.company ? `<small>${esc(r.company)}</small>` : ""}</span><span class="lm-sg-tag ${r.url ? "has" : "none"}">${r.url ? "Already added" : "No logo"}</span></button>`).join("");
+    lmBindFallbacks(box);
+  }
+}
+function lmUpdatePreview() {
+  const url = $("lmUrlInput").value.trim(), box = $("lmPreview"), link = $("lmOpenLink");
+  link.classList.toggle("disabled", !/^https?:\/\//i.test(url));
+  link.href = /^https?:\/\//i.test(url) ? url : "#";
+  if (!url) { box.textContent = "No preview"; return; }
+  const img = new Image();
+  img.alt = "Logo preview";
+  img.onerror = () => { box.textContent = "Unable to load image"; };
+  img.src = url;
+  box.textContent = ""; box.appendChild(img);
+}
+function lmOpenEditor(sym) {
+  lmEditing = sym; // "" = add mode
+  const isAdd = sym === "";
+  $("lmBox").classList.add("editing");
+  $("lmSideTitle").textContent = isAdd ? "Add Logo Link" : "Edit Logo Link";
+  $("lmSideId").innerHTML = isAdd ? "" : lmLogoHtml(sym) + `<span>${esc(sym)}</span>`;
+  lmBindFallbacks($("lmSideId"));
+  const si = $("lmSymInput");
+  si.value = sym; si.readOnly = !isAdd;
+  $("lmUrlInput").value = isAdd ? "" : (companyLogos[sym] || "");
+  $("lmError").textContent = "";
+  $("lmSave").disabled = false; $("lmSave").textContent = "Save changes";
+  lmUpdatePreview(); lmCheckSymbol(); lmRender();
+  setTimeout(() => (isAdd ? si : $("lmUrlInput")).focus(), 60);
+}
+function lmCloseEditor() { lmEditing = null; $("lmBox").classList.remove("editing"); lmRender(); }
+function openLogoMgr() {
+  if (!sessionToken) return;
+  $("lmSearch").value = ""; $("lmFilter").value = "all"; lmPage = 1; lmEditing = null;
+  $("lmBox").classList.remove("editing");
+  lmRender();
+  $("logoModal").classList.add("open");
+}
+function closeLogoMgr() { $("logoModal").classList.remove("open"); lmMenuClose(); lmEditing = null; $("lmBox").classList.remove("editing"); }
+
+async function lmPersist(next) {
+  const res = await fetch(LOGO_URL, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionToken}` },
+    body: JSON.stringify(next)
+  });
+  if (!res.ok) {
+    let msg = res.status === 401 ? "Session expired — please sign in again." : "Failed to save logos.";
+    try { msg = (await res.json()).error || msg; } catch { /* no body */ }
+    throw new Error(msg);
+  }
+  companyLogos = next;
+  if (typeof render === "function" && configData.length + feedOnly.length) render();
+}
+async function lmSave() {
+  const isAdd = lmEditing === "";
+  const sym = (isAdd ? $("lmSymInput").value : lmEditing).trim().toUpperCase();
+  const url = $("lmUrlInput").value.trim(), err = $("lmError"), btn = $("lmSave");
+  if (isAdd && companyLogos[sym]) { lmCheckSymbol(); err.textContent = `${sym} already has a logo — use Edit instead.`; return; }
+  if (!sym) { err.textContent = "Enter a symbol."; return; }
+  if (!/^[A-Z0-9&._-]+$/.test(sym)) { err.textContent = "Symbol has invalid characters."; return; }
+  if (!url) { err.textContent = "Enter a logo image URL."; return; }
+  if (!/^https?:\/\//i.test(url)) { err.textContent = "URL must start with http:// or https://"; return; }
+  if (isAdd && companyLogos[sym]) { lmCheckSymbol(); err.textContent = `${sym} already has a logo — use Edit instead.`; return; }
+  err.textContent = ""; btn.disabled = true; btn.textContent = "Saving…";
+  try {
+    await lmPersist({ ...companyLogos, [sym]: url });
+    showToast(`Logo saved for ${sym}`);
+    lmEditing = null; $("lmBox").classList.remove("editing");
+    lmRender();
+  } catch (e) { err.textContent = e.message; btn.disabled = false; btn.textContent = "Save changes"; }
+}
+async function lmRemove(sym) {
+  if (!companyLogos[sym]) return;
+  if (!confirm(`Remove the logo link for ${sym}?`)) return;
+  const next = { ...companyLogos }; delete next[sym];
+  try { await lmPersist(next); showToast(`Logo removed for ${sym}`); if (lmEditing === sym) lmCloseEditor(); else lmRender(); }
+  catch (e) { showToast(e.message, true); }
+}
+function lmMenuClose() { $("lmMenu").classList.remove("open"); lmMenuSym = null; }
+
+$("logoMgrBtn").addEventListener("click", openLogoMgr);
+$("lmClose").addEventListener("click", closeLogoMgr);
+$("lmSideClose").addEventListener("click", lmCloseEditor);
+$("lmCancel").addEventListener("click", lmCloseEditor);
+$("lmSave").addEventListener("click", lmSave);
+$("lmAdd").addEventListener("click", () => lmOpenEditor(""));
+$("lmSearch").addEventListener("input", () => { lmPage = 1; lmRender(); });
+$("lmFilter").addEventListener("change", () => { lmPage = 1; lmRender(); });
+$("lmUrlInput").addEventListener("input", () => { clearTimeout(lmPreviewTimer); lmPreviewTimer = setTimeout(lmUpdatePreview, 250); });
+$("lmUrlInput").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); lmSave(); } });
+$("lmSymInput").addEventListener("input", e => { e.target.value = e.target.value.toUpperCase(); $("lmError").textContent = ""; lmCheckSymbol(); });
+$("lmSide").addEventListener("click", e => {
+  const g = e.target.closest("[data-sg]"), ed = e.target.closest("[data-lm-edit]");
+  if (ed) { lmOpenEditor(ed.dataset.lmEdit); return; }
+  if (g) { const sym = g.dataset.sg; if (companyLogos[sym]) lmOpenEditor(sym); else { $("lmSymInput").value = sym; lmCheckSymbol(); $("lmUrlInput").focus(); } }
+});
+$("lmSymInput").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); $("lmUrlInput").focus(); } });
+$("lmPager").addEventListener("click", e => { const b = e.target.closest("[data-pg]"); if (b && !b.disabled) { lmPage = +b.dataset.pg; lmRender(); } });
+$("lmBody").addEventListener("click", e => {
+  const ed = e.target.closest("[data-edit]"); if (ed) { lmMenuClose(); lmOpenEditor(ed.dataset.edit); return; }
+  const mn = e.target.closest("[data-menu]");
+  if (mn) {
+    e.stopPropagation();
+    if (lmMenuSym === mn.dataset.menu) { lmMenuClose(); return; }
+    lmMenuSym = mn.dataset.menu;
+    const menu = $("lmMenu"), r = mn.getBoundingClientRect(), has = !!companyLogos[lmMenuSym];
+    if (!has) { lmMenuSym = null; showToast("No logo linked yet — click Edit to add one", true); return; }
+    menu.classList.add("open");
+    menu.style.top = Math.min(r.bottom + 4, window.innerHeight - menu.offsetHeight - 8) + "px";
+    menu.style.left = Math.max(8, r.right - menu.offsetWidth) + "px";
+  }
+});
+$("lmMenu").addEventListener("click", async e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const sym = lmMenuSym, url = companyLogos[sym]; lmMenuClose();
+  if (b.dataset.act === "open" && url) window.open(url, "_blank", "noopener");
+  else if (b.dataset.act === "copy" && url) { try { await navigator.clipboard.writeText(url); showToast("URL copied"); } catch { showToast("Could not copy", true); } }
+  else if (b.dataset.act === "remove") lmRemove(sym);
+});
+document.addEventListener("click", e => { if (!e.target.closest("#lmMenu")) lmMenuClose(); });
+$("lmBody").closest(".lm-table-wrap").addEventListener("scroll", lmMenuClose);
+$("logoModal").addEventListener("click", e => { if (e.target.id === "logoModal") closeLogoMgr(); });
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape" || !$("logoModal").classList.contains("open")) return;
+  if ($("lmMenu").classList.contains("open")) lmMenuClose();
+  else if (lmEditing !== null) lmCloseEditor();
+  else closeLogoMgr();
+});
 
 (async () => {
   sessionToken = readToken();

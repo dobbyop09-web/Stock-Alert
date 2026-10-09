@@ -6220,31 +6220,44 @@
       // logo.json must be kept in the same folder as this HTML file.
       let companyLogos = {};
 
-      async function loadCompanyLogos() {
-        try {
-          const logoFileUrl = new URL("logo.json", window.location.href);
-          const res = await fetch(logoFileUrl, {
-            cache: "no-cache"
-          });
+  
+async function loadCompanyLogos() {
+  try {
+    const logoFileUrl =
+      "https://tiny-art-8473.dobbyop09.workers.dev/logo.json";
 
-          if (!res.ok) throw new Error(`logo.json returned HTTP ${res.status}`);
+    const res = await fetch(logoFileUrl, {
+      cache: "no-cache"
+    });
 
-          const rawLogos = await res.json();
+    if (!res.ok) {
+      throw new Error(`logo.json returned HTTP ${res.status}`);
+    }
 
-          // Normalise symbol keys so RELIANCE, reliance and " RELIANCE "
-          // all resolve to the same logo.
-          companyLogos = Object.fromEntries(
-            Object.entries(rawLogos || {})
-              .filter(([symbol, url]) => typeof url === "string" && url.trim())
-              .map(([symbol, url]) => [String(symbol).trim().toUpperCase(), url.trim()])
-          );
+    const rawLogos = await res.json();
 
-          console.log(`Loaded ${Object.keys(companyLogos).length} company logos`);
-        } catch (error) {
-          console.error("Could not load logo.json:", error);
-          companyLogos = {};
-        }
-      }
+    // Normalise symbol keys
+    companyLogos = Object.fromEntries(
+      Object.entries(rawLogos || {})
+        .filter(
+          ([symbol, url]) =>
+            typeof url === "string" && url.trim()
+        )
+        .map(([symbol, url]) => [
+          String(symbol).trim().toUpperCase(),
+          url.trim()
+        ])
+    );
+
+    console.log(
+      `Loaded ${Object.keys(companyLogos).length} company logos`
+    );
+
+  } catch (error) {
+    console.error("Could not load logo.json:", error);
+    companyLogos = {};
+  }
+}
 
       function symAvatarHtml(symbol) {
         const sym = String(symbol || "?").trim();
