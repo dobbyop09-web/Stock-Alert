@@ -9,7 +9,8 @@ export async function loadDashboard() {
         const [dataRes, metaRes, logoRes] = await Promise.all([
             fetch(`${BASE_URL}/dashboard-data?t=${Date.now()}`),
             fetch(`${BASE_URL}/dashboard-status?t=${Date.now()}`),
-            fetch(`logo.json?t=${Date.now()}`, { cache: "no-cache" })
+              fetch(`${BASE_URL}/logo.json?t=${Date.now()}`,{ cache: "no-cache" }
+        )
         ]);
 
         const data = await dataRes.json();
