@@ -49,10 +49,12 @@ let companyLogos = {};
 
 export function setCompanyLogos(data) {
     companyLogos = Object.fromEntries(
-        Object.entries(data || {}).map(([symbol, url]) => [
-            String(symbol).trim().toUpperCase(),
-            String(url || "").trim()
-        ])
+        Object.entries(data || {})
+            .filter(([_, url]) => typeof url === "string" && url.trim())
+            .map(([symbol, url]) => [
+                String(symbol).trim().toUpperCase(),
+                url.trim()
+            ])
     );
 }
 

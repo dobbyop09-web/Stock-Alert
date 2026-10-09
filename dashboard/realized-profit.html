@@ -2137,22 +2137,38 @@
       let sectorDonutInstance = null;
       let durationDonutInstance = null;
 
-      async function loadCompanyLogos() {
-        try {
-          const response = await fetch(new URL("logo.json", window.location.href), { cache: "no-cache" });
-          if (!response.ok) throw new Error(`logo.json returned HTTP ${response.status}`);
-          const data = await response.json();
-          companyLogos = Object.fromEntries(
-            Object.entries(data || {})
-              .filter(([_, url]) => typeof url === "string" && url.trim())
-              .map(([symbol, url]) => [String(symbol).trim().toUpperCase(), url.trim()])
-          );
-          console.log(`[logo.json] loaded ${Object.keys(companyLogos).length} logos`);
-        } catch (e) {
-          companyLogos = {};
-          console.warn("Unable to load logo.json", e);
-        }
-      }
+    
+async function loadCompanyLogos() {
+  try {
+    const response = await fetch(
+      "https://tiny-art-8473.dobbyop09.workers.dev/logo.json",
+      { cache: "no-cache" }
+    );
+
+    if (!response.ok) {
+      throw new Error(`logo.json returned HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    companyLogos = Object.fromEntries(
+      Object.entries(data || {})
+        .filter(([_, url]) => typeof url === "string" && url.trim())
+        .map(([symbol, url]) => [
+          String(symbol).trim().toUpperCase(),
+          url.trim()
+        ])
+    );
+
+    console.log(
+      `[logo.json] loaded ${Object.keys(companyLogos).length} logos`
+    );
+
+  } catch (e) {
+    companyLogos = {};
+    console.warn("Unable to load logo.json", e);
+  }
+}
 
       function logoHtml(symbol, color) {
         const key = String(symbol || "").trim().toUpperCase();
