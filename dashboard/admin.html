@@ -2618,6 +2618,17 @@
       opacity: 1;
     }
 
+    .sym-tip-title { font-weight: 700; font-size: 11px; margin-bottom: 5px; color: #fff; }
+    .sym-tip-row { display: flex; gap: 14px; justify-content: space-between; padding: 1px 0; }
+    .sym-tip-row span:first-child { color: #7f92a6; }
+    .sym-tip-sep { height: 1px; background: rgba(255,255,255,.08); margin: 6px 0; }
+    .sym-tip-gtt { padding: 2px 0; }
+    .sym-tip-badge { display: inline-block; font-size: 8px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 1px 5px; border-radius: 4px; margin-right: 6px; }
+    .sym-tip-badge.buy { color: #2dd4bf; background: rgba(45,212,191,.12); }
+    .sym-tip-badge.sell { color: #ff5c6c; background: rgba(255,92,108,.12); }
+    .sym-tip-muted { color: #7f92a6; }
+    #tbody .sym-badge { cursor: default; }
+
     .fh-tooltip-date {
       font-weight: 700;
       color: #edf5ff;
@@ -6050,6 +6061,73 @@
         } catch (e) { lastUpdatedEl.textContent = "Failed to load portfolio"; }
       }
 
+      // ---- Symbol hover tooltip: next buy (alert) price + active GTT orders ----
+      let gttBySymbol = {};
+      function pickAlertPrice(item) {
+        const v = item.alertPrice ?? item.alert_price ?? item.alert ?? item.alertprice ?? item.buyAlert ?? item.nextBuyPrice;
+        const n = parseFloat(v);
+        return isFinite(n) && n > 0 ? n : null;
+      }
+      async function loadGttOrders() {
+        try {
+          const headers = sessionToken ? { Authorization: `Bearer ${sessionToken}` } : {};
+          const res = await fetch(`${API_BASE}/gtt-orders`, { headers });
+          if (!res.ok) return;
+          const data = await res.json();
+          const list = Array.isArray(data) ? data : (Array.isArray(data.orders) ? data.orders : []);
+          const map = {};
+          list.forEach(o => {
+            if (!o || !o.symbol || String(o.status).toLowerCase() !== "active") return;
+            (map[String(o.symbol).toUpperCase()] = map[String(o.symbol).toUpperCase()] || []).push(o);
+          });
+          gttBySymbol = map;
+        } catch (e) { }
+      }
+      function wireSymbolTooltip() {
+        let tip = document.getElementById("symTooltip");
+        if (!tip) { tip = document.createElement("div"); tip.className = "fh-tooltip"; tip.id = "symTooltip"; document.body.appendChild(tip); }
+        const money = v => "₹" + fmtMoney(v);
+        function build(sym) {
+          const sd = symbolDataMap[sym] || {};
+          const gtts = gttBySymbol[sym] || [];
+          let html = `<div class="sym-tip-title">${escHtml(sym)}</div>`;
+          html += `<div class="sym-tip-row"><span>Next buy price</span><b>${sd.alertPrice ? money(sd.alertPrice) : '<span class="sym-tip-muted">Not set</span>'}</b></div>`;
+          html += `<div class="sym-tip-sep"></div>`;
+          if (!gtts.length) {
+            html += `<div class="sym-tip-muted">No active GTT order</div>`;
+          } else {
+            html += gtts.map(o => {
+              const t = String(o.type || "").toLowerCase() === "sell" ? "sell" : "buy";
+              const cond = `${escHtml(o.condition || "Trigger")} ${money(o.conditionPrice)}`;
+              const tgt = o.targetPrice != null ? money(o.targetPrice) : escHtml(o.target || "Market Price");
+              return `<div class="sym-tip-gtt"><span class="sym-tip-badge ${t}">${t} GTT</span>Qty ${escHtml(o.quantity ?? "—")}
+                <div class="sym-tip-muted" style="margin-top:2px">${cond} → ${tgt}</div></div>`;
+            }).join("");
+          }
+          return html;
+        }
+        function place(e) {
+          const pad = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+          let x = e.clientX + pad, y = e.clientY + pad;
+          if (x + w > window.innerWidth - 8) x = e.clientX - w - pad;
+          if (y + h > window.innerHeight - 8) y = e.clientY - h - pad;
+          tip.style.left = Math.max(8, x) + "px"; tip.style.top = Math.max(8, y) + "px";
+        }
+        tbody.addEventListener("mouseover", e => {
+          const badge = e.target.closest(".sym-badge");
+          if (!badge || !tbody.contains(badge)) return;
+          const label = badge.querySelector("span");
+          const sym = (label ? label.textContent : "").trim().toUpperCase();
+          if (!sym || sym === "—") return;
+          tip.innerHTML = build(sym); tip.classList.add("visible"); place(e);
+        });
+        tbody.addEventListener("mousemove", e => { if (tip.classList.contains("visible")) place(e); });
+        tbody.addEventListener("mouseout", e => {
+          const badge = e.target.closest(".sym-badge");
+          if (badge && !badge.contains(e.relatedTarget)) tip.classList.remove("visible");
+        });
+      }
+
       async function loadSymbolList() {
         try {
           const res = await fetch(`${API_BASE}/dashboard-data`);
@@ -6062,6 +6140,7 @@
             symbolDataMap[item.symbol.toUpperCase()] = {
               currentPrice: item.currentPrice, changePercent: item.changePercent,
               sector: item.sheet, screenerUrl: item.screenerUrl, previousClose: item.previousClose,
+              alertPrice: pickAlertPrice(item),
             };
             const opt = document.createElement("option"); opt.value = item.symbol; list.appendChild(opt);
           });
@@ -6088,7 +6167,7 @@
           const data = await res.json();
           sessionToken = data.token; saveToken(data.token);
           updateAuthUI(true, data.username || u);
-          closeLoginModal(); await loadPortfolio(); loadPortfolioHistory();
+          closeLoginModal(); await loadPortfolio(); loadPortfolioHistory(); loadGttOrders();
         } catch (e) { loginError.textContent = "Could not reach server. Try again."; }
         finally { btn.disabled = false; btn.textContent = "Sign in"; }
       }
@@ -7751,6 +7830,8 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
         if (ok) { sessionToken = token; updateAuthUI(true, payload.u); loadPortfolio(); loadPortfolioHistory(); }
         else { if (token) clearToken(); updateAuthUI(false); openLoginModal(); }
         loadSymbolList();
+        loadGttOrders();
+        wireSymbolTooltip();
         loadFiiData();   // load FII/DII data independently of auth
         loadIndexData(); // load market indices independently of auth
         loadCompanyLogos().then(() => { if (holdings.length) renderTable(); });
