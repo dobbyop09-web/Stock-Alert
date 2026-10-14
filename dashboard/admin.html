@@ -2656,7 +2656,20 @@
     .fh-table-wrap {
       border: 1px solid rgba(255, 255, 255, .06);
       border-radius: 9px;
-      overflow: hidden;
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: 340px;
+      flex-shrink: 0;
+    }
+
+    .fh-table-wrap::-webkit-scrollbar { width: 5px; height: 5px; }
+    .fh-table-wrap::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .12); border-radius: 4px; }
+
+    .fh-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background-color: #131c27 !important;
     }
 
     .fh-table {
@@ -3660,6 +3673,119 @@
 #sectorOverlay .sector-table-wrap{overflow:auto;max-height:270px}#sectorOverlay .sector-table{min-width:850px}#sectorOverlay .sector-table thead th,.sector-holdings-table thead th{position:sticky;top:0;z-index:2}
 .sector-th-sort{width:100%;display:inline-flex;align-items:center;justify-content:flex-end;gap:5px;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;white-space:nowrap}.sector-table thead th:first-child .sector-th-sort{justify-content:flex-start}.sector-th-sort:hover,.sector-th-sort.active{color:#2DD4BF}.sector-sort-arrow{width:9px;color:#2DD4BF;font-size:8px}
 .sector-table tbody tr.sector-selected{background:rgba(45,212,191,.08)}.sector-holdings-card{display:none}.sector-holdings-card.visible{display:block}.sector-holdings-head{min-height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid rgba(255,255,255,.06)}.sector-holdings-title{font-size:12px;font-weight:700;color:#dce8f4}.sector-holdings-meta{font-size:10px;color:#7f93a8}.sector-holdings-wrap{overflow:auto;max-height:260px}.sector-holdings-table{width:100%;min-width:720px;border-collapse:collapse}.sector-holdings-table thead th{padding:10px 12px;background:#0c1822;color:#52677b;font-size:9px;text-transform:uppercase;text-align:right}.sector-holdings-table thead th:first-child{text-align:left}.sector-holdings-table tbody td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.035);font-size:10.5px;text-align:right;white-space:nowrap}.sector-holdings-table tbody td:first-child{text-align:left;font-weight:600}
+
+    /* ═════════════════════════════════════════════════════════════
+       Topbar controls — one consistent height / radius / type scale
+       ═════════════════════════════════════════════════════════════ */
+    .topbar-right { gap: 10px; }
+
+    .topbar-right .etf-toggle-group,
+    .topbar-right .whoami-chip,
+    .topbar-right .btn-ghost,
+    .topbar-right .btn-edit,
+    .topbar-right .btn-primary,
+    .topbar-right .btn-cancel {
+      height: 34px;
+      box-sizing: border-box;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .topbar-right .btn-ghost,
+    .topbar-right .btn-edit,
+    .topbar-right .btn-primary,
+    .topbar-right .btn-cancel {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 14px;
+      cursor: pointer;
+      transition: background .15s ease, border-color .15s ease, color .15s ease, transform .12s ease;
+    }
+
+    .topbar-right .btn-ghost svg,
+    .topbar-right .btn-edit svg,
+    .topbar-right .btn-primary svg,
+    .topbar-right .btn-cancel svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      stroke-width: 2;
+    }
+
+    .topbar-right .btn-ghost:active,
+    .topbar-right .btn-edit:active,
+    .topbar-right .btn-primary:active,
+    .topbar-right .btn-cancel:active { transform: scale(.97); }
+
+    .topbar-right .whoami-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      font-weight: 500;
+    }
+    .topbar-right .whoami-dot { width: 7px; height: 7px; }
+
+    /* segmented control: 34px outer = 1 + 3 + 26 + 3 + 1 */
+    .topbar-right .etf-toggle-group { padding: 3px; gap: 2px; }
+    .topbar-right .etf-toggle-btn {
+      height: 26px;
+      padding: 0 12px;
+      font-size: 12px;
+      border-radius: 6px;
+      line-height: 26px;
+    }
+
+    /* ═════════════════════════════════════════════════════════════
+       iOS / macOS style popup transitions (open + minimise)
+       Overlays stay in the layout and fade/scale via .visible so the
+       closing animation can play. transform-origin is set from JS to
+       the point you clicked, so popups grow out of / shrink back to it.
+       ═════════════════════════════════════════════════════════════ */
+    .modal-overlay,
+    .fh-overlay {
+      display: flex;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .26s ease, visibility 0s linear .32s;
+    }
+
+    .modal-overlay.visible,
+    .fh-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity .3s ease, visibility 0s linear 0s;
+    }
+
+    .modal-overlay > .modal,
+    .fh-overlay > .fh-modal {
+      animation: none;
+      transform-origin: var(--ox, 50%) var(--oy, 50%);
+      transform: scale(.82) translateY(14px);
+      opacity: 0;
+      /* closing: quick ease-in, like minimising a window */
+      transition: transform .3s cubic-bezier(.4, 0, 1, 1), opacity .22s ease;
+    }
+
+    .modal-overlay.visible > .modal,
+    .fh-overlay.visible > .fh-modal {
+      transform: none;           /* none (not scale(1)) so fixed tooltips inside keep working */
+      opacity: 1;
+      /* opening: iOS-style spring-ish ease-out */
+      transition: transform .46s cubic-bezier(.32, .72, 0, 1), opacity .24s ease;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .modal-overlay, .fh-overlay,
+      .modal-overlay > .modal, .fh-overlay > .fh-modal { transition-duration: .01s !important; transition-delay: 0s !important; }
+    }
   </style>
      <link rel="stylesheet" href="css/universal-search.css">
 </head>
@@ -4231,7 +4357,8 @@
       </div>
       <div class="fh-toolbar">
         <div class="fh-filters" id="fhFilters">
-          <button class="fh-filter-btn active" data-range="daily">Daily</button>
+          <button class="fh-filter-btn active" data-range="overall">Overall</button>
+          <button class="fh-filter-btn" data-range="daily">Daily</button>
           <button class="fh-filter-btn" data-range="weekly">Weekly</button>
           <button class="fh-filter-btn" data-range="monthly">Monthly</button>
         </div>
@@ -4572,7 +4699,7 @@
       const fhFilters = document.getElementById("fhFilters");
 
       let fhRawData = null;      // raw history array from API
-      let fhRange = "daily";     // daily | weekly | monthly
+      let fhRange = "overall";   // overall | daily | weekly | monthly
       let fhLoaded = false;
 
       function parseHistDate(s) {
@@ -4594,16 +4721,19 @@
       function aggregate(rows, range) {
         // rows: [{date, fii:{buyValue,sellValue,netValue}, dii:{...}}], sorted desc by date in source
         const asc = [...rows].sort((a, b) => (parseHistDate(a.date) || 0) - (parseHistDate(b.date) || 0));
-        if (range === "daily") return asc;
+        if (range === "daily" || range === "overall") return asc;
 
         const buckets = new Map();
         asc.forEach(r => {
           const d = parseHistDate(r.date);
           if (!d) return;
-          let key, label;
+          let key, label, shortLabel;
           if (range === "weekly") {
             key = isoWeekKey(d);
-            label = key;
+            const mon = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7));
+            const monStr = mon.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).replace(/ /g, "-");
+            label = `${monStr} (${key.split("-")[1]})`;
+            shortLabel = mon.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
           } else {
             key = `${d.getFullYear()}-${d.getMonth()}`;
             label = d.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
@@ -4611,6 +4741,7 @@
           if (!buckets.has(key)) {
             buckets.set(key, {
               date: label,
+              shortLabel: shortLabel,
               sortKey: d.getTime(),
               fii: { buyValue: 0, sellValue: 0, netValue: 0 },
               dii: { buyValue: 0, sellValue: 0, netValue: 0 },
@@ -4635,7 +4766,12 @@
         return (n >= 0 ? "+" : "") + fhFmt(n);
       }
 
-      function renderFhSummary(rows) {
+      function renderFhSummary(allRows) {
+        // overall -> every row; daily/weekly/monthly -> latest period only
+        const rows = (fhRange === "overall" || allRows.length === 0) ? allRows : [allRows[allRows.length - 1]];
+        const periodLabel = fhRange === "overall"
+          ? `Overall · ${allRows.length} trading days`
+          : `${fhRange === "daily" ? "Latest day" : fhRange === "weekly" ? "Latest week" : "Latest month"} · ${rows[0]?.date || "—"}`;
         let fiiNet = 0, diiNet = 0, fiiBuy = 0, fiiSell = 0, diiBuy = 0, diiSell = 0;
         rows.forEach(r => {
           fiiNet += parseFloat(r.fii?.netValue) || 0;
@@ -4646,6 +4782,7 @@
           diiSell += parseFloat(r.dii?.sellValue) || 0;
         });
         return `
+      <div class="fh-summary-period" style="font-size:10px;color:#6b8299;margin-bottom:6px;letter-spacing:.04em">${escHtml(periodLabel)}</div>
       <div class="fh-summary-row">
         <div class="fh-summary-card">
           <div class="fh-summary-lbl">FII/FPI Net (₹ Cr)</div>
@@ -4706,9 +4843,9 @@
       </g>`;
 
           if (i % step === 0 || i === n - 1) {
-            const lbl = fhRange === "daily"
+            const lbl = (fhRange === "daily" || fhRange === "overall")
               ? (r.date || "").replace(/-\d{4}$/, "")
-              : (r.date || "");
+              : (r.shortLabel || r.date || "");
             labels += `<text x="${cx.toFixed(1)}" y="${H - 6}" class="fh-tick-label" text-anchor="middle">${escHtml(lbl)}</text>`;
           }
         });
@@ -4767,7 +4904,7 @@
           return;
         }
         const rows = aggregate(fhRawData, fhRange);
-        const unit = fhRange === "daily" ? "trading day" : fhRange === "weekly" ? "week" : "month";
+        const unit = (fhRange === "daily" || fhRange === "overall") ? "trading day" : fhRange === "weekly" ? "week" : "month";
         const startLabel = fhDataStartLabel();
         fhSub.textContent = `${rows.length} ${unit}${rows.length === 1 ? "" : "s"}${startLabel ? " · Data since " + startLabel : ""}`;
         fhBody.innerHTML = renderFhSummary(rows) + `<div class="fh-chart-wrap">${renderFhChart(rows)}</div>` + renderFhTable(rows);
@@ -4913,6 +5050,19 @@
         const cutoff = Date.now() - days * 86400000;
         const filtered = cumAscRows.filter(d => d._date.getTime() >= cutoff);
         return filtered.length ? filtered : cumAscRows.slice(-1);
+      }
+
+      // Stats for the selected range: total added in range + avg added per month
+      function depositPeriodStats(cumAsc, range) {
+        const now = Date.now();
+        const MONTH_MS = 30.4375 * 86400000;
+        const daysMap = { "7D": 7, "30D": 30, "3M": 91, "6M": 182, "1Y": 365 };
+        const firstTs = cumAsc.length ? cumAsc[0]._date.getTime() : now;
+        const cutoff = daysMap[range] ? now - daysMap[range] * 86400000 : -Infinity;
+        const total = cumAsc.reduce((s, d) => s + (d._date.getTime() >= cutoff ? (parseFloat(d.amount) || 0) : 0), 0);
+        const start = Math.max(cutoff, firstTs);
+        const months = Math.max(1, (now - start) / MONTH_MS);
+        return { total, avgMonthly: total / months };
       }
 
       function fmtCompactINR(n) {
@@ -5138,6 +5288,8 @@
         const cumAll = cumulativeDeposits(allAsc);
         const chartRows = filterDepositsByRange(cumAll, depositRange);
         const totalDeposited = depositTotal();
+        const ps = depositPeriodStats(cumAll, depositRange);
+        const rangeLbl = depositRange === "ALL" ? "All Time" : depositRange;
         const xirr = depositXirrValue();
         const xirrTxt = xirr == null ? "—" : (xirr >= 0 ? "+" : "") + xirr.toFixed(2) + "%";
         depositModalSub.textContent = `${allAsc.length} deposit${allAsc.length === 1 ? "" : "s"} · Since ${fmtDate(allAsc[0].date)}`;
@@ -5149,6 +5301,10 @@
           if (depositLegendText) depositLegendText.textContent = "Deposits by month";
           depositBody.innerHTML = `
       <div class="fh-summary-row">
+        <div class="fh-summary-card">
+          <div class="fh-summary-lbl">Avg Monthly Added (${rangeLbl})</div>
+          <div class="fh-summary-val" style="color:#edf5ff">₹${fmtMoney(ps.avgMonthly)}</div>
+        </div>
         <div class="fh-summary-card">
           <div class="fh-summary-lbl">Total Deposited</div>
           <div class="fh-summary-val" style="color:#2DD4BF">₹${fmtMoney(totalDeposited)}</div>
@@ -5170,6 +5326,10 @@
           if (depositLegendText) depositLegendText.textContent = "Deposits over time";
           depositBody.innerHTML = `
       <div class="fh-summary-row">
+        <div class="fh-summary-card">
+          <div class="fh-summary-lbl">Avg Monthly Added (${rangeLbl})</div>
+          <div class="fh-summary-val" style="color:#edf5ff">₹${fmtMoney(ps.avgMonthly)}</div>
+        </div>
         <div class="fh-summary-card">
           <div class="fh-summary-lbl">Total Deposited</div>
           <div class="fh-summary-val" style="color:#2DD4BF">₹${fmtMoney(totalDeposited)}</div>
@@ -7840,6 +8000,29 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
     })();
   </script>
    <script src="js/universal-search.js"></script>
+
+  <script>
+    // Popup origin: modals grow out of (and shrink back to) the element you clicked
+    (function () {
+      let lx = null, ly = null;
+      document.addEventListener("pointerdown", e => { lx = e.clientX; ly = e.clientY; }, true);
+      document.addEventListener("keydown", () => { lx = ly = null; }, true);
+      const overlays = document.querySelectorAll(".modal-overlay, .fh-overlay");
+      const setOrigin = ov => {
+        const m = ov.firstElementChild;
+        if (!m) return;
+        if (lx == null) { m.style.removeProperty("--ox"); m.style.removeProperty("--oy"); return; }
+        const ox = Math.max(0, Math.min(m.offsetWidth, lx - m.offsetLeft));
+        const oy = Math.max(0, Math.min(m.offsetHeight, ly - m.offsetTop));
+        m.style.setProperty("--ox", ox + "px");
+        m.style.setProperty("--oy", oy + "px");
+      };
+      overlays.forEach(ov => {
+        new MutationObserver(() => { if (ov.classList.contains("visible")) setOrigin(ov); })
+          .observe(ov, { attributes: true, attributeFilter: ["class"] });
+      });
+    })();
+  </script>
 </body>
 
 </html>
