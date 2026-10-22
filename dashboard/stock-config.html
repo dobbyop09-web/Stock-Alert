@@ -229,7 +229,6 @@
     .tbl-showing b { color: #dce8f4; font-weight: 600; }
     .tbl-actions { display: flex; gap: 8px; }
     .tb-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 8px; background: rgba(45,212,191,.08); border: 1px solid rgba(45,212,191,.25); color: #2DD4BF; font-size: 12px; font-weight: 600; cursor: pointer; transition: background .15s; }
-    .tb-btn:disabled { opacity: .45; cursor: not-allowed; }
     .tb-btn:hover { background: rgba(45,212,191,.16); }
     .tb-btn.primary { background: #2DD4BF; color: #0b1520; border-color: #2DD4BF; }
     .tb-btn.primary:hover { opacity: .88; background: #2DD4BF; }
@@ -520,7 +519,6 @@
               <button class="tb-btn sort" data-sort="change" data-first="-1" title="Sort by day change"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg><span>Day Change</span><span class="sb-arrow">↕</span></button>
               <button class="tb-btn sort" data-sort="closest" data-first="1" title="Sort by closest to alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg><span>Closest to alert</span><span class="sb-arrow">↕</span></button>
               <button class="tb-btn filt" id="updatedOnlyBtn" title="Show only stocks whose alert was updated (distance differs from dashboard data)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>Updated <span id="updatedOnlyCount" class="filt-count">0</span></button>
-              <button class="tb-btn filt" id="bulkAlertBtn" title="Reset all triggered (needs attention) alerts to a lower price in one go"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FF5C6C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>Update Triggered <span id="bulkCount" class="filt-count">0</span></button>
               <button class="tb-btn" id="addAlertBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Alert</button>
               <div class="manage-sheet-wrap" id="manageSheetWrap">
                 <button class="tb-btn primary" id="manageSheetBtn">
@@ -584,34 +582,12 @@
 <div class="modal-overlay" id="loginModal">
   <div class="modal-box login-modal">
     <button class="modal-close" id="loginCloseBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    <h2>Config admin sign in</h2>
-    <p class="modal-hint">Restricted to the single config administrator account.</p>
+    <h2>Sign in</h2>
+    <p class="modal-hint">Admin access required to edit configuration.</p>
     <div class="form-group"><label>Username <span class="req">*</span></label><input type="text" id="loginUsername" class="form-control" autocomplete="username" placeholder="username"></div>
     <div class="form-group"><label>Password <span class="req">*</span></label><input type="password" id="loginPassword" class="form-control" autocomplete="current-password" placeholder="••••••••"></div>
     <div class="error-text" id="loginError"></div>
     <div class="modal-actions"><button class="btn-cancel" id="loginCancelBtn">Cancel</button><button class="btn-confirm" id="loginSubmitBtn">Sign in</button></div>
-  </div>
-</div>
-
-<!-- Bulk update triggered alerts -->
-<div class="modal-overlay" id="bulkModal">
-  <div class="modal-box" style="max-width:460px">
-    <button class="modal-close" id="bulkClose"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    <h2>Update Triggered Alerts</h2>
-    <p class="modal-hint">Moves every triggered alert (all sectors) down by a percentage in one step.</p>
-    <div style="display:grid;grid-template-columns:90px 1fr;gap:10px">
-      <div class="form-group"><label>Below %</label><input type="number" id="bulkPct" class="form-control" value="5" min="0.1" max="99" step="0.5"></div>
-      <div class="form-group"><label>Calculate from</label>
-        <select id="bulkBasis" class="form-control">
-          <option value="alert">Current alert price</option>
-          <option value="price">Current market price</option>
-        </select>
-      </div>
-    </div>
-    <div id="bulkPreview" style="max-height:230px;overflow:auto;border:1px solid rgba(255,255,255,.08);border-radius:8px;margin-bottom:8px"></div>
-    <div id="bulkWarn" style="font-size:11px;color:#F5A623;line-height:1.5;margin-bottom:4px"></div>
-    <div class="error-text" id="bulkError"></div>
-    <div class="modal-actions"><button class="btn-cancel" id="bulkCancel">Cancel</button><button class="btn-confirm" id="bulkConfirm">Update</button></div>
   </div>
 </div>
 
@@ -764,7 +740,6 @@ const CONFIG_URL = `${API_BASE}/stock-config.json`;
 const TOKEN_KEY = "cfg_token";
 
 let sessionToken = null;
-let configVersion = null; // R2 etag of stock-config.json as last loaded/saved (optimistic locking)
 let configData = [];
 let feedOnly = [];
 let liveData = {};
@@ -895,8 +870,8 @@ async function submitLogin() {
   if (!u || !p) { errEl.textContent = "Enter username and password."; return; }
   errEl.textContent = ""; btn.disabled = true; btn.textContent = "Signing in…";
   try {
-    const res = await fetch(`${API_BASE}/config-login`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({username:u,password:p}) });
-    if (!res.ok) { errEl.textContent = res.status === 401 ? "Invalid credentials." : "Sign-in failed (" + res.status + ")."; return; }
+    const res = await fetch(`${API_BASE}/login`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({username:u,password:p}) });
+    if (!res.ok) { errEl.textContent = "Invalid credentials."; return; }
     const data = await res.json();
     sessionToken = data.token; saveToken(data.token);
     closeLoginModal(); updateAuthUI(true, data.username || u); await loadConfig();
@@ -958,12 +933,11 @@ const sectorIcon = name => SECTOR_ICONS[String(name||"").toLowerCase()] || SECTO
 async function loadConfig() {
   try {
     const [cfgRes, liveRes] = await Promise.all([
-      fetch(CONFIG_URL + "?t=" + Date.now(), { cache: "no-store", headers: sessionToken ? { "Authorization": `Bearer ${sessionToken}` } : {} }),
+      fetch(CONFIG_URL + "?t=" + Date.now()),
       fetch(`${API_BASE}/dashboard-data?t=${Date.now()}`)
     ]);
     let feedRows = [];
-    if (cfgRes.ok) { configData = await cfgRes.json(); configVersion = cfgRes.headers.get("X-Config-Version") || null; }
-    else if (cfgRes.status === 404) { configData = []; configVersion = null; }
+    if (cfgRes.ok) configData = await cfgRes.json();
     if (liveRes.ok) {
       feedRows = await liveRes.json();
       liveData = {};
@@ -994,8 +968,6 @@ function updateKPIs() {
   $("updatedOnlyBtn").classList.toggle("active", updatedOnly);
   $("kpiTotal").textContent = rows.length;
   $("kpiTriggered").textContent = triggered;
-  $("bulkCount").textContent = triggered;
-  $("bulkAlertBtn").disabled = !triggered;
   $("kpiUpdatedToday").textContent = updatedToday;
   $("kpiUpdatedTodaySub").textContent = "triggered, alert revised";
   $("kpiNear2").textContent = rows.filter(isNearAlert).length;
@@ -1518,104 +1490,16 @@ async function submitSheetModal() {
   finally { btn.disabled = false; btn.textContent = "Create Sheet"; }
 }
 
-function saveFailed(msg) { const e = new Error(msg); e.handled = true; return e; }
-window.addEventListener("unhandledrejection", e => { if (e.reason && e.reason.handled) e.preventDefault(); });
-
-// Saves the whole config. The server only accepts it if X-Base-Version still matches the
-// stored file, so a stale tab can never silently overwrite newer data. Throws on failure.
 async function saveConfigToAPI() {
-  if (!sessionToken) { openLoginModal(); throw saveFailed("Sign in required"); }
-  let res;
+  if (!sessionToken) return;
   try {
-    res = await fetch(`${API_BASE}/stock-config.json`, {
+    await fetch(`${API_BASE}/stock-config.json`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionToken}`, "X-Base-Version": configVersion || "" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionToken}` },
       body: JSON.stringify(configData)
     });
-  } catch(e) {
-    showToast("Could not reach server — changes not saved", true);
-    throw saveFailed("network");
-  }
-  if (res.ok) {
-    try { const d = await res.json(); if (d.version) configVersion = d.version; } catch(e) {}
-    return true;
-  }
-  if (res.status === 401 || res.status === 403) {
-    showToast("Session invalid — sign in with the config admin account", true);
-    logout(); openLoginModal();
-  } else if (res.status === 409 || res.status === 428) {
-    showToast("Config changed in another session — reloaded latest. Please redo your change.", true);
-    await loadConfig();
-  } else {
-    showToast("Save failed (" + res.status + ")", true);
-  }
-  throw saveFailed("http " + res.status);
+  } catch(e) { console.warn("Could not persist config to API:", e); }
 }
-
-// ── Bulk update of triggered ("needs attention") alerts ──
-let bulkItems = [];
-function bulkCompute() {
-  const pct = parseFloat($("bulkPct").value), basis = $("bulkBasis").value;
-  bulkItems = [];
-  if (!(pct > 0 && pct < 100)) return false;
-  realRows().forEach(r => {
-    const info = rowInfo(r);
-    if (info.status !== "Triggered") return;
-    const base = basis === "price" ? info.price : Number(r.alertPrice);
-    if (!(base > 0)) return;
-    const newAlert = Math.round(base * (1 - pct / 100) * 100) / 100;
-    const oldAlert = Number(r.alertPrice);
-    if (!(newAlert > 0) || newAlert === oldAlert) return;
-    bulkItems.push({ sym: r.symbol, sheet: r.sheet, oldAlert, newAlert, price: info.price, still: info.price != null && newAlert >= info.price });
-  });
-  return true;
-}
-function bulkRender() {
-  const ok = bulkCompute(), box = $("bulkPreview"), btn = $("bulkConfirm");
-  $("bulkError").textContent = "";
-  if (!ok) { box.innerHTML = '<div style="padding:14px;font-size:12px;color:#FF5C6C">Enter a percentage between 0 and 100.</div>'; $("bulkWarn").textContent = ""; btn.disabled = true; btn.textContent = "Update"; return; }
-  if (!bulkItems.length) { box.innerHTML = '<div style="padding:14px;font-size:12px;color:#8fa3b5">No triggered alerts to update.</div>'; $("bulkWarn").textContent = ""; btn.disabled = true; btn.textContent = "Update"; return; }
-  const th = 'style="text-align:left;padding:7px 10px;font-size:10px;color:#4a6075;text-transform:uppercase;position:sticky;top:0;background:#0f1c28"';
-  const td = 'style="padding:6px 10px;font-size:12px;border-top:1px solid rgba(255,255,255,.05)"';
-  box.innerHTML = `<table style="width:100%;border-collapse:collapse"><thead><tr><th ${th}>Symbol</th><th ${th}>Price</th><th ${th}>Alert</th><th ${th}>New alert</th></tr></thead><tbody>`
-    + bulkItems.map(i => `<tr><td ${td}>${esc(i.sym)}</td><td ${td}>${i.price != null ? money(i.price) : "—"}</td><td ${td} >${money(i.oldAlert)}</td><td ${td}><b style="color:${i.still ? "#F5A623" : "#2DD4BF"}">${money(i.newAlert)}</b></td></tr>`).join("")
-    + "</tbody></table>";
-  const still = bulkItems.filter(i => i.still).length;
-  $("bulkWarn").textContent = still ? `⚠ ${still} alert${still > 1 ? "s" : ""} (orange) would still be triggered at the new level — try "Current market price".` : "";
-  btn.disabled = false; btn.textContent = `Update ${bulkItems.length} alert${bulkItems.length > 1 ? "s" : ""}`;
-}
-function openBulkModal() {
-  if (!sessionToken) { openLoginModal(); return; }
-  $("bulkPct").value = "5"; $("bulkBasis").value = "alert";
-  bulkRender(); $("bulkModal").classList.add("open");
-}
-function closeBulkModal() { $("bulkModal").classList.remove("open"); }
-async function confirmBulk() {
-  if (!bulkCompute() || !bulkItems.length) return;
-  const btn = $("bulkConfirm"), items = bulkItems.slice();
-  btn.disabled = true; btn.textContent = "Updating…";
-  try {
-    items.forEach(i => {
-      const idx = ensureInConfig(i.sym);
-      if (idx < 0) return;
-      configData[idx] = { ...configData[idx], alertPrice: i.newAlert };
-      if (!newSymbols.has(i.sym)) updatedSymbols.add(i.sym);
-    });
-    refreshAll();
-    await saveConfigToAPI();
-    closeBulkModal();
-    showToast(`${items.length} alert${items.length > 1 ? "s" : ""} updated`);
-  } catch(e) {
-    $("bulkError").textContent = "Could not save — nothing was changed on the server.";
-    await loadConfig(); bulkRender();
-  }
-}
-$("bulkAlertBtn").addEventListener("click", openBulkModal);
-$("bulkClose").addEventListener("click", closeBulkModal);
-$("bulkCancel").addEventListener("click", closeBulkModal);
-$("bulkConfirm").addEventListener("click", confirmBulk);
-$("bulkPct").addEventListener("input", bulkRender);
-$("bulkBasis").addEventListener("change", bulkRender);
 
 let toastTimer;
 function showToast(msg, isError) {
@@ -1666,11 +1550,11 @@ $("moveModalClose").addEventListener("click", closeMoveModal);
 $("moveModalCancel").addEventListener("click", closeMoveModal);
 $("moveModalSubmit").addEventListener("click", submitMoveModal);
 
-["loginModal","alertModal","sheetModal","deleteSheetModal","moveModal","bulkModal"].forEach(id => {
+["loginModal","alertModal","sheetModal","deleteSheetModal","moveModal"].forEach(id => {
   $(id).addEventListener("click", e => { if (e.target.id === id) $(id).classList.remove("open"); });
 });
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") ["loginModal","alertModal","sheetModal","deleteSheetModal","moveModal","bulkModal"].forEach(id => $(id).classList.remove("open"));
+  if (e.key === "Escape") ["loginModal","alertModal","sheetModal","deleteSheetModal","moveModal"].forEach(id => $(id).classList.remove("open"));
 });
 
 // ── Price source toggle (Kotak / NSE) — moved here from index.html ──
