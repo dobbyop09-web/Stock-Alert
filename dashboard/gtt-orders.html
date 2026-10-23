@@ -163,6 +163,7 @@
     .diff-badge.close{background:rgba(45,212,191,.12);color:#2DD4BF;border:1px solid rgba(45,212,191,.25)}
     .diff-badge.near{background:rgba(245,166,35,.12);color:#F5A623;border:1px solid rgba(245,166,35,.25)}
     .diff-badge.far{background:rgba(255,255,255,.05);color:#8fa3bc;border:1px solid rgba(255,255,255,.08)}
+    .diff-badge.crossed{background:none;border:none;padding:3px 0;color:#FF5C6C}
     .diff-badge.above{color:#FF5C6C !important}.diff-badge.na{background:rgba(255,255,255,.03);color:#4a6075;border:1px solid rgba(255,255,255,.06)}
     .qty-cell{display:flex;flex-direction:column;gap:2px}
     .qty-num{font-size:12px;font-weight:600;color:#EDF5FF;font-variant-numeric:tabular-nums}
@@ -1309,14 +1310,26 @@ async function loadCompanyLogos() {
     return SECTOR_COLORS[sheet.toLowerCase()] || SECTOR_COLOR_DEFAULT;
   }
 
+  /* Signed distance to trigger: positive = still to go, negative = condition already met */
+  function signedDistPct(o, ref) {
+    const trigger = parseFloat(o.conditionPrice);
+    if (!isFinite(ref) || ref <= 0 || !isFinite(trigger) || trigger <= 0) return null;
+    const raw = String(o.condition || "").trim();
+    const op  = raw.includes("≥") ? "≥" : raw.includes("≤") ? "≤" : (o.type === "Buy" ? "≤" : "≥");
+    return (op === "≤" ? (ref - trigger) : (trigger - ref)) / ref * 100;
+  }
+
+  function buildDiffBadge(d) {
+    if (d === null) return `<span class="diff-badge na">—</span>`;
+    if (d <= 0) return `<span class="diff-badge crossed">-${Math.abs(d).toFixed(2)}%</span>`;
+    const cls = d <= 2 ? "close" : d <= 5 ? "near" : "far";
+    return `<span class="diff-badge ${cls}">${d.toFixed(2)}%</span>`;
+  }
+
   function getDiffPercentValue(o) {
     const match = getCmpForSymbol(o.symbol);
     if (!match) return null;
-    const cmp = parseFloat(match.currentPrice);
-    if (!isFinite(cmp) || cmp <= 0) return null;
-    const trigger = parseFloat(o.conditionPrice);
-    if (!isFinite(trigger) || trigger <= 0) return null;
-    return Math.abs(((trigger - cmp) / cmp) * 100);
+    return signedDistPct(o, parseFloat(match.currentPrice));
   }
 
   function buildCmpAndDiffCells(o) {
@@ -1336,18 +1349,7 @@ async function loadCompanyLogos() {
 
     const cmpHtml = `<div class="cmp-cell"><span class="cmp-price">₹ ${fmtPrice(cmp)}</span>${chgStr ? `<span class="cmp-change ${chgCls}">${chgStr}</span>` : ""}</div>`;
 
-    const trigger = parseFloat(o.conditionPrice);
-    let diffHtml;
-    if (!isFinite(trigger) || trigger <= 0) {
-      diffHtml = `<span class="diff-badge na">—</span>`;
-    } else {
-      const diffPct = ((trigger - cmp) / cmp) * 100;
-      const absPct  = Math.abs(diffPct);
-      const arrow   = diffPct > 0.05 ? "▲" : (diffPct < -0.05 ? "▼" : "●");
-      const cls     = absPct <= 2 ? "close" : absPct <= 5 ? "near" : "far";
-      const above   = diffPct > 0.05 ? " above" : "";
-      diffHtml = `<span class="diff-badge ${cls}${above}">${arrow} ${absPct.toFixed(2)}%</span>`;
-    }
+    const diffHtml = buildDiffBadge(signedDistPct(o, cmp));
 
     return { cmpHtml, diffHtml };
   }
@@ -1355,11 +1357,7 @@ async function loadCompanyLogos() {
   function getDayLowDiffPercentValue(o) {
     const match = getCmpForSymbol(o.symbol);
     if (!match) return null;
-    const dayLow = parseFloat(match.dayLow);
-    if (!isFinite(dayLow) || dayLow <= 0) return null;
-    const trigger = parseFloat(o.conditionPrice);
-    if (!isFinite(trigger) || trigger <= 0) return null;
-    return Math.abs(((trigger - dayLow) / dayLow) * 100);
+    return signedDistPct(o, parseFloat(match.dayLow));
   }
 
   function buildDayLowCell(o) {
@@ -1370,16 +1368,7 @@ async function loadCompanyLogos() {
       return `<div class="cmp-cell" style="align-items:center"><span class="cmp-price">—</span></div>`;
     }
 
-    const trigger = parseFloat(o.conditionPrice);
-    let diffHtml = `<span class="diff-badge na">—</span>`;
-    if (isFinite(trigger) && trigger > 0) {
-      const diffPct = ((trigger - dayLow) / dayLow) * 100;
-      const absPct  = Math.abs(diffPct);
-      const arrow   = diffPct > 0.05 ? "▲" : (diffPct < -0.05 ? "▼" : "●");
-      const cls     = absPct <= 2 ? "close" : absPct <= 5 ? "near" : "far";
-      const above   = diffPct > 0.05 ? " above" : "";
-      diffHtml = `<span class="diff-badge ${cls}${above}">${arrow} ${absPct.toFixed(2)}%</span>`;
-    }
+    const diffHtml = buildDiffBadge(signedDistPct(o, dayLow));
 
     return `<div class="cmp-cell" style="align-items:center"><span class="cmp-price">₹ ${fmtPrice(dayLow)}</span>${diffHtml}</div>`;
   }
@@ -1546,7 +1535,7 @@ async function loadCompanyLogos() {
     // Filter active orders that are in the near category (≤ 2%)
     const near2Orders = active.filter(o => {
       const d = getDiffPercentValue(o);
-      return d !== null && d <= 2;
+      return d !== null && d > 0 && d <= 2;
     });
     const near2Amount = near2Orders.reduce((sum, o) => {
       const price = o.conditionPrice || o.targetPrice;
@@ -1556,7 +1545,7 @@ async function loadCompanyLogos() {
     // Filter active orders that are in the near future category (≤ 5% - yellow)
     const near5Orders = active.filter(o => {
       const d = getDiffPercentValue(o);
-      return d !== null && d <= 5;
+      return d !== null && d > 0 && d <= 5;
     });
     const near5Amount = near5Orders.reduce((sum, o) => {
       const price = o.conditionPrice || o.targetPrice;
