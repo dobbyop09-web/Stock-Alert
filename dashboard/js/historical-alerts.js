@@ -35,7 +35,10 @@ const HISTORY_ENDPOINT = `${BASE_URL}/alert-history`;
 
 const ha = {
     all: [],           // raw alerts, currentPrice patched in from the live dashboard
-    filtered: [],
+    filtered: [],       // individual alerts after all filters
+    statBase: [],       // alerts after every filter EXCEPT the status filter (feeds the stat cards)
+    groupBase: [],      // alerts after every filter EXCEPT the group filter (feeds the group pills)
+    clubs: [],          // filtered alerts clubbed per stock: [{ symbol, alerts[], latest }]
     selected: new Set(), // key = `${symbol}__${triggeredAt}`
     sortDesc: true,
     page: 1,
@@ -74,6 +77,153 @@ function sinceTriggerPct(a) {
     const base = a.triggerPrice ?? a.alertPrice;
     if (!base || a.currentPrice === undefined || a.currentPrice === null) return null;
     return ((a.currentPrice - base) / base) * 100;
+}
+
+const escAttr = s => String(s ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+const symKey = a => String(a.symbol || "").toUpperCase();
+
+function fmtDateTimeInline(iso) {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return iso || "—";
+    const date = d.toLocaleString(undefined, { day: "2-digit", month: "short", year: "numeric" });
+    const time = d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit", hour12: true });
+    return `${date}, ${time}`;
+}
+
+function injectHaStyles() {
+    if (document.getElementById("haExtraStyles")) return;
+    const style = document.createElement("style");
+    style.id = "haExtraStyles";
+    style.textContent = `
+        /* clickable stat cards */
+        #haStats .stat { cursor: pointer; transition: transform .15s ease, box-shadow .15s ease, filter .15s ease; position: relative; }
+        #haStats .stat:hover { transform: translateY(-2px); filter: brightness(1.12); }
+        #haStats .stat.is-active { box-shadow: 0 0 0 2px #2dd4bf, 0 8px 24px rgba(45,212,191,.18); }
+        #haStats .stat:focus-visible { outline: 2px solid #2dd4bf; outline-offset: 2px; }
+
+        /* clickable group pills */
+        #haGroupBreakdown .ha-group-badge { cursor: pointer; user-select: none; transition: background .15s ease, box-shadow .15s ease, opacity .15s ease; }
+        #haGroupBreakdown .ha-group-badge:hover { filter: brightness(1.25); }
+        #haGroupBreakdown .ha-group-badge.is-active { background: #2dd4bf; color: #04201c; box-shadow: 0 0 0 2px rgba(45,212,191,.35); }
+        #haGroupBreakdown .ha-group-badge.is-active b { color: inherit; }
+        #haGroupBreakdown.has-active .ha-group-badge:not(.is-active) { opacity: .55; }
+
+        /* clubbed stock rows */
+        .ha-sym-link { font-weight: 700; cursor: pointer; border-bottom: 1px dashed currentColor; background: none; border-top: 0; border-left: 0; border-right: 0; color: inherit; font: inherit; font-weight: 700; padding: 0; }
+        .ha-sym-link:hover { color: #2dd4bf; }
+        .ha-count-badge { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; font-size: 10.5px; font-weight: 700; background: rgba(45,212,191,.16); color: #2dd4bf; border: 1px solid rgba(45,212,191,.35); cursor: pointer; vertical-align: middle; }
+        .ha-count-badge:hover { background: rgba(45,212,191,.3); }
+        tr.ha-club-row { cursor: default; }
+
+        /* stock popup */
+        .ha-sp-overlay { position: fixed; inset: 0; z-index: 100000; background: rgba(2,6,15,.7); display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(3px); }
+        .ha-sp-overlay[hidden] { display: none; }
+        .ha-sp-modal { width: min(920px, 100%); max-height: 86vh; display: flex; flex-direction: column; background: var(--panel, #0f1b2d); color: var(--text, #e5edf7); border: 1px solid var(--border, rgba(148,163,184,.2)); border-radius: 16px; box-shadow: 0 30px 80px rgba(0,0,0,.6); overflow: hidden; }
+        .ha-sp-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 18px 22px; border-bottom: 1px solid var(--border, rgba(148,163,184,.2)); }
+        .ha-sp-title { font-size: 20px; font-weight: 800; letter-spacing: .3px; }
+        .ha-sp-company { color: var(--muted, #8aa0bb); font-size: 12.5px; margin-top: 3px; }
+        .ha-sp-head-actions { display: flex; gap: 8px; align-items: center; }
+        .ha-sp-meta { display: flex; flex-wrap: wrap; gap: 10px; padding: 14px 22px 4px; }
+        .ha-sp-chip { background: rgba(148,163,184,.08); border: 1px solid var(--border, rgba(148,163,184,.2)); border-radius: 10px; padding: 8px 12px; min-width: 110px; }
+        .ha-sp-chip small { display: block; color: var(--muted, #8aa0bb); font-size: 10.5px; text-transform: uppercase; letter-spacing: .6px; margin-bottom: 2px; }
+        .ha-sp-chip span { font-weight: 700; font-size: 14px; }
+        .ha-sp-note { padding: 6px 22px 0; color: var(--muted, #8aa0bb); font-size: 11.5px; }
+        .ha-sp-scroll { overflow: auto; padding: 10px 22px 20px; }
+        .ha-sp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .ha-sp-table th { text-align: left; color: var(--muted, #8aa0bb); font-size: 10.5px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; padding: 10px 8px; border-bottom: 1px solid var(--border, rgba(148,163,184,.2)); position: sticky; top: 0; background: var(--panel, #0f1b2d); }
+        .ha-sp-table td { padding: 10px 8px; border-bottom: 1px solid rgba(148,163,184,.1); }
+        .ha-sp-table .num, .ha-sp-table th.num { text-align: right; }
+        .ha-sp-close { width: 34px; height: 34px; border-radius: 9px; border: 1px solid var(--border, rgba(148,163,184,.2)); background: transparent; color: inherit; cursor: pointer; font-size: 16px; }
+        .ha-sp-close:hover { background: rgba(148,163,184,.12); }
+    `;
+    document.head.appendChild(style);
+}
+
+function ensureStockPopup() {
+    let ov = document.getElementById("haStockOverlay");
+    if (ov) return ov;
+    ov = document.createElement("div");
+    ov.id = "haStockOverlay";
+    ov.className = "ha-sp-overlay";
+    ov.hidden = true;
+    ov.innerHTML = `<div class="ha-sp-modal" role="dialog" aria-modal="true"><div id="haStockBody" style="display:flex;flex-direction:column;min-height:0"></div></div>`;
+    document.body.appendChild(ov);
+    ov.addEventListener("click", e => { if (e.target === ov) closeStockPopup(); });
+    return ov;
+}
+
+function closeStockPopup() {
+    const ov = document.getElementById("haStockOverlay");
+    if (ov) ov.hidden = true;
+    ha.popupSymbol = null;
+}
+
+function openStockPopup(symbol) {
+    const ov = ensureStockPopup();
+    const body = document.getElementById("haStockBody");
+    const sym = String(symbol).toUpperCase();
+    const club = ha.clubs.find(c => c.symbol === sym);
+    if (!club) { closeStockPopup(); return; }
+    ha.popupSymbol = sym;
+
+    const alerts = club.alerts; // newest first
+    const totalForStock = ha.all.filter(a => symKey(a) === sym).length;
+    const latest = alerts[0];
+    const oldest = alerts[alerts.length - 1];
+    const group = latest.watchlist || latest.sheet || "—";
+    const cur = latest.currentPrice;
+
+    const rowsHtml = alerts.map((a, i) => {
+        const vs = vsAlertPct(a);
+        const since = sinceTriggerPct(a);
+        const above = (vs ?? 0) >= 0;
+        const vsHtml = vs === null ? "—" :
+            `<span class="ha-vs-badge ${above ? "up" : "down"}">${above ? "▲ +" : "▼ "}${vs.toFixed(2)}%<small>${above ? "Above Alert" : "Below Alert"}</small></span>`;
+        const sinceHtml = since === null ? "—" :
+            `<span class="change-pct ${since >= 0 ? "up" : "down"}">${since >= 0 ? "+" : ""}${since.toFixed(2)}%</span>`;
+        return `<tr>
+            <td>${alerts.length - i}</td>
+            <td>${fmtDateTimeInline(a.triggeredAt || a.date)}</td>
+            <td class="num">${a.alertPrice ?? "—"}</td>
+            <td class="num">${a.triggerPrice ?? "—"}</td>
+            <td class="num">${a.currentPrice ?? "—"}</td>
+            <td class="num">${vsHtml}</td>
+            <td class="num">${sinceHtml}</td>
+        </tr>`;
+    }).join("");
+
+    body.innerHTML = `
+        <div class="ha-sp-head">
+            <div>
+                <div class="ha-sp-title">${escAttr(latest.symbol)} <span class="ha-group-badge" style="font-size:11px;vertical-align:middle;margin-left:6px">${escAttr(group)}</span></div>
+                <div class="ha-sp-company">${escAttr(latest.companyName || "")}</div>
+            </div>
+            <div class="ha-sp-head-actions">
+                ${latest.screenerUrl ? `<button class="icon-btn" title="Open on Screener" id="haSpScreener">${EXTERNAL_ICON}</button>` : ""}
+                <button class="ha-sp-close" id="haSpClose" aria-label="Close">✕</button>
+            </div>
+        </div>
+        <div class="ha-sp-meta">
+            <div class="ha-sp-chip"><small>Total alerts</small><span>${alerts.length}</span></div>
+            <div class="ha-sp-chip"><small>Current price</small><span>${cur ?? "—"}</span></div>
+            <div class="ha-sp-chip"><small>First alert</small><span>${fmtDateTimeInline(oldest.triggeredAt || oldest.date)}</span></div>
+            <div class="ha-sp-chip"><small>Latest alert</small><span>${fmtDateTimeInline(latest.triggeredAt || latest.date)}</span></div>
+        </div>
+        ${totalForStock > alerts.length ? `<div class="ha-sp-note">Showing ${alerts.length} of ${totalForStock} alerts for this stock (your current filters are applied).</div>` : ""}
+        <div class="ha-sp-scroll">
+            <table class="ha-sp-table">
+                <thead><tr>
+                    <th>#</th><th>Date / Time</th><th class="num">Alert</th><th class="num">Trigger</th>
+                    <th class="num">Current</th><th class="num">Vs Alert</th><th class="num">Since Trigger</th>
+                </tr></thead>
+                <tbody>${rowsHtml}</tbody>
+            </table>
+        </div>`;
+
+    document.getElementById("haSpClose").addEventListener("click", closeStockPopup);
+    const sc = document.getElementById("haSpScreener");
+    if (sc) sc.addEventListener("click", () => window.open(latest.screenerUrl, "_blank"));
+    ov.hidden = false;
 }
 
 function els() {
@@ -132,39 +282,67 @@ function applyHaFilters() {
     const text = search.value.trim().toUpperCase();
     const m = month.value;
     const g = group.value;
-    const st = status.value; // "", "above", "below"
+    const st = status.value; // "", "above", "below", "recovered"
     const from = dateFrom.value ? new Date(dateFrom.value + "T00:00:00") : null;
     const to = dateTo.value ? new Date(dateTo.value + "T23:59:59") : null;
 
-    ha.filtered = ha.all.filter(a => {
+    const matches = (a, { skipStatus = false, skipGroup = false } = {}) => {
         const matchesText = text === "" ||
             (a.symbol || "").toUpperCase().includes(text) ||
             (a.companyName || "").toUpperCase().includes(text) ||
             (a.watchlist || a.sheet || "").toUpperCase().includes(text);
         const matchesMonth = m === "" || monthKey(a.triggeredAt || a.date) === m;
-        const matchesGroup = g === "" || (a.watchlist || a.sheet) === g;
-        const vs = vsAlertPct(a) ?? 0;
-        const matchesStatus = st === "" || (st === "above" ? vs >= 0 : vs < 0);
+        const matchesGroup = skipGroup || g === "" || (a.watchlist || a.sheet) === g;
+        let matchesStatus = true;
+        if (!skipStatus && st !== "") {
+            if (st === "recovered") {
+                const since = sinceTriggerPct(a);
+                matchesStatus = since !== null && since >= 0;
+            } else {
+                const vs = vsAlertPct(a) ?? 0;
+                matchesStatus = st === "above" ? vs >= 0 : vs < 0;
+            }
+        }
         const d = new Date(a.triggeredAt || a.date);
         const matchesFrom = !from || d >= from;
         const matchesTo = !to || d <= to;
         return matchesText && matchesMonth && matchesGroup && matchesStatus && matchesFrom && matchesTo;
-    });
+    };
 
-    ha.filtered.sort((x, y) => {
-        const dx = new Date(x.triggeredAt || x.date).getTime();
-        const dy = new Date(y.triggeredAt || y.date).getTime();
-        return ha.sortDesc ? dy - dx : dx - dy;
+    const time = a => new Date(a.triggeredAt || a.date).getTime();
+    const sortFn = (x, y) => ha.sortDesc ? time(y) - time(x) : time(x) - time(y);
+
+    ha.filtered = ha.all.filter(a => matches(a)).sort(sortFn);
+    ha.statBase = ha.all.filter(a => matches(a, { skipStatus: true }));
+    ha.groupBase = ha.all.filter(a => matches(a, { skipGroup: true }));
+
+    // Club alerts per stock. Alerts inside a club are always newest-first;
+    // the clubs themselves are ordered by their newest/oldest alert per sort direction.
+    const map = new Map();
+    ha.filtered.forEach(a => {
+        const k = symKey(a);
+        if (!map.has(k)) map.set(k, []);
+        map.get(k).push(a);
     });
+    ha.clubs = [...map.entries()].map(([symbol, alerts]) => {
+        alerts.sort((x, y) => time(y) - time(x));
+        return { symbol, alerts, latest: alerts[0] };
+    });
+    ha.clubs.sort((x, y) => ha.sortDesc ? time(y.latest) - time(x.latest) : time(x.latest) - time(y.latest));
 
     ha.page = 1;
     renderHaStats();
     renderHaTable();
+
+    // keep an open stock popup in sync with filters / deletions
+    if (ha.popupSymbol) openStockPopup(ha.popupSymbol);
 }
 
 function renderHaStats() {
     const { stats, groupBreakdown } = els();
-    const rows = ha.filtered;
+    const rows = ha.statBase;
+    const activeStatus = els().status.value;
+    const activeGroup = els().group.value;
 
     const above = rows.filter(a => (vsAlertPct(a) ?? 0) >= 0).length;
     const below = rows.length - above;
@@ -177,8 +355,8 @@ function renderHaStats() {
     const DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7" /></svg>';
     const TREND = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8" /><path d="M15 7h6v6" /></svg>';
 
-    const card = (label, count, cls, icon) => `
-        <div class="stat stat-${cls}">
+    const card = (label, count, cls, icon, filterVal) => `
+        <div class="stat stat-${cls}${activeStatus === filterVal ? " is-active" : ""}" data-status-filter="${filterVal}" role="button" tabindex="0" title="Click to filter">
             <div class="stat-body">
                 <div class="n">${count}</div>
                 <div class="l">${label}</div>
@@ -188,10 +366,10 @@ function renderHaStats() {
     `;
 
     stats.innerHTML =
-        card("Total Alerts", rows.length, "total", BELL) +
-        card("Above Alert Now", above, "watch", UP) +
-        card("Below Alert Now", below, "triggered", DOWN) +
-        `<div class="stat stat-near">
+        card("Total Alerts", rows.length, "total", BELL, "") +
+        card("Above Alert Now", above, "watch", UP, "above") +
+        card("Below Alert Now", below, "triggered", DOWN, "below") +
+        `<div class="stat stat-near${activeStatus === "recovered" ? " is-active" : ""}" data-status-filter="recovered" role="button" tabindex="0" title="Click to show alerts that have recovered since trigger">
             <div class="stat-body">
                 <div class="n">${avgRecovery >= 0 ? "+" : ""}${avgRecovery.toFixed(2)}%</div>
                 <div class="l">Avg Recovery Since Trigger</div>
@@ -200,14 +378,15 @@ function renderHaStats() {
         </div>`;
 
     const groupCounts = {};
-    rows.forEach(a => {
+    ha.groupBase.forEach(a => {
         const g = a.watchlist || a.sheet || "—";
         groupCounts[g] = (groupCounts[g] || 0) + 1;
     });
     const groupEntries = Object.entries(groupCounts).sort((a, b) => b[1] - a[1]);
+    groupBreakdown.classList.toggle("has-active", !!activeGroup);
     groupBreakdown.innerHTML = groupEntries.length
         ? `<div class="ha-gb-title">Group Breakdown</div><div class="ha-gb-pills">` +
-          groupEntries.map(([g, c]) => `<span class="ha-group-badge">${g} <b>${c}</b></span>`).join("") +
+          groupEntries.map(([g, c]) => `<span class="ha-group-badge${g === activeGroup ? " is-active" : ""}" data-group="${escAttr(g)}" role="button" tabindex="0" title="Click to filter by ${escAttr(g)}">${g} <b>${c}</b></span>`).join("") +
           `</div>`
         : `<div class="ha-gb-title">Group Breakdown</div><div class="ha-gb-pills" style="color:var(--muted);font-size:11.5px">No data</div>`;
 }
@@ -215,12 +394,12 @@ function renderHaStats() {
 function renderHaTable() {
     const { tbody, empty, tableWrap, showingLine, selectAll } = els();
 
-    const total = ha.filtered.length;
+    const total = ha.clubs.length;
     const totalPages = Math.max(1, Math.ceil(total / ha.perPage));
     ha.page = Math.min(ha.page, totalPages);
 
     const start = (ha.page - 1) * ha.perPage;
-    const pageRows = ha.filtered.slice(start, start + ha.perPage);
+    const pageRows = ha.clubs.slice(start, start + ha.perPage);
 
     if (total === 0) {
         tableWrap.style.display = "none";
@@ -234,15 +413,20 @@ function renderHaTable() {
 
     showingLine.textContent = total === 0
         ? "No alerts found"
-        : `Showing ${start + 1}–${Math.min(start + ha.perPage, total)} of ${total} alerts`;
+        : `Showing ${start + 1}–${Math.min(start + ha.perPage, total)} of ${total} stock${total === 1 ? "" : "s"} (${ha.filtered.length} alert${ha.filtered.length === 1 ? "" : "s"})`;
 
-    selectAll.checked = pageRows.length > 0 && pageRows.every(a => ha.selected.has(keyOf(a)));
-    selectAll.indeterminate = !selectAll.checked && pageRows.some(a => ha.selected.has(keyOf(a)));
+    const clubSel = c => c.alerts.every(a => ha.selected.has(keyOf(a)));
+    const clubAny = c => c.alerts.some(a => ha.selected.has(keyOf(a)));
+    selectAll.checked = pageRows.length > 0 && pageRows.every(clubSel);
+    selectAll.indeterminate = !selectAll.checked && pageRows.some(clubAny);
 
     tbody.querySelectorAll(".ha-row-check").forEach(cb => {
         cb.addEventListener("change", () => {
-            const k = cb.dataset.key;
-            if (cb.checked) ha.selected.add(k); else ha.selected.delete(k);
+            const club = ha.clubs.find(c => c.symbol === cb.dataset.symbol);
+            if (!club) return;
+            club.alerts.forEach(a => {
+                if (cb.checked) ha.selected.add(keyOf(a)); else ha.selected.delete(keyOf(a));
+            });
             renderHaTable();
         });
     });
@@ -255,14 +439,16 @@ function updateDeleteSelectedBtn() {
     const { deleteSelectedBtn } = els();
     deleteSelectedBtn.disabled = ha.selected.size === 0;
     deleteSelectedBtn.innerHTML = ha.selected.size
-        ? `🗑 Delete selected (${ha.selected.size})`
+        ? `🗑 Delete selected (${ha.selected.size} alert${ha.selected.size === 1 ? "" : "s"})`
         : `🗑 Delete selected`;
 }
 
 const EYE_ICON = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z" /><circle cx="12" cy="12" r="2.5" /></svg>';
 const EXTERNAL_ICON = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><path d="M15 3h6v6" /><path d="M10 14 21 3" /></svg>';
 
-function rowHtml(a) {
+function rowHtml(club) {
+    const a = club.latest;
+    const n = club.alerts.length;
     const vs = vsAlertPct(a);
     const since = sinceTriggerPct(a);
     const above = (vs ?? 0) >= 0;
@@ -277,14 +463,15 @@ function rowHtml(a) {
         `<span class="change-pct ${since >= 0 ? "up" : "down"}">${since >= 0 ? "+" : ""}${since.toFixed(2)}%</span>`;
 
     const group = a.watchlist || a.sheet || "—";
-    const k = keyOf(a);
-    const checked = ha.selected.has(k) ? "checked" : "";
+    const checked = club.alerts.every(x => ha.selected.has(keyOf(x))) ? "checked" : "";
 
     return `
-        <tr>
-            <td><input type="checkbox" class="ha-row-check" data-key="${k}" ${checked}></td>
+        <tr class="ha-club-row">
+            <td><input type="checkbox" class="ha-row-check" data-symbol="${escAttr(club.symbol)}" ${checked}></td>
             <td>${fmtDateTimeShort(a.triggeredAt || a.date)}</td>
-            <td><span class="sym-text" style="font-weight:700">${a.symbol || "—"}</span></td>
+            <td>
+                <button type="button" class="ha-sym-link sym-text" data-symbol="${escAttr(club.symbol)}" title="View all ${n} alert${n === 1 ? "" : "s"} for ${escAttr(a.symbol)}">${a.symbol || "—"}</button>${n > 1 ? `<span class="ha-count-badge" data-symbol="${escAttr(club.symbol)}" title="${n} alerts — click to view">×${n}</span>` : ""}
+            </td>
             <td class="ha-company" title="${(a.companyName || "").replace(/"/g, "&quot;")}">${a.companyName || "—"}</td>
             <td><span class="ha-group-badge">${group}</span></td>
             <td class="num">${a.alertPrice ?? "—"}</td>
@@ -413,6 +600,7 @@ function openHaModal() {
 function closeHaModal() {
     const { overlay } = els();
     overlay.hidden = true;
+    closeStockPopup();
     document.body.style.overflow = "";
 }
 
@@ -420,10 +608,57 @@ export function initHistoricalAlerts() {
     const { openBtn, closeBtn, overlay, search, month, group, status, dateFrom, dateTo,
         clearBtn, perPage, selectAll, deleteOlderBtn, deleteSelectedBtn } = els();
 
+    injectHaStyles();
+    ensureStockPopup();
+
+    // "Recovered" option used by the Avg Recovery stat card
+    if (!status.querySelector('option[value="recovered"]')) {
+        status.insertAdjacentHTML("beforeend", '<option value="recovered">Recovered since trigger</option>');
+    }
+
+    const { stats, groupBreakdown, tbody } = els();
+    const toggleStatus = val => {
+        status.value = (val === "" || status.value === val) ? "" : val;
+        applyHaFilters();
+    };
+    stats.addEventListener("click", e => {
+        const card = e.target.closest("[data-status-filter]");
+        if (card) toggleStatus(card.dataset.statusFilter);
+    });
+    stats.addEventListener("keydown", e => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        const card = e.target.closest("[data-status-filter]");
+        if (card) { e.preventDefault(); toggleStatus(card.dataset.statusFilter); }
+    });
+
+    const toggleGroup = g => {
+        group.value = (group.value === g) ? "" : g;
+        applyHaFilters();
+    };
+    groupBreakdown.addEventListener("click", e => {
+        const pill = e.target.closest("[data-group]");
+        if (pill) toggleGroup(pill.dataset.group);
+    });
+    groupBreakdown.addEventListener("keydown", e => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        const pill = e.target.closest("[data-group]");
+        if (pill) { e.preventDefault(); toggleGroup(pill.dataset.group); }
+    });
+
+    tbody.addEventListener("click", e => {
+        const t = e.target.closest(".ha-sym-link, .ha-count-badge");
+        if (t) openStockPopup(t.dataset.symbol);
+    });
+
     openBtn.addEventListener("click", openHaModal);
     closeBtn.addEventListener("click", closeHaModal);
     overlay.addEventListener("click", (e) => { if (e.target === overlay) closeHaModal(); });
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !overlay.hidden) closeHaModal(); });
+    document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        const sp = document.getElementById("haStockOverlay");
+        if (sp && !sp.hidden) { closeStockPopup(); return; }
+        if (!overlay.hidden) closeHaModal();
+    });
 
     search.addEventListener("input", applyHaFilters);
     month.addEventListener("change", applyHaFilters);
@@ -450,13 +685,13 @@ export function initHistoricalAlerts() {
 
     selectAll.addEventListener("change", () => {
         const start = (ha.page - 1) * ha.perPage;
-        const pageRows = ha.filtered.slice(start, start + ha.perPage);
-        pageRows.forEach(a => {
+        const pageRows = ha.clubs.slice(start, start + ha.perPage);
+        pageRows.forEach(c => c.alerts.forEach(a => {
             if (selectAll.checked) ha.selected.add(keyOf(a)); else ha.selected.delete(keyOf(a));
-        });
+        }));
         renderHaTable();
     });
 
     deleteOlderBtn.addEventListener("click", deleteOlderAlerts);
     deleteSelectedBtn.addEventListener("click", deleteSelected);
-}   
+}
