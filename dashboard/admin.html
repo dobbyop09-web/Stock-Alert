@@ -818,6 +818,19 @@
       gap: 8px;
     }
 
+    /* Change summary chips in the edit banner */
+    .chg-list { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 3px; }
+    .chg-chip {
+      display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px 2px 6px; border-radius: 999px;
+      font-size: 11px; font-weight: 600; letter-spacing: .02em; border: 1px solid; cursor: default;
+    }
+    .chg-chip svg { width: 11px; height: 11px; flex-shrink: 0; }
+    .chg-chip.add  { color: #2dd4bf; background: rgba(45, 212, 191, .10); border-color: rgba(45, 212, 191, .35); }
+    .chg-chip.edit { color: #f5a623; background: rgba(245, 166, 35, .10); border-color: rgba(245, 166, 35, .35); }
+    .chg-chip.sold { color: #a78bfa; background: rgba(139, 92, 246, .12); border-color: rgba(139, 92, 246, .4); }
+    .chg-chip.del  { color: #ff5c6c; background: rgba(255, 92, 108, .10); border-color: rgba(255, 92, 108, .35); }
+    .chg-more { font-size: 11px; color: #6b8299; }
+
     /* ── Deposit (Amount from Bank) add panel — shown in edit mode, in sidebar ── */
     .deposit-panel {
       border-color: rgba(139, 92, 246, .3);
@@ -1540,6 +1553,41 @@
     .sell-date-cell.visible {
       display: table-cell;
     }
+
+    /* Sell button (red outline) + row actions menu */
+    .sell-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 34px; padding: 0 16px; border-radius: 8px; cursor: pointer;
+      font-size: 12.5px; font-weight: 600; letter-spacing: .01em; color: #ff6b78;
+      background: rgba(255, 92, 108, .07); border: 1px solid rgba(255, 92, 108, .55);
+      transition: background .15s ease, box-shadow .15s ease, border-color .15s ease, color .15s ease;
+    }
+    .sell-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .sell-btn:hover { background: rgba(255, 92, 108, .16); border-color: #ff5c6c; color: #ff8a94; box-shadow: 0 0 14px rgba(255, 92, 108, .22); }
+    .sell-btn.sm { height: 28px; padding: 0 11px; font-size: 11px; gap: 6px; }
+    .sell-btn.sm svg { width: 13px; height: 13px; }
+
+    .row-menu-btn {
+      width: 34px; height: 34px; border-radius: 8px; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; color: #cfe2f5;
+      background: rgba(255, 255, 255, .03); border: 1px solid rgba(45, 212, 191, .3);
+      transition: background .15s ease, border-color .15s ease;
+    }
+    .row-menu-btn svg { width: 16px; height: 16px; }
+    .row-menu-btn:hover, .row-menu-btn.open { background: rgba(45, 212, 191, .12); border-color: rgba(45, 212, 191, .6); }
+    .row-menu {
+      position: fixed; z-index: 400; min-width: 168px; padding: 5px; border-radius: 10px; display: none;
+      background: #0e1a26; border: 1px solid rgba(255, 255, 255, .1); box-shadow: 0 14px 36px rgba(0, 0, 0, .55);
+    }
+    .row-menu.visible { display: block; }
+    .row-menu button {
+      display: flex; align-items: center; gap: 9px; width: 100%; padding: 8px 10px; border-radius: 7px;
+      font-size: 12px; font-weight: 500; color: #dce8f4; text-align: left;
+    }
+    .row-menu button svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .row-menu button:hover { background: rgba(255, 255, 255, .06); }
+    .row-menu button.danger { color: #ff5c6c; }
+    .row-menu button.danger:hover { background: rgba(255, 92, 108, .12); }
 
     /* Icon button */
     .icon-btn {
@@ -2754,6 +2802,268 @@
         transform: rotate(360deg);
       }
     }
+
+    /* ── FII/DII Flow History (redesigned modal, compact) ── */
+    .fd-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(2, 6, 16, .74);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .fd-overlay.visible { display: flex; }
+
+    .fd-modal {
+      width: 100%;
+      max-width: 1080px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 14px;
+      color: #e8f0ff;
+      background:
+        radial-gradient(800px 360px at 8% -8%, rgba(31, 139, 255, .12), transparent 62%),
+        #07101f;
+      border: 1px solid rgba(80, 130, 230, .24);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, .65);
+      animation: fhPop .22s cubic-bezier(.2, .9, .3, 1);
+    }
+
+    .fd-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; flex-wrap: wrap; padding: 14px 18px 10px; flex-shrink: 0;
+    }
+    .fd-head-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .fd-head-icon {
+      width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; color: #ff4d5e;
+      background: linear-gradient(145deg, rgba(255, 70, 90, .22), rgba(120, 20, 40, .28));
+      border: 1px solid rgba(255, 77, 94, .38);
+    }
+    .fd-head-icon svg { width: 20px; height: 20px; }
+    .fd-title { font-size: 20px; font-weight: 700; letter-spacing: -.02em; color: #f4f8ff; line-height: 1.15; }
+    .fd-sub { font-size: 12px; color: #7f93b5; margin-top: 2px; }
+    .fd-head-right { display: flex; align-items: center; gap: 10px; }
+
+    .fd-seg {
+      display: flex; align-items: center; gap: 2px; padding: 3px; border-radius: 999px;
+      background: rgba(12, 28, 56, .85); border: 1px solid rgba(80, 130, 230, .2);
+    }
+    .fd-seg-btn {
+      padding: 6px 14px; border-radius: 999px; font-size: 12.5px; font-weight: 500; color: #9db0d0;
+      transition: background .15s ease, color .15s ease; white-space: nowrap;
+    }
+    .fd-seg-btn:hover { color: #e8f0ff; }
+    .fd-seg-btn.active {
+      color: #fff; font-weight: 600;
+      background: linear-gradient(180deg, #0fbf8f, #089470);
+      box-shadow: 0 0 14px rgba(25, 211, 160, .28);
+    }
+    .fd-close {
+      width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; color: #8ea3c4;
+      border: 1px solid rgba(80, 130, 230, .22); background: rgba(12, 28, 56, .7);
+    }
+    .fd-close:hover { color: #fff; border-color: rgba(120, 170, 255, .5); }
+    .fd-close svg { width: 14px; height: 14px; }
+
+    .fd-body { flex: 1; overflow-y: auto; padding: 2px 18px 16px; display: flex; flex-direction: column; gap: 12px; }
+    .fd-body::-webkit-scrollbar { width: 6px; }
+    .fd-body::-webkit-scrollbar-thumb { background: rgba(120, 160, 230, .18); border-radius: 4px; }
+
+    .fd-period-note { font-size: 11px; color: #7f93b5; margin: -4px 2px -2px; letter-spacing: .02em; }
+    .fd-period-note b { color: #cfe0ff; font-weight: 600; }
+
+    /* KPI cards (flat — no background curves) */
+    .fd-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .fd-kpi {
+      position: relative; display: flex; align-items: center; gap: 12px;
+      padding: 11px 14px; border-radius: 12px; border: 1px solid; min-width: 0;
+    }
+    .fd-kpi-ico {
+      width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; border: 1px solid;
+    }
+    .fd-kpi-ico svg { width: 20px; height: 20px; }
+    .fd-kpi-txt { min-width: 0; flex: 1; }
+    .fd-kpi-lbl { font-size: 12.5px; font-weight: 600; color: #eaf1ff; }
+    .fd-kpi-val { font-size: 20px; font-weight: 700; letter-spacing: -.02em; margin: 1px 0 2px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .fd-kpi-val.pos { color: #19d3a0; }
+    .fd-kpi-val.neg { color: #ff5a5f; }
+    .fd-kpi-val.neutral { color: #f4f8ff; }
+    .fd-kpi-pct { font-size: 12px; font-weight: 600; margin-left: 4px; }
+    .fd-kpi-pct.pos { color: #19d3a0; } .fd-kpi-pct.neg { color: #ff5a5f; }
+    .fd-kpi-sub { font-size: 11px; color: #aebbd6; font-variant-numeric: tabular-nums; line-height: 1.35; }
+    .fd-kpi-sub i { font-style: normal; color: #4d6286; margin: 0 5px; }
+    .fd-meter { height: 4px; border-radius: 4px; background: #3a4a6b; margin-top: 6px; overflow: hidden; }
+    .fd-meter span { display: block; height: 100%; background: #19d3a0; border-radius: 4px; }
+
+    .fd-k-fii { background: linear-gradient(135deg, #0e2550 0%, #0a1932 70%); border-color: rgba(60, 135, 255, .32); }
+    .fd-k-fii .fd-kpi-ico { color: #3d9bff; background: rgba(31, 139, 255, .16); border-color: rgba(31, 139, 255, .4); }
+    .fd-k-dii { background: linear-gradient(135deg, #2c1522 0%, #0e1a33 75%); border-color: rgba(255, 100, 90, .3); }
+    .fd-k-dii .fd-kpi-ico { color: #ff9a2e; background: rgba(255, 138, 31, .16); border-color: rgba(255, 138, 31, .4); }
+    .fd-k-diff { background: linear-gradient(135deg, #0e2252 0%, #0a1932 70%); border-color: rgba(60, 135, 255, .3); }
+    .fd-k-diff .fd-kpi-ico { color: #3d9bff; background: rgba(31, 139, 255, .16); border-color: rgba(31, 139, 255, .4); }
+    .fd-k-days { background: linear-gradient(135deg, #0a3a3b 0%, #0a1d34 80%); border-color: rgba(25, 211, 160, .32); }
+    .fd-k-days .fd-kpi-ico { color: #19d3a0; background: rgba(25, 211, 160, .14); border-color: rgba(25, 211, 160, .4); }
+
+    .fd-panel { border-radius: 12px; background: rgba(10, 24, 48, .78); border: 1px solid rgba(70, 115, 210, .24); }
+    .fd-panel-head {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px;
+      padding: 9px 14px; border-bottom: 1px solid rgba(255, 255, 255, .05);
+    }
+    .fd-panel-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #f1f6ff; }
+    .fd-panel-title svg { width: 18px; height: 18px; color: #2f8dff; flex-shrink: 0; }
+
+    .fd-legend { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .fd-leg { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #cfdcf3; padding: 3px 6px; border-radius: 7px; transition: opacity .15s ease; }
+    .fd-leg:hover { background: rgba(255, 255, 255, .04); }
+    .fd-leg.off { opacity: .38; }
+    .fd-leg-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .fd-leg-line { width: 22px; height: 10px; position: relative; }
+    .fd-leg-line::before { content: ""; position: absolute; left: 0; right: 0; top: 4px; height: 2px; background: #fff; }
+    .fd-leg-line::after { content: ""; position: absolute; left: 50%; top: 2px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: #fff; border: 1.5px solid #0a1830; box-sizing: content-box; }
+
+    .fd-ctrls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .fd-seg.sm .fd-seg-btn { padding: 4px 11px; font-size: 12px; display: flex; align-items: center; gap: 5px; }
+    .fd-seg.sm .fd-seg-btn svg { width: 12px; height: 12px; }
+    .fd-datewrap { position: relative; }
+    .fd-datebtn {
+      display: flex; align-items: center; gap: 8px; padding: 6px 11px; border-radius: 9px;
+      font-size: 12px; color: #e8f0ff; font-weight: 500;
+      background: rgba(12, 28, 56, .85); border: 1px solid rgba(80, 130, 230, .24);
+    }
+    .fd-datebtn:hover { border-color: rgba(120, 170, 255, .5); }
+    .fd-datebtn svg { width: 13px; height: 13px; color: #9db0d0; transition: transform .15s ease; }
+    .fd-datewrap.open .fd-datebtn svg { transform: rotate(180deg); }
+    .fd-pop {
+      display: none; position: absolute; right: 0; top: calc(100% + 6px); z-index: 20; width: 260px;
+      padding: 13px; border-radius: 12px; background: #0b1730; border: 1px solid rgba(100, 150, 240, .3);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, .6);
+    }
+    .fd-datewrap.open .fd-pop { display: block; }
+    .fd-pop label { display: block; font-size: 10.5px; text-transform: uppercase; letter-spacing: .07em; color: #7f93b5; margin-bottom: 10px; font-weight: 600; }
+    .fd-pop input[type="date"] {
+      display: block; width: 100%; margin-top: 5px; padding: 7px 10px; border-radius: 8px;
+      background: #0a1428; color: #e8f0ff; border: 1px solid rgba(80, 130, 230, .3);
+      font: inherit; font-size: 12.5px; color-scheme: dark; text-transform: none; letter-spacing: 0;
+    }
+    .fd-pop input[type="date"]:focus { outline: none; border-color: #2f8dff; }
+    .fd-pop-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 2px; }
+    .fd-pop-btn { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #b4c6e6; border: 1px solid rgba(80, 130, 230, .3); background: transparent; }
+    .fd-pop-btn:hover { color: #fff; border-color: rgba(120, 170, 255, .5); }
+    .fd-pop-btn.primary { color: #fff; border-color: transparent; background: linear-gradient(180deg, #0fbf8f, #089470); }
+    .fd-pop-err { font-size: 11.5px; color: #ff6b70; margin-bottom: 6px; }
+
+    .fd-chart-host { padding: 4px 10px 2px; }
+    .fd-chart-host svg { display: block; width: 100%; overflow: visible; }
+    .fd-grid { stroke: rgba(120, 160, 230, .12); stroke-width: 1; }
+    .fd-vgrid { stroke: rgba(120, 160, 230, .08); stroke-width: 1; }
+    .fd-zero { stroke: rgba(190, 210, 255, .32); stroke-width: 1; }
+    .fd-tick { font-size: 11px; fill: #aebbd6; font-family: inherit; }
+    .fd-axis-title { font-size: 11px; fill: #aebbd6; font-family: inherit; }
+    .fd-line { fill: none; stroke: #fff; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+    .fd-dot { fill: #fff; stroke: #0a1830; stroke-width: 1.5; }
+    .fd-hl { fill: rgba(140, 180, 255, .09); pointer-events: none; transition: opacity .08s ease; }
+    .fd-hit { cursor: crosshair; }
+
+    .fd-table-wrap { padding: 0 12px 12px; overflow-x: auto; }
+    .fd-table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 440px; }
+    .fd-table th { padding: 8px 12px; font-size: 12px; font-weight: 500; color: #aebbd6; text-align: center; background: rgba(44, 76, 140, .22); text-transform: uppercase; letter-spacing: .05em; }
+    .fd-table th:first-child, .fd-table td:first-child { text-align: left; }
+    .fd-table td {
+      padding: 9px 12px; font-size: 13.5px; color: #e8f0ff; text-align: center;
+      border-bottom: 1px solid rgba(120, 160, 230, .12); border-left: 1px solid rgba(120, 160, 230, .12);
+      font-variant-numeric: tabular-nums; white-space: nowrap;
+    }
+    .fd-table td:first-child { border-left: none; }
+    .fd-table tbody tr { cursor: pointer; transition: background .12s ease; }
+    .fd-table tbody tr:hover td { background: rgba(80, 130, 230, .08); }
+    .fd-table tbody tr.active td { background: rgba(25, 211, 160, .07); }
+    .fd-table tbody tr.active td:first-child { box-shadow: inset 3px 0 0 #19d3a0; }
+    .fd-table .pos { color: #19d3a0; font-weight: 700; }
+    .fd-table .neg { color: #ff5a5f; font-weight: 700; }
+    .fd-table td small { color: #7f93b5; font-size: 11px; margin-left: 2px; }
+
+    .fd-loading, .fd-empty, .fd-error { text-align: center; padding: 44px 0; color: #7f93b5; font-size: 13px; }
+    .fd-empty.sm { padding: 56px 0; }
+    .fd-error { color: #ff6b70; }
+    .fd-spinner { width: 24px; height: 24px; margin: 0 auto 10px; border: 3px solid rgba(255, 255, 255, .08); border-top-color: #19d3a0; border-radius: 50%; animation: fhSpin .7s linear infinite; }
+
+    .fd-tip {
+      position: fixed; pointer-events: none; z-index: 9999; opacity: 0; transition: opacity .08s ease;
+      min-width: 180px; padding: 9px 12px; border-radius: 10px; font-size: 12px; color: #dbe7ff;
+      background: #0b1730; border: 1px solid rgba(110, 160, 250, .32); box-shadow: 0 12px 30px rgba(0, 0, 0, .55);
+    }
+    .fd-tip.visible { opacity: 1; }
+    .fd-tip-date { font-weight: 700; font-size: 12.5px; color: #fff; margin-bottom: 6px; }
+    .fd-tip-row { display: flex; align-items: center; gap: 8px; justify-content: space-between; padding: 1px 0; }
+    .fd-tip-row .l { display: flex; align-items: center; gap: 7px; }
+    .fd-tip-row b { font-variant-numeric: tabular-nums; }
+    .fd-tip-row.mut { color: #8396b8; padding-left: 15px; font-size: 11px; }
+    .fd-tip-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .fd-tip-sep { height: 1px; background: rgba(255, 255, 255, .08); margin: 5px 0; }
+    .fd-tip .pos { color: #19d3a0; } .fd-tip .neg { color: #ff5a5f; }
+
+    @media (max-width: 880px) {
+      .fd-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 600px) {
+      .fd-overlay { padding: 6px; }
+      .fd-modal { max-height: 96vh; border-radius: 12px; }
+      .fd-head { padding: 10px 12px 8px; }
+      .fd-head-icon { width: 34px; height: 34px; border-radius: 10px; }
+      .fd-head-icon svg { width: 16px; height: 16px; }
+      .fd-title { font-size: 16px; }
+      .fd-sub { font-size: 11px; }
+      .fd-head-left { flex: 1; }
+      .fd-head-right { width: 100%; justify-content: space-between; }
+      .fd-seg-btn { padding: 5px 10px; font-size: 12px; }
+      .fd-body { padding: 2px 10px 12px; gap: 10px; }
+      .fd-kpis { gap: 8px; }
+      .fd-kpi { padding: 8px 10px; }
+      .fd-kpi-ico { display: none; }
+      .fd-kpi-lbl { font-size: 11px; }
+      .fd-kpi-val { font-size: 15px; }
+      .fd-kpi-pct { font-size: 10.5px; }
+      .fd-kpi-sub { font-size: 10px; }
+      .fd-panel-head { padding: 8px 10px; }
+      .fd-legend { gap: 2px 6px; }
+      .fd-pop { right: auto; left: 0; }
+    }
+
+    /* Holdings table: sub-lines under Target / Buy Date */
+    .cell-sub { font-size: 10px; line-height: 1.3; margin-top: 2px; color: #6b8299; font-weight: 500; white-space: nowrap; }
+    .cell-sub.pos { color: #2dd4bf; }
+    .cell-sub.neg { color: #f87171; }
+    .cell-sub.first { color: #8fa3bc; }
+
+    /* Sell dialog: entry picker + quantity helpers */
+    .sale-lots { display: flex; flex-direction: column; gap: 6px; margin: 2px 0 12px; }
+    .sale-lot {
+      display: flex; align-items: center; gap: 10px; padding: 8px 11px; border-radius: 9px; cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, .08); background: rgba(255, 255, 255, .02);
+      font-size: 12px; color: #cfe2f5; transition: border-color .12s ease, background .12s ease;
+    }
+    .sale-lot:hover { border-color: rgba(45, 212, 191, .35); }
+    .sale-lot.sel { border-color: #2dd4bf; background: rgba(45, 212, 191, .08); }
+    .sale-lot small { display: block; color: #6b8299; font-size: 10.5px; margin-top: 1px; }
+    .sale-radio { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #4a6075; flex-shrink: 0; position: relative; }
+    .sale-lot.sel .sale-radio { border-color: #2dd4bf; }
+    .sale-lot.sel .sale-radio::after { content: ""; position: absolute; inset: 2px; border-radius: 50%; background: #2dd4bf; }
+    .sale-quick { display: flex; gap: 6px; margin: 6px 0 4px; }
+    .sale-quick button {
+      flex: 1; padding: 5px 0; border-radius: 7px; font-size: 11px; font-weight: 600; color: #8fa3bc;
+      border: 1px solid rgba(255, 255, 255, .08); background: rgba(255, 255, 255, .02);
+    }
+    .sale-quick button:hover { color: #2dd4bf; border-color: rgba(45, 212, 191, .4); }
+    .sale-summary { font-size: 11px; color: #6b8299; margin: 4px 0 10px; min-height: 14px; }
 
     /* ── Sector Allocation clickable card ── */
     .sector-clickable {
@@ -4004,7 +4314,7 @@
                   </div>
                   <div>
                     <div class="edit-banner-title">Editing Portfolio</div>
-                    <div class="edit-banner-sub" id="saveStatus">You have unsaved changes</div>
+                    <div class="edit-banner-sub" id="saveStatus">No changes yet</div>
                   </div>
                 </div>
               </div>
@@ -4175,8 +4485,18 @@
   <!-- Sale modal -->
   <div class="modal-overlay" id="saleModal">
     <div class="modal">
-      <h2>Close position</h2>
+      <h2>Sell shares</h2>
       <p class="hint" id="salePositionLabel"></p>
+      <div class="sale-lots" id="saleLotPicker" style="display:none"></div>
+      <label for="saleQty">Quantity to sell</label>
+      <input type="number" step="any" min="0" id="saleQty">
+      <div class="sale-quick" id="saleQuick">
+        <button type="button" data-salepct="25">25%</button>
+        <button type="button" data-salepct="50">50%</button>
+        <button type="button" data-salepct="75">75%</button>
+        <button type="button" data-salepct="100">All</button>
+      </div>
+      <div class="sale-summary" id="saleSummary"></div>
       <label for="salePrice">Sell price</label>
       <input type="number" step="any" min="0" id="salePrice" placeholder="0.00">
       <label for="saleDate">Sell date</label>
@@ -4184,7 +4504,7 @@
       <div class="error-text" id="saleError"></div>
       <div class="modal-actions">
         <button class="btn-modal-cancel" id="saleCancelBtn">Cancel</button>
-        <button class="btn-modal-confirm" id="saleConfirmBtn">Close position</button>
+        <button class="btn-modal-confirm" id="saleConfirmBtn">Confirm Sell</button>
       </div>
     </div>
   </div>
@@ -4334,42 +4654,38 @@
   </div>
 
   <!-- FII/DII History modal -->
-  <div class="fh-overlay" id="fhOverlay">
-    <div class="fh-modal" role="dialog" aria-modal="true" aria-labelledby="fhTitle">
-      <div class="fh-head">
-        <div class="fh-head-left">
-          <div class="fh-head-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+  <div class="fd-overlay" id="fhOverlay">
+    <div class="fd-modal" role="dialog" aria-modal="true" aria-labelledby="fhTitle">
+      <div class="fd-head">
+        <div class="fd-head-left">
+          <div class="fd-head-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
               <path d="M18 20V10M12 20V4M6 20v-6" />
             </svg>
           </div>
           <div>
-            <div class="fh-head-title" id="fhTitle">FII / DII Flow History</div>
-            <div class="fh-head-sub" id="fhSub">Institutional cash flows, NSE + BSE combined</div>
+            <div class="fd-title" id="fhTitle">FII / DII Flow History</div>
+            <div class="fd-sub" id="fhSub">Institutional cash flows, NSE + BSE combined</div>
           </div>
         </div>
-        <button class="fh-close" id="fhCloseBtn" aria-label="Close">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
-      </div>
-      <div class="fh-toolbar">
-        <div class="fh-filters" id="fhFilters">
-          <button class="fh-filter-btn active" data-range="overall">Overall</button>
-          <button class="fh-filter-btn" data-range="daily">Daily</button>
-          <button class="fh-filter-btn" data-range="weekly">Weekly</button>
-          <button class="fh-filter-btn" data-range="monthly">Monthly</button>
-        </div>
-        <div class="fh-legend">
-          <div class="fh-legend-item"><span class="fh-legend-dot" style="background:#FF5C6C"></span>FII/FPI</div>
-          <div class="fh-legend-item"><span class="fh-legend-dot" style="background:#2DD4BF"></span>DII</div>
+        <div class="fd-head-right">
+          <div class="fd-seg" id="fhFilters">
+            <button class="fd-seg-btn active" data-range="overall">Overall</button>
+            <button class="fd-seg-btn" data-range="daily">Daily</button>
+            <button class="fd-seg-btn" data-range="weekly">Weekly</button>
+            <button class="fd-seg-btn" data-range="monthly">Monthly</button>
+          </div>
+          <button class="fd-close" id="fhCloseBtn" aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
         </div>
       </div>
-      <div class="fh-body" id="fhBody">
-        <div class="fh-loading">
-          <div class="fh-spinner"></div>Loading flow history…
+      <div class="fd-body" id="fhBody">
+        <div class="fd-loading">
+          <div class="fd-spinner"></div>Loading flow history…
         </div>
       </div>
     </div>
@@ -4523,6 +4839,8 @@
       const API_BASE = "https://tiny-art-8473.dobbyop09.workers.dev";
       const TOKEN_KEY = "portfolioAdminToken";
 
+      const ICON_SELL = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`;
+      const ICON_DOTS = `<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>`;
       const ICON_TRASH = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
 
       // Category colors for FII/DII
@@ -4691,7 +5009,7 @@
         }
       }
 
-      // ── FII/DII History Modal ───────────────────────────────────────
+      // ── FII/DII History Modal (redesigned) ──────────────────────────
       const fhOverlay = document.getElementById("fhOverlay");
       const fhBody = document.getElementById("fhBody");
       const fhSub = document.getElementById("fhSub");
@@ -4699,62 +5017,22 @@
       const fhFilters = document.getElementById("fhFilters");
 
       let fhRawData = null;      // raw history array from API
-      let fhRange = "overall";   // overall | daily | weekly | monthly
+      let fhDaily = [];          // parsed + sorted ascending daily rows
+      let fhRange = "overall";   // overall | daily | weekly | monthly (granularity)
       let fhLoaded = false;
+      let fhWin = { preset: "1m", from: null, to: null };   // 1m | 3m | 6m | custom
+      let fhSeries = { fii: true, dii: true, net: true };   // legend toggles
+      let fhPopOpen = false;
+      let fhView = null;
+
+      const FD_BLUE = "#1f8bff", FD_ORANGE = "#ff8a1f", FD_GREEN = "#19d3a0", FD_RED = "#ff5a5f";
+      const FD_MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
       function parseHistDate(s) {
         // "07-Aug-2026" -> Date
         if (!s) return null;
         const d = new Date(s.replace(/-/g, " "));
         return isNaN(d) ? null : d;
-      }
-
-      function isoWeekKey(d) {
-        const dt = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-        const day = (dt.getUTCDay() + 6) % 7; // Mon=0
-        dt.setUTCDate(dt.getUTCDate() - day + 3);
-        const firstThu = new Date(Date.UTC(dt.getUTCFullYear(), 0, 4));
-        const week = 1 + Math.round(((dt - firstThu) / 86400000 - 3 + ((firstThu.getUTCDay() + 6) % 7)) / 7);
-        return `${dt.getUTCFullYear()}-W${String(week).padStart(2, "0")}`;
-      }
-
-      function aggregate(rows, range) {
-        // rows: [{date, fii:{buyValue,sellValue,netValue}, dii:{...}}], sorted desc by date in source
-        const asc = [...rows].sort((a, b) => (parseHistDate(a.date) || 0) - (parseHistDate(b.date) || 0));
-        if (range === "daily" || range === "overall") return asc;
-
-        const buckets = new Map();
-        asc.forEach(r => {
-          const d = parseHistDate(r.date);
-          if (!d) return;
-          let key, label, shortLabel;
-          if (range === "weekly") {
-            key = isoWeekKey(d);
-            const mon = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7));
-            const monStr = mon.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).replace(/ /g, "-");
-            label = `${monStr} (${key.split("-")[1]})`;
-            shortLabel = mon.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
-          } else {
-            key = `${d.getFullYear()}-${d.getMonth()}`;
-            label = d.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
-          }
-          if (!buckets.has(key)) {
-            buckets.set(key, {
-              date: label,
-              shortLabel: shortLabel,
-              sortKey: d.getTime(),
-              fii: { buyValue: 0, sellValue: 0, netValue: 0 },
-              dii: { buyValue: 0, sellValue: 0, netValue: 0 },
-            });
-          }
-          const b = buckets.get(key);
-          ["fii", "dii"].forEach(k => {
-            b[k].buyValue += parseFloat(r[k]?.buyValue) || 0;
-            b[k].sellValue += parseFloat(r[k]?.sellValue) || 0;
-            b[k].netValue += parseFloat(r[k]?.netValue) || 0;
-          });
-        });
-        return [...buckets.values()].sort((a, b) => a.sortKey - b.sortKey);
       }
 
       function fhFmt(n, decimals) {
@@ -4766,196 +5044,375 @@
         return (n >= 0 ? "+" : "") + fhFmt(n);
       }
 
-      function renderFhSummary(allRows) {
-        // overall -> every row; daily/weekly/monthly -> latest period only
-        const rows = (fhRange === "overall" || allRows.length === 0) ? allRows : [allRows[allRows.length - 1]];
-        const periodLabel = fhRange === "overall"
-          ? `Overall · ${allRows.length} trading days`
-          : `${fhRange === "daily" ? "Latest day" : fhRange === "weekly" ? "Latest week" : "Latest month"} · ${rows[0]?.date || "—"}`;
-        let fiiNet = 0, diiNet = 0, fiiBuy = 0, fiiSell = 0, diiBuy = 0, diiSell = 0;
-        rows.forEach(r => {
-          fiiNet += parseFloat(r.fii?.netValue) || 0;
-          diiNet += parseFloat(r.dii?.netValue) || 0;
-          fiiBuy += parseFloat(r.fii?.buyValue) || 0;
-          fiiSell += parseFloat(r.fii?.sellValue) || 0;
-          diiBuy += parseFloat(r.dii?.buyValue) || 0;
-          diiSell += parseFloat(r.dii?.sellValue) || 0;
-        });
-        return `
-      <div class="fh-summary-period" style="font-size:10px;color:#6b8299;margin-bottom:6px;letter-spacing:.04em">${escHtml(periodLabel)}</div>
-      <div class="fh-summary-row">
-        <div class="fh-summary-card">
-          <div class="fh-summary-lbl">FII/FPI Net (₹ Cr)</div>
-          <div class="fh-summary-val ${fiiNet >= 0 ? "buy" : "sell"}">${fhFmtSigned(fiiNet)}</div>
-        </div>
-        <div class="fh-summary-card">
-          <div class="fh-summary-lbl">DII Net (₹ Cr)</div>
-          <div class="fh-summary-val ${diiNet >= 0 ? "buy" : "sell"}">${fhFmtSigned(diiNet)}</div>
-        </div>
-        <div class="fh-summary-card">
-          <div class="fh-summary-lbl">FII Buy / Sell (₹ Cr)</div>
-          <div class="fh-summary-val" style="color:#cfe2f5">${fhFmt(fiiBuy, 0)} / ${fhFmt(fiiSell, 0)}</div>
-        </div>
-        <div class="fh-summary-card">
-          <div class="fh-summary-lbl">DII Buy / Sell (₹ Cr)</div>
-          <div class="fh-summary-val" style="color:#cfe2f5">${fhFmt(diiBuy, 0)} / ${fhFmt(diiSell, 0)}</div>
-        </div>
-      </div>`;
+      const fdNum = v => parseFloat(v) || 0;
+      const fdPad = n => String(n).padStart(2, "0");
+      const fdDay = d => fdPad(d.getDate()) + " " + FD_MON[d.getMonth()];
+      const fdFull = d => fdDay(d) + " " + d.getFullYear();
+      const fdIso = d => d.getFullYear() + "-" + fdPad(d.getMonth() + 1) + "-" + fdPad(d.getDate());
+      function fdParseIso(s) {
+        const p = String(s || "").split("-").map(Number);
+        return p.length === 3 && p.every(isFinite) ? new Date(p[0], p[1] - 1, p[2]) : null;
+      }
+      function fdAddMonths(d, n) {
+        const t = new Date(d.getFullYear(), d.getMonth() + n, 1);
+        const dim = new Date(t.getFullYear(), t.getMonth() + 1, 0).getDate();
+        return new Date(t.getFullYear(), t.getMonth(), Math.min(d.getDate(), dim));
+      }
+      function fdPresetFrom(latest, n) {
+        const f = fdAddMonths(latest, -n);
+        return new Date(f.getFullYear(), f.getMonth(), f.getDate() + 1);
+      }
+      function fdSigned(n) { return (n >= 0 ? "+" : "") + fhFmt(n); }
+      function fdTick(v) {
+        const a = Math.abs(v);
+        if (a < 1e-9) return "0";
+        if (a >= 1000) { const k = v / 1000; return (Number.isInteger(k) ? k : k.toFixed(1)) + "K"; }
+        return String(Math.round(v));
+      }
+      function fdNiceStep(raw) {
+        if (!(raw > 0)) return 1;
+        const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+        const n = raw / mag;
+        return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * mag;
       }
 
-      function renderFhChart(rows) {
-        const W = 700, H = 220, padL = 8, padR = 8, padT = 10, padB = 22;
-        const plotW = W - padL - padR;
-        const n = rows.length;
-        const groupW = plotW / n;
-        const barW = Math.max(3, Math.min(16, groupW * 0.32));
-
-        let maxAbs = 1;
-        rows.forEach(r => {
-          maxAbs = Math.max(maxAbs, Math.abs(parseFloat(r.fii?.netValue) || 0), Math.abs(parseFloat(r.dii?.netValue) || 0));
-        });
-        maxAbs *= 1.15;
-        const zeroY = padT + (H - padT - padB) / 2;
-        const halfH = (H - padT - padB) / 2;
-        const scale = v => (v / maxAbs) * halfH;
-
-        // choose label step so labels don't collide
-        const maxLabels = 10;
-        const step = Math.max(1, Math.ceil(n / maxLabels));
-
-        let bars = "";
-        let labels = "";
-        rows.forEach((r, i) => {
-          const cx = padL + groupW * i + groupW / 2;
-          const fiiV = parseFloat(r.fii?.netValue) || 0;
-          const diiV = parseFloat(r.dii?.netValue) || 0;
-          const fiiH = Math.abs(scale(fiiV));
-          const diiH = Math.abs(scale(diiV));
-          const fiiY = fiiV >= 0 ? zeroY - fiiH : zeroY;
-          const diiY = diiV >= 0 ? zeroY - diiH : zeroY;
-          const x1 = cx - barW - 1.5;
-          const x2 = cx + 1.5;
-
-          bars += `<g class="fh-bar-group" data-idx="${i}">
-        <rect x="${x1.toFixed(1)}" y="${fiiY.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(fiiH, 1).toFixed(1)}" rx="1.5" class="fh-bar-fii"></rect>
-        <rect x="${x2.toFixed(1)}" y="${diiY.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(diiH, 1).toFixed(1)}" rx="1.5" class="fh-bar-dii"></rect>
-        <rect x="${(cx - groupW / 2).toFixed(1)}" y="${padT}" width="${groupW.toFixed(1)}" height="${(H - padT - padB).toFixed(1)}" fill="transparent"></rect>
-      </g>`;
-
-          if (i % step === 0 || i === n - 1) {
-            const lbl = (fhRange === "daily" || fhRange === "overall")
-              ? (r.date || "").replace(/-\d{4}$/, "")
-              : (r.shortLabel || r.date || "");
-            labels += `<text x="${cx.toFixed(1)}" y="${H - 6}" class="fh-tick-label" text-anchor="middle">${escHtml(lbl)}</text>`;
-          }
-        });
-
-        return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
-      <line x1="${padL}" y1="${zeroY}" x2="${W - padR}" y2="${zeroY}" class="fh-zero-line"></line>
-      <line x1="${padL}" y1="${H - padB + 0.5}" x2="${W - padR}" y2="${H - padB + 0.5}" class="fh-axis-line"></line>
-      ${bars}
-      ${labels}
-    </svg>`;
+      // Aggregate daily rows into display buckets (daily/overall -> per day)
+      function fdAgg(rows, range) {
+        if (range === "weekly" || range === "monthly") {
+          const m = new Map();
+          rows.forEach(r => {
+            const d = r._d;
+            let key, label, short;
+            if (range === "weekly") {
+              const mon = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7));
+              key = fdIso(mon); label = "Week of " + fdFull(mon); short = fdDay(mon);
+            } else {
+              key = d.getFullYear() + "-" + d.getMonth();
+              label = FD_MON[d.getMonth()] + " " + d.getFullYear();
+              short = FD_MON[d.getMonth()] + " " + String(d.getFullYear()).slice(2);
+            }
+            if (!m.has(key)) m.set(key, { label, short, t: d.getTime(), days: 0, fb: 0, fs: 0, fn: 0, db: 0, ds: 0, dn: 0 });
+            const b = m.get(key);
+            b.days++;
+            b.fb += fdNum(r.fii?.buyValue); b.fs += fdNum(r.fii?.sellValue); b.fn += fdNum(r.fii?.netValue);
+            b.db += fdNum(r.dii?.buyValue); b.ds += fdNum(r.dii?.sellValue); b.dn += fdNum(r.dii?.netValue);
+          });
+          return [...m.values()].sort((a, b) => a.t - b.t);
+        }
+        return rows.map(r => ({
+          label: fdFull(r._d), short: fdDay(r._d), t: r._d.getTime(), days: 1,
+          fb: fdNum(r.fii?.buyValue), fs: fdNum(r.fii?.sellValue), fn: fdNum(r.fii?.netValue),
+          db: fdNum(r.dii?.buyValue), ds: fdNum(r.dii?.sellValue), dn: fdNum(r.dii?.netValue),
+        }));
       }
 
-      function renderFhTable(rows) {
-        const rev = [...rows].reverse(); // most recent first
-        return `<div class="fh-table-wrap"><table class="fh-table">
-      <thead><tr>
-        <th>Period</th>
-        <th>FII Net</th>
-        <th>FII Buy</th>
-        <th>FII Sell</th>
-        <th>DII Net</th>
-        <th>DII Buy</th>
-        <th>DII Sell</th>
-      </tr></thead>
-      <tbody>
-        ${rev.map(r => {
-          const fn = parseFloat(r.fii?.netValue) || 0, dn = parseFloat(r.dii?.netValue) || 0;
-          return `<tr>
-            <td>${escHtml(r.date || "—")}</td>
-            <td class="${fn >= 0 ? "fh-val-pos" : "fh-val-neg"}">${fhFmtSigned(fn)}</td>
-            <td>${fhFmt(r.fii?.buyValue, 0)}</td>
-            <td>${fhFmt(r.fii?.sellValue, 0)}</td>
-            <td class="${dn >= 0 ? "fh-val-pos" : "fh-val-neg"}">${fhFmtSigned(dn)}</td>
-            <td>${fhFmt(r.dii?.buyValue, 0)}</td>
-            <td>${fhFmt(r.dii?.sellValue, 0)}</td>
-          </tr>`;
-        }).join("")}
-      </tbody>
-    </table></div>`;
+      function fdBuildView() {
+        const all = fhDaily;
+        if (!all.length) return null;
+        const first = all[0]._d, latest = all[all.length - 1]._d;
+        let from, to;
+        if (fhWin.preset === "custom" && fhWin.from && fhWin.to) { from = fhWin.from; to = fhWin.to; }
+        else {
+          const n = { "1m": 1, "3m": 3, "6m": 6 }[fhWin.preset] || 1;
+          to = latest; from = fdPresetFrom(latest, n);
+        }
+        if (from < first) from = first;
+        if (to > latest) to = latest;
+        const rows = all.filter(r => r._d >= from && r._d <= to);
+        return { first, latest, from, to, rows, items: fdAgg(rows, fhRange) };
       }
 
-      function fhDataStartLabel() {
-        if (!fhRawData || fhRawData.length === 0) return null;
-        let earliest = null;
-        fhRawData.forEach(r => {
-          const d = parseHistDate(r.date);
-          if (d && (!earliest || d < earliest)) earliest = d;
-        });
-        if (!earliest) return null;
-        return earliest.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+      function fdPeriodStats(n) {
+        const latest = fhDaily[fhDaily.length - 1]._d;
+        const from = fdPresetFrom(latest, n);
+        const rs = fhDaily.filter(r => r._d >= from);
+        let fn = 0, dn = 0, pos = 0;
+        rs.forEach(r => { const f = fdNum(r.fii?.netValue); fn += f; dn += fdNum(r.dii?.netValue); if (f > 0) pos++; });
+        return { fn, dn, pos, total: rs.length };
+      }
+
+      function fdIcon(name) {
+        const a = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+        const p = {
+          bank: '<line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/>',
+          scale: '<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+          up: '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+          down: '<polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/>',
+          bars: '<path d="M18 20V10M12 20V4M6 20v-6"/>',
+          clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+          cal: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>',
+          chev: '<polyline points="6 9 12 15 18 9"/>',
+        };
+        return `<svg ${a}>${p[name]}</svg>`;
+      }
+
+      function fdRangeLabel(v) {
+        const sameYear = v.from.getFullYear() === v.to.getFullYear();
+        return (sameYear ? fdDay(v.from) : fdFull(v.from)) + " – " + fdFull(v.to);
       }
 
       function renderFhModal() {
-        if (!fhRawData || fhRawData.length === 0) {
-          fhBody.innerHTML = `<div class="fh-empty">No history data available.</div>`;
+        if (!fhRawData || fhRawData.length === 0 || fhDaily.length === 0) {
+          fhBody.innerHTML = `<div class="fd-empty">No history data available.</div>`;
           return;
         }
-        const rows = aggregate(fhRawData, fhRange);
-        const unit = (fhRange === "daily" || fhRange === "overall") ? "trading day" : fhRange === "weekly" ? "week" : "month";
-        const startLabel = fhDataStartLabel();
-        fhSub.textContent = `${rows.length} ${unit}${rows.length === 1 ? "" : "s"}${startLabel ? " · Data since " + startLabel : ""}`;
-        fhBody.innerHTML = renderFhSummary(rows) + `<div class="fh-chart-wrap">${renderFhChart(rows)}</div>` + renderFhTable(rows);
-        wireFhTooltips(rows);
+        fhView = fdBuildView();
+        const v = fhView, items = v.items;
+        fhSub.textContent = `${fhDaily.length} trading days • Data since ${fdFull(fhDaily[0]._d)}`;
+
+        const unitPl = fhRange === "weekly" ? "Weeks" : fhRange === "monthly" ? "Months" : "Days";
+        const grain = fhRange === "weekly" ? "Weekly" : fhRange === "monthly" ? "Monthly" : "Daily";
+
+        // KPI figures: overall -> whole window; daily/weekly/monthly -> latest bucket
+        const kr = (fhRange === "overall") ? items : items.slice(-1);
+        const S = kr.reduce((a, b) => ({ fb: a.fb + b.fb, fs: a.fs + b.fs, fn: a.fn + b.fn, db: a.db + b.db, ds: a.ds + b.ds, dn: a.dn + b.dn }),
+          { fb: 0, fs: 0, fn: 0, db: 0, ds: 0, dn: 0 });
+        const has = items.length > 0;
+        const diff = S.fn - S.dn;
+
+        const posCnt = items.filter(i => i.fn > 0).length;
+        const total = items.length;
+        const pct = total ? Math.round((posCnt / total) * 100) : 0;
+        const negCnt = total - posCnt;
+
+        const note = fhRange === "overall" ? "" :
+          `<div class="fd-period-note">Cards show the latest ${fhRange === "daily" ? "day" : fhRange === "weekly" ? "week" : "month"} in range · <b>${escHtml(kr[0]?.label || "—")}</b></div>`;
+
+        const kpis = `
+        <div class="fd-kpis">
+          <div class="fd-kpi fd-k-fii">
+            <div class="fd-kpi-ico">${fdIcon("bank")}</div>
+            <div class="fd-kpi-txt">
+              <div class="fd-kpi-lbl">FII Net Flow</div>
+              <div class="fd-kpi-val ${has ? (S.fn >= 0 ? "pos" : "neg") : "neutral"}">${has ? fdSigned(S.fn) + " Cr" : "—"}</div>
+              <div class="fd-kpi-sub">Buy: ${has ? fhFmt(S.fb) : "—"}<i>|</i>Sell: ${has ? fhFmt(S.fs) : "—"}</div>
+            </div>
+          </div>
+          <div class="fd-kpi fd-k-dii">
+            <div class="fd-kpi-ico">${fdIcon("bank")}</div>
+            <div class="fd-kpi-txt">
+              <div class="fd-kpi-lbl">DII Net Flow</div>
+              <div class="fd-kpi-val ${has ? (S.dn >= 0 ? "pos" : "neg") : "neutral"}">${has ? fdSigned(S.dn) + " Cr" : "—"}</div>
+              <div class="fd-kpi-sub">Buy: ${has ? fhFmt(S.db) : "—"}<i>|</i>Sell: ${has ? fhFmt(S.ds) : "—"}</div>
+            </div>
+          </div>
+          <div class="fd-kpi fd-k-diff">
+            <div class="fd-kpi-ico">${fdIcon("scale")}</div>
+            <div class="fd-kpi-txt">
+              <div class="fd-kpi-lbl">FII vs DII</div>
+              <div class="fd-kpi-val neutral">${has ? fdSigned(diff) + " Cr" : "—"}</div>
+              <div class="fd-kpi-sub">${has ? `(FII ${fdSigned(S.fn)} vs DII ${fdSigned(S.dn)})` : ""}</div>
+            </div>
+          </div>
+          <div class="fd-kpi fd-k-days">
+            <div class="fd-kpi-ico">${fdIcon("clock")}</div>
+            <div class="fd-kpi-txt">
+              <div class="fd-kpi-lbl">FII Positive ${unitPl}</div>
+              <div class="fd-kpi-val neutral">${posCnt} / ${total}<span class="fd-kpi-pct ${pct >= 50 ? "pos" : "neg"}">(${pct}%)</span></div>
+              <div class="fd-kpi-sub">${negCnt} negative ${unitPl.toLowerCase()}</div>
+              <div class="fd-meter"><span style="width:${pct}%"></span></div>
+            </div>
+          </div>
+        </div>`;
+
+        const presetBtn = (k, lbl) => `<button class="fd-seg-btn${fhWin.preset === k ? " active" : ""}" data-fdrange="${k}">${lbl}</button>`;
+        const legBtn = (k, cls, lbl, inner) => `<button class="fd-leg${fhSeries[k] ? "" : " off"}" data-fdseries="${k}" title="Click to show/hide">${inner}${lbl}</button>`;
+
+        const chartPanel = `
+        <div class="fd-panel">
+          <div class="fd-panel-head">
+            <div class="fd-panel-title">${fdIcon("bars")}FII &amp; DII ${grain} Flows</div>
+            <div class="fd-legend">
+              ${legBtn("fii", "", "FII Net", `<span class="fd-leg-dot" style="background:${FD_BLUE}"></span>`)}
+              ${legBtn("dii", "", "DII Net", `<span class="fd-leg-dot" style="background:${FD_ORANGE}"></span>`)}
+              ${legBtn("net", "", "FII vs DII", `<span class="fd-leg-line"></span>`)}
+            </div>
+            <div class="fd-ctrls">
+              <div class="fd-seg sm">
+                ${presetBtn("1m", "1M")}${presetBtn("3m", "3M")}${presetBtn("6m", "6M")}
+                <button class="fd-seg-btn${fhWin.preset === "custom" ? " active" : ""}" data-fdrange="custom">${fdIcon("cal")}Custom</button>
+              </div>
+              <div class="fd-datewrap${fhPopOpen ? " open" : ""}" id="fdDateWrap">
+                <button class="fd-datebtn" id="fdDateBtn" type="button">${escHtml(fdRangeLabel(v))}${fdIcon("chev")}</button>
+                <div class="fd-pop" id="fdPop">
+                  <label>From<input type="date" id="fdFrom" value="${fdIso(v.from)}" min="${fdIso(v.first)}" max="${fdIso(v.latest)}"></label>
+                  <label>To<input type="date" id="fdTo" value="${fdIso(v.to)}" min="${fdIso(v.first)}" max="${fdIso(v.latest)}"></label>
+                  <div class="fd-pop-err" id="fdPopErr"></div>
+                  <div class="fd-pop-actions">
+                    <button class="fd-pop-btn" type="button" data-fdact="all">All data</button>
+                    <button class="fd-pop-btn primary" type="button" data-fdact="apply">Apply</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fd-chart-host" id="fdChartHost"></div>
+        </div>`;
+
+        const ps = [["1m", "Last 1 Month", 1], ["3m", "Last 3 Months", 3], ["6m", "Last 6 Months", 6]].map(([k, lbl, n]) => {
+          const s = fdPeriodStats(n);
+          const pp = s.total ? Math.round((s.pos / s.total) * 100) : 0;
+          return `<tr data-fdrow="${k}" class="${fhWin.preset === k ? "active" : ""}">
+            <td>${lbl}</td>
+            <td class="${s.fn >= 0 ? "pos" : "neg"}">${fdSigned(s.fn)} Cr</td>
+            <td class="${s.dn >= 0 ? "pos" : "neg"}">${fdSigned(s.dn)} Cr</td>
+            <td>${s.pos} / ${s.total} <small>(${pp}%)</small></td>
+          </tr>`;
+        }).join("");
+
+        const bottom = `
+        <div class="fd-panel">
+          <div class="fd-panel-head" style="border-bottom:none">
+            <div class="fd-panel-title"><span style="color:#2f8dff;display:flex">${fdIcon("cal")}</span>Recent Period Summary</div>
+          </div>
+          <div class="fd-table-wrap">
+            <table class="fd-table">
+              <thead><tr><th>Period</th><th>FII Net Flow</th><th>DII Net Flow</th><th>FII Positive Days</th></tr></thead>
+              <tbody>${ps}</tbody>
+            </table>
+          </div>
+        </div>`;
+
+        fhBody.innerHTML = note + kpis + chartPanel + bottom;
+        fdDrawChart();
       }
 
-      function wireFhTooltips(rows) {
-        const svg = fhBody.querySelector(".fh-chart-wrap svg");
-        if (!svg) return;
-        let tip = document.getElementById("fhTooltip");
-        if (!tip) {
-          tip = document.createElement("div");
-          tip.className = "fh-tooltip";
-          tip.id = "fhTooltip";
-          document.querySelector(".fh-modal").appendChild(tip);
+      function fdTip() {
+        let t = document.getElementById("fdTip");
+        if (!t) { t = document.createElement("div"); t.id = "fdTip"; t.className = "fd-tip"; document.body.appendChild(t); }
+        return t;
+      }
+
+      function fdDrawChart() {
+        const host = document.getElementById("fdChartHost");
+        if (!host || !fhView) return;
+        const items = fhView.items;
+        if (!items.length) { host.innerHTML = `<div class="fd-empty sm">No trading days in the selected range.</div>`; return; }
+
+        const W = Math.max(320, host.clientWidth || 700);
+        const compact = W < 560;
+        const H = compact ? 210 : (window.innerHeight < 760 ? 230 : 260);
+        const pad = { l: compact ? 44 : 54, r: 12, t: 10, b: 26 };
+        const pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+        const n = items.length;
+
+        let lo = 0, hi = 0;
+        items.forEach(it => {
+          if (fhSeries.fii) { lo = Math.min(lo, it.fn); hi = Math.max(hi, it.fn); }
+          if (fhSeries.dii) { lo = Math.min(lo, it.dn); hi = Math.max(hi, it.dn); }
+          if (fhSeries.net) { const s = it.fn + it.dn; lo = Math.min(lo, s); hi = Math.max(hi, s); }
+        });
+        if (hi === lo) hi = lo + 1;
+        const step = fdNiceStep((hi - lo) / 5);
+        lo = Math.floor(lo / step + 1e-9) * step;
+        hi = Math.ceil(hi / step - 1e-9) * step;
+        const y = v => pad.t + ((hi - v) / (hi - lo)) * ph;
+        const slot = pw / n;
+        const cx = i => pad.l + slot * i + slot / 2;
+        const bw = Math.max(2, Math.min(28, slot * 0.62));
+
+        let grid = "", ylab = "";
+        const cnt = Math.round((hi - lo) / step);
+        for (let k = 0; k <= cnt; k++) {
+          const v = lo + k * step, yy = y(v).toFixed(1);
+          grid += `<line x1="${pad.l}" x2="${W - pad.r}" y1="${yy}" y2="${yy}" class="${Math.abs(v) < step * 1e-6 ? "fd-zero" : "fd-grid"}"/>`;
+          ylab += `<text x="${pad.l - 10}" y="${(+yy + 4.5).toFixed(1)}" text-anchor="end" class="fd-tick">${fdTick(v)}</text>`;
         }
-        svg.querySelectorAll(".fh-bar-group").forEach(g => {
-          const idx = parseInt(g.getAttribute("data-idx"), 10);
-          const r = rows[idx];
-          if (!r) return;
-          g.addEventListener("mousemove", e => {
-            const fn = parseFloat(r.fii?.netValue) || 0, dn = parseFloat(r.dii?.netValue) || 0;
-            const fb = parseFloat(r.fii?.buyValue) || 0, fs = parseFloat(r.fii?.sellValue) || 0;
-            const db = parseFloat(r.dii?.buyValue) || 0, ds = parseFloat(r.dii?.sellValue) || 0;
-            tip.innerHTML = `
-          <div class="fh-tooltip-date">${escHtml(r.date || "")}</div>
-          <div class="fh-tooltip-row"><span class="fh-tooltip-dot" style="background:#FF5C6C"></span>FII Net <b style="margin-left:auto">${fhFmtSigned(fn)}</b></div>
-          <div class="fh-tooltip-row" style="padding-left:12px;color:#7f92a6">Buy <span style="margin-left:auto">${fhFmt(fb, 0)}</span></div>
-          <div class="fh-tooltip-row" style="padding-left:12px;color:#7f92a6">Sell <span style="margin-left:auto">${fhFmt(fs, 0)}</span></div>
-          <div class="fh-tooltip-row" style="margin-top:5px"><span class="fh-tooltip-dot" style="background:#2DD4BF"></span>DII Net <b style="margin-left:auto">${fhFmtSigned(dn)}</b></div>
-          <div class="fh-tooltip-row" style="padding-left:12px;color:#7f92a6">Buy <span style="margin-left:auto">${fhFmt(db, 0)}</span></div>
-          <div class="fh-tooltip-row" style="padding-left:12px;color:#7f92a6">Sell <span style="margin-left:auto">${fhFmt(ds, 0)}</span></div>`;
-            tip.style.left = (e.clientX + 14) + "px";
-            tip.style.top = (e.clientY + 14) + "px";
-            tip.classList.add("visible");
+
+        // x labels
+        const target = Math.max(3, Math.floor(pw / 90));
+        const stepL = Math.max(1, Math.ceil((n - 1) / (target - 1)));
+        const idxs = [];
+        for (let i = 0; i < n; i += stepL) idxs.push(i);
+        if (n - 1 - idxs[idxs.length - 1] >= stepL * 0.6) idxs.push(n - 1);
+        let xl = "", vg = "";
+        idxs.forEach(i => {
+          const x = cx(i);
+          const anchor = x > W - pad.r - 26 ? "end" : "middle";
+          vg += `<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${pad.t}" y2="${H - pad.b}" class="fd-vgrid"/>`;
+          xl += `<text x="${x.toFixed(1)}" y="${H - 7}" text-anchor="${anchor}" class="fd-tick">${escHtml(items[i].short)}</text>`;
+        });
+
+        // bars (overlaid at same x; larger magnitude drawn first so both stay visible)
+        let bars = "";
+        const y0 = y(0);
+        items.forEach((it, i) => {
+          const x = cx(i) - bw / 2;
+          const parts = [];
+          if (fhSeries.fii) parts.push({ v: it.fn, c: FD_BLUE });
+          if (fhSeries.dii) parts.push({ v: it.dn, c: FD_ORANGE });
+          parts.sort((a, b) => Math.abs(b.v) - Math.abs(a.v));
+          parts.forEach(p => {
+            const y1 = y(p.v), top = Math.min(y0, y1), h = Math.max(1, Math.abs(y1 - y0));
+            bars += `<rect x="${x.toFixed(1)}" y="${top.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="${Math.min(2.5, bw / 3).toFixed(1)}" fill="${p.c}"/>`;
           });
-          g.addEventListener("mouseleave", () => tip.classList.remove("visible"));
+        });
+
+        // combined line
+        let line = "";
+        if (fhSeries.net) {
+          const pts = items.map((it, i) => [cx(i), y(it.fn + it.dn)]);
+          line = `<path d="${pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ")}" class="fd-line"/>`;
+          if (slot >= 7) line += pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.8" class="fd-dot"/>`).join("");
+        }
+
+        let hits = "";
+        for (let i = 0; i < n; i++) hits += `<rect class="fd-hit" data-i="${i}" x="${(pad.l + slot * i).toFixed(1)}" y="${pad.t}" width="${slot.toFixed(1)}" height="${ph}" fill="transparent"/>`;
+
+        host.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="FII and DII net flow chart">
+          ${grid}${vg}
+          <rect id="fdHl" class="fd-hl" y="${pad.t}" height="${ph}" width="${slot.toFixed(1)}" x="0" opacity="0"/>
+          ${bars}${line}${ylab}${xl}
+          <text transform="rotate(-90)" x="${-(pad.t + ph / 2)}" y="${compact ? 11 : 13}" text-anchor="middle" class="fd-axis-title">Flow (₹ Cr)</text>
+          ${hits}
+        </svg>`;
+
+        const tip = fdTip(), hl = host.querySelector("#fdHl");
+        const cls = x => x >= 0 ? "pos" : "neg";
+        host.querySelectorAll(".fd-hit").forEach(r => {
+          const i = +r.getAttribute("data-i"), it = items[i];
+          const show = e => {
+            hl.setAttribute("x", r.getAttribute("x")); hl.setAttribute("opacity", "1");
+            let h = `<div class="fd-tip-date">${escHtml(it.label)}${it.days > 1 ? ` <span style="color:#7f93b5;font-weight:500">· ${it.days} days</span>` : ""}</div>`;
+            h += `<div class="fd-tip-row"><span class="l"><span class="fd-tip-dot" style="background:${FD_BLUE}"></span>FII Net</span><b class="${cls(it.fn)}">${fdSigned(it.fn)}</b></div>
+                  <div class="fd-tip-row mut"><span>Buy</span><span>${fhFmt(it.fb, 0)}</span></div>
+                  <div class="fd-tip-row mut"><span>Sell</span><span>${fhFmt(it.fs, 0)}</span></div>
+                  <div class="fd-tip-sep"></div>
+                  <div class="fd-tip-row"><span class="l"><span class="fd-tip-dot" style="background:${FD_ORANGE}"></span>DII Net</span><b class="${cls(it.dn)}">${fdSigned(it.dn)}</b></div>
+                  <div class="fd-tip-row mut"><span>Buy</span><span>${fhFmt(it.db, 0)}</span></div>
+                  <div class="fd-tip-row mut"><span>Sell</span><span>${fhFmt(it.ds, 0)}</span></div>
+                  <div class="fd-tip-sep"></div>
+                  <div class="fd-tip-row"><span class="l"><span class="fd-tip-dot" style="background:#fff"></span>FII + DII</span><b class="${cls(it.fn + it.dn)}">${fdSigned(it.fn + it.dn)}</b></div>`;
+            tip.innerHTML = h;
+            const tw = tip.offsetWidth, th = tip.offsetHeight;
+            let lx = e.clientX + 16, ly = e.clientY + 16;
+            if (lx + tw > window.innerWidth - 8) lx = e.clientX - tw - 16;
+            if (ly + th > window.innerHeight - 8) ly = window.innerHeight - th - 8;
+            tip.style.left = Math.max(8, lx) + "px"; tip.style.top = Math.max(8, ly) + "px";
+            tip.classList.add("visible");
+          };
+          r.addEventListener("mouseenter", show);
+          r.addEventListener("mousemove", show);
+          r.addEventListener("mouseleave", () => { hl.setAttribute("opacity", "0"); tip.classList.remove("visible"); });
         });
       }
 
       async function loadFhHistory() {
-        fhBody.innerHTML = `<div class="fh-loading"><div class="fh-spinner"></div>Loading flow history…</div>`;
+        fhBody.innerHTML = `<div class="fd-loading"><div class="fd-spinner"></div>Loading flow history…</div>`;
         try {
           const res = await fetch(`${API_BASE}/fii-dii-history`);
           if (!res.ok) throw new Error("Failed");
           const data = await res.json();
           fhRawData = Array.isArray(data) ? data : [];
+          fhDaily = fhRawData
+            .map(r => ({ r, d: parseHistDate(r.date) }))
+            .filter(x => x.d)
+            .sort((a, b) => a.d - b.d)
+            .map(x => Object.assign({}, x.r, { _d: x.d }));
           fhLoaded = true;
           renderFhModal();
         } catch (e) {
-          fhBody.innerHTML = `<div class="fh-error">Could not load flow history. Please try again.</div>`;
+          fhBody.innerHTML = `<div class="fd-error">Could not load flow history. Please try again.</div>`;
         }
       }
 
@@ -4968,9 +5425,67 @@
       function closeFhModal() {
         fhOverlay.classList.remove("visible");
         document.body.style.overflow = "";
-        const tip = document.getElementById("fhTooltip");
+        fhPopOpen = false;
+        const tip = document.getElementById("fdTip");
         if (tip) tip.classList.remove("visible");
       }
+
+      // Clicks inside the modal body (presets, legend toggles, date popover, summary rows)
+      fhBody.addEventListener("click", e => {
+        const t = e.target;
+        const rangeBtn = t.closest("[data-fdrange]");
+        if (rangeBtn) {
+          const k = rangeBtn.getAttribute("data-fdrange");
+          if (k === "custom") {
+            const wrap = document.getElementById("fdDateWrap");
+            fhPopOpen = !fhPopOpen;
+            if (wrap) wrap.classList.toggle("open", fhPopOpen);
+          } else { fhWin = { preset: k, from: null, to: null }; fhPopOpen = false; renderFhModal(); }
+          return;
+        }
+        if (t.closest("#fdDateBtn")) {
+          const wrap = document.getElementById("fdDateWrap");
+          fhPopOpen = !fhPopOpen;
+          if (wrap) wrap.classList.toggle("open", fhPopOpen);
+          return;
+        }
+        const act = t.closest("[data-fdact]");
+        if (act) {
+          if (act.getAttribute("data-fdact") === "all") {
+            fhWin = { preset: "custom", from: fhDaily[0]._d, to: fhDaily[fhDaily.length - 1]._d };
+            fhPopOpen = false; renderFhModal();
+          } else {
+            const f = fdParseIso(document.getElementById("fdFrom")?.value);
+            const to = fdParseIso(document.getElementById("fdTo")?.value);
+            const err = document.getElementById("fdPopErr");
+            if (!f || !to) { if (err) err.textContent = "Please choose both dates."; return; }
+            if (f > to) { if (err) err.textContent = "“From” must be on or before “To”."; return; }
+            fhWin = { preset: "custom", from: f, to: to };
+            fhPopOpen = false; renderFhModal();
+          }
+          return;
+        }
+        const ser = t.closest("[data-fdseries]");
+        if (ser) {
+          const k = ser.getAttribute("data-fdseries");
+          const on = Object.values(fhSeries).filter(Boolean).length;
+          if (fhSeries[k] && on === 1) return;   // keep at least one series visible
+          fhSeries[k] = !fhSeries[k];
+          ser.classList.toggle("off", !fhSeries[k]);
+          fdDrawChart();
+          return;
+        }
+        const row = t.closest("[data-fdrow]");
+        if (row) { fhWin = { preset: row.getAttribute("data-fdrow"), from: null, to: null }; fhPopOpen = false; renderFhModal(); }
+      });
+      document.addEventListener("click", e => {
+        if (!fhPopOpen || !fhOverlay.classList.contains("visible")) return;
+        if (e.target.closest("#fdDateWrap") || e.target.closest("[data-fdrange='custom']")) return;
+        fhPopOpen = false;
+        const wrap = document.getElementById("fdDateWrap");
+        if (wrap) wrap.classList.remove("open");
+      });
+      window.addEventListener("resize", () => { if (fhOverlay.classList.contains("visible")) fdDrawChart(); });
 
       fiiCard.addEventListener("click", openFhModal);
       fiiCard.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openFhModal(); } });
@@ -6098,9 +6613,9 @@
       fhOverlay.addEventListener("click", e => { if (e.target === fhOverlay) closeFhModal(); });
       document.addEventListener("keydown", e => { if (e.key === "Escape" && fhOverlay.classList.contains("visible")) closeFhModal(); });
       fhFilters.addEventListener("click", e => {
-        const btn = e.target.closest(".fh-filter-btn");
+        const btn = e.target.closest(".fd-seg-btn");
         if (!btn) return;
-        fhFilters.querySelectorAll(".fh-filter-btn").forEach(b => b.classList.remove("active"));
+        fhFilters.querySelectorAll(".fd-seg-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         fhRange = btn.getAttribute("data-range");
         renderFhModal();
@@ -6355,8 +6870,8 @@
         curPriceHeaderCell.style.display = "none";
         chgHeaderCell.style.display = "none";
         editBanner.style.display = "flex";
-        saveStatus.textContent = "You have unsaved changes";
-        saveStatus.className = "edit-banner-sub";
+        resetChangeBaseline();
+        refreshChangeStatus();
         renderTable();
       }
 
@@ -6395,6 +6910,69 @@
           || JSON.stringify(deposits) !== JSON.stringify(depositsSnapshot);
       }
 
+      // ── Change summary shown in the edit banner ──────────────────────
+      let editOrigin = new Map();   // holding object -> its index in holdingsSnapshot
+      function resetChangeBaseline() {
+        editOrigin = new Map();
+        holdings.forEach((h, i) => editOrigin.set(h, i));
+      }
+      const CHG_ICONS = {
+        add:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+        edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+        sold: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
+        del:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+      };
+      function chgSym(h) { return (String((h && h.symbol) || "").trim().toUpperCase()) || "—"; }
+      function chgFieldDiff(a, b) {
+        const labels = { symbol: "Symbol", quantity: "Qty", buyPrice: "Buy price", targetAmount: "Target", buyDate: "Buy date" };
+        const out = [];
+        Object.keys(labels).forEach(k => {
+          const x = String(a[k] ?? ""), y = String(b[k] ?? "");
+          if (x !== y) out.push(`${labels[k]}: ${x || "—"} → ${y || "—"}`);
+        });
+        if (JSON.stringify(a.lots || []) !== JSON.stringify(b.lots || [])) out.push("Purchases changed");
+        return out;
+      }
+      function computeChanges() {
+        const out = [];
+        const sold = new Map();
+        closedTransactions.slice(closedTransactionsSnapshot.length).forEach(t => {
+          const k = chgSym(t);
+          if (!sold.has(k)) sold.set(k, []);
+          sold.get(k).push(t);
+        });
+        const kept = new Set();
+        holdings.forEach(h => {
+          if (!editOrigin.has(h)) { out.push({ type: "add", sym: chgSym(h), tip: `New holding · ${h.quantity} @ ₹${h.buyPrice}` }); return; }
+          const i = editOrigin.get(h); kept.add(i);
+          const o = holdingsSnapshot[i]; if (!o) return;
+          if (JSON.stringify(o) !== JSON.stringify(h)) {
+            if (sold.has(chgSym(h))) return;   // quantity change caused by a sale
+            const la = Array.isArray(o.lots) ? o.lots.length : 0, lb = Array.isArray(h.lots) ? h.lots.length : 0;
+            const d = chgFieldDiff(o, h);
+            if (lb > la && lb > 1) out.push({ type: "add", sym: chgSym(h), tip: "New purchase added\n" + d.join("\n") });
+            else out.push({ type: "edit", sym: chgSym(h), tip: d.length ? d.join("\n") : "Edited" });
+          }
+        });
+        holdingsSnapshot.forEach((o, i) => {
+          if (kept.has(i) || sold.has(chgSym(o))) return;   // fully sold shows as "sold", not deleted
+          out.push({ type: "del", sym: chgSym(o), tip: "Deleted" });
+        });
+        sold.forEach((list, sym) => out.push({ type: "sold", sym, tip: list.map(t => `Sold ${t.quantity} @ ₹${t.sellPrice}`).join("\n") }));
+        if (JSON.stringify(deposits) !== JSON.stringify(depositsSnapshot)) out.push({ type: "edit", sym: "Deposits", tip: "Deposits changed" });
+        const order = { add: 0, edit: 1, sold: 2, del: 3 };
+        return out.sort((a, b) => order[a.type] - order[b.type]);
+      }
+      function refreshChangeStatus() {
+        if (!isEditing) return;
+        saveStatus.className = "edit-banner-sub";
+        const ch = computeChanges();
+        if (!ch.length) { saveStatus.textContent = "No changes yet"; return; }
+        const MAX = 10;
+        saveStatus.innerHTML = `<span class="chg-list">${ch.slice(0, MAX).map(c =>
+          `<span class="chg-chip ${c.type}" title="${escAttr(c.tip)}">${CHG_ICONS[c.type]}${escHtml(c.sym)}</span>`).join("")}${ch.length > MAX ? `<span class="chg-more">+${ch.length - MAX} more</span>` : ""}</span>`;
+      }
+
       function cancelEdit() {
         if (isDirty() && !confirm("Discard unsaved changes?")) return;
         exitEditMode(true);
@@ -6424,6 +7002,7 @@
           holdingsSnapshot = JSON.parse(JSON.stringify(holdings));
           closedTransactionsSnapshot = JSON.parse(JSON.stringify(closedTransactions));
           depositsSnapshot = JSON.parse(JSON.stringify(deposits));
+          resetChangeBaseline();
           saveStatus.textContent = "Saved — " + new Date().toLocaleTimeString();
           saveStatus.className = "edit-banner-sub status-ok";
           lastUpdatedEl.textContent = "Last updated " + new Date(payload.lastUpdated).toLocaleString();
@@ -6924,7 +7503,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           profitRs: h => profitRsOf(h),
           profitPct: h => profitPct(h.buyPrice, curPriceOf(h)),
           target: h => { const v = parseFloat(h.targetAmount); return isFinite(v) ? v : -Infinity; },
-          buyDate: h => { const t = h.buyDate ? new Date(h.buyDate).getTime() : NaN; return isFinite(t) ? t : -Infinity; },
+          buyDate: h => { const fb = firstBuyDate(h); const t = fb ? new Date(fb).getTime() : NaN; return isFinite(t) ? t : -Infinity; },
         };
         const getter = getters[sortField] || getters.profitPct;
         holdings.sort((a, b) => {
@@ -7246,6 +7825,41 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
       document.getElementById("monthlyBuyCloseBtn").addEventListener("click", closeMonthlyBuyModal);
       document.addEventListener("keydown", e => { if (e.key === "Escape" && monthlyBuyModal.classList.contains("visible")) closeMonthlyBuyModal(); });
 
+      // Earliest purchase date across a holding's lots (falls back to its buy date)
+      function firstBuyDate(h) {
+        const lots = Array.isArray(h.lots) ? h.lots : [];
+        let best = null;
+        lots.forEach(l => {
+          const t = l.buyDate ? new Date(l.buyDate).getTime() : NaN;
+          if (isFinite(t) && (best === null || t < best.t)) best = { t, d: l.buyDate };
+        });
+        return best ? best.d : (h.buyDate || "");
+      }
+      function daysSince(v) {
+        if (!v) return NaN;
+        const d = new Date(v); if (isNaN(d)) return NaN;
+        const n = new Date();
+        return Math.max(0, Math.round((Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()) - Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())) / 86400000));
+      }
+      function daysLabel(n, multi) {
+        if (!isFinite(n)) return "";
+        const t = n === 0 ? "Today" : n === 1 ? "1 day" : n + " days";
+        return multi ? (n === 0 ? "Today · 1st buy" : t + " since 1st buy") : (n === 0 ? "Bought today" : t + " held");
+      }
+      function buyDateCellHtml(h) {
+        const multi = Array.isArray(h.lots) && h.lots.length > 1;
+        const first = multi ? firstBuyDate(h) : (h.buyDate || "");
+        const sub = daysLabel(daysSince(first), multi);
+        return `${fmtDate(first)}${sub ? `<div class="cell-sub first" title="Days since the first purchase">${sub}</div>` : ""}`;
+      }
+      function targetCellHtml(h, curPrice) {
+        const tgt = parseFloat(h.targetAmount);
+        const base = isFinite(curPrice) && curPrice > 0 ? curPrice : parseFloat(h.buyPrice);
+        if (!isFinite(tgt) || tgt <= 0 || !(base > 0)) return fmtMoney(h.targetAmount);
+        const p = (tgt / base - 1) * 100;
+        return `${fmtMoney(h.targetAmount)}<div class="cell-sub ${p >= 0 ? "pos" : "neg"}" title="Distance from current price to target">${p >= 0 ? "+" : ""}${p.toFixed(2)}%</div>`;
+      }
+
       // Render table
       function renderTable() {
         tbody.innerHTML = "";
@@ -7300,9 +7914,9 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           <td class="num profit-rs-cell">${profitRsBadge}</td>
           <td class="num profit-cell">${profitBadge}</td>
           <td><input type="number" step="any" class="cell num" value="${numOrBlank(h.targetAmount)}" data-i="${i}" data-f="targetAmount" placeholder="0.00"></td>
-          <td><input type="date" class="cell" value="${escAttr(h.buyDate ?? '')}" data-i="${i}" data-f="buyDate"></td>
-          <td class="sell-date-cell visible"><button class="icon-btn" data-sell="${i}" title="Close position">Sell</button></td>
-          <td class="remove-cell visible"><button class="icon-btn danger" data-remove="${i}" title="Remove">${ICON_TRASH}</button></td>`;
+          <td><input type="date" class="cell" value="${escAttr(h.buyDate ?? '')}" data-i="${i}" data-f="buyDate">${(() => { const m = Array.isArray(h.lots) && h.lots.length > 1; const l = daysLabel(daysSince(m ? firstBuyDate(h) : h.buyDate), m); return l ? `<div class="cell-sub first">${l}</div>` : ""; })()}</td>
+          <td class="sell-date-cell visible"><button type="button" class="sell-btn" data-sell="${i}" title="Sell shares">${ICON_SELL}Sell</button></td>
+          <td class="remove-cell visible"><button type="button" class="row-menu-btn" data-rowmenu="${i}" title="More actions" aria-haspopup="menu">${ICON_DOTS}</button></td>`;
           } else {
             const hasLots = Array.isArray(h.lots) && h.lots.length > 1;
             const lotsBadge = hasLots ? `<span class="lots-count-badge">${h.lots.length}</span>` : "";
@@ -7317,8 +7931,8 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           <td class="num current-value-cell ${cvCls}">${currentValueTxt}</td>
           <td class="num profit-rs-cell">${profitRsBadge}</td>
           <td class="num profit-cell">${profitBadge}</td>
-          <td class="num">${fmtMoney(h.targetAmount)}</td>
-          <td>${fmtDate(h.buyDate)}</td>`;
+          <td class="num">${targetCellHtml(h, curPrice)}</td>
+          <td title="${hasLots ? "Multiple purchases — click row for details" : ""}">${buyDateCellHtml(h)}</td>`;
             if (hasLots) {
               tr.classList.add("holding-row-multi");
               tr.title = "Click to view all transactions for this holding";
@@ -7455,7 +8069,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
               <td class="num ${cls}">${isFinite(pnl) ? `${pnl >= 0 ? "+" : ""}₹${fmtMoney(pnl)}` : "—"}</td>
               <td>
                 <div class="lots-row-actions">
-                  <button type="button" class="icon-btn" data-lot-sell="${idx}" title="Sell this purchase">Sell</button>
+                  <button type="button" class="sell-btn sm" data-lot-sell="${idx}" title="Sell this purchase">${ICON_SELL}Sell</button>
                   <button type="button" class="icon-btn danger" data-lot-remove="${idx}" title="Remove this purchase">${ICON_TRASH}</button>
                 </div>
               </td>
@@ -7485,8 +8099,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
       lotsModal.addEventListener("click", e => { if (e.target === lotsModal) closeLotsModal(); });
 
       function markDirty() {
-        saveStatus.textContent = "You have unsaved changes";
-        saveStatus.className = "edit-banner-sub";
+        refreshChangeStatus();
       }
 
       // Inline edits to a lot's date/qty/buyPrice
@@ -7878,8 +8491,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           }
         }
         computeKPIs();
-        saveStatus.textContent = isDirty() ? "You have unsaved changes" : "No changes";
-        saveStatus.className = "edit-banner-sub";
+        refreshChangeStatus();
       });
 
       tbody.addEventListener("click", e => {
@@ -7891,10 +8503,45 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           return;
         }
         const sellBtn = e.target.closest("[data-sell]");
-        if (sellBtn) { openSaleModal(parseInt(sellBtn.getAttribute("data-sell"), 10)); return; }
-        const removeBtn = e.target.closest("[data-remove]");
-        if (removeBtn) { holdings.splice(parseInt(removeBtn.getAttribute("data-remove"), 10), 1); renderTable(); }
+        if (sellBtn) { closeRowMenu(); openSaleModal(parseInt(sellBtn.getAttribute("data-sell"), 10)); return; }
+        const menuBtn = e.target.closest("[data-rowmenu]");
+        if (menuBtn) { toggleRowMenu(menuBtn); return; }
       });
+
+      // ⋮ row actions menu (single floating menu so the table's scroll area can't clip it)
+      const rowMenu = document.createElement("div");
+      rowMenu.className = "row-menu"; rowMenu.setAttribute("role", "menu");
+      document.body.appendChild(rowMenu);
+      let rowMenuBtn = null;
+      function closeRowMenu() {
+        rowMenu.classList.remove("visible");
+        if (rowMenuBtn) rowMenuBtn.classList.remove("open");
+        rowMenuBtn = null;
+      }
+      function toggleRowMenu(btn) {
+        if (rowMenuBtn === btn) { closeRowMenu(); return; }
+        closeRowMenu();
+        const idx = parseInt(btn.getAttribute("data-rowmenu"), 10);
+        const h = holdings[idx]; if (!h) return;
+        rowMenu.innerHTML = `<button type="button" class="danger" role="menuitem" data-rowmenu-del="${idx}">${ICON_TRASH}Delete holding</button>`;
+        rowMenu.classList.add("visible");
+        btn.classList.add("open"); rowMenuBtn = btn;
+        const r = btn.getBoundingClientRect(), mw = rowMenu.offsetWidth, mh = rowMenu.offsetHeight;
+        let top = r.bottom + 6;
+        if (top + mh > window.innerHeight - 8) top = Math.max(8, r.top - mh - 6);
+        rowMenu.style.top = top + "px";
+        rowMenu.style.left = Math.max(8, Math.min(r.right - mw, window.innerWidth - mw - 8)) + "px";
+      }
+      rowMenu.addEventListener("click", e => {
+        const del = e.target.closest("[data-rowmenu-del]"); if (!del) return;
+        const idx = parseInt(del.getAttribute("data-rowmenu-del"), 10);
+        closeRowMenu();
+        if (holdings[idx]) { holdings.splice(idx, 1); renderTable(); markDirty(); }
+      });
+      document.addEventListener("click", e => { if (rowMenuBtn && !e.target.closest(".row-menu") && !e.target.closest("[data-rowmenu]")) closeRowMenu(); });
+      document.addEventListener("keydown", e => { if (e.key === "Escape") closeRowMenu(); });
+      window.addEventListener("resize", closeRowMenu);
+      document.addEventListener("scroll", closeRowMenu, true);
 
       function openAddHoldingModal() {
         addHoldingError.textContent = "";
@@ -7940,26 +8587,116 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           holdings.push({ symbol, quantity, buyPrice, buyDate: buyDate || "", targetAmount: "" });
         }
         closeAddHoldingModal(); renderTable();
-        saveStatus.textContent = "You have unsaved changes"; saveStatus.className = "edit-banner-sub";
+        refreshChangeStatus();
       }
 
       addRowBtn.addEventListener("click", openAddHoldingModal);
 
-      // Sale modal
+      // Sale modal — partial quantity + choose which purchase (entry) to sell
+      const saleQtyInput = document.getElementById("saleQty");
+      const saleLotPicker = document.getElementById("saleLotPicker");
+      const saleQuick = document.getElementById("saleQuick");
+      const saleSummary = document.getElementById("saleSummary");
+      let saleSel = "all";   // "all" (oldest first) or an index into the holding's lots
+
+      function saleLotsOf(h) {
+        if (Array.isArray(h.lots) && h.lots.length) return h.lots;
+        return [{ quantity: qtyOf(h), buyPrice: h.buyPrice, buyDate: h.buyDate || "" }];
+      }
+      function saleMaxQty(h) {
+        const lots = saleLotsOf(h);
+        if (saleSel === "all") return lots.reduce((t, l) => t + (parseFloat(l.quantity) || 0), 0);
+        return parseFloat(lots[saleSel] && lots[saleSel].quantity) || 0;
+      }
+      function renderSalePicker(h) {
+        const lots = saleLotsOf(h);
+        if (lots.length < 2) { saleLotPicker.style.display = "none"; saleLotPicker.innerHTML = ""; return; }
+        const opt = (key, title, sub) => `<div class="sale-lot${String(saleSel) === String(key) ? " sel" : ""}" data-sale-sel="${key}" role="radio" aria-checked="${String(saleSel) === String(key)}"><span class="sale-radio"></span><div><div>${title}</div><small>${sub}</small></div></div>`;
+        const total = lots.reduce((t, l) => t + (parseFloat(l.quantity) || 0), 0);
+        saleLotPicker.innerHTML = lots.map((l, i) => {
+          const q = parseFloat(l.quantity) || 0;
+          return opt(i, `Entry ${i + 1} · ${fmtDate(l.buyDate)}`, `${q} share${q === 1 ? "" : "s"} @ ₹${fmtMoney(l.buyPrice)}`);
+        }).join("") + opt("all", "All entries (oldest first)", `${total} shares · avg ₹${fmtMoney(h.buyPrice)}`);
+        saleLotPicker.style.display = "flex";
+      }
+      function updateSaleSummary() {
+        const h = holdings[saleIndex]; if (!h) return;
+        const max = saleMaxQty(h), q = parseFloat(saleQtyInput.value);
+        if (!isFinite(q) || q <= 0) { saleSummary.textContent = ""; return; }
+        const left = Math.max(0, max - q);
+        saleSummary.textContent = q >= max - 1e-9
+          ? (saleSel === "all" ? "This closes the whole position." : "This sells the whole entry.")
+          : `Selling ${q} of ${max} · ${Math.round(left * 1e6) / 1e6} will remain`;
+      }
       function openSaleModal(index) {
         const h = holdings[index]; if (!h) return;
-        saleIndex = index; saleError.textContent = "";
-        salePositionLabel.textContent = `${h.symbol || "This holding"} · ${qtyOf(h)} share${qtyOf(h) === 1 ? "" : "s"}`;
+        saleIndex = index; saleSel = "all"; saleError.textContent = "";
+        salePositionLabel.textContent = `${h.symbol || "This holding"} · ${qtyOf(h)} share${qtyOf(h) === 1 ? "" : "s"} held`;
+        renderSalePicker(h);
+        const max = saleMaxQty(h);
+        saleQtyInput.max = max; saleQtyInput.value = max;
         salePriceInput.value = ""; saleDateInput.value = new Date().toISOString().slice(0, 10);
+        updateSaleSummary();
         saleModal.classList.add("visible"); salePriceInput.focus();
       }
       function closeSaleModal() { saleModal.classList.remove("visible"); saleIndex = null; }
+      saleLotPicker.addEventListener("click", e => {
+        const el = e.target.closest("[data-sale-sel]"); if (!el) return;
+        const h = holdings[saleIndex]; if (!h) return;
+        const k = el.getAttribute("data-sale-sel");
+        saleSel = k === "all" ? "all" : parseInt(k, 10);
+        renderSalePicker(h);
+        const max = saleMaxQty(h);
+        saleQtyInput.max = max; saleQtyInput.value = max;
+        updateSaleSummary();
+      });
+      saleQuick.addEventListener("click", e => {
+        const b = e.target.closest("[data-salepct]"); if (!b) return;
+        const h = holdings[saleIndex]; if (!h) return;
+        const max = saleMaxQty(h), pct = parseInt(b.getAttribute("data-salepct"), 10);
+        let q = max * pct / 100;
+        if (Number.isInteger(max)) q = pct === 100 ? max : Math.max(1, Math.floor(q));
+        saleQtyInput.value = Math.round(q * 1e6) / 1e6;
+        updateSaleSummary();
+      });
+      saleQtyInput.addEventListener("input", updateSaleSummary);
+
       function confirmSale() {
-        const sellPrice = parseFloat(salePriceInput.value), sellDate = saleDateInput.value, h = holdings[saleIndex];
-        if (!h || !isFinite(sellPrice) || sellPrice < 0 || !sellDate) { saleError.textContent = "Enter valid sell price and date."; return; }
-        closedTransactions.push({ symbol: h.symbol || "", quantity: qtyOf(h), buyPrice: h.buyPrice, buyDate: h.buyDate || "", sellPrice, sellDate });
-        holdings.splice(saleIndex, 1); closeSaleModal(); renderTable();
-        saveStatus.textContent = "You have unsaved changes"; saveStatus.className = "edit-banner-sub";
+        const h = holdings[saleIndex];
+        const sellPrice = parseFloat(salePriceInput.value), sellDate = saleDateInput.value;
+        const qty = parseFloat(saleQtyInput.value);
+        if (!h) { closeSaleModal(); return; }
+        const max = saleMaxQty(h);
+        if (!isFinite(qty) || qty <= 0 || qty > max + 1e-9) { saleError.textContent = `Enter a quantity between 0 and ${max}.`; return; }
+        if (!isFinite(sellPrice) || sellPrice < 0 || !sellDate) { saleError.textContent = "Enter valid sell price and date."; return; }
+
+        const hasLots = Array.isArray(h.lots) && h.lots.length > 0;
+        if (!hasLots) {
+          closedTransactions.push({ symbol: h.symbol || "", quantity: qty, buyPrice: h.buyPrice, buyDate: h.buyDate || "", sellPrice, sellDate });
+          const remaining = qtyOf(h) - qty;
+          if (remaining <= 1e-9) holdings.splice(saleIndex, 1);
+          else h.quantity = Math.round(remaining * 1e6) / 1e6;
+        } else {
+          let order;
+          if (saleSel === "all") {
+            const ts = l => { const t = l.buyDate ? new Date(l.buyDate).getTime() : NaN; return isFinite(t) ? t : Infinity; };
+            order = h.lots.map((l, i) => i).sort((x, y) => ts(h.lots[x]) - ts(h.lots[y]) || x - y);
+          } else order = [saleSel];
+          let left = qty;
+          order.forEach(idx => {
+            if (left <= 1e-9) return;
+            const lot = h.lots[idx], lq = parseFloat(lot.quantity) || 0;
+            const take = Math.min(lq, left);
+            if (take <= 0) return;
+            closedTransactions.push({ symbol: h.symbol || "", quantity: Math.round(take * 1e6) / 1e6, buyPrice: parseFloat(lot.buyPrice) || 0, buyDate: lot.buyDate || "", sellPrice, sellDate });
+            lot.quantity = Math.round((lq - take) * 1e6) / 1e6;
+            left -= take;
+          });
+          h.lots = h.lots.filter(l => (parseFloat(l.quantity) || 0) > 1e-9);
+          if (recomputeHoldingFromLots(h) === false) removeHoldingByRef(h);
+        }
+        closeSaleModal(); renderTable();
+        refreshChangeStatus();
       }
 
       // Wire up
