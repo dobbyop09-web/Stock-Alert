@@ -7854,10 +7854,10 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
       }
       function targetCellHtml(h, curPrice) {
         const tgt = parseFloat(h.targetAmount);
-        const base = isFinite(curPrice) && curPrice > 0 ? curPrice : parseFloat(h.buyPrice);
+        const base = parseFloat(h.buyPrice);
         if (!isFinite(tgt) || tgt <= 0 || !(base > 0)) return fmtMoney(h.targetAmount);
         const p = (tgt / base - 1) * 100;
-        return `${fmtMoney(h.targetAmount)}<div class="cell-sub ${p >= 0 ? "pos" : "neg"}" title="Distance from current price to target">${p >= 0 ? "+" : ""}${p.toFixed(2)}%</div>`;
+        return `${fmtMoney(h.targetAmount)}<div class="cell-sub ${p >= 0 ? "pos" : "neg"}" title="Gain from buy price to target">${p >= 0 ? "+" : ""}${p.toFixed(2)}%</div>`;
       }
 
       // Render table
