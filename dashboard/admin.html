@@ -2820,7 +2820,7 @@
 
     .fd-modal {
       width: 100%;
-      max-width: 1080px;
+      max-width: 1180px;
       max-height: 90vh;
       display: flex;
       flex-direction: column;
@@ -2881,19 +2881,19 @@
     .fd-period-note b { color: #cfe0ff; font-weight: 600; }
 
     /* KPI cards (flat — no background curves) */
-    .fd-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .fd-kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
     .fd-kpi {
-      position: relative; display: flex; align-items: center; gap: 12px;
-      padding: 11px 14px; border-radius: 12px; border: 1px solid; min-width: 0;
+      position: relative; display: flex; align-items: center; gap: 10px;
+      padding: 11px 12px; border-radius: 12px; border: 1px solid; min-width: 0;
     }
     .fd-kpi-ico {
-      width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center; border: 1px solid;
     }
-    .fd-kpi-ico svg { width: 20px; height: 20px; }
+    .fd-kpi-ico svg { width: 17px; height: 17px; }
     .fd-kpi-txt { min-width: 0; flex: 1; }
     .fd-kpi-lbl { font-size: 12.5px; font-weight: 600; color: #eaf1ff; }
-    .fd-kpi-val { font-size: 20px; font-weight: 700; letter-spacing: -.02em; margin: 1px 0 2px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .fd-kpi-val { font-size: 18px; font-weight: 700; letter-spacing: -.02em; margin: 1px 0 2px; font-variant-numeric: tabular-nums; white-space: nowrap; }
     .fd-kpi-val.pos { color: #19d3a0; }
     .fd-kpi-val.neg { color: #ff5a5f; }
     .fd-kpi-val.neutral { color: #f4f8ff; }
@@ -3011,8 +3011,9 @@
     .fd-tip-sep { height: 1px; background: rgba(255, 255, 255, .08); margin: 5px 0; }
     .fd-tip .pos { color: #19d3a0; } .fd-tip .neg { color: #ff5a5f; }
 
-    @media (max-width: 880px) {
+    @media (max-width: 1000px) {
       .fd-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .fd-kpi.fd-k-oi { grid-column: 1 / -1; }
     }
     @media (max-width: 600px) {
       .fd-overlay { padding: 6px; }
@@ -3036,6 +3037,69 @@
       .fd-panel-head { padding: 8px 10px; }
       .fd-legend { gap: 2px 6px; }
       .fd-pop { right: auto; left: 0; }
+    }
+
+    /* FII index futures position card */
+    .fd-k-oi { background: linear-gradient(135deg, #1b1a45 0%, #0a1932 75%); border-color: rgba(139, 120, 255, .38); }
+    .fd-k-oi .fd-kpi-ico { color: #a595ff; background: rgba(139, 120, 255, .16); border-color: rgba(139, 120, 255, .42); }
+    .fd-oi { display: flex; gap: 14px; margin: 2px 0 6px; }
+    .fd-oi > div { display: flex; flex-direction: column; line-height: 1.15; }
+    .fd-oi small { font-size: 10.5px; color: #aebbd6; font-weight: 500; }
+    .fd-oi b { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; color: #f4f8ff; }
+    .fd-oi b.pos { color: #19d3a0; }
+    .fd-oi b.neg { color: #ff5a5f; }
+    .fd-meter.oi { background: #ff5a5f; }
+
+    /* FII index position card is clickable */
+    .fd-k-oi { cursor: pointer; transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease; }
+    .fd-k-oi:hover { border-color: rgba(165, 149, 255, .7); box-shadow: 0 0 18px rgba(139, 120, 255, .22); }
+    .fd-k-oi:focus-visible { outline: 2px solid #a595ff; outline-offset: 2px; }
+    .fd-oi-open { position: absolute; top: 8px; right: 9px; width: 15px; height: 15px; color: #a595ff; opacity: .75; }
+
+    /* ── FII Index Position: Long vs Short trend popup ── */
+    .oi-overlay {
+      display: none; position: fixed; inset: 0; z-index: 210;
+      background: rgba(2, 6, 16, .78); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      align-items: center; justify-content: center; padding: 16px;
+    }
+    .oi-overlay.visible { display: flex; }
+    .oi-modal {
+      width: 100%; max-width: 980px; max-height: 92vh; display: flex; flex-direction: column; overflow: hidden;
+      border-radius: 14px; color: #e8f0ff;
+      background: radial-gradient(800px 360px at 8% -8%, rgba(139, 120, 255, .14), transparent 62%), #07101f;
+      border: 1px solid rgba(139, 120, 255, .32); box-shadow: 0 30px 80px rgba(0, 0, 0, .65);
+      animation: fhPop .22s cubic-bezier(.2, .9, .3, 1);
+    }
+    .oi-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 14px 18px 8px; }
+    .oi-head-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .oi-head-icon {
+      width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      color: #a595ff; background: rgba(139, 120, 255, .16); border: 1px solid rgba(139, 120, 255, .42);
+    }
+    .oi-head-icon svg { width: 20px; height: 20px; }
+    .oi-title { font-size: 20px; font-weight: 700; letter-spacing: -.02em; color: #f4f8ff; line-height: 1.15; }
+    .oi-sub { font-size: 12px; color: #7f93b5; margin-top: 2px; }
+    .oi-body { padding: 4px 18px 18px; overflow-y: auto; }
+    .oi-panel { border-radius: 12px; background: rgba(10, 24, 48, .78); border: 1px solid rgba(70, 115, 210, .24); padding: 12px 14px 8px; }
+    .oi-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+    .oi-legend { display: flex; gap: 14px; font-size: 12.5px; color: #cfe0ff; }
+    .oi-legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .oi-legend i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+    .oi-chart { position: relative; width: 100%; }
+    .oi-chart svg { display: block; width: 100%; }
+    .oi-empty { padding: 60px 10px; text-align: center; color: #7f93b5; font-size: 13px; }
+    .oi-tip {
+      position: absolute; pointer-events: none; opacity: 0; transition: opacity .1s ease; z-index: 3; min-width: 150px;
+      padding: 8px 10px; border-radius: 9px; background: rgba(8, 18, 38, .96); border: 1px solid rgba(120, 160, 230, .3);
+      font-size: 12px; color: #dbe7ff; box-shadow: 0 10px 28px rgba(0, 0, 0, .5);
+    }
+    .oi-tip.visible { opacity: 1; }
+    .oi-tip .d { font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .oi-tip .r { display: flex; justify-content: space-between; gap: 14px; padding: 1px 0; }
+    .oi-tip .r b { font-variant-numeric: tabular-nums; }
+    @media (max-width: 560px) {
+      .oi-title { font-size: 17px; }
+      .oi-seg-btn { padding: 6px 10px; }
     }
 
     /* Holdings table: sub-lines under Target / Buy Date */
@@ -4691,6 +4755,46 @@
     </div>
   </div>
 
+  <!-- FII Index Position: Long vs Short trend popup -->
+  <div class="oi-overlay" id="oiOverlay">
+    <div class="oi-modal" role="dialog" aria-modal="true" aria-labelledby="oiTitle">
+      <div class="oi-head">
+        <div class="oi-head-left">
+          <div class="oi-head-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          </div>
+          <div>
+            <div class="oi-title" id="oiTitle">Long vs Short Trend</div>
+            <div class="oi-sub" id="oiSub">FII index futures positioning</div>
+          </div>
+        </div>
+        <div class="fd-head-right">
+          <div class="fd-seg" id="oiRanges">
+            <button class="fd-seg-btn" data-oirange="1w">1W</button>
+            <button class="fd-seg-btn" data-oirange="1m">1M</button>
+            <button class="fd-seg-btn active" data-oirange="3m">3M</button>
+            <button class="fd-seg-btn" data-oirange="6m">6M</button>
+            <button class="fd-seg-btn" data-oirange="all">All</button>
+          </div>
+          <button class="fd-close" id="oiCloseBtn" aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="oi-body">
+        <div class="oi-panel">
+          <div class="oi-panel-head">
+            <div class="oi-legend">
+              <span><i style="background:#19d3a0"></i>Long %</span>
+              <span><i style="background:#ff5a5f"></i>Short %</span>
+            </div>
+          </div>
+          <div class="oi-chart" id="oiChartHost"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Market Indices modal -->
   <div class="fh-overlay" id="idxOverlay">
     <div class="fh-modal" role="dialog" aria-modal="true" aria-labelledby="idxTitle" style="max-width:640px">
@@ -5024,6 +5128,7 @@
       let fhSeries = { fii: true, dii: true, net: true };   // legend toggles
       let fhPopOpen = false;
       let fhView = null;
+      let fhOi = [];             // FII index OI history (ascending), from /fii-oi-data
 
       const FD_BLUE = "#1f8bff", FD_ORANGE = "#ff8a1f", FD_GREEN = "#19d3a0", FD_RED = "#ff5a5f";
       const FD_MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -5142,6 +5247,7 @@
           clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
           cal: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>',
           chev: '<polyline points="6 9 12 15 18 9"/>',
+          updown: '<path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/>',
         };
         return `<svg ${a}>${p[name]}</svg>`;
       }
@@ -5169,6 +5275,10 @@
           { fb: 0, fs: 0, fn: 0, db: 0, ds: 0, dn: 0 });
         const has = items.length > 0;
         const diff = S.fn - S.dn;
+        const oi = fdOiAt(v.to);
+        const oiL = oi ? parseFloat(oi.futuresLongPercentage) : NaN;
+        const oiS = oi ? parseFloat(oi.futuresShortPercentage) : NaN;
+        const oiOk = isFinite(oiL) && isFinite(oiS);
 
         const posCnt = items.filter(i => i.fn > 0).length;
         const total = items.length;
@@ -5211,6 +5321,18 @@
               <div class="fd-kpi-val neutral">${posCnt} / ${total}<span class="fd-kpi-pct ${pct >= 50 ? "pos" : "neg"}">(${pct}%)</span></div>
               <div class="fd-kpi-sub">${negCnt} negative ${unitPl.toLowerCase()}</div>
               <div class="fd-meter"><span style="width:${pct}%"></span></div>
+            </div>
+          </div>
+          <div class="fd-kpi fd-k-oi" id="fdOiCard" role="button" tabindex="0" title="View Long vs Short trend">
+            <svg class="fd-oi-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+            <div class="fd-kpi-ico">${fdIcon("updown")}</div>
+            <div class="fd-kpi-txt">
+              <div class="fd-kpi-lbl">FII Index Position</div>
+              <div class="fd-oi">
+                <div><small>Long</small><b class="pos">${oiOk ? oiL.toFixed(1) + "%" : "—"}</b></div>
+                <div><small>Short</small><b class="neg">${oiOk ? oiS.toFixed(1) + "%" : "—"}</b></div>
+              </div>
+              <div class="fd-meter oi"><span style="width:${oiOk ? oiL : 0}%"></span></div>
             </div>
           </div>
         </div>`;
@@ -5397,7 +5519,28 @@
         });
       }
 
+      // Latest OI row on or before the end of the selected window
+      function fdOiAt(to) {
+        let best = null;
+        for (const r of fhOi) { if (r._d <= to) best = r; else break; }
+        return best;
+      }
+      async function fdLoadOi() {
+        try {
+          const res = await fetch(`${API_BASE}/fii-oi-data`);
+          if (!res.ok) throw new Error("oi");
+          const data = await res.json();
+          const hist = Array.isArray(data) ? data : (Array.isArray(data.history) ? data.history : []);
+          fhOi = hist
+            .map(r => Object.assign({}, r, { _d: fdParseIso(String(r.date || "").slice(0, 10)) }))
+            .filter(r => r._d)
+            .sort((a, b) => a._d - b._d);
+          if (fhLoaded && fhOverlay.classList.contains("visible")) renderFhModal();
+        } catch (e) { fhOi = []; }
+      }
+
       async function loadFhHistory() {
+        fdLoadOi();
         fhBody.innerHTML = `<div class="fd-loading"><div class="fd-spinner"></div>Loading flow history…</div>`;
         try {
           const res = await fetch(`${API_BASE}/fii-dii-history`);
@@ -5486,6 +5629,151 @@
         if (wrap) wrap.classList.remove("open");
       });
       window.addEventListener("resize", () => { if (fhOverlay.classList.contains("visible")) fdDrawChart(); });
+
+      // ── FII Index Position: Long vs Short trend popup ─────────────────
+      const oiOverlay = document.getElementById("oiOverlay");
+      const oiHost = document.getElementById("oiChartHost");
+      const oiSub = document.getElementById("oiSub");
+      let oiRange = "3m";
+      let oiRows = [];
+
+      function oiCleanRows() {
+        return fhOi
+          .map(r => ({ d: r._d, l: parseFloat(r.futuresLongPercentage), s: parseFloat(r.futuresShortPercentage) }))
+          .filter(r => isFinite(r.l) && isFinite(r.s));
+      }
+      function oiWindow(rows) {
+        if (!rows.length || oiRange === "all") return rows;
+        const latest = rows[rows.length - 1].d;
+        let from;
+        if (oiRange === "1w") from = new Date(latest.getFullYear(), latest.getMonth(), latest.getDate() - 6);
+        else from = fdPresetFrom(latest, oiRange === "1m" ? 1 : oiRange === "3m" ? 3 : 6);
+        return rows.filter(r => r.d >= from);
+      }
+
+      function oiDraw() {
+        const rows = oiWindow(oiRows);
+        if (!rows.length) { oiHost.innerHTML = `<div class="oi-empty">No positioning data available for this range.</div>`; oiSub.textContent = "FII index futures positioning"; return; }
+        oiSub.textContent = `${fdFull(rows[0].d)} – ${fdFull(rows[rows.length - 1].d)} • ${rows.length} trading day${rows.length > 1 ? "s" : ""}`;
+
+        const W = Math.max(320, oiHost.clientWidth || 900);
+        const compact = W < 560;
+        const H = compact ? 260 : 340;
+        const pad = { l: compact ? 40 : 48, r: 14, t: 12, b: 28 };
+        const pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+        const n = rows.length;
+        const X = i => pad.l + (n === 1 ? pw / 2 : (i / (n - 1)) * pw);
+        const Y = v => pad.t + ph - (Math.max(0, Math.min(100, v)) / 100) * ph;
+        const base = pad.t + ph;
+
+        let g = `<defs>
+          <linearGradient id="oiGS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff5a5f" stop-opacity=".42"/><stop offset="1" stop-color="#ff5a5f" stop-opacity=".08"/></linearGradient>
+          <linearGradient id="oiGL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#19d3a0" stop-opacity=".42"/><stop offset="1" stop-color="#19d3a0" stop-opacity=".08"/></linearGradient>
+        </defs>`;
+
+        [0, 25, 50, 75, 100].forEach(v => {
+          const y = Y(v);
+          g += `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y}" y2="${y}" stroke="rgba(120,160,230,.14)" stroke-dasharray="${v === 0 ? "0" : "3 4"}"/>`;
+          g += `<text x="${pad.l - 8}" y="${y + 4}" text-anchor="end" font-size="11" fill="#9db0d0">${v}%</text>`;
+        });
+
+        const pts = k => rows.map((r, i) => `${X(i).toFixed(1)},${Y(r[k]).toFixed(1)}`);
+        const sP = pts("s"), lP = pts("l");
+        g += `<polygon points="${X(0).toFixed(1)},${base} ${sP.join(" ")} ${X(n - 1).toFixed(1)},${base}" fill="url(#oiGS)"/>`;
+        g += `<polygon points="${X(0).toFixed(1)},${base} ${lP.join(" ")} ${X(n - 1).toFixed(1)},${base}" fill="url(#oiGL)"/>`;
+        g += `<polyline points="${sP.join(" ")}" fill="none" stroke="#ff5a5f" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+        g += `<polyline points="${lP.join(" ")}" fill="none" stroke="#19d3a0" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+        // x ticks
+        const maxTicks = compact ? 4 : 8;
+        const step = Math.max(1, Math.ceil((n - 1) / (maxTicks - 1)));
+        const tickIdx = [];
+        for (let i = 0; i < n; i += step) tickIdx.push(i);
+        if (n > 1 && (n - 1 - tickIdx[tickIdx.length - 1]) < step * 0.5) tickIdx[tickIdx.length - 1] = n - 1;
+        else if (tickIdx[tickIdx.length - 1] !== n - 1) tickIdx.push(n - 1);
+        tickIdx.forEach((i, k) => {
+          const x = X(i);
+          const anchor = k === 0 && n > 1 ? "start" : (k === tickIdx.length - 1 && n > 1 ? "end" : "middle");
+          g += `<line x1="${x}" x2="${x}" y1="${base}" y2="${base + 4}" stroke="rgba(120,160,230,.4)"/>`;
+          g += `<text x="${x}" y="${base + 18}" text-anchor="${anchor}" font-size="11" fill="#9db0d0">${fdDay(rows[i].d)}</text>`;
+        });
+
+        // end-point markers
+        g += `<circle cx="${X(n - 1)}" cy="${Y(rows[n - 1].s)}" r="4" fill="#ff5a5f"/><circle cx="${X(n - 1)}" cy="${Y(rows[n - 1].l)}" r="4" fill="#19d3a0"/>`;
+
+        // hover layer
+        g += `<line id="oiHl" x1="0" x2="0" y1="${pad.t}" y2="${base}" stroke="rgba(200,220,255,.4)" stroke-dasharray="3 3" opacity="0"/>`;
+        g += `<circle id="oiHs" r="4.5" fill="#ff5a5f" stroke="#07101f" stroke-width="2" opacity="0"/><circle id="oiHL" r="4.5" fill="#19d3a0" stroke="#07101f" stroke-width="2" opacity="0"/>`;
+        g += `<rect id="oiHit" x="${pad.l}" y="${pad.t}" width="${pw}" height="${ph}" fill="transparent"/>`;
+
+        oiHost.innerHTML = `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Long vs Short percentage trend">${g}</svg><div class="oi-tip" id="oiTip"></div>`;
+
+        const hit = oiHost.querySelector("#oiHit"), hl = oiHost.querySelector("#oiHl");
+        const hs = oiHost.querySelector("#oiHs"), hL = oiHost.querySelector("#oiHL"), tip = oiHost.querySelector("#oiTip");
+        const svgEl = oiHost.querySelector("svg");
+        const move = ev => {
+          const box = svgEl.getBoundingClientRect();
+          const px = (ev.clientX - box.left) * (W / box.width);
+          const i = n === 1 ? 0 : Math.max(0, Math.min(n - 1, Math.round(((px - pad.l) / pw) * (n - 1))));
+          const r = rows[i], x = X(i);
+          hl.setAttribute("x1", x); hl.setAttribute("x2", x); hl.setAttribute("opacity", "1");
+          hs.setAttribute("cx", x); hs.setAttribute("cy", Y(r.s)); hs.setAttribute("opacity", "1");
+          hL.setAttribute("cx", x); hL.setAttribute("cy", Y(r.l)); hL.setAttribute("opacity", "1");
+          tip.innerHTML = `<div class="d">${fdFull(r.d)}</div>
+            <div class="r"><span style="color:#19d3a0">Long</span><b>${r.l.toFixed(2)}%</b></div>
+            <div class="r"><span style="color:#ff5a5f">Short</span><b>${r.s.toFixed(2)}%</b></div>`;
+          tip.classList.add("visible");
+          const scale = box.width / W, tw = tip.offsetWidth;
+          let left = x * scale + 14;
+          if (left + tw > box.width) left = x * scale - tw - 14;
+          tip.style.left = Math.max(0, left) + "px";
+          tip.style.top = (pad.t * scale + 6) + "px";
+        };
+        hit.addEventListener("mousemove", move);
+        hit.addEventListener("touchmove", e => { if (e.touches[0]) move(e.touches[0]); }, { passive: true });
+        hit.addEventListener("touchstart", e => { if (e.touches[0]) move(e.touches[0]); }, { passive: true });
+        const leave = () => { hl.setAttribute("opacity", "0"); hs.setAttribute("opacity", "0"); hL.setAttribute("opacity", "0"); tip.classList.remove("visible"); };
+        hit.addEventListener("mouseleave", leave);
+        hit.addEventListener("touchend", leave);
+      }
+
+      function oiRender() {
+        document.querySelectorAll("#oiRanges .fd-seg-btn").forEach(b => b.classList.toggle("active", b.getAttribute("data-oirange") === oiRange));
+        oiRows = oiCleanRows();
+        if (!oiRows.length) {
+          oiHost.innerHTML = `<div class="oi-empty">No index positioning history available.</div>`;
+          return;
+        }
+        oiDraw();
+      }
+
+      async function openOiModal() {
+        oiOverlay.classList.add("visible");
+        if (!fhOi.length) {
+          oiHost.innerHTML = `<div class="fd-loading"><div class="fd-spinner"></div>Loading positioning history…</div>`;
+          await fdLoadOi();
+        }
+        oiRender();
+      }
+      function closeOiModal() { oiOverlay.classList.remove("visible"); }
+
+      fhBody.addEventListener("click", e => { if (e.target.closest("#fdOiCard")) openOiModal(); });
+      fhBody.addEventListener("keydown", e => {
+        if ((e.key === "Enter" || e.key === " ") && e.target.closest && e.target.closest("#fdOiCard")) { e.preventDefault(); openOiModal(); }
+      });
+      document.getElementById("oiRanges").addEventListener("click", e => {
+        const b = e.target.closest("[data-oirange]");
+        if (!b) return;
+        oiRange = b.getAttribute("data-oirange");
+        oiRender();
+      });
+      document.getElementById("oiCloseBtn").addEventListener("click", closeOiModal);
+      oiOverlay.addEventListener("click", e => { if (e.target === oiOverlay) closeOiModal(); });
+      // capture phase so Esc closes only this popup, not the flow-history modal beneath it
+      document.addEventListener("keydown", e => {
+        if (e.key === "Escape" && oiOverlay.classList.contains("visible")) { e.stopImmediatePropagation(); closeOiModal(); }
+      }, true);
+      window.addEventListener("resize", () => { if (oiOverlay.classList.contains("visible") && oiRows.length) oiDraw(); });
 
       fiiCard.addEventListener("click", openFhModal);
       fiiCard.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openFhModal(); } });
@@ -7503,7 +7791,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           profitRs: h => profitRsOf(h),
           profitPct: h => profitPct(h.buyPrice, curPriceOf(h)),
           target: h => { const v = parseFloat(h.targetAmount); return isFinite(v) ? v : -Infinity; },
-          buyDate: h => { const fb = firstBuyDate(h); const t = fb ? new Date(fb).getTime() : NaN; return isFinite(t) ? t : -Infinity; },
+          buyDate: h => { const fb = latestBuyDate(h); const t = fb ? new Date(fb).getTime() : NaN; return isFinite(t) ? t : -Infinity; },
         };
         const getter = getters[sortField] || getters.profitPct;
         holdings.sort((a, b) => {
@@ -7835,6 +8123,16 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
         });
         return best ? best.d : (h.buyDate || "");
       }
+      // Most recent purchase date across a holding's lots (falls back to its buy date)
+      function latestBuyDate(h) {
+        const lots = Array.isArray(h.lots) ? h.lots : [];
+        let best = null;
+        lots.forEach(l => {
+          const t = l.buyDate ? new Date(l.buyDate).getTime() : NaN;
+          if (isFinite(t) && (best === null || t > best.t)) best = { t, d: l.buyDate };
+        });
+        return best ? best.d : (h.buyDate || "");
+      }
       function daysSince(v) {
         if (!v) return NaN;
         const d = new Date(v); if (isNaN(d)) return NaN;
@@ -7848,9 +8146,9 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
       }
       function buyDateCellHtml(h) {
         const multi = Array.isArray(h.lots) && h.lots.length > 1;
-        const first = multi ? firstBuyDate(h) : (h.buyDate || "");
-        const sub = daysLabel(daysSince(first), multi);
-        return `${fmtDate(first)}${sub ? `<div class="cell-sub first" title="Days since the first purchase">${sub}</div>` : ""}`;
+        const latest = multi ? latestBuyDate(h) : (h.buyDate || "");
+        const sub = daysLabel(daysSince(multi ? firstBuyDate(h) : h.buyDate), multi);
+        return `${fmtDate(latest)}${sub ? `<div class="cell-sub first" title="Days since the first purchase">${sub}</div>` : ""}`;
       }
       function targetCellHtml(h, curPrice) {
         const tgt = parseFloat(h.targetAmount);
@@ -7932,7 +8230,7 @@ function renderSectorSummary(){const data=buildSectorData(),body=document.getEle
           <td class="num profit-rs-cell">${profitRsBadge}</td>
           <td class="num profit-cell">${profitBadge}</td>
           <td class="num">${targetCellHtml(h, curPrice)}</td>
-          <td title="${hasLots ? "Multiple purchases — click row for details" : ""}">${buyDateCellHtml(h)}</td>`;
+          <td title="${hasLots ? "Latest purchase date · multiple purchases" : ""}">${buyDateCellHtml(h)}</td>`;
             if (hasLots) {
               tr.classList.add("holding-row-multi");
               tr.title = "Click to view all transactions for this holding";
