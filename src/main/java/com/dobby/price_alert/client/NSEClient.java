@@ -18,7 +18,10 @@ import com.dobby.price_alert.dto.nse.derivatives.DerivativesResponse;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @Data
@@ -208,4 +211,36 @@ public class NSEClient {
             );
         }
     }
+    public String getParticipantWiseOiReport(LocalDate date) {
+
+        if (!isSessionWarm()) {
+            warmSession();
+        }
+
+        String archivesJson = """
+            [{"name":"F&O - Participant wise Open Interest(csv)",
+              "type":"archives",
+              "category":"derivatives",
+              "section":"equity"}]
+            """.replaceAll("\\s+", " ");
+
+        URI uri = UriComponentsBuilder
+                .fromUriString("https://www.nseindia.com/api/reports")
+                .queryParam("archives", archivesJson)
+                .queryParam("date",
+                        date.format(DateTimeFormatter.ofPattern(
+                                "dd-MMM-yyyy", Locale.ENGLISH)))
+                .queryParam("type", "equity")
+                .queryParam("mode", "single")
+                .build()
+                .encode(StandardCharsets.UTF_8)
+                .toUri();
+
+        String referer = "https://www.nseindia.com/all-reports-derivatives";
+
+        log.info("Downloading participant-wise OI report for {}", date);
+
+        return getWithSessionRetry(uri, referer);
+    }
+
 }

@@ -7,6 +7,7 @@ import com.dobby.price_alert.dto.nse.index.IndexData;
 import com.dobby.price_alert.dto.nse.index.IndexResponseData;
 import com.dobby.price_alert.mapper.DashboardIndexMapper;
 import com.dobby.price_alert.service.R2UploadService;
+import com.dobby.price_alert.util.CheckTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import tools.jackson.databind.ObjectMapper;
@@ -33,7 +34,10 @@ public class IndexDataRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         log.info("Fetching index data...");
-
+        if (!CheckTime.isAfterMarketHours()) {
+            log.info("Skipping Index Data Runner. Before 6 PM IST.");
+            return;
+        }
         IndexResponseData response = client.getIndexData();
 
         Map<String, IndexData> indexMap =
