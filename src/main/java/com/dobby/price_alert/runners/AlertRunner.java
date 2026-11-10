@@ -12,6 +12,7 @@ import com.dobby.price_alert.service.kotak.KotakScripLookupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,10 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Component
+@ConditionalOnProperty(
+        name = "app.runners.alert.enabled",
+        havingValue = "true"
+)
 @Order(1)
 public class AlertRunner implements CommandLineRunner {
 

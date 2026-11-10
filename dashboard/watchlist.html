@@ -220,6 +220,113 @@
   .skeleton-row td { opacity: .4; }
   @keyframes pulse { 0%,100%{opacity:.3} 50%{opacity:.6} }
   .loading-row td { animation: pulse 1.2s ease-in-out infinite; background: rgba(255,255,255,.03); }
+
+  /* ── OI card (replaces Market Sentiment) ── */
+  .scard-oi { cursor: pointer; transition: border-color .18s, transform .18s, box-shadow .18s; }
+  .scard-oi:hover, .scard-oi:focus-visible { border-color: rgba(245,166,35,.45); transform: translateY(-1px); box-shadow: 0 6px 22px rgba(245,166,35,.08); outline: none; }
+  .oi-card-title { font-size: 15px; font-weight: 700; color: #F5A623; margin: 4px 0 2px; }
+  .oi-open-btn {
+    margin-top: 9px; display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 11px; border-radius: 6px; font-size: 11px; font-weight: 600;
+    color: #F5A623; background: rgba(245,166,35,.1); border: 1px solid rgba(245,166,35,.25);
+  }
+  .scard-oi:hover .oi-open-btn { background: rgba(245,166,35,.18); }
+  .oi-card-art { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); opacity: .9; }
+
+  /* ── OI modal ── */
+  .oi-backdrop {
+    position: fixed; inset: 0; z-index: 2000; display: none;
+    background: rgba(3,8,14,.72); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; padding: 18px;
+  }
+  .oi-backdrop.open { display: flex; }
+  .oi-modal {
+    width: min(1600px, 100%); max-height: 95vh; overflow-y: auto;
+    background: #0b1520; border: 1px solid rgba(255,255,255,.1); border-radius: 14px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.6); padding: 18px 20px 20px;
+    animation: oiIn .18s ease-out;
+  }
+  @keyframes oiIn { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: none; } }
+  .oi-modal::-webkit-scrollbar { width: 5px; }
+  .oi-modal::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 4px; }
+  .oi-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .oi-head h2 { font-size: 18px; font-weight: 700; color: #edf5ff; letter-spacing: -.01em; }
+  .oi-head p { font-size: 11px; color: #5a7080; margin-top: 2px; }
+  .oi-head-right { display: flex; align-items: center; gap: 8px; }
+  .oi-date { padding: 6px 11px; border-radius: 6px; border: 1px solid rgba(139,92,246,.3); background: rgba(139,92,246,.08); color: #b9a2f5; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .oi-x { width: 30px; height: 30px; border-radius: 8px; color: #6a8299; font-size: 18px; line-height: 1; border: 1px solid rgba(255,255,255,.09); }
+  .oi-x:hover { color: #fff; border-color: rgba(255,255,255,.2); }
+
+  .oi-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+  .oi-kpi { background: #0e1d2b; border: 1px solid rgba(255,255,255,.07); border-radius: 10px; padding: 12px 14px; position: relative; overflow: hidden; }
+  .oi-kpi::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--k); }
+  .oi-kpi-l { font-size: 10px; font-weight: 600; color: #4a6075; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 5px; }
+  .oi-kpi-v { font-size: 22px; font-weight: 700; color: #edf5ff; letter-spacing: -.02em; line-height: 1.1; }
+  .oi-kpi-s { font-size: 11px; font-weight: 600; margin-top: 4px; color: #5a7080; }
+
+  .oi-panel { background: #0e1d2b; border: 1px solid rgba(255,255,255,.07); border-radius: 10px; padding: 12px 14px; }
+  .oi-panel h3 { font-size: 12px; font-weight: 600; color: #cfe2f5; }
+  .oi-panel-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .oi-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .oi-tab { padding: 4px 11px; border-radius: 14px; font-size: 11px; font-weight: 600; color: #6a8299; border: 1px solid rgba(255,255,255,.09); background: rgba(255,255,255,.02); }
+  .oi-tab:hover { color: #dce8f4; }
+  .oi-tab.active { color: #2DD4BF; border-color: rgba(45,212,191,.4); background: rgba(45,212,191,.08); }
+  .oi-legend { display: flex; gap: 14px; font-size: 10px; color: #6a8299; }
+  .oi-legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+  .oi-chart { position: relative; }
+  .oi-chart svg { width: 100%; height: auto; display: block; }
+  .oi-hit { fill: transparent; cursor: crosshair; }
+  .oi-hit:hover { fill: rgba(255,255,255,.06); }
+  .oi-tip {
+    position: absolute; z-index: 5; pointer-events: none; display: none; min-width: 210px;
+    background: #111c28; border: 1px solid rgba(255,255,255,.14); border-radius: 8px;
+    padding: 9px 11px; box-shadow: 0 10px 30px rgba(0,0,0,.55); font-size: 11px; color: #cfe2f5;
+  }
+  .oi-tip h4 { font-size: 12px; color: #edf5ff; margin-bottom: 2px; }
+  .oi-tip .sp { color: #F5A623; font-weight: 600; margin-bottom: 6px; font-size: 11px; }
+  .oi-tip .tr { display: flex; justify-content: space-between; gap: 14px; padding: 2px 0; font-variant-numeric: tabular-nums; }
+  .oi-tip .tr span:first-child { color: #7f92a6; }
+  .oi-tip hr { border: none; border-top: 1px solid rgba(255,255,255,.08); margin: 5px 0; }
+  .oi-seg { display: flex; border: 1px solid rgba(255,255,255,.09); border-radius: 14px; overflow: hidden; }
+  .oi-seg button { padding: 4px 12px; font-size: 11px; font-weight: 600; color: #6a8299; }
+  .oi-seg button.active { color: #F5A623; background: rgba(245,166,35,.1); }
+  .oi-tbl-wrap { max-height: 420px; overflow-y: auto; margin-top: 8px; }
+  .oi-tbl-wrap::-webkit-scrollbar { width: 5px; }
+  .oi-tbl-wrap::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 4px; }
+  .oi-tbl-wrap .oi-tbl { margin-top: 0; }
+  .oi-tbl thead th { position: sticky; top: 0; background: #0e1d2b; z-index: 1; }
+
+  .oi-bottom { display: grid; grid-template-columns: 1.7fr 1fr .8fr; gap: 10px; margin-top: 10px; }
+  .oi-tbl { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .oi-tbl th { font-size: 10px; color: #3a5060; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; text-align: right; padding: 6px 6px; border-bottom: 1px solid rgba(255,255,255,.05); }
+  .oi-tbl td { font-size: 11px; text-align: right; padding: 6px 6px; border-bottom: 1px solid rgba(255,255,255,.04); font-variant-numeric: tabular-nums; color: #cfe2f5; }
+  .oi-tbl th:first-child, .oi-tbl td:first-child { text-align: left; font-weight: 600; }
+  .oi-tbl tr.atm td { background: rgba(245,166,35,.07); }
+  .oi-tbl tr.atm td:first-child { color: #F5A623; }
+  .oi-tbl tr:last-child td { border-bottom: none; }
+  .c-call { color: #4C9AFF; } .c-put { color: #FF5C6C; }
+
+  .oi-obs { list-style: none; margin-top: 8px; }
+  .oi-obs li { padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+  .oi-obs li:last-child { border-bottom: none; }
+  .oi-obs b { display: block; font-size: 12px; margin-bottom: 2px; }
+  .oi-obs span { font-size: 11px; color: #7f92a6; }
+
+  .oi-donut { display: flex; align-items: center; gap: 16px; margin-top: 10px; flex-wrap: wrap; justify-content: center; }
+  .oi-donut-legend div { font-size: 11px; color: #7f92a6; margin-bottom: 10px; }
+  .oi-donut-legend b { display: block; font-size: 14px; color: #edf5ff; }
+
+  .oi-state { padding: 60px 10px; text-align: center; color: #5a7080; font-size: 12px; }
+  .oi-state button { margin-top: 12px; padding: 6px 14px; border-radius: 6px; color: #2DD4BF; border: 1px solid rgba(45,212,191,.3); background: rgba(45,212,191,.08); font-size: 11px; font-weight: 600; }
+  .oi-foot { font-size: 10px; color: #3a5060; margin-top: 10px; text-align: right; }
+
+  .vix-chart { position: relative; }
+  .vix-chart svg { width: 100%; height: auto; display: block; }
+  .vix-zone { display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: 10px; font-weight: 700; margin-left: 8px; vertical-align: middle; }
+  @media (max-width: 900px) {
+    .oi-kpis { grid-template-columns: 1fr 1fr; }
+    .oi-bottom { grid-template-columns: 1fr; }
+  }
 </style>
    <link rel="stylesheet" href="css/universal-search.css">
 </head>
@@ -355,17 +462,15 @@
         <div class="scard-change neg" id="card1-change">Loading…</div>
       </div>
 
-      <!-- Card 2: Selected index — changes on row click -->
-      <div class="scard" style="--accent:#2DD4BF">
-        <div class="scard-label" id="card2-label">—</div>
-        <div class="scard-icon" style="background:rgba(45,212,191,.1);color:#2DD4BF" id="card2-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-            <polyline points="17 6 23 6 23 12"/>
-          </svg>
+      <!-- Card 2: India VIX (opens history chart) -->
+      <div class="scard scard-oi" id="vixCard" role="button" tabindex="0" aria-label="Open India VIX history chart" style="--accent:#8B5CF6">
+        <div class="scard-label">India VIX</div>
+        <div class="scard-icon" style="background:rgba(139,92,246,.12);color:#A78BFA">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 12 7 12 10 4 14 20 17 12 21 12"/></svg>
         </div>
-        <div class="scard-val" id="card2-val">—</div>
-        <div class="scard-change" id="card2-change">Loading…</div>
+        <div class="scard-val" id="vix-val">—</div>
+        <div class="scard-change" id="vix-change">Loading…</div>
+        <div class="sentiment-sub" id="vix-date" style="margin-top:3px">Click for history chart</div>
       </div>
 
       <!-- Card 3: Advances / Declines -->
@@ -395,28 +500,21 @@
         </div>
       </div>
 
-      <!-- Card 4: Market Sentiment -->
-      <div class="scard" style="--accent:#F5A623; position:relative; overflow:hidden;">
-        <div class="scard-label">Market Sentiment</div>
-        <div class="sentiment-label" id="sentiment-label" style="color:#F5A623;">—</div>
-        <div class="sentiment-sub" id="sentiment-sub">Loading…</div>
-        <div class="meter-wrap">
-          <svg width="84" height="50" viewBox="0 0 84 50">
-            <defs>
-              <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#FF5C6C"/>
-                <stop offset="50%" stop-color="#F5A623"/>
-                <stop offset="100%" stop-color="#2DD4BF"/>
-              </linearGradient>
-            </defs>
-            <path d="M8 46 A 34 34 0 0 1 76 46" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="8" stroke-linecap="round"/>
-            <path d="M8 46 A 34 34 0 0 1 76 46" fill="none" stroke="url(#gaugeGrad)" stroke-width="8" stroke-linecap="round"/>
-            <line id="gauge-needle" x1="42" y1="46" x2="42" y2="18"
-              stroke="white" stroke-width="2" stroke-linecap="round"
-              transform="rotate(0, 42, 46)"/>
-            <circle cx="42" cy="46" r="3" fill="white"/>
-          </svg>
-        </div>
+      <!-- Card 4: Options OI Analysis (opens pop-up) -->
+      <div class="scard scard-oi" id="oiCard" role="button" tabindex="0" aria-label="Open NIFTY options OI dashboard" style="--accent:#F5A623">
+        <div class="scard-label">Options OI Analysis</div>
+        <div class="oi-card-title">NIFTY Open Interest</div>
+        <div class="sentiment-sub">PCR, strike-wise OI &amp; positioning</div>
+        <span class="oi-open-btn">View dashboard
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+        <svg class="oi-card-art" width="64" height="48" viewBox="0 0 64 48" fill="none">
+          <rect x="4"  y="22" width="8" height="22" rx="2" fill="#4C9AFF" opacity=".85"/>
+          <rect x="16" y="10" width="8" height="34" rx="2" fill="#FF5C6C" opacity=".85"/>
+          <rect x="28" y="26" width="8" height="18" rx="2" fill="#4C9AFF" opacity=".85"/>
+          <rect x="40" y="4"  width="8" height="40" rx="2" fill="#FF5C6C" opacity=".85"/>
+          <rect x="52" y="18" width="8" height="26" rx="2" fill="#4C9AFF" opacity=".85"/>
+        </svg>
       </div>
     </div>
 
@@ -483,8 +581,53 @@
 </div>
 </div>
 
+<!-- India VIX pop-up -->
+<div class="oi-backdrop" id="vixBackdrop" aria-hidden="true">
+  <div class="oi-modal" role="dialog" aria-modal="true" aria-labelledby="vixTitle" style="width:min(1400px,100%)">
+    <div class="oi-head">
+      <div>
+        <h2 id="vixTitle">India VIX — Historical Chart</h2>
+        <p>Volatility index · daily open, high, low, close</p>
+      </div>
+      <div class="oi-head-right">
+        <span class="oi-date" id="vixRange">—</span>
+        <button class="btn-ghost" id="vixRefresh" title="Reload VIX history">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Refresh
+        </button>
+        <button class="oi-x" id="vixClose" aria-label="Close">&times;</button>
+      </div>
+    </div>
+    <div id="vixBody"><div class="oi-state">Loading VIX history…</div></div>
+  </div>
+</div>
+
+<!-- OI Dashboard pop-up -->
+<div class="oi-backdrop" id="oiBackdrop" aria-hidden="true">
+  <div class="oi-modal" role="dialog" aria-modal="true" aria-labelledby="oiTitle">
+    <div class="oi-head">
+      <div>
+        <h2 id="oiTitle">NIFTY Options OI Analysis</h2>
+        <p>Open Interest · Positioning Insights</p>
+      </div>
+      <div class="oi-head-right">
+        <span class="oi-date" id="oiDate">—</span>
+        <button class="btn-ghost" id="oiRefresh" title="Reload option chain">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Refresh
+        </button>
+        <button class="oi-x" id="oiClose" aria-label="Close">&times;</button>
+      </div>
+    </div>
+    <div id="oiBody"><div class="oi-state">Loading option chain…</div></div>
+  </div>
+</div>
+
 <script>
-const API_URL = 'https://tiny-art-8473.dobbyop09.workers.dev/dashboard-indices';
+const WORKER_BASE = 'https://tiny-art-8473.dobbyop09.workers.dev';
+const API_URL = WORKER_BASE + '/dashboard-indices';
+const OPTION_CHAIN_URL = WORKER_BASE + '/option-chain';
+const VIX_URL = WORKER_BASE + '/vix-history';
 
 let INDICES = [];
 let selectedId = null;   // the row the user last clicked (drives card 2 + advances/sentiment/perf)
@@ -592,23 +735,6 @@ function selectIndex(id, rerender) {
   const idx = INDICES.find(i => i.id === id);
   if (!idx) return;
 
-  // Card 2
-  document.getElementById('card2-label').textContent = idx.name;
-  const v2 = document.getElementById('card2-val');
-  v2.textContent = fmt(idx.last);
-  v2.className = 'scard-val ' + cls(idx.changePct);
-  const c2 = document.getElementById('card2-change');
-  const sign = idx.change >= 0 ? '+' : '';
-  c2.textContent = sign + fmt(idx.change) + ' (' + fmtPct(idx.changePct) + ')';
-  c2.className = 'scard-change ' + cls(idx.changePct);
-  const icon2 = document.getElementById('card2-icon');
-  const up2 = idx.changePct >= 0;
-  icon2.style.background = up2 ? 'rgba(45,212,191,.1)' : 'rgba(255,92,108,.1)';
-  icon2.style.color = up2 ? '#2DD4BF' : '#FF5C6C';
-  icon2.innerHTML = up2
-    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`
-    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>`;
-
   // Advances / declines
   document.getElementById('adv-index-tag').textContent = '· ' + idx.name;
   document.getElementById('adv-num').textContent = idx.advances;
@@ -618,13 +744,6 @@ function selectIndex(id, rerender) {
   document.getElementById('adv-bar-g').style.width = (idx.advances / total * 100) + '%';
   document.getElementById('adv-bar-r').style.width = (idx.declines / total * 100) + '%';
   document.getElementById('adv-bar-n').style.width = (idx.unchanged / total * 100) + '%';
-
-  // Sentiment
-  const sl = document.getElementById('sentiment-label');
-  sl.textContent = idx.sentiment;
-  sl.style.color = idx.sentimentColor;
-  document.getElementById('sentiment-sub').textContent = idx.sentimentSub;
-  document.getElementById('gauge-needle').setAttribute('transform', `rotate(${idx.needle}, 42, 46)`);
 
   // Performance
   ['1w','1m','1y'].forEach(k => {
@@ -728,6 +847,387 @@ async function refreshData() {
 
 document.getElementById('refreshBtn').addEventListener('click', refreshData);
 setInterval(() => { if (document.getElementById('autoRefreshToggle').checked) fetchIndices(); }, 60000);
+
+// ══════════════ NIFTY Options OI pop-up ══════════════
+let ocData = null, ocFetchedAt = 0, ocExpiry = null, ocLoading = false;
+const OC_TTL = 60000;
+const $oi = id => document.getElementById(id);
+
+function oiFmt(n) {
+  const a = Math.abs(n), s = n < 0 ? '-' : '';
+  if (a >= 1e7) return s + (a / 1e7).toFixed(2) + ' Cr';
+  if (a >= 1e6) return s + (a / 1e6).toFixed(2) + 'M';
+  if (a >= 1e3) return s + (a / 1e3).toFixed(1) + 'K';
+  return s + a.toLocaleString('en-IN');
+}
+const oiInt = n => Math.round(n).toLocaleString('en-IN');
+const oiPct = n => (n >= 0 ? '+' : '') + n.toFixed(1) + '%';
+
+function ocRows(sel) {
+  const exps = ocData.expiries.filter(e => e.status === 'SUCCESS' && (sel === 'ALL' || e.expiryDate === sel));
+  const map = new Map();
+  exps.forEach(e => (e.response?.records?.data || []).forEach(r => {
+    const o = map.get(r.strikePrice) || { strike: r.strikePrice, ce: 0, pe: 0, ceChg: 0, peChg: 0 };
+    if (r.CE) { o.ce += r.CE.openInterest || 0; o.ceChg += r.CE.changeinOpenInterest || 0; }
+    if (r.PE) { o.pe += r.PE.openInterest || 0; o.peChg += r.PE.changeinOpenInterest || 0; }
+    map.set(r.strikePrice, o);
+  }));
+  return [...map.values()].sort((a, b) => a.strike - b.strike);
+}
+
+function ocSpot() {
+  const e = ocData.expiries.find(x => x.status === 'SUCCESS');
+  return e?.response?.records?.underlyingValue ?? 0;
+}
+
+function oiChartSVG(rows, spot, mode) {
+  const W = 1500, H = 330, pl = 58, pr = 10, pt = 20, pb = 28;
+  const vc = r => mode === 'chg' ? r.ceChg : r.ce, vp = r => mode === 'chg' ? r.peChg : r.pe;
+  const vals = rows.flatMap(r => [vc(r), vp(r)]);
+  let hi = Math.max(0, ...vals), lo = Math.min(0, ...vals);
+  if (hi === lo) hi = 1;
+  const raw = (hi - lo) / 5, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const nice = [1, 2, 2.5, 5, 10].map(m => m * mag).find(x => x >= raw);
+  const top = Math.ceil(hi / nice) * nice, bot = Math.floor(lo / nice) * nice;
+  const y = v => pt + (H - pt - pb) * (1 - (v - bot) / (top - bot));
+  const gw = (W - pl - pr) / rows.length, bw = Math.max(gw * 0.36, 1.5);
+  let g = '';
+  const ticks = Math.round((top - bot) / nice);
+  for (let k = 0; k <= ticks; k++) {
+    const v = bot + k * nice;
+    g += `<line x1="${pl}" x2="${W - pr}" y1="${y(v)}" y2="${y(v)}" stroke="${Math.abs(v) < nice / 2 && bot < 0 ? 'rgba(255,255,255,.25)' : 'rgba(255,255,255,.06)'}"/>` +
+         `<text x="${pl - 6}" y="${y(v) + 3}" text-anchor="end" font-size="10" fill="#5a7080">${oiFmt(v)}</text>`;
+  }
+  const every = Math.ceil(rows.length / 24);
+  rows.forEach((r, i) => {
+    const x = pl + i * gw + gw / 2, c = vc(r), p = vp(r);
+    g += `<rect x="${x - bw - 0.5}" y="${Math.min(y(c), y(0))}" width="${bw}" height="${Math.abs(y(c) - y(0))}" rx="1" fill="#4C9AFF"/>` +
+         `<rect x="${x + 0.5}" y="${Math.min(y(p), y(0))}" width="${bw}" height="${Math.abs(y(p) - y(0))}" rx="1" fill="#FF5C6C"/>`;
+    if (i % every === 0) g += `<text x="${x}" y="${H - 10}" text-anchor="middle" font-size="10" fill="#5a7080">${r.strike}</text>`;
+  });
+  let idx = 0;
+  for (let i = 0; i < rows.length - 1; i++) if (spot >= rows[i].strike) idx = i;
+  const span = (rows[idx + 1]?.strike ?? rows[idx].strike + 1) - rows[idx].strike;
+  const frac = Math.min(Math.max((spot - rows[idx].strike) / span, 0), 1);
+  const sx = pl + (idx + frac) * gw + gw / 2;
+  g += `<line x1="${sx}" x2="${sx}" y1="${pt}" y2="${H - pb}" stroke="#F5A623" stroke-dasharray="4 3"/>` +
+       `<text x="${sx}" y="${pt - 6}" text-anchor="middle" font-size="10" font-weight="700" fill="#F5A623">Spot ${spot.toLocaleString('en-IN')}</text>`;
+  rows.forEach((r, i) => { g += `<rect class="oi-hit" data-i="${i}" x="${pl + i * gw}" y="${pt}" width="${gw}" height="${H - pt - pb}"/>`; });
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">${g}</svg><div class="oi-tip" id="oiTip"></div>`;
+}
+
+let ocWin = [], ocSpotVal = 0, ocMode = 'oi';
+function oiTipHTML(r) {
+  const cp = r.ce - r.ceChg ? r.ceChg / (r.ce - r.ceChg) * 100 : 0, pp = r.pe - r.peChg ? r.peChg / (r.pe - r.peChg) * 100 : 0;
+  const cc = v => v >= 0 ? 'pos' : 'neg', sg = v => (v >= 0 ? '+' : '-') + oiInt(Math.abs(v));
+  return `<h4>Strike ${r.strike}</h4><div class="sp">Spot ${ocSpotVal.toLocaleString('en-IN', {minimumFractionDigits:2})}</div>
+    <div class="tr"><span class="c-call">Call OI</span><b>${oiInt(r.ce)}</b></div>
+    <div class="tr"><span>Call Chg OI</span><b class="${cc(r.ceChg)}">${sg(r.ceChg)} (${oiPct(cp)})</b></div><hr>
+    <div class="tr"><span class="c-put">Put OI</span><b>${oiInt(r.pe)}</b></div>
+    <div class="tr"><span>Put Chg OI</span><b class="${cc(r.peChg)}">${sg(r.peChg)} (${oiPct(pp)})</b></div><hr>
+    <div class="tr"><span>PCR</span><b>${r.ce ? (r.pe / r.ce).toFixed(2) : '–'}</b></div>`;
+}
+function bindOITip() {
+  const box = document.querySelector('.oi-chart'); if (!box) return;
+  const tip = $oi('oiTip');
+  box.addEventListener('mousemove', e => {
+    const h = e.target.closest && e.target.closest('.oi-hit');
+    if (!h) { tip.style.display = 'none'; return; }
+    tip.innerHTML = oiTipHTML(ocWin[+h.dataset.i]);
+    tip.style.display = 'block';
+    const br = box.getBoundingClientRect();
+    let x = e.clientX - br.left + 16, yy = e.clientY - br.top + 10;
+    if (x + tip.offsetWidth > br.width) x = e.clientX - br.left - tip.offsetWidth - 16;
+    if (yy + tip.offsetHeight > br.height) yy = br.height - tip.offsetHeight - 4;
+    tip.style.left = x + 'px'; tip.style.top = Math.max(yy, 0) + 'px';
+  });
+  box.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+}
+
+function oiDonut(callShare) {
+  const r = 52, c = 2 * Math.PI * r, d = c * callShare;
+  return `<svg width="140" height="140" viewBox="0 0 140 140">
+    <circle cx="70" cy="70" r="${r}" fill="none" stroke="#FF5C6C" stroke-width="18"/>
+    <circle cx="70" cy="70" r="${r}" fill="none" stroke="#4C9AFF" stroke-width="18" stroke-dasharray="${d} ${c - d}" transform="rotate(-90 70 70)"/>
+    <text x="70" y="68" text-anchor="middle" font-size="19" font-weight="700" fill="#edf5ff">${(callShare * 100).toFixed(1)}%</text>
+    <text x="70" y="85" text-anchor="middle" font-size="11" fill="#7f92a6">Calls</text></svg>`;
+}
+
+function renderOI() {
+  const body = $oi('oiBody');
+  const valid = ocData.expiries.filter(e => e.status === 'SUCCESS');
+  if (!valid.length) { body.innerHTML = '<div class="oi-state">No option chain data available.</div>'; return; }
+  if (!ocExpiry || (ocExpiry !== 'ALL' && !valid.find(e => e.expiryDate === ocExpiry))) ocExpiry = valid[0].expiryDate;
+
+  const all = ocRows(ocExpiry), spot = ocSpot();
+  const sum = k => all.reduce((s, r) => s + r[k], 0);
+  const ce = sum('ce'), pe = sum('pe'), ceChg = sum('ceChg'), peChg = sum('peChg');
+  const cePrev = ce - ceChg, pePrev = pe - peChg;
+  const pcr = ce ? pe / ce : 0, pcrPrev = cePrev ? pePrev / cePrev : 0;
+  const cePct = cePrev ? ceChg / cePrev * 100 : 0, pePct = pePrev ? peChg / pePrev * 100 : 0;
+
+  const n50 = INDICES.find(i => i.id === nifty50Id);
+  const spotSub = n50 ? `<span class="${cls(n50.change)}">${n50.change >= 0 ? '▲' : '▼'} ${n50.change >= 0 ? '+' : '-'}${fmt(n50.change)} (${fmtPct(n50.changePct)})</span>` : 'Underlying value';
+
+  const atm = all.reduce((b, r) => Math.abs(r.strike - spot) < Math.abs(b.strike - spot) ? r : b, all[0]);
+  const win = all.filter(r => Math.abs(r.strike - spot) <= 2000);
+  ocWin = win; ocSpotVal = spot;
+  const tbl = win;
+  const maxCe = all.reduce((b, r) => r.ce > b.ce ? r : b, all[0]);
+  const maxPe = all.reduce((b, r) => r.pe > b.pe ? r : b, all[0]);
+
+  const dCls = v => v >= 0 ? 'pos' : 'neg';
+  const arrow = v => v >= 0 ? '▲' : '▼';
+  const tabs = valid.map(e => `<button class="oi-tab ${ocExpiry === e.expiryDate ? 'active' : ''}" data-exp="${e.expiryDate}">${e.expiryDate.slice(0, 6)}</button>`).join('') +
+               `<button class="oi-tab ${ocExpiry === 'ALL' ? 'active' : ''}" data-exp="ALL">All expiries</button>`;
+
+  const pcrBias = pcr >= 1.2 ? 'put writing dominates — supportive' : pcr <= 0.8 ? 'call writing dominates — cautious' : 'balanced positioning';
+
+  body.innerHTML = `
+    <div class="oi-kpis">
+      <div class="oi-kpi" style="--k:#4C9AFF"><div class="oi-kpi-l">NIFTY Spot</div><div class="oi-kpi-v">${spot.toLocaleString('en-IN',{minimumFractionDigits:2})}</div><div class="oi-kpi-s">${spotSub}</div></div>
+      <div class="oi-kpi" style="--k:#2DD4BF"><div class="oi-kpi-l">Total Call OI</div><div class="oi-kpi-v">${oiFmt(ce)}</div><div class="oi-kpi-s ${dCls(ceChg)}">${arrow(ceChg)} ${oiFmt(ceChg)} (${oiPct(cePct)})</div></div>
+      <div class="oi-kpi" style="--k:#FF5C6C"><div class="oi-kpi-l">Total Put OI</div><div class="oi-kpi-v">${oiFmt(pe)}</div><div class="oi-kpi-s ${dCls(peChg)}">${arrow(peChg)} ${oiFmt(peChg)} (${oiPct(pePct)})</div></div>
+      <div class="oi-kpi" style="--k:#8B5CF6"><div class="oi-kpi-l">PCR (OI)</div><div class="oi-kpi-v">${pcr.toFixed(2)}</div><div class="oi-kpi-s">vs ${pcrPrev.toFixed(2)} prev day</div></div>
+    </div>
+
+    <div class="oi-panel">
+      <div class="oi-panel-top">
+        <h3>${ocMode === 'chg' ? 'Change in OI' : 'Open Interest'} by Strike <span style="color:#5a7080;font-weight:400">(spot ±2000)</span></h3>
+        <div class="oi-tabs">${tabs}</div>
+        <div class="oi-seg"><button class="${ocMode === 'oi' ? 'active' : ''}" data-mode="oi">Open Interest</button><button class="${ocMode === 'chg' ? 'active' : ''}" data-mode="chg">Change in OI</button></div>
+        <div class="oi-legend"><span><i style="background:#4C9AFF"></i>Call OI</span><span><i style="background:#FF5C6C"></i>Put OI</span></div>
+      </div>
+      <div class="oi-chart">${oiChartSVG(win, spot, ocMode)}</div>
+    </div>
+
+    <div class="oi-bottom">
+      <div class="oi-panel">
+        <h3>Strike-wise OI (spot ±2000)</h3>
+        <div class="oi-tbl-wrap" id="oiTblWrap"><table class="oi-tbl"><thead><tr><th>Strike</th><th>Call OI</th><th>Call Chg</th><th>Put OI</th><th>Put Chg</th><th>PCR</th></tr></thead><tbody>
+          ${tbl.map(r => `<tr class="${r.strike === atm.strike ? 'atm' : ''}"><td>${r.strike}</td><td class="c-call">${oiInt(r.ce)}</td><td class="${dCls(r.ceChg)}">${r.ceChg >= 0 ? '+' : '-'}${oiInt(Math.abs(r.ceChg))}</td><td class="c-put">${oiInt(r.pe)}</td><td class="${dCls(r.peChg)}">${r.peChg >= 0 ? '+' : '-'}${oiInt(Math.abs(r.peChg))}</td><td>${r.ce ? (r.pe / r.ce).toFixed(2) : '–'}</td></tr>`).join('')}
+        </tbody></table></div>
+      </div>
+      <div class="oi-panel">
+        <h3>Key Observations</h3>
+        <ul class="oi-obs">
+          <li><b class="${dCls(ceChg)}">Call OI ${ceChg >= 0 ? 'up' : 'down'} by ${Math.abs(cePct).toFixed(1)}%</b><span>Total Call OI is ${oiFmt(ce)} (${ceChg >= 0 ? '+' : ''}${oiFmt(ceChg)} on the day)</span></li>
+          <li><b class="${dCls(peChg)}">Put OI ${peChg >= 0 ? 'up' : 'down'} by ${Math.abs(pePct).toFixed(1)}%</b><span>Total Put OI is ${oiFmt(pe)} (${peChg >= 0 ? '+' : ''}${oiFmt(peChg)} on the day)</span></li>
+          <li><b style="color:#b9a2f5">PCR at ${pcr.toFixed(2)}</b><span>${pcr >= pcrPrev ? 'Higher' : 'Lower'} than previous day (${pcrPrev.toFixed(2)}) · ${pcrBias}</span></li>
+          <li><b style="color:#F5A623">Key levels</b><span>Resistance ${maxCe.strike} (Call OI ${oiFmt(maxCe.ce)}) · Support ${maxPe.strike} (Put OI ${oiFmt(maxPe.pe)})</span></li>
+        </ul>
+      </div>
+      <div class="oi-panel">
+        <h3>OI Distribution</h3>
+        <div class="oi-donut">${oiDonut(ce / ((ce + pe) || 1))}
+          <div class="oi-donut-legend">
+            <div class="c-call"><b>${oiFmt(ce)}</b>Calls (${(ce / ((ce + pe) || 1) * 100).toFixed(1)}%)</div>
+            <div class="c-put"><b>${oiFmt(pe)}</b>Puts (${(pe / ((ce + pe) || 1) * 100).toFixed(1)}%)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="oi-foot">Snapshot ${escHtml(valid[0].response.records.timestamp || ocData.snapshotDate)} · Source: /option-chain</div>`;
+
+  body.querySelectorAll('.oi-tab').forEach(b => b.addEventListener('click', () => { ocExpiry = b.dataset.exp; renderOI(); }));
+  body.querySelectorAll('.oi-seg button').forEach(b => b.addEventListener('click', () => { ocMode = b.dataset.mode; renderOI(); }));
+  bindOITip();
+  const wrap = $oi('oiTblWrap'), atmRow = wrap && wrap.querySelector('tr.atm');
+  if (wrap && atmRow) wrap.scrollTop = atmRow.offsetTop - wrap.clientHeight / 2;
+  const d = new Date(ocData.snapshotDate + 'T00:00:00');
+  $oi('oiDate').textContent = isNaN(d) ? ocData.snapshotDate : d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+async function loadOI(force) {
+  if (ocLoading) return;
+  if (!force && ocData && Date.now() - ocFetchedAt < OC_TTL) { renderOI(); return; }
+  ocLoading = true;
+  if (!ocData) $oi('oiBody').innerHTML = '<div class="oi-state">Loading option chain…</div>';
+  try {
+    const res = await fetch(OPTION_CHAIN_URL + '?t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    ocData = await res.json();
+    if (!Array.isArray(ocData.expiries)) throw new Error('Unexpected response shape');
+    ocFetchedAt = Date.now();
+    renderOI();
+  } catch (e) {
+    console.error('Option chain fetch failed:', e);
+    if (!ocData) $oi('oiBody').innerHTML = '<div class="oi-state">Could not load option chain data.<br><button id="oiRetry">Retry</button></div>';
+    const r = $oi('oiRetry'); if (r) r.addEventListener('click', () => loadOI(true));
+  } finally { ocLoading = false; }
+}
+
+function openOI()  { $oi('oiBackdrop').classList.add('open');    $oi('oiBackdrop').setAttribute('aria-hidden', 'false'); loadOI(false); }
+function closeOI() { $oi('oiBackdrop').classList.remove('open'); $oi('oiBackdrop').setAttribute('aria-hidden', 'true'); }
+
+$oi('oiCard').addEventListener('click', openOI);
+$oi('oiCard').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openOI(); } });
+$oi('oiClose').addEventListener('click', closeOI);
+$oi('oiRefresh').addEventListener('click', () => loadOI(true));
+$oi('oiBackdrop').addEventListener('click', e => { if (e.target.id === 'oiBackdrop') closeOI(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeOI(); });
+
+// ══════════════ India VIX card + history pop-up ══════════════
+let vixData = [], vixRange = '3M', vixLoading = false, vixWin = [];
+const $v = id => document.getElementById(id);
+const MON = { JAN:0, FEB:1, MAR:2, APR:3, MAY:4, JUN:5, JUL:6, AUG:7, SEP:8, OCT:9, NOV:10, DEC:11 };
+const parseVixDate = t => { const m = /^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/.exec(String(t).trim()); return m ? new Date(+m[3], MON[m[2].toUpperCase()], +m[1]) : new Date(NaN); };
+const vixDStr = (d, y) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', ...(y ? { year: 'numeric' } : {}) });
+
+function vixNormalize(raw) {
+  const arr = Array.isArray(raw) ? raw : (raw && (raw.data || raw.records || raw.history)) || [];
+  return arr.map(r => ({
+    date: parseVixDate(r.EOD_TIMESTAMP),
+    open: +r.EOD_OPEN_INDEX_VAL, high: +r.EOD_HIGH_INDEX_VAL, low: +r.EOD_LOW_INDEX_VAL,
+    close: +r.EOD_CLOSE_INDEX_VAL, prev: +r.EOD_PREV_CLOSE,
+    chg: +r.VIX_PTS_CHG, pct: +r.VIX_PERC_CHG
+  })).filter(r => !isNaN(r.date) && !isNaN(r.close)).sort((a, b) => a.date - b.date);
+}
+
+function vixZone(v) {
+  return v < 13 ? ['Low volatility', '#2DD4BF', 'rgba(45,212,191,.12)']
+       : v < 18 ? ['Moderate', '#F5A623', 'rgba(245,166,35,.12)']
+       :          ['High volatility', '#FF5C6C', 'rgba(255,92,108,.12)'];
+}
+
+function paintVixCard() {
+  const last = vixData[vixData.length - 1];
+  if (!last) return;
+  const v = $v('vix-val'), c = $v('vix-change');
+  v.textContent = last.close.toFixed(2);
+  v.className = 'scard-val ' + cls(last.pct);
+  c.textContent = (last.chg >= 0 ? '+' : '') + last.chg.toFixed(2) + ' (' + (last.pct >= 0 ? '+' : '') + last.pct.toFixed(2) + '%)';
+  c.className = 'scard-change ' + cls(last.pct);
+  $v('vix-date').textContent = 'As of ' + vixDStr(last.date, true) + ' · click for chart';
+}
+
+async function loadVix(force) {
+  if (vixLoading) return;
+  vixLoading = true;
+  if (!vixData.length && $v('vixBody')) $v('vixBody').innerHTML = '<div class="oi-state">Loading VIX history…</div>';
+  try {
+    const res = await fetch(VIX_URL + (force ? '?t=' + Date.now() : ''));
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const d = vixNormalize(await res.json());
+    if (!d.length) throw new Error('Empty VIX data');
+    vixData = d;
+    paintVixCard();
+    if ($v('vixBackdrop').classList.contains('open')) renderVix();
+  } catch (e) {
+    console.error('VIX fetch failed:', e);
+    if (!vixData.length) {
+      $v('vix-change').textContent = 'Unavailable';
+      $v('vix-change').className = 'scard-change';
+      $v('vixBody').innerHTML = '<div class="oi-state">Could not load VIX history.<br><button id="vixRetry">Retry</button></div>';
+      $v('vixRetry').addEventListener('click', () => loadVix(true));
+    }
+  } finally { vixLoading = false; }
+}
+
+function vixSlice(range) {
+  const last = vixData[vixData.length - 1].date;
+  const days = { '1W': 7, '1M': 30, '3M': 90, '6M': 182, '1Y': 365 }[range];
+  if (!days) return vixData;
+  const from = new Date(last); from.setDate(from.getDate() - days);
+  const out = vixData.filter(r => r.date > from);
+  return out.length > 1 ? out : vixData.slice(-2);
+}
+
+function vixChartSVG(rows) {
+  const W = 1400, H = 340, pl = 48, pr = 14, pt = 14, pb = 28;
+  const hi = Math.max(...rows.map(r => r.high)), lo = Math.min(...rows.map(r => r.low));
+  const pad = (hi - lo) * 0.08 || 1;
+  const raw = (hi - lo + 2 * pad) / 6, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const nice = [1, 2, 2.5, 5, 10].map(m => m * mag).find(x => x >= raw);
+  const bot = Math.floor((lo - pad) / nice) * nice, top = Math.ceil((hi + pad) / nice) * nice;
+  const y = v => pt + (H - pt - pb) * (1 - (v - bot) / (top - bot));
+  const n = rows.length, gw = (W - pl - pr) / n, x = i => pl + i * gw + gw / 2;
+  let g = `<defs><linearGradient id="vixFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8B5CF6" stop-opacity=".35"/><stop offset="1" stop-color="#8B5CF6" stop-opacity="0"/></linearGradient></defs>`;
+  const ticks = Math.round((top - bot) / nice);
+  for (let k = 0; k <= ticks; k++) {
+    const v = bot + k * nice;
+    g += `<line x1="${pl}" x2="${W - pr}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,.06)"/><text x="${pl - 6}" y="${y(v) + 3}" text-anchor="end" font-size="10" fill="#5a7080">${+v.toFixed(2)}</text>`;
+  }
+  // reference zones: 13 and 18
+  [[13, 'rgba(45,212,191,.35)'], [18, 'rgba(255,92,108,.35)']].forEach(([lvl, col]) => {
+    if (lvl > bot && lvl < top) g += `<line x1="${pl}" x2="${W - pr}" y1="${y(lvl)}" y2="${y(lvl)}" stroke="${col}" stroke-dasharray="3 4"/><text x="${W - pr - 2}" y="${y(lvl) - 3}" text-anchor="end" font-size="9" fill="${col}">${lvl}</text>`;
+  });
+  // high-low band
+  const upper = rows.map((r, i) => `${x(i)},${y(r.high)}`).join(' L'), lower = rows.map((r, i) => `${x(rows.length - 1 - i)},${y(rows[rows.length - 1 - i].low)}`).join(' L');
+  g += `<path d="M${upper} L${lower} Z" fill="rgba(139,92,246,.10)"/>`;
+  const line = rows.map((r, i) => `${i ? 'L' : 'M'}${x(i)},${y(r.close)}`).join(' ');
+  g += `<path d="${line} L${x(n - 1)},${y(bot)} L${x(0)},${y(bot)} Z" fill="url(#vixFill)"/><path d="${line}" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linejoin="round"/>`;
+  if (n <= 70) rows.forEach((r, i) => { g += `<circle cx="${x(i)}" cy="${y(r.close)}" r="2.2" fill="#A78BFA"/>`; });
+  const every = Math.max(1, Math.ceil(n / 12));
+  rows.forEach((r, i) => { if (i % every === 0) g += `<text x="${x(i)}" y="${H - 10}" text-anchor="middle" font-size="10" fill="#5a7080">${vixDStr(r.date, n > 150)}</text>`; });
+  g += `<line id="vixCross" x1="0" x2="0" y1="${pt}" y2="${H - pb}" stroke="#F5A623" stroke-dasharray="4 3" style="display:none"/><circle id="vixDot" r="4.5" fill="#F5A623" stroke="#0b1520" stroke-width="2" style="display:none"/>`;
+  rows.forEach((r, i) => { g += `<rect class="oi-hit" data-i="${i}" data-x="${x(i)}" data-y="${y(r.close)}" x="${pl + i * gw}" y="${pt}" width="${gw}" height="${H - pt - pb}"/>`; });
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">${g}</svg><div class="oi-tip" id="vixTip"></div>`;
+}
+
+function vixTipHTML(r) {
+  const c = r.chg >= 0 ? 'pos' : 'neg', sg = (v, d = 2) => (v >= 0 ? '+' : '') + v.toFixed(d);
+  return `<h4>${vixDStr(r.date, true)}</h4><div class="sp" style="margin-top:4px">Close ${r.close.toFixed(2)}</div>
+    <div class="tr"><span>Open</span><b>${r.open.toFixed(2)}</b></div>
+    <div class="tr"><span>High</span><b>${r.high.toFixed(2)}</b></div>
+    <div class="tr"><span>Low</span><b>${r.low.toFixed(2)}</b></div><hr>
+    <div class="tr"><span>Prev close</span><b>${r.prev.toFixed(2)}</b></div>
+    <div class="tr"><span>Change</span><b class="${c}">${sg(r.chg)} (${sg(r.pct)}%)</b></div>`;
+}
+
+function renderVix() {
+  if (!vixData.length) return;
+  const rows = vixSlice(vixRange); vixWin = rows;
+  const last = vixData[vixData.length - 1], first = rows[0], end = rows[rows.length - 1];
+  const hiR = rows.reduce((b, r) => r.high > b.high ? r : b), loR = rows.reduce((b, r) => r.low < b.low ? r : b);
+  const avg = rows.reduce((s, r) => s + r.close, 0) / rows.length;
+  const pChg = end.close - first.prev, pPct = first.prev ? pChg / first.prev * 100 : 0;
+  const [zn, zc, zb] = vixZone(last.close);
+  const tabs = ['1W', '1M', '3M', '6M', '1Y', 'All'].map(k => `<button class="oi-tab ${vixRange === k ? 'active' : ''}" data-r="${k}">${k}</button>`).join('');
+  $v('vixBody').innerHTML = `
+    <div class="oi-kpis">
+      <div class="oi-kpi" style="--k:#8B5CF6"><div class="oi-kpi-l">Latest close</div><div class="oi-kpi-v">${last.close.toFixed(2)}</div><div class="oi-kpi-s ${cls(last.pct)}">${last.chg >= 0 ? '▲ +' : '▼ '}${last.chg.toFixed(2)} (${last.pct >= 0 ? '+' : ''}${last.pct.toFixed(2)}%)</div></div>
+      <div class="oi-kpi" style="--k:#4C9AFF"><div class="oi-kpi-l">Period change</div><div class="oi-kpi-v ${cls(pChg)}">${pChg >= 0 ? '+' : ''}${pChg.toFixed(2)}</div><div class="oi-kpi-s">${pPct >= 0 ? '+' : ''}${pPct.toFixed(2)}% · avg close ${avg.toFixed(2)}</div></div>
+      <div class="oi-kpi" style="--k:#FF5C6C"><div class="oi-kpi-l">Period high</div><div class="oi-kpi-v">${hiR.high.toFixed(2)}</div><div class="oi-kpi-s">${vixDStr(hiR.date, true)}</div></div>
+      <div class="oi-kpi" style="--k:#2DD4BF"><div class="oi-kpi-l">Period low</div><div class="oi-kpi-v">${loR.low.toFixed(2)}</div><div class="oi-kpi-s">${vixDStr(loR.date, true)}</div></div>
+    </div>
+    <div class="oi-panel">
+      <div class="oi-panel-top">
+        <h3>India VIX — Close <span class="vix-zone" style="color:${zc};background:${zb}">${zn}</span></h3>
+        <div class="oi-tabs">${tabs}</div>
+        <div class="oi-legend"><span><i style="background:#A78BFA"></i>Close</span><span><i style="background:rgba(139,92,246,.35)"></i>Day high–low</span></div>
+      </div>
+      <div class="vix-chart">${vixChartSVG(rows)}</div>
+    </div>
+    <div class="oi-foot">${rows.length} trading days · dotted lines mark 13 (low) and 18 (high) volatility levels · Source: /vix-history</div>`;
+  $v('vixRange').textContent = vixDStr(first.date, true) + ' – ' + vixDStr(end.date, true);
+  $v('vixBody').querySelectorAll('.oi-tab').forEach(b => b.addEventListener('click', () => { vixRange = b.dataset.r; renderVix(); }));
+  const box = $v('vixBody').querySelector('.vix-chart'), tip = $v('vixTip'), cross = $v('vixCross'), dot = $v('vixDot');
+  box.addEventListener('mousemove', e => {
+    const h = e.target.closest && e.target.closest('.oi-hit');
+    if (!h) { tip.style.display = 'none'; cross.style.display = dot.style.display = 'none'; return; }
+    tip.innerHTML = vixTipHTML(vixWin[+h.dataset.i]); tip.style.display = 'block';
+    cross.setAttribute('x1', h.dataset.x); cross.setAttribute('x2', h.dataset.x);
+    dot.setAttribute('cx', h.dataset.x); dot.setAttribute('cy', h.dataset.y);
+    cross.style.display = dot.style.display = '';
+    const br = box.getBoundingClientRect();
+    let px = e.clientX - br.left + 16, py = e.clientY - br.top + 10;
+    if (px + tip.offsetWidth > br.width) px = e.clientX - br.left - tip.offsetWidth - 16;
+    if (py + tip.offsetHeight > br.height) py = br.height - tip.offsetHeight - 4;
+    tip.style.left = px + 'px'; tip.style.top = Math.max(py, 0) + 'px';
+  });
+  box.addEventListener('mouseleave', () => { tip.style.display = 'none'; cross.style.display = dot.style.display = 'none'; });
+}
+
+function openVix()  { $v('vixBackdrop').classList.add('open');    $v('vixBackdrop').setAttribute('aria-hidden', 'false'); vixData.length ? renderVix() : loadVix(true); }
+function closeVix() { $v('vixBackdrop').classList.remove('open'); $v('vixBackdrop').setAttribute('aria-hidden', 'true'); }
+$v('vixCard').addEventListener('click', openVix);
+$v('vixCard').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openVix(); } });
+$v('vixClose').addEventListener('click', closeVix);
+$v('vixRefresh').addEventListener('click', () => loadVix(true));
+$v('vixBackdrop').addEventListener('click', e => { if (e.target.id === 'vixBackdrop') closeVix(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVix(); });
+loadVix(false);
 
 fetchIndices();
 </script>

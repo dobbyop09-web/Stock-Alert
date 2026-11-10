@@ -5,6 +5,7 @@ import com.dobby.price_alert.service.DerivativesService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,10 @@ import java.util.Set;
 
 @Slf4j
 @Component
+@ConditionalOnProperty(
+        name = "app.runners.derivatives.enabled",
+        havingValue = "true"
+)
 @Order(4)
 public class DerivativesRunner implements CommandLineRunner {
 
