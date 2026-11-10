@@ -7,8 +7,10 @@ import com.dobby.price_alert.dto.nse.index.IndexData;
 import com.dobby.price_alert.dto.nse.index.IndexResponseData;
 import com.dobby.price_alert.mapper.DashboardIndexMapper;
 import com.dobby.price_alert.service.R2UploadService;
+import com.dobby.price_alert.service.nse.VixHistoryService;
 import com.dobby.price_alert.util.CheckTime;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import tools.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@ConditionalOnProperty(
+        name = "app.runners.index-data.enabled",
+        havingValue = "true"
+)
 @Order(2)
 public class IndexDataRunner implements CommandLineRunner {
     @Autowired
@@ -31,8 +37,28 @@ public class IndexDataRunner implements CommandLineRunner {
     @Autowired
     private R2UploadService r2UploadService;
 
+    @Autowired
+    private VixHistoryService vixHistoryService;
+
     @Override
     public void run(String... args) throws Exception {
+
+
+        try {
+
+            log.info("Updating India VIX history...");
+
+            vixHistoryService.updateVixHistory();
+
+        } catch (Exception e) {
+
+            log.warn(
+                    "VIX history update failed. Continuing index data update: {}",
+                    e.getMessage()
+            );
+        }
+
+
         log.info("Fetching index data...");
         if (!CheckTime.isAfterMarketHours()) {
             log.info("Skipping Index Data Runner. Before 6 PM IST.");

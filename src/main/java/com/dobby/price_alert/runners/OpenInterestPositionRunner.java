@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.tool.schema.spi.CommandAcceptanceException;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
@@ -16,6 +17,10 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 
 @Component
+@ConditionalOnProperty(
+        name = "app.runners.fii-data.enabled",
+        havingValue = "true"
+)
 @Slf4j
 @RequiredArgsConstructor
 public class OpenInterestPositionRunner implements CommandLineRunner {

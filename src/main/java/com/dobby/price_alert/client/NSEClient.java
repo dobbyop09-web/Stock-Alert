@@ -20,8 +20,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Slf4j
 @Data
@@ -242,5 +241,197 @@ public class NSEClient {
 
         return getWithSessionRetry(uri, referer);
     }
+
+
+    public Map<String, Object> getOptionChainContractInfo(String symbol) {
+
+        if (!isSessionWarm()) {
+            warmSession();
+        }
+
+        URI uri = UriComponentsBuilder
+                .fromUriString("https://www.nseindia.com/api/option-chain-contract-info")
+                .queryParam("symbol", symbol)
+                .build()
+                .encode(StandardCharsets.UTF_8)
+                .toUri();
+
+        String referer = "https://www.nseindia.com/option-chain";
+
+        log.info("Fetching option chain expiry dates for {}", symbol);
+
+        String body = getWithSessionRetry(uri, referer);
+
+        if (body == null || body.isBlank()) {
+            throw new RuntimeException("Empty NSE option chain contract info");
+        }
+
+        try {
+            return objectMapper.readValue(
+                    body,
+                    new TypeReference<Map<String, Object>>() {}
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Failed to parse option chain contract info for " + symbol, e
+            );
+        }
+    }
+
+    public Map<String, Object> getIndexOptionChain(String symbol, String expiry) {
+
+        if (!isSessionWarm()) {
+            warmSession();
+        }
+
+        URI uri = UriComponentsBuilder
+                .fromUriString("https://www.nseindia.com/api/option-chain-v3")
+                .queryParam("type", "Indices")
+                .queryParam("symbol", symbol)
+                .queryParam("expiry", expiry)
+                .build()
+                .encode(StandardCharsets.UTF_8)
+                .toUri();
+
+        String referer = "https://www.nseindia.com/option-chain";
+
+        log.info("Fetching {} option chain for expiry {}", symbol, expiry);
+
+        String body = getWithSessionRetry(uri, referer);
+
+        if (body == null || body.isBlank()) {
+            throw new RuntimeException(
+                    "Empty NSE option chain response for " + symbol + " " + expiry
+            );
+        }
+
+        try {
+            return objectMapper.readValue(
+                    body,
+                    new TypeReference<Map<String, Object>>() {}
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Failed to parse option chain for " + symbol + " " + expiry, e
+            );
+        }
+    }
+
+
+
+    public List<Map<String, Object>> getVixHistory(
+            LocalDate fromDate,
+            LocalDate toDate) {
+
+        if (fromDate.isAfter(toDate)) {
+            throw new IllegalArgumentException(
+                    "From date cannot be after to date"
+            );
+        }
+
+        if (!isSessionWarm()) {
+            warmSession();
+        }
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        URI uri = UriComponentsBuilder
+                .fromUriString(
+                        "https://www.nseindia.com/api/historicalOR/vixhistory"
+                )
+                .queryParam("from", fromDate.format(formatter))
+                .queryParam("to", toDate.format(formatter))
+                .build()
+                .encode(StandardCharsets.UTF_8)
+                .toUri();
+
+        String referer =
+                "https://www.nseindia.com/reports-indices-historical-vix";
+
+        log.info(
+                "Fetching NSE VIX history from {} to {}",
+                fromDate, toDate
+        );
+
+        String body = getWithSessionRetry(uri, referer);
+
+        if (body == null || body.isBlank()) {
+            throw new RuntimeException("Empty NSE VIX history response");
+        }
+
+        try {
+
+            // Parse the response without assuming its root structure
+            Object parsed = objectMapper.readValue(body, Object.class);
+
+            Object rows = parsed;
+
+            // Support {"data": [...]}
+            if (parsed instanceof Map<?, ?> responseMap) {
+
+                rows = responseMap.get("data");
+
+                // Also support {"records": {"data": [...]}}
+                if (!(rows instanceof List<?>)) {
+                    Object records = responseMap.get("records");
+
+                    if (records instanceof Map<?, ?> recordsMap) {
+                        rows = recordsMap.get("data");
+                    }
+                }
+            }
+
+            if (!(rows instanceof List<?> list)) {
+                throw new IllegalStateException(
+                        "Unexpected NSE VIX response structure. Expected JSON array."
+                );
+            }
+
+            List<Map<String, Object>> result = new ArrayList<>();
+
+            for (Object row : list) {
+
+                if (!(row instanceof Map<?, ?> map)) {
+                    throw new IllegalStateException(
+                            "Unexpected VIX record format: " + row
+                    );
+                }
+
+                Map<String, Object> record = new LinkedHashMap<>();
+
+                map.forEach((key, value) ->
+                        record.put(String.valueOf(key), value)
+                );
+
+                result.add(record);
+            }
+
+            log.info("Successfully parsed {} VIX records", result.size());
+
+            return result;
+
+        } catch (Exception e) {
+
+            String preview = body.length() > 1500
+                    ? body.substring(0, 1500)
+                    : body;
+
+            log.error(
+                    "Failed to parse NSE VIX history. Cause: {}. Response preview: {}",
+                    e.getMessage(),
+                    preview,
+                    e
+            );
+
+            throw new RuntimeException(
+                    "Failed to parse NSE VIX history: " + e.getMessage(),
+                    e
+            );
+        }
+    }
+
+
+
 
 }
