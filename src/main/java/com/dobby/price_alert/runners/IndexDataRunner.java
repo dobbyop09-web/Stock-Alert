@@ -60,10 +60,6 @@ public class IndexDataRunner implements CommandLineRunner {
 
 
         log.info("Fetching index data...");
-        if (!CheckTime.isAfterMarketHours()) {
-            log.info("Skipping Index Data Runner. Before 6 PM IST.");
-            return;
-        }
         IndexResponseData response = client.getIndexData();
 
         Map<String, IndexData> indexMap =

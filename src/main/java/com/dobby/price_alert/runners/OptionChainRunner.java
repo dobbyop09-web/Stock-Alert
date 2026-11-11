@@ -46,11 +46,6 @@ public class OptionChainRunner implements CommandLineRunner {
         // Skip weekends
         DayOfWeek day = today.getDayOfWeek();
 
-        if (!CheckTime.isAfterMarketHours()) {
-            log.info("Skipping Option Chain Runner. Before 6 PM IST.");
-            return;
-        }
-
         if (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY) {
             log.info("Skipping NIFTY option chain runner. Weekend: {}", today);
             return;

@@ -72,7 +72,6 @@
   }
   .topbar-title h1 { font-size: 17px; font-weight: 700; color: #edf5ff; letter-spacing: -.01em; }
   .topbar-title p { font-size: 11px; color: #5a7080; margin-top: 2px; }
-  .topbar-right { display: flex; align-items: center; gap: 8px; }
 
   .btn-ghost {
     display: flex; align-items: center; gap: 6px;
@@ -83,29 +82,26 @@
   .btn-ghost:hover { color: #dce8f4; border-color: rgba(255,255,255,.18); }
   .btn-ghost svg { width: 13px; height: 13px; }
 
-  .auto-refresh-wrap { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #6a8299; }
-  .toggle { position: relative; width: 34px; height: 19px; }
-  .toggle input { opacity: 0; width: 0; height: 0; }
-  .toggle-slider {
-    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(255,255,255,.1); border-radius: 19px; cursor: pointer; transition: .2s;
-  }
-  .toggle-slider::before {
-    content: ''; position: absolute; width: 13px; height: 13px;
-    left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s;
-  }
-  .toggle input:checked + .toggle-slider { background: #2DD4BF; }
-  .toggle input:checked + .toggle-slider::before { transform: translateX(15px); }
 
-  .content { flex: 1; overflow-y: auto; padding: 16px 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+  .content { flex: 1; min-width: 0; overflow-y: auto; padding: 16px 20px 24px; display: flex; flex-direction: column; gap: 14px; }
   .content::-webkit-scrollbar { width: 5px; }
   .content::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 4px; }
 
   /* ── Summary Cards ── */
-  .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1.2fr 1fr; gap: 10px; }
+  .summary-grid {
+    display: grid;
+    grid-template-columns: minmax(150px, 1fr) minmax(150px, 1fr) minmax(310px, 1.5fr) minmax(190px, 1.1fr) minmax(330px, 1.4fr);
+    gap: 10px;
+    overflow-x: auto;
+    margin: -4px 0; padding: 4px 0;      /* room for hover lift while overflow is clipped */
+  }
+  .summary-grid > * { min-width: 0; }
+  #fpCard:hover, #fpCard:focus-visible { border-color: rgba(165,149,255,.55); box-shadow: 0 6px 22px rgba(139,120,255,.12); }
+  .summary-grid::-webkit-scrollbar { height: 5px; }
+  .summary-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 4px; }
   .scard {
     background: #0e1d2b; border: 1px solid rgba(255,255,255,.07);
-    border-radius: 8px; padding: 14px 16px;
+    border-radius: 8px; padding: 12px 14px;
     position: relative; overflow: hidden;
   }
   .scard::after {
@@ -139,14 +135,17 @@
   /* ── Table ── */
   .table-panel {
     background: #0e1d2b; border: 1px solid rgba(255,255,255,.07);
-    border-radius: 8px; overflow: hidden;
+    border-radius: 8px; overflow: hidden; min-width: 0; max-width: 100%;
   }
   .table-toolbar {
     display: flex; align-items: center; justify-content: space-between;
     padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,.05);
   }
   .table-toolbar-title { font-size: 12px; font-weight: 600; color: #cfe2f5; }
-  .table-scroll { overflow-x: auto; }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+  .table-scroll::-webkit-scrollbar { height: 6px; }
+  .table-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 4px; }
+  @media (max-width: 700px) { .table-hint { display: none; } }
   .tbl { width: 100%; border-collapse: collapse; min-width: 860px; }
   .tbl thead th {
     padding: 9px 12px; font-size: 10px; color: #3a5060; font-weight: 600;
@@ -192,6 +191,9 @@
     justify-content: flex-end; width: 100%;
   }
   .sort-th:hover { color: #cfe2f5; }
+  .tbl thead th[data-sort] { cursor: pointer; user-select: none; }
+  .tbl thead th[data-sort]:hover { color: #cfe2f5; }
+  .tbl thead th:nth-child(-n+3) .sort-th { justify-content: flex-start; }
   .sort-th.active { color: #2DD4BF; }
   .sort-arrow { font-size: 9px; width: 8px; opacity: .8; }
 
@@ -224,14 +226,21 @@
   /* ── OI card (replaces Market Sentiment) ── */
   .scard-oi { cursor: pointer; transition: border-color .18s, transform .18s, box-shadow .18s; }
   .scard-oi:hover, .scard-oi:focus-visible { border-color: rgba(245,166,35,.45); transform: translateY(-1px); box-shadow: 0 6px 22px rgba(245,166,35,.08); outline: none; }
-  .oi-card-title { font-size: 15px; font-weight: 700; color: #F5A623; margin: 4px 0 2px; }
   .oi-open-btn {
     margin-top: 9px; display: inline-flex; align-items: center; gap: 6px;
     padding: 5px 11px; border-radius: 6px; font-size: 11px; font-weight: 600;
     color: #F5A623; background: rgba(245,166,35,.1); border: 1px solid rgba(245,166,35,.25);
   }
   .scard-oi:hover .oi-open-btn { background: rgba(245,166,35,.18); }
-  .oi-card-art { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); opacity: .9; }
+  #oiCard { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .oi-left { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; white-space: nowrap; }
+  .oi-left .scard-label { margin-bottom: 4px; }
+  .oi-left .oi-open-btn { margin-top: 7px; padding: 4px 10px; }
+  .oi-levels { display: flex; gap: 16px; margin-left: auto; flex-shrink: 0; }
+  .oi-lvl { display: flex; flex-direction: column; line-height: 1.15; }
+  .oi-lvl small { font-size: 10px; color: #6a8299; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 3px; }
+  .oi-lvl b { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .oi-lvl span { font-size: 10px; color: #5a7080; margin-top: 3px; }
 
   /* ── OI modal ── */
   .oi-backdrop {
@@ -290,10 +299,10 @@
   .oi-seg { display: flex; border: 1px solid rgba(255,255,255,.09); border-radius: 14px; overflow: hidden; }
   .oi-seg button { padding: 4px 12px; font-size: 11px; font-weight: 600; color: #6a8299; }
   .oi-seg button.active { color: #F5A623; background: rgba(245,166,35,.1); }
-  .oi-tbl-wrap { max-height: 420px; overflow-y: auto; margin-top: 8px; }
+  .oi-tbl-wrap { max-height: 420px; overflow: auto; margin-top: 8px; }
   .oi-tbl-wrap::-webkit-scrollbar { width: 5px; }
   .oi-tbl-wrap::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 4px; }
-  .oi-tbl-wrap .oi-tbl { margin-top: 0; }
+  .oi-tbl-wrap .oi-tbl { margin-top: 0; min-width: 440px; }
   .oi-tbl thead th { position: sticky; top: 0; background: #0e1d2b; z-index: 1; }
 
   .oi-bottom { display: grid; grid-template-columns: 1.7fr 1fr .8fr; gap: 10px; margin-top: 10px; }
@@ -327,6 +336,1180 @@
     .oi-kpis { grid-template-columns: 1fr 1fr; }
     .oi-bottom { grid-template-columns: 1fr; }
   }
+
+  /* ══ FII / DII card + flow-history + index-position pop-ups (copied from admin.html) ══ */
+    /* ── FII/DII card specific styles ── */
+    .fii-card {
+      background: #0e1d2b;
+      border: 1px solid rgba(255, 82, 100, .22);
+      border-radius: 8px;
+      padding: 12px 14px 10px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      --accent: #FF5C6C;
+      cursor: pointer;
+      transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+    }
+
+    .fii-card:hover {
+      border-color: rgba(255, 82, 100, .45);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .25);
+    }
+
+    .fii-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #FF5C6C, #f5a623);
+      border-radius: 8px 8px 0 0;
+    }
+
+    .fii-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      gap: 8px;
+    }
+
+    .fii-lbl {
+      font-size: 10px;
+      color: #4a6075;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .fii-date-badge {
+      font-size: 9px;
+      color: #3a5060;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 10px;
+      padding: 2px 7px;
+      letter-spacing: .03em;
+      white-space: nowrap;
+    }
+
+    .fii-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 92, 108, .1);
+      color: #FF5C6C;
+      flex-shrink: 0;
+    }
+
+    .fii-icon svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .fii-expand-hint {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-size: 9px;
+      color: #3a5060;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      opacity: 0;
+      transition: opacity .18s ease;
+    }
+
+    .fii-card:hover .fii-expand-hint {
+      opacity: 1;
+    }
+
+    .fii-expand-hint svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    /* Side-by-side row: FII/FPI | divider | DII */
+    .fii-rows {
+      display: flex;
+      flex-direction: row;
+      gap: 0;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .fii-row {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      padding: 6px 10px;
+      background: rgba(255, 255, 255, .03);
+      border-radius: 6px;
+    }
+
+    .fii-row+.fii-row {
+      margin-left: 6px;
+    }
+
+    .fii-row-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .fii-cat-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .fii-cat-name {
+      font-size: 10px;
+      font-weight: 600;
+      color: #8fa3bc;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .fii-net-val {
+      font-size: 15px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.02em;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .fii-net-val.buy {
+      color: #2DD4BF;
+    }
+
+    .fii-net-val.sell {
+      color: #FF5C6C;
+    }
+
+    .fii-sub-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .fii-sub {
+      font-size: 9px;
+      color: #3a5060;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .fii-sub span {
+      color: #4a6075;
+    }
+
+    .fii-trend {
+      font-size: 9px;
+      font-weight: 600;
+      padding: 1px 5px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    .fii-trend.buy {
+      background: rgba(45, 212, 191, .1);
+      color: #2DD4BF;
+    }
+
+    .fii-trend.sell {
+      background: rgba(255, 92, 108, .1);
+      color: #FF5C6C;
+    }
+
+    .fii-loading {
+      font-size: 11px;
+      color: #3a5060;
+      text-align: center;
+      padding: 8px 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fii-error {
+      font-size: 11px;
+      color: #FF5C6C;
+      text-align: center;
+      padding: 4px 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+/* ── FII/DII History Modal ── */
+    
+    .fh-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 10, 16, .55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 20px;
+    }
+
+
+    .fh-overlay.visible {
+      display: flex;
+    }
+
+
+    .fh-modal {
+      background: #0e1a26;
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 760px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .5), 0 0 0 1px rgba(255, 255, 255, .02);
+      animation: fhPop .22s cubic-bezier(.2, .9, .3, 1);
+    }
+
+
+    @keyframes fhPop {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+
+    .fh-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+      flex-shrink: 0;
+      gap: 10px;
+    }
+
+
+    .fh-head-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+
+    .fh-head-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(255, 92, 108, .16), rgba(245, 166, 35, .12));
+      border: 1px solid rgba(255, 92, 108, .25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FF5C6C;
+    }
+
+
+    .fh-head-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+
+    .fh-head-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #edf5ff;
+      letter-spacing: -.01em;
+    }
+
+
+    .fh-head-sub {
+      font-size: 11px;
+      color: #4a6075;
+      margin-top: 1px;
+    }
+
+
+    .fh-close {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #5a7080;
+      border: 1px solid rgba(255, 255, 255, .08);
+      background: rgba(255, 255, 255, .02);
+    }
+
+
+    .fh-close:hover {
+      color: #dce8f4;
+      border-color: rgba(255, 255, 255, .18);
+    }
+
+
+    .fh-close svg {
+      width: 14px;
+      height: 14px;
+    }
+
+
+    .fh-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, .05);
+      flex-wrap: wrap;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+
+    .fh-filters {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+
+    .fh-filter-btn {
+      padding: 6px 13px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #5a7080;
+      transition: background .15s ease, color .15s ease;
+    }
+
+
+    .fh-filter-btn:hover {
+      color: #cfe2f5;
+    }
+
+
+    .fh-filter-btn.active {
+      background: rgba(45, 212, 191, .14);
+      color: #2DD4BF;
+    }
+
+
+    .fh-legend {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+
+    .fh-chart-toggle {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+
+    .fh-chart-toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #5a7080;
+      transition: background .15s ease, color .15s ease;
+    }
+
+
+    .fh-chart-toggle-btn svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+    }
+
+
+    .fh-chart-toggle-btn:hover {
+      color: #cfe2f5;
+    }
+
+
+    .fh-chart-toggle-btn.active {
+      background: rgba(45, 212, 191, .14);
+      color: #2DD4BF;
+    }
+
+
+    .fh-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: #8fa3bc;
+      font-weight: 600;
+    }
+
+
+    .fh-legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+
+    .fh-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+
+    .fh-body::-webkit-scrollbar {
+      width: 5px;
+    }
+
+
+    .fh-body::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, .08);
+      border-radius: 4px;
+    }
+
+
+    .fh-summary-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+
+    .fh-summary-card {
+      flex: 1 1 0;
+      min-width: 130px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 9px;
+      padding: 10px 12px;
+    }
+
+
+    .fh-summary-lbl {
+      font-size: 9px;
+      color: #4a6075;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+
+    .fh-summary-val {
+      font-size: 15px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.01em;
+    }
+
+
+    .fh-summary-val.buy {
+      color: #2DD4BF;
+    }
+
+
+    .fh-summary-val.sell {
+      color: #FF5C6C;
+    }
+
+
+    .fh-chart-wrap {
+      background: rgba(255, 255, 255, .02);
+      border: 1px solid rgba(255, 255, 255, .05);
+      border-radius: 10px;
+      padding: 14px 10px 6px;
+    }
+
+
+    .fh-chart-wrap svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+
+    .fh-bar-fii {
+      fill: #FF5C6C;
+    }
+
+
+    .fh-bar-dii {
+      fill: #2DD4BF;
+    }
+
+
+    .fh-axis-line {
+      stroke: rgba(255, 255, 255, .08);
+      stroke-width: 1;
+    }
+
+
+    .fh-zero-line {
+      stroke: rgba(255, 255, 255, .16);
+      stroke-width: 1;
+      stroke-dasharray: 3 3;
+    }
+
+
+    .fh-tick-label {
+      font-size: 8.5px;
+      fill: #3a5060;
+      font-family: inherit;
+    }
+
+
+    .fh-bar-group {
+      cursor: pointer;
+    }
+
+
+    .fh-bar-group:hover rect {
+      opacity: .82;
+    }
+
+
+    .fh-tooltip {
+      position: fixed;
+      pointer-events: none;
+      background: #111f2c;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 7px;
+      padding: 7px 10px;
+      font-size: 10px;
+      color: #dce8f4;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .4);
+      opacity: 0;
+      transition: opacity .1s ease;
+      z-index: 9999;
+      white-space: nowrap;
+      min-width: 148px;
+    }
+
+
+    .fh-tooltip.visible {
+      opacity: 1;
+    }
+
+
+    .fh-tooltip-date {
+      font-weight: 700;
+      color: #edf5ff;
+      margin-bottom: 4px;
+    }
+
+
+    .fh-tooltip-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: space-between;
+    }
+
+
+    .fh-tooltip-row+.fh-tooltip-row {
+      margin-top: 2px;
+    }
+
+
+    .fh-tooltip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+
+    .fh-table-wrap {
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 9px;
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: 340px;
+      flex-shrink: 0;
+    }
+
+
+    .fh-table-wrap::-webkit-scrollbar { width: 5px; height: 5px; }
+
+    .fh-table-wrap::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .12); border-radius: 4px; }
+
+
+    .fh-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background-color: #131c27 !important;
+    }
+
+
+    .fh-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+
+    .fh-table thead th {
+      padding: 8px 12px;
+      font-size: 9px;
+      color: #3a5060;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 600;
+      text-align: right;
+      background: rgba(255, 255, 255, .03);
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+      white-space: nowrap;
+    }
+
+
+    .fh-table thead th:first-child {
+      text-align: left;
+    }
+
+
+    .fh-table tbody td {
+      padding: 7px 12px;
+      font-size: 10.5px;
+      color: #cfe2f5;
+      text-align: right;
+      border-bottom: 1px solid rgba(255, 255, 255, .03);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+
+    .fh-table tbody td:first-child {
+      text-align: left;
+      color: #8fa3bc;
+      font-weight: 600;
+    }
+
+
+    .fh-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+
+    .fh-table tbody tr:hover td {
+      background: rgba(255, 255, 255, .02);
+    }
+
+
+    .fh-val-pos {
+      color: #2DD4BF;
+    }
+
+
+    .fh-val-neg {
+      color: #FF5C6C;
+    }
+
+
+    .fh-loading,
+    .fh-error,
+    .fh-empty {
+      text-align: center;
+      padding: 40px 0;
+      color: #3a5060;
+      font-size: 12px;
+    }
+
+
+    .fh-error {
+      color: #FF5C6C;
+    }
+
+
+    .fh-spinner {
+      width: 22px;
+      height: 22px;
+      margin: 0 auto 10px;
+      border: 2px solid rgba(255, 255, 255, .08);
+      border-top-color: #2DD4BF;
+      border-radius: 50%;
+      animation: fhSpin .7s linear infinite;
+    }
+
+
+    @keyframes fhSpin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+/* ── FII/DII Flow History (redesigned modal, compact) ── */
+
+
+    
+    .fd-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(2, 6, 16, .74);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .fd-overlay.visible { display: flex; }
+
+
+    .fd-modal {
+      width: 100%;
+      max-width: 1180px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 14px;
+      color: #e8f0ff;
+      background:
+        radial-gradient(800px 360px at 8% -8%, rgba(31, 139, 255, .12), transparent 62%),
+        #07101f;
+      border: 1px solid rgba(80, 130, 230, .24);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, .65);
+      animation: fhPop .22s cubic-bezier(.2, .9, .3, 1);
+    }
+
+
+    .fd-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; flex-wrap: wrap; padding: 14px 18px 10px; flex-shrink: 0;
+    }
+
+    .fd-head-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
+    .fd-head-icon {
+      width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; color: #ff4d5e;
+      background: linear-gradient(145deg, rgba(255, 70, 90, .22), rgba(120, 20, 40, .28));
+      border: 1px solid rgba(255, 77, 94, .38);
+    }
+
+    .fd-head-icon svg { width: 20px; height: 20px; }
+
+    .fd-title { font-size: 20px; font-weight: 700; letter-spacing: -.02em; color: #f4f8ff; line-height: 1.15; }
+
+    .fd-sub { font-size: 12px; color: #7f93b5; margin-top: 2px; }
+
+    .fd-head-right { display: flex; align-items: center; gap: 10px; }
+
+
+    .fd-seg {
+      display: flex; align-items: center; gap: 2px; padding: 3px; border-radius: 999px;
+      background: rgba(12, 28, 56, .85); border: 1px solid rgba(80, 130, 230, .2);
+    }
+
+    .fd-seg-btn {
+      padding: 6px 14px; border-radius: 999px; font-size: 12.5px; font-weight: 500; color: #9db0d0;
+      transition: background .15s ease, color .15s ease; white-space: nowrap;
+    }
+
+    .fd-seg-btn:hover { color: #e8f0ff; }
+
+    .fd-seg-btn.active {
+      color: #fff; font-weight: 600;
+      background: linear-gradient(180deg, #0fbf8f, #089470);
+      box-shadow: 0 0 14px rgba(25, 211, 160, .28);
+    }
+
+    .fd-close {
+      width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; color: #8ea3c4;
+      border: 1px solid rgba(80, 130, 230, .22); background: rgba(12, 28, 56, .7);
+    }
+
+    .fd-close:hover { color: #fff; border-color: rgba(120, 170, 255, .5); }
+
+    .fd-close svg { width: 14px; height: 14px; }
+
+
+    .fd-body { flex: 1; overflow-y: auto; padding: 2px 18px 16px; display: flex; flex-direction: column; gap: 12px; }
+
+    .fd-body::-webkit-scrollbar { width: 6px; }
+
+    .fd-body::-webkit-scrollbar-thumb { background: rgba(120, 160, 230, .18); border-radius: 4px; }
+
+
+    .fd-period-note { font-size: 11px; color: #7f93b5; margin: -4px 2px -2px; letter-spacing: .02em; }
+
+    .fd-period-note b { color: #cfe0ff; font-weight: 600; }
+/* KPI cards (flat — no background curves) */
+
+
+    
+    .fd-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+
+    .fd-kpi {
+      position: relative; display: flex; align-items: center; gap: 10px;
+      padding: 11px 12px; border-radius: 12px; border: 1px solid; min-width: 0;
+    }
+
+    .fd-kpi-ico {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; border: 1px solid;
+    }
+
+    .fd-kpi-ico svg { width: 17px; height: 17px; }
+
+    .fd-kpi-txt { min-width: 0; flex: 1; }
+
+    .fd-kpi-lbl { font-size: 12.5px; font-weight: 600; color: #eaf1ff; }
+
+    .fd-kpi-val { font-size: 18px; font-weight: 700; letter-spacing: -.02em; margin: 1px 0 2px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+    .fd-kpi-val.pos { color: #19d3a0; }
+
+    .fd-kpi-val.neg { color: #ff5a5f; }
+
+    .fd-kpi-val.neutral { color: #f4f8ff; }
+
+    .fd-kpi-pct { font-size: 12px; font-weight: 600; margin-left: 4px; }
+
+    .fd-kpi-pct.pos { color: #19d3a0; }
+ .fd-kpi-pct.neg { color: #ff5a5f; }
+
+    .fd-kpi-sub { font-size: 11px; color: #aebbd6; font-variant-numeric: tabular-nums; line-height: 1.35; }
+
+    .fd-kpi-sub i { font-style: normal; color: #4d6286; margin: 0 5px; }
+
+    .fd-meter { height: 4px; border-radius: 4px; background: #3a4a6b; margin-top: 6px; overflow: hidden; }
+
+    .fd-meter span { display: block; height: 100%; background: #19d3a0; border-radius: 4px; }
+
+
+    .fd-k-fii { background: linear-gradient(135deg, #0e2550 0%, #0a1932 70%); border-color: rgba(60, 135, 255, .32); }
+
+    .fd-k-fii .fd-kpi-ico { color: #3d9bff; background: rgba(31, 139, 255, .16); border-color: rgba(31, 139, 255, .4); }
+
+    .fd-k-dii { background: linear-gradient(135deg, #2c1522 0%, #0e1a33 75%); border-color: rgba(255, 100, 90, .3); }
+
+    .fd-k-dii .fd-kpi-ico { color: #ff9a2e; background: rgba(255, 138, 31, .16); border-color: rgba(255, 138, 31, .4); }
+
+    .fd-k-diff { background: linear-gradient(135deg, #0e2252 0%, #0a1932 70%); border-color: rgba(60, 135, 255, .3); }
+
+    .fd-k-diff .fd-kpi-ico { color: #3d9bff; background: rgba(31, 139, 255, .16); border-color: rgba(31, 139, 255, .4); }
+
+    .fd-k-days { background: linear-gradient(135deg, #0a3a3b 0%, #0a1d34 80%); border-color: rgba(25, 211, 160, .32); }
+
+    .fd-k-days .fd-kpi-ico { color: #19d3a0; background: rgba(25, 211, 160, .14); border-color: rgba(25, 211, 160, .4); }
+
+
+    .fd-panel { border-radius: 12px; background: rgba(10, 24, 48, .78); border: 1px solid rgba(70, 115, 210, .24); }
+
+    .fd-panel-head {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px;
+      padding: 9px 14px; border-bottom: 1px solid rgba(255, 255, 255, .05);
+    }
+
+    .fd-panel-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #f1f6ff; }
+
+    .fd-panel-title svg { width: 18px; height: 18px; color: #2f8dff; flex-shrink: 0; }
+
+
+    .fd-legend { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+    .fd-leg { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #cfdcf3; padding: 3px 6px; border-radius: 7px; transition: opacity .15s ease; }
+
+    .fd-leg:hover { background: rgba(255, 255, 255, .04); }
+
+    .fd-leg.off { opacity: .38; }
+
+    .fd-leg-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    .fd-leg-line { width: 22px; height: 10px; position: relative; }
+
+    .fd-leg-line::before { content: ""; position: absolute; left: 0; right: 0; top: 4px; height: 2px; background: #fff; }
+
+    .fd-leg-line::after { content: ""; position: absolute; left: 50%; top: 2px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: #fff; border: 1.5px solid #0a1830; box-sizing: content-box; }
+
+
+    .fd-ctrls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    .fd-seg.sm .fd-seg-btn { padding: 4px 11px; font-size: 12px; display: flex; align-items: center; gap: 5px; }
+
+    .fd-seg.sm .fd-seg-btn svg { width: 12px; height: 12px; }
+
+    .fd-datewrap { position: relative; }
+
+    .fd-datebtn {
+      display: flex; align-items: center; gap: 8px; padding: 6px 11px; border-radius: 9px;
+      font-size: 12px; color: #e8f0ff; font-weight: 500;
+      background: rgba(12, 28, 56, .85); border: 1px solid rgba(80, 130, 230, .24);
+    }
+
+    .fd-datebtn:hover { border-color: rgba(120, 170, 255, .5); }
+
+    .fd-datebtn svg { width: 13px; height: 13px; color: #9db0d0; transition: transform .15s ease; }
+
+    .fd-datewrap.open .fd-datebtn svg { transform: rotate(180deg); }
+
+    .fd-pop {
+      display: none; position: absolute; right: 0; top: calc(100% + 6px); z-index: 20; width: 260px;
+      padding: 13px; border-radius: 12px; background: #0b1730; border: 1px solid rgba(100, 150, 240, .3);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, .6);
+    }
+
+    .fd-datewrap.open .fd-pop { display: block; }
+
+    .fd-pop label { display: block; font-size: 10.5px; text-transform: uppercase; letter-spacing: .07em; color: #7f93b5; margin-bottom: 10px; font-weight: 600; }
+
+    .fd-pop input[type="date"] {
+      display: block; width: 100%; margin-top: 5px; padding: 7px 10px; border-radius: 8px;
+      background: #0a1428; color: #e8f0ff; border: 1px solid rgba(80, 130, 230, .3);
+      font: inherit; font-size: 12.5px; color-scheme: dark; text-transform: none; letter-spacing: 0;
+    }
+
+    .fd-pop input[type="date"]:focus { outline: none; border-color: #2f8dff; }
+
+    .fd-pop-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 2px; }
+
+    .fd-pop-btn { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #b4c6e6; border: 1px solid rgba(80, 130, 230, .3); background: transparent; }
+
+    .fd-pop-btn:hover { color: #fff; border-color: rgba(120, 170, 255, .5); }
+
+    .fd-pop-btn.primary { color: #fff; border-color: transparent; background: linear-gradient(180deg, #0fbf8f, #089470); }
+
+    .fd-pop-err { font-size: 11.5px; color: #ff6b70; margin-bottom: 6px; }
+
+
+    .fd-chart-host { padding: 4px 10px 2px; }
+
+    .fd-chart-host svg { display: block; width: 100%; overflow: visible; }
+
+    .fd-grid { stroke: rgba(120, 160, 230, .12); stroke-width: 1; }
+
+    .fd-vgrid { stroke: rgba(120, 160, 230, .08); stroke-width: 1; }
+
+    .fd-zero { stroke: rgba(190, 210, 255, .32); stroke-width: 1; }
+
+    .fd-tick { font-size: 11px; fill: #aebbd6; font-family: inherit; }
+
+    .fd-axis-title { font-size: 11px; fill: #aebbd6; font-family: inherit; }
+
+    .fd-line { fill: none; stroke: #fff; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+
+    .fd-dot { fill: #fff; stroke: #0a1830; stroke-width: 1.5; }
+
+    .fd-hl { fill: rgba(140, 180, 255, .09); pointer-events: none; transition: opacity .08s ease; }
+
+    .fd-hit { cursor: crosshair; }
+
+
+    .fd-table-wrap { padding: 0 12px 12px; overflow-x: auto; }
+
+    .fd-table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 440px; }
+
+    .fd-table th { padding: 8px 12px; font-size: 12px; font-weight: 500; color: #aebbd6; text-align: center; background: rgba(44, 76, 140, .22); text-transform: uppercase; letter-spacing: .05em; }
+
+    .fd-table th:first-child, .fd-table td:first-child { text-align: left; }
+
+    .fd-table td {
+      padding: 9px 12px; font-size: 13.5px; color: #e8f0ff; text-align: center;
+      border-bottom: 1px solid rgba(120, 160, 230, .12); border-left: 1px solid rgba(120, 160, 230, .12);
+      font-variant-numeric: tabular-nums; white-space: nowrap;
+    }
+
+    .fd-table td:first-child { border-left: none; }
+
+    .fd-table tbody tr { cursor: pointer; transition: background .12s ease; }
+
+    .fd-table tbody tr:hover td { background: rgba(80, 130, 230, .08); }
+
+    .fd-table tbody tr.active td { background: rgba(25, 211, 160, .07); }
+
+    .fd-table tbody tr.active td:first-child { box-shadow: inset 3px 0 0 #19d3a0; }
+
+    .fd-table .pos { color: #19d3a0; font-weight: 700; }
+
+    .fd-table .neg { color: #ff5a5f; font-weight: 700; }
+
+    .fd-table td small { color: #7f93b5; font-size: 11px; margin-left: 2px; }
+
+
+    .fd-loading, .fd-empty, .fd-error { text-align: center; padding: 44px 0; color: #7f93b5; font-size: 13px; }
+
+    .fd-empty.sm { padding: 56px 0; }
+
+    .fd-error { color: #ff6b70; }
+
+    .fd-spinner { width: 24px; height: 24px; margin: 0 auto 10px; border: 3px solid rgba(255, 255, 255, .08); border-top-color: #19d3a0; border-radius: 50%; animation: fhSpin .7s linear infinite; }
+
+
+    .fd-tip {
+      position: fixed; pointer-events: none; z-index: 9999; opacity: 0; transition: opacity .08s ease;
+      min-width: 180px; padding: 9px 12px; border-radius: 10px; font-size: 12px; color: #dbe7ff;
+      background: #0b1730; border: 1px solid rgba(110, 160, 250, .32); box-shadow: 0 12px 30px rgba(0, 0, 0, .55);
+    }
+
+    .fd-tip.visible { opacity: 1; }
+
+    .fd-tip-date { font-weight: 700; font-size: 12.5px; color: #fff; margin-bottom: 6px; }
+
+    .fd-tip-row { display: flex; align-items: center; gap: 8px; justify-content: space-between; padding: 1px 0; }
+
+    .fd-tip-row .l { display: flex; align-items: center; gap: 7px; }
+
+    .fd-tip-row b { font-variant-numeric: tabular-nums; }
+
+    .fd-tip-row.mut { color: #8396b8; padding-left: 15px; font-size: 11px; }
+
+    .fd-tip-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    .fd-tip-sep { height: 1px; background: rgba(255, 255, 255, .08); margin: 5px 0; }
+
+    .fd-tip .pos { color: #19d3a0; }
+ .fd-tip .neg { color: #ff5a5f; }
+/* FII index futures position card */
+
+
+    
+
+
+    .fd-oi { display: flex; gap: 14px; margin: 2px 0 6px; }
+
+    .fd-oi > div { display: flex; flex-direction: column; line-height: 1.15; }
+
+    .fd-oi small { font-size: 10.5px; color: #aebbd6; font-weight: 500; }
+
+    .fd-oi b { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; color: #f4f8ff; }
+
+    .fd-oi b.pos { color: #19d3a0; }
+
+    .fd-oi b.neg { color: #ff5a5f; }
+
+    .fd-meter.oi { background: #ff5a5f; }
+/* FII index position card is clickable */
+
+
+    
+
+
+
+/* ── FII Index Position: Long vs Short trend popup ── */
+
+
+    
+    .fp-overlay {
+      display: none; position: fixed; inset: 0; z-index: 210;
+      background: rgba(2, 6, 16, .78); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      align-items: center; justify-content: center; padding: 16px;
+    }
+
+    .fp-overlay.visible { display: flex; }
+
+    .fp-modal {
+      width: 100%; max-width: 980px; max-height: 92vh; display: flex; flex-direction: column; overflow: hidden;
+      border-radius: 14px; color: #e8f0ff;
+      background: radial-gradient(800px 360px at 8% -8%, rgba(139, 120, 255, .14), transparent 62%), #07101f;
+      border: 1px solid rgba(139, 120, 255, .32); box-shadow: 0 30px 80px rgba(0, 0, 0, .65);
+      animation: fhPop .22s cubic-bezier(.2, .9, .3, 1);
+    }
+
+    .fp-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 14px 18px 8px; }
+
+    .fp-head-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
+    .fp-head-icon {
+      width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      color: #a595ff; background: rgba(139, 120, 255, .16); border: 1px solid rgba(139, 120, 255, .42);
+    }
+
+    .fp-head-icon svg { width: 20px; height: 20px; }
+
+    .fp-title { font-size: 20px; font-weight: 700; letter-spacing: -.02em; color: #f4f8ff; line-height: 1.15; }
+
+    .fp-sub { font-size: 12px; color: #7f93b5; margin-top: 2px; }
+
+    .fp-body { padding: 4px 18px 18px; overflow-y: auto; }
+
+    .fp-panel { border-radius: 12px; background: rgba(10, 24, 48, .78); border: 1px solid rgba(70, 115, 210, .24); padding: 12px 14px 8px; }
+
+    .fp-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+
+    .fp-legend { display: flex; gap: 14px; font-size: 12.5px; color: #cfe0ff; }
+
+    .fp-legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+    .fp-legend i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+    .fp-chart { position: relative; width: 100%; }
+
+    .fp-chart svg { display: block; width: 100%; }
+
+    .fp-empty { padding: 60px 10px; text-align: center; color: #7f93b5; font-size: 13px; }
+
+    .fp-tip {
+      position: absolute; pointer-events: none; opacity: 0; transition: opacity .1s ease; z-index: 3; min-width: 150px;
+      padding: 8px 10px; border-radius: 9px; background: rgba(8, 18, 38, .96); border: 1px solid rgba(120, 160, 230, .3);
+      font-size: 12px; color: #dbe7ff; box-shadow: 0 10px 28px rgba(0, 0, 0, .5);
+    }
+
+    .fp-tip.visible { opacity: 1; }
+
+    .fp-tip .d { font-weight: 700; color: #fff; margin-bottom: 4px; }
+
+    .fp-tip .r { display: flex; justify-content: space-between; gap: 14px; padding: 1px 0; }
+
+    .fp-tip .r b { font-variant-numeric: tabular-nums; }
+/* Holdings table: sub-lines under Target / Buy Date */
+/* Sell dialog: entry picker + quantity helpers */
 </style>
    <link rel="stylesheet" href="css/universal-search.css">
 </head>
@@ -424,25 +1607,6 @@
       <h1>Market Watchlist</h1>
       <p>Track and analyze major market indices</p>
     </div>
-    <div class="topbar-right">
-      <div class="auto-refresh-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px">
-          <circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>
-        </svg>
-        Auto Refresh
-        <label class="toggle">
-          <input type="checkbox" id="autoRefreshToggle" checked/>
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-      <button class="btn-ghost" id="refreshBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
-          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
-        </svg>
-        Refresh
-      </button>
-    </div>
   </header>
 
   <div class="content">
@@ -473,48 +1637,52 @@
         <div class="sentiment-sub" id="vix-date" style="margin-top:3px">Click for history chart</div>
       </div>
 
-      <!-- Card 3: Advances / Declines -->
-      <div class="scard" style="--accent:#8B5CF6">
-        <div class="scard-label">
-          Advances / Declines
-          <span id="adv-index-tag" style="color:#2DD4BF;font-weight:700;margin-left:4px;"></span>
+      <!-- Card 3: FII / DII flows (from admin.html) -->
+      <div class="fii-card" id="fiiCard" role="button" tabindex="0" aria-label="Open FII/DII flow history">
+        <span id="fiiDateBadge" style="display:none"></span>
+        <div class="fii-expand-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 3h6v6" />
+            <path d="M9 21H3v-6" />
+            <path d="M21 3l-7 7" />
+            <path d="M3 21l7-7" />
+          </svg>
+          History
         </div>
-        <div class="adv-grid">
-          <div class="adv-item">
-            <div class="adv-num pos" id="adv-num">—</div>
-            <div class="adv-lbl">Advances</div>
+        <div id="fiiBody" style="flex:1;display:flex;min-height:0">
+          <div class="fii-rows">
+            <div class="fii-loading">Loading…</div>
           </div>
-          <div class="adv-item">
-            <div class="adv-num neg" id="dec-num">—</div>
-            <div class="adv-lbl">Declines</div>
-          </div>
-          <div class="adv-item">
-            <div class="adv-num neutral" id="unch-num">—</div>
-            <div class="adv-lbl">Unchanged</div>
-          </div>
-        </div>
-        <div class="adv-bar">
-          <div class="adv-bar-g" id="adv-bar-g" style="width:50%"></div>
-          <div class="adv-bar-r" id="adv-bar-r" style="width:50%"></div>
-          <div class="adv-bar-n" id="adv-bar-n" style="width:0%"></div>
         </div>
       </div>
 
-      <!-- Card 4: Options OI Analysis (opens pop-up) -->
+      <!-- Card 4: FII Index Position (opens Long vs Short trend pop-up) -->
+      <div class="scard scard-oi" id="fpCard" role="button" tabindex="0" aria-label="Open FII index position long vs short trend" style="--accent:#8B78FF">
+        <div class="scard-label">FII Index Position</div>
+        <div class="scard-icon" style="background:rgba(139,120,255,.14);color:#a595ff">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></svg>
+        </div>
+        <div class="fd-oi" style="margin:0 0 4px">
+          <div><small>Long</small><b class="pos" id="fpCardLong">—</b></div>
+          <div><small>Short</small><b class="neg" id="fpCardShort">—</b></div>
+        </div>
+        <div class="fd-meter oi" style="margin-top:4px"><span id="fpCardBar" style="width:0%"></span></div>
+        <div class="sentiment-sub" id="fpCardDate" style="margin-top:4px">Loading…</div>
+      </div>
+
+      <!-- Card 5: Options OI Analysis (opens pop-up) -->
       <div class="scard scard-oi" id="oiCard" role="button" tabindex="0" aria-label="Open NIFTY options OI dashboard" style="--accent:#F5A623">
-        <div class="scard-label">Options OI Analysis</div>
-        <div class="oi-card-title">NIFTY Open Interest</div>
-        <div class="sentiment-sub">PCR, strike-wise OI &amp; positioning</div>
-        <span class="oi-open-btn">View dashboard
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </span>
-        <svg class="oi-card-art" width="64" height="48" viewBox="0 0 64 48" fill="none">
-          <rect x="4"  y="22" width="8" height="22" rx="2" fill="#4C9AFF" opacity=".85"/>
-          <rect x="16" y="10" width="8" height="34" rx="2" fill="#FF5C6C" opacity=".85"/>
-          <rect x="28" y="26" width="8" height="18" rx="2" fill="#4C9AFF" opacity=".85"/>
-          <rect x="40" y="4"  width="8" height="40" rx="2" fill="#FF5C6C" opacity=".85"/>
-          <rect x="52" y="18" width="8" height="26" rx="2" fill="#4C9AFF" opacity=".85"/>
-        </svg>
+        <div class="oi-left">
+          <div class="scard-label">Options OI Analysis</div>
+          <div class="sentiment-sub" id="oiLvlExp">Loading levels…</div>
+          <span class="oi-open-btn">View dashboard
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+        <div class="oi-levels">
+          <div class="oi-lvl"><small>Resistance</small><b class="neg" id="oiRes">—</b><span id="oiResOI">&nbsp;</span></div>
+          <div class="oi-lvl"><small>Support</small><b class="pos" id="oiSup">—</b><span id="oiSupOI">&nbsp;</span></div>
+        </div>
       </div>
     </div>
 
@@ -522,24 +1690,24 @@
     <div class="table-panel">
       <div class="table-toolbar">
         <span class="table-toolbar-title">Market Indices</span>
-        <span style="font-size:10px;color:#3a5060;">Click a row to update stats · Click column headers to sort</span>
+        <span class="table-hint" style="font-size:10px;color:#3a5060;">Click a row to update stats · Click column headers to sort</span>
       </div>
       <div class="table-scroll">
         <table class="tbl">
           <thead>
             <tr>
-              <th style="width:32px">#</th>
-              <th style="width:28px"></th>
-              <th>Index</th>
-              <th>Last</th>
-              <th>Change</th>
-              <th>Change %</th>
-              <th>Prev. Close</th>
-              <th data-sort="w1"><span class="sort-th" id="th-w1">1W % <span class="sort-arrow"></span></span></th>
-              <th data-sort="m1"><span class="sort-th" id="th-m1">1M % <span class="sort-arrow"></span></span></th>
-              <th data-sort="y1"><span class="sort-th" id="th-y1">1Y % <span class="sort-arrow"></span></span></th>
-              <th>P/E</th>
-              <th>P/B</th>
+              <th data-sort="id"><span class="sort-th"># <span class="sort-arrow"></span></span></th>
+              <th data-sort="star"><span class="sort-th">★ <span class="sort-arrow"></span></span></th>
+              <th data-sort="name"><span class="sort-th">Index <span class="sort-arrow"></span></span></th>
+              <th data-sort="last"><span class="sort-th">Last <span class="sort-arrow"></span></span></th>
+              <th data-sort="change"><span class="sort-th">Change <span class="sort-arrow"></span></span></th>
+              <th data-sort="changePct"><span class="sort-th">Change % <span class="sort-arrow"></span></span></th>
+              <th data-sort="prevClose"><span class="sort-th">Prev. Close <span class="sort-arrow"></span></span></th>
+              <th data-sort="w1"><span class="sort-th">1W % <span class="sort-arrow"></span></span></th>
+              <th data-sort="m1"><span class="sort-th">1M % <span class="sort-arrow"></span></span></th>
+              <th data-sort="y1"><span class="sort-th">1Y % <span class="sort-arrow"></span></span></th>
+              <th data-sort="pe"><span class="sort-th">P/E <span class="sort-arrow"></span></span></th>
+              <th data-sort="pb"><span class="sort-th">P/B <span class="sort-arrow"></span></span></th>
             </tr>
           </thead>
           <tbody id="tbl-body">
@@ -580,6 +1748,86 @@
   </div>
 </div>
 </div>
+
+<!-- FII/DII History modal (from admin.html) -->
+  <!-- FII/DII History modal -->
+  <div class="fd-overlay" id="fhOverlay">
+    <div class="fd-modal" role="dialog" aria-modal="true" aria-labelledby="fhTitle">
+      <div class="fd-head">
+        <div class="fd-head-left">
+          <div class="fd-head-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+              <path d="M18 20V10M12 20V4M6 20v-6" />
+            </svg>
+          </div>
+          <div>
+            <div class="fd-title" id="fhTitle">FII / DII Flow History</div>
+            <div class="fd-sub" id="fhSub">Institutional cash flows, NSE + BSE combined</div>
+          </div>
+        </div>
+        <div class="fd-head-right">
+          <div class="fd-seg" id="fhFilters">
+            <button class="fd-seg-btn active" data-range="overall">Overall</button>
+            <button class="fd-seg-btn" data-range="daily">Daily</button>
+            <button class="fd-seg-btn" data-range="weekly">Weekly</button>
+            <button class="fd-seg-btn" data-range="monthly">Monthly</button>
+          </div>
+          <button class="fd-close" id="fhCloseBtn" aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="fd-body" id="fhBody">
+        <div class="fd-loading">
+          <div class="fd-spinner"></div>Loading flow history…
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FII Index Position: Long vs Short trend popup (from admin.html) -->
+  <!-- FII Index Position: Long vs Short trend popup -->
+  <div class="fp-overlay" id="fpOverlay">
+    <div class="fp-modal" role="dialog" aria-modal="true" aria-labelledby="fpTitle">
+      <div class="fp-head">
+        <div class="fp-head-left">
+          <div class="fp-head-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          </div>
+          <div>
+            <div class="fp-title" id="fpTitle">Long vs Short Trend</div>
+            <div class="fp-sub" id="fpSub">FII index futures positioning</div>
+          </div>
+        </div>
+        <div class="fd-head-right">
+          <div class="fd-seg" id="fpRanges">
+            <button class="fd-seg-btn" data-oirange="1w">1W</button>
+            <button class="fd-seg-btn" data-oirange="1m">1M</button>
+            <button class="fd-seg-btn active" data-oirange="3m">3M</button>
+            <button class="fd-seg-btn" data-oirange="6m">6M</button>
+            <button class="fd-seg-btn" data-oirange="all">All</button>
+          </div>
+          <button class="fd-close" id="fpCloseBtn" aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="fp-body">
+        <div class="fp-panel">
+          <div class="fp-panel-head">
+            <div class="fp-legend">
+              <span><i style="background:#19d3a0"></i>Long %</span>
+              <span><i style="background:#ff5a5f"></i>Short %</span>
+            </div>
+          </div>
+          <div class="fp-chart" id="fpChartHost"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <!-- India VIX pop-up -->
 <div class="oi-backdrop" id="vixBackdrop" aria-hidden="true">
@@ -635,7 +1883,7 @@ let nifty50Id  = null;   // always drives card 1
 const starred  = new Set();
 
 // Sort state
-let sortField = null;   // 'w1' | 'm1' | 'y1'
+let sortField = null;   // any th[data-sort] key
 let sortDir   = 'desc';
 
 function fmt(n) {
@@ -645,6 +1893,13 @@ function fmtPct(n) {
   return (parseFloat(n) >= 0 ? '+' : '') + parseFloat(n).toFixed(2) + '%';
 }
 function cls(n) { return parseFloat(n) >= 0 ? 'pos' : 'neg'; }
+// Close a pop-up when the dimmed area around it is clicked (a drag that starts inside the dialog won't close it)
+function bindOutsideClose(overlay, close) {
+  let downOnOverlay = false;
+  overlay.addEventListener('mousedown', e => { downOnOverlay = e.target === overlay; });
+  overlay.addEventListener('touchstart', e => { downOnOverlay = e.target === overlay; }, { passive: true });
+  overlay.addEventListener('click', e => { if (downOnOverlay && e.target === overlay) close(); downOnOverlay = false; });
+}
 function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function periodBadge(n) {
@@ -735,16 +1990,6 @@ function selectIndex(id, rerender) {
   const idx = INDICES.find(i => i.id === id);
   if (!idx) return;
 
-  // Advances / declines
-  document.getElementById('adv-index-tag').textContent = '· ' + idx.name;
-  document.getElementById('adv-num').textContent = idx.advances;
-  document.getElementById('dec-num').textContent = idx.declines;
-  document.getElementById('unch-num').textContent = idx.unchanged;
-  const total = (idx.advances + idx.declines + idx.unchanged) || 1;
-  document.getElementById('adv-bar-g').style.width = (idx.advances / total * 100) + '%';
-  document.getElementById('adv-bar-r').style.width = (idx.declines / total * 100) + '%';
-  document.getElementById('adv-bar-n').style.width = (idx.unchanged / total * 100) + '%';
-
   // Performance
   ['1w','1m','1y'].forEach(k => {
     const field = k.replace('1','').startsWith('w') ? 'w1' : k.replace('1','').startsWith('m') ? 'm1' : 'y1';
@@ -756,40 +2001,41 @@ function selectIndex(id, rerender) {
   if (rerender !== false) renderTable();
 }
 
-// ── Sorting ───────────────────────────────────────────────────────
+// ── Sorting (every column header) ─────────────────────────────────
+const SORT_TEXT = new Set(['name']);
+function sortValue(ix, f) {
+  if (f === 'star')  return starred.has(ix.id) ? 1 : 0;
+  if (f === 'name')  return ix.name;
+  if (f === 'pe' || f === 'pb') { const n = parseFloat(String(ix[f]).replace(/,/g, '')); return isFinite(n) ? n : null; }
+  return ix[f];
+}
 function sortedIndices() {
   if (!sortField) return [...INDICES];
+  const dir = sortDir === 'asc' ? 1 : -1;
   return [...INDICES].sort((a, b) => {
-    const va = a[sortField], vb = b[sortField];
-    return sortDir === 'asc' ? va - vb : vb - va;
+    const va = sortValue(a, sortField), vb = sortValue(b, sortField);
+    if (va === null && vb === null) return 0;
+    if (va === null) return 1;            // missing values (—) always sink to the bottom
+    if (vb === null) return -1;
+    const c = SORT_TEXT.has(sortField) ? String(va).localeCompare(String(vb), undefined, { sensitivity: 'base' }) : va - vb;
+    return c * dir;
   });
 }
 
 function updateSortUI() {
-  ['w1','m1','y1'].forEach(f => {
-    const el = document.getElementById(`th-${f}`);
-    if (!el) return;
-    const arrow = el.querySelector('.sort-arrow');
-    if (sortField === f) {
-      el.classList.add('active');
-      arrow.textContent = sortDir === 'asc' ? '▲' : '▼';
-    } else {
-      el.classList.remove('active');
-      arrow.textContent = '';
-    }
+  document.querySelectorAll('th[data-sort]').forEach(th => {
+    const on = th.dataset.sort === sortField;
+    th.querySelector('.sort-th').classList.toggle('active', on);
+    th.querySelector('.sort-arrow').textContent = on ? (sortDir === 'asc' ? '▲' : '▼') : '';
+    th.setAttribute('aria-sort', on ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none');
   });
 }
 
 document.querySelectorAll('th[data-sort]').forEach(th => {
-  th.style.cursor = 'pointer';
   th.addEventListener('click', () => {
-    const f = th.getAttribute('data-sort');
-    if (sortField === f) {
-      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
-    } else {
-      sortField = f;
-      sortDir = 'desc';
-    }
+    const f = th.dataset.sort;
+    if (sortField === f) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    else { sortField = f; sortDir = (SORT_TEXT.has(f) || f === 'id') ? 'asc' : 'desc'; }
     updateSortUI();
     renderTable();
   });
@@ -832,21 +2078,11 @@ function renderTable() {
       const id = +btn.dataset.id;
       starred.has(id) ? starred.delete(id) : starred.add(id);
       btn.classList.toggle('starred');
+      if (sortField === 'star') renderTable();
     });
   });
 }
 
-async function refreshData() {
-  const btn = document.getElementById('refreshBtn');
-  const orig = btn.innerHTML;
-  btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Refreshing…`;
-  await fetchIndices();
-  btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Updated`;
-  setTimeout(() => { btn.innerHTML = orig; }, 1400);
-}
-
-document.getElementById('refreshBtn').addEventListener('click', refreshData);
-setInterval(() => { if (document.getElementById('autoRefreshToggle').checked) fetchIndices(); }, 60000);
 
 // ══════════════ NIFTY Options OI pop-up ══════════════
 let ocData = null, ocFetchedAt = 0, ocExpiry = null, ocLoading = false;
@@ -1049,12 +2285,59 @@ async function loadOI(force) {
     ocData = await res.json();
     if (!Array.isArray(ocData.expiries)) throw new Error('Unexpected response shape');
     ocFetchedAt = Date.now();
+    paintOICard();
     renderOI();
   } catch (e) {
     console.error('Option chain fetch failed:', e);
     if (!ocData) $oi('oiBody').innerHTML = '<div class="oi-state">Could not load option chain data.<br><button id="oiRetry">Retry</button></div>';
     const r = $oi('oiRetry'); if (r) r.addEventListener('click', () => loadOI(true));
   } finally { ocLoading = false; }
+}
+
+const OC_MON = { jan:0, feb:1, mar:2, apr:3, may:4, jun:5, jul:6, aug:7, sep:8, oct:9, nov:10, dec:11 };
+function ocParseDate(s) {
+  const m = /^(\d{1,2})[-\s]([A-Za-z]{3})[a-z]*[-\s](\d{4})$/.exec(String(s).trim());
+  return m ? new Date(+m[3], OC_MON[m[2].toLowerCase()], +m[1]) : new Date(NaN);
+}
+// Earliest expiry that hasn't passed yet
+function ocNearestExpiry(valid) {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const parsed = valid.map(e => ({ e, d: ocParseDate(e.expiryDate) })).filter(x => !isNaN(x.d));
+  if (!parsed.length) return valid[0];
+  const upcoming = parsed.filter(x => x.d >= today);
+  return (upcoming.length ? upcoming : parsed).reduce((b, x) => x.d < b.d ? x : b).e;
+}
+// Stat card: resistance = strike with the highest Call OI, support = highest Put OI, nearest expiry only
+function paintOICard() {
+  const res = $oi('oiRes'), sup = $oi('oiSup'), rOI = $oi('oiResOI'), sOI = $oi('oiSupOI'), ex = $oi('oiLvlExp');
+  const valid = (ocData && ocData.expiries || []).filter(e => e.status === 'SUCCESS');
+  const near = valid.length ? ocNearestExpiry(valid) : null;
+  const rows = near ? ocRows(near.expiryDate) : [];
+  if (!rows.length) {
+    res.textContent = sup.textContent = '—'; rOI.innerHTML = sOI.innerHTML = '&nbsp;';
+    ex.textContent = 'Levels unavailable';
+    return;
+  }
+  const maxCe = rows.reduce((b, r) => r.ce > b.ce ? r : b, rows[0]);
+  const maxPe = rows.reduce((b, r) => r.pe > b.pe ? r : b, rows[0]);
+  res.textContent = maxCe.strike;  rOI.textContent = 'Call OI ' + oiFmt(maxCe.ce);
+  sup.textContent = maxPe.strike;  sOI.textContent = 'Put OI ' + oiFmt(maxPe.pe);
+  ex.textContent = 'Nearest expiry · ' + near.expiryDate;
+}
+async function loadOICard() {
+  try {
+    if (!ocData || Date.now() - ocFetchedAt > OC_TTL) {
+      const res = await fetch(OPTION_CHAIN_URL + '?t=' + Date.now());
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const d = await res.json();
+      if (!Array.isArray(d.expiries)) throw new Error('Unexpected response shape');
+      ocData = d; ocFetchedAt = Date.now();
+    }
+    paintOICard();
+  } catch (e) {
+    console.error('OI card fetch failed:', e);
+    if (!ocData) $oi('oiLvlExp').textContent = 'Levels unavailable';
+  }
 }
 
 function openOI()  { $oi('oiBackdrop').classList.add('open');    $oi('oiBackdrop').setAttribute('aria-hidden', 'false'); loadOI(false); }
@@ -1064,7 +2347,8 @@ $oi('oiCard').addEventListener('click', openOI);
 $oi('oiCard').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openOI(); } });
 $oi('oiClose').addEventListener('click', closeOI);
 $oi('oiRefresh').addEventListener('click', () => loadOI(true));
-$oi('oiBackdrop').addEventListener('click', e => { if (e.target.id === 'oiBackdrop') closeOI(); });
+bindOutsideClose($oi('oiBackdrop'), closeOI);
+loadOICard();
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeOI(); });
 
 // ══════════════ India VIX card + history pop-up ══════════════
@@ -1225,9 +2509,762 @@ $v('vixCard').addEventListener('click', openVix);
 $v('vixCard').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openVix(); } });
 $v('vixClose').addEventListener('click', closeVix);
 $v('vixRefresh').addEventListener('click', () => loadVix(true));
-$v('vixBackdrop').addEventListener('click', e => { if (e.target.id === 'vixBackdrop') closeVix(); });
+bindOutsideClose($v('vixBackdrop'), closeVix);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVix(); });
 loadVix(false);
+
+// ══════════════ FII / DII card + pop-ups (copied from admin.html) ══════════════
+(() => {
+      const API_BASE = WORKER_BASE;
+      const FII_COLOR = "#FF5C6C";
+      const DII_COLOR = "#2DD4BF";
+      const fiiBody = document.getElementById("fiiBody");
+      const fiiCard = document.getElementById("fiiCard");
+      const fiiDateBadge = document.getElementById("fiiDateBadge");
+
+      // ── FII/DII Data (KPI card) ─────────────────────────────────────
+      function fmtCr(v) {
+        const n = parseFloat(v);
+        if (!isFinite(n)) return "—";
+        const sign = n >= 0 ? "+" : "";
+        return sign + "₹" + Math.abs(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " Cr";
+      }
+
+      function renderFiiCard(data) {
+        if (!data || data.length === 0) {
+          fiiBody.innerHTML = `<div class="fii-rows"><div class="fii-error">No data available</div></div>`;
+          return;
+        }
+
+        // Set date badge from first entry
+        if (data[0] && data[0].date) {
+          fiiDateBadge.textContent = data[0].date;
+        }
+
+        // Order: FII/FPI first, then DII
+        const ordered = [...data].sort((a, b) => {
+          const order = { "FII/FPI": 0, "DII": 1 };
+          return (order[a.category] ?? 99) - (order[b.category] ?? 99);
+        });
+
+        fiiBody.innerHTML = `<div class="fii-rows" style="flex:1">${ordered.map(entry => {
+          const net = parseFloat(entry.netValue);
+          const isBuy = net >= 0;
+          const color = entry.category === "FII/FPI" ? FII_COLOR : DII_COLOR;
+          const netCls = isBuy ? "buy" : "sell";
+          const trendLabel = isBuy ? "▲ Buy" : "▼ Sell";
+          const trendCls = isBuy ? "buy" : "sell";
+          const buy = parseFloat(entry.buyValue);
+          const sell = parseFloat(entry.sellValue);
+
+          return `
+        <div class="fii-row">
+          <div class="fii-row-left">
+            <div class="fii-cat-dot" style="background:${color}"></div>
+            <div class="fii-cat-name">${escHtml(entry.category)}</div>
+          </div>
+          <div class="fii-net-val ${netCls}">${fmtCr(entry.netValue)}</div>
+          <div class="fii-sub-row">
+            <span class="fii-sub"><span>B</span> ${isFinite(buy) ? buy.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "—"}</span>
+            <span class="fii-sub"><span>S</span> ${isFinite(sell) ? sell.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "—"}</span>
+            <span class="fii-trend ${trendCls}">${trendLabel}</span>
+          </div>
+        </div>`;
+        }).join("")}</div>`;
+      }
+
+      async function loadFiiData() {
+        fiiBody.innerHTML = `<div class="fii-rows"><div class="fii-loading">Loading…</div></div>`;
+        fiiDateBadge.textContent = "—";
+        try {
+          const res = await fetch(`${API_BASE}/fii-data`);
+          if (!res.ok) throw new Error("Failed");
+          const data = await res.json();
+          renderFiiCard(Array.isArray(data) ? data : []);
+        } catch (e) {
+          fiiBody.innerHTML = `<div class="fii-rows"><div class="fii-error">Could not load flow data</div></div>`;
+        }
+      }
+
+      // ── FII/DII History Modal (redesigned) ──────────────────────────
+      const fhOverlay = document.getElementById("fhOverlay");
+      const fhBody = document.getElementById("fhBody");
+      const fhSub = document.getElementById("fhSub");
+      const fhCloseBtn = document.getElementById("fhCloseBtn");
+      const fhFilters = document.getElementById("fhFilters");
+
+      let fhRawData = null;      // raw history array from API
+      let fhDaily = [];          // parsed + sorted ascending daily rows
+      let fhRange = "overall";   // overall | daily | weekly | monthly (granularity)
+      let fhLoaded = false;
+      let fhWin = { preset: "1m", from: null, to: null };   // 1m | 3m | 6m | custom
+      let fhSeries = { fii: true, dii: true, net: true };   // legend toggles
+      let fhPopOpen = false;
+      let fhView = null;
+      let fhOi = [];             // FII index OI history (ascending), from /fii-oi-data
+
+      const FD_BLUE = "#1f8bff", FD_ORANGE = "#ff8a1f", FD_GREEN = "#19d3a0", FD_RED = "#ff5a5f";
+      const FD_MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+      function parseHistDate(s) {
+        // "07-Aug-2026" -> Date
+        if (!s) return null;
+        const d = new Date(s.replace(/-/g, " "));
+        return isNaN(d) ? null : d;
+      }
+
+      function fhFmt(n, decimals) {
+        if (!isFinite(n)) return "—";
+        return n.toLocaleString("en-IN", { minimumFractionDigits: decimals ?? 2, maximumFractionDigits: decimals ?? 2 });
+      }
+      function fhFmtSigned(n) {
+        if (!isFinite(n)) return "—";
+        return (n >= 0 ? "+" : "") + fhFmt(n);
+      }
+
+      const fdNum = v => parseFloat(v) || 0;
+      const fdPad = n => String(n).padStart(2, "0");
+      const fdDay = d => fdPad(d.getDate()) + " " + FD_MON[d.getMonth()];
+      const fdFull = d => fdDay(d) + " " + d.getFullYear();
+      const fdIso = d => d.getFullYear() + "-" + fdPad(d.getMonth() + 1) + "-" + fdPad(d.getDate());
+      function fdParseIso(s) {
+        const p = String(s || "").split("-").map(Number);
+        return p.length === 3 && p.every(isFinite) ? new Date(p[0], p[1] - 1, p[2]) : null;
+      }
+      function fdAddMonths(d, n) {
+        const t = new Date(d.getFullYear(), d.getMonth() + n, 1);
+        const dim = new Date(t.getFullYear(), t.getMonth() + 1, 0).getDate();
+        return new Date(t.getFullYear(), t.getMonth(), Math.min(d.getDate(), dim));
+      }
+      function fdPresetFrom(latest, n) {
+        const f = fdAddMonths(latest, -n);
+        return new Date(f.getFullYear(), f.getMonth(), f.getDate() + 1);
+      }
+      function fdSigned(n) { return (n >= 0 ? "+" : "") + fhFmt(n); }
+      function fdTick(v) {
+        const a = Math.abs(v);
+        if (a < 1e-9) return "0";
+        if (a >= 1000) { const k = v / 1000; return (Number.isInteger(k) ? k : k.toFixed(1)) + "K"; }
+        return String(Math.round(v));
+      }
+      function fdNiceStep(raw) {
+        if (!(raw > 0)) return 1;
+        const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+        const n = raw / mag;
+        return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * mag;
+      }
+
+      // Aggregate daily rows into display buckets (daily/overall -> per day)
+      function fdAgg(rows, range) {
+        if (range === "weekly" || range === "monthly") {
+          const m = new Map();
+          rows.forEach(r => {
+            const d = r._d;
+            let key, label, short;
+            if (range === "weekly") {
+              const mon = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7));
+              key = fdIso(mon); label = "Week of " + fdFull(mon); short = fdDay(mon);
+            } else {
+              key = d.getFullYear() + "-" + d.getMonth();
+              label = FD_MON[d.getMonth()] + " " + d.getFullYear();
+              short = FD_MON[d.getMonth()] + " " + String(d.getFullYear()).slice(2);
+            }
+            if (!m.has(key)) m.set(key, { label, short, t: d.getTime(), days: 0, fb: 0, fs: 0, fn: 0, db: 0, ds: 0, dn: 0 });
+            const b = m.get(key);
+            b.days++;
+            b.fb += fdNum(r.fii?.buyValue); b.fs += fdNum(r.fii?.sellValue); b.fn += fdNum(r.fii?.netValue);
+            b.db += fdNum(r.dii?.buyValue); b.ds += fdNum(r.dii?.sellValue); b.dn += fdNum(r.dii?.netValue);
+          });
+          return [...m.values()].sort((a, b) => a.t - b.t);
+        }
+        return rows.map(r => ({
+          label: fdFull(r._d), short: fdDay(r._d), t: r._d.getTime(), days: 1,
+          fb: fdNum(r.fii?.buyValue), fs: fdNum(r.fii?.sellValue), fn: fdNum(r.fii?.netValue),
+          db: fdNum(r.dii?.buyValue), ds: fdNum(r.dii?.sellValue), dn: fdNum(r.dii?.netValue),
+        }));
+      }
+
+      function fdBuildView() {
+        const all = fhDaily;
+        if (!all.length) return null;
+        const first = all[0]._d, latest = all[all.length - 1]._d;
+        let from, to;
+        if (fhWin.preset === "custom" && fhWin.from && fhWin.to) { from = fhWin.from; to = fhWin.to; }
+        else {
+          const n = { "1m": 1, "3m": 3, "6m": 6 }[fhWin.preset] || 1;
+          to = latest; from = fdPresetFrom(latest, n);
+        }
+        if (from < first) from = first;
+        if (to > latest) to = latest;
+        const rows = all.filter(r => r._d >= from && r._d <= to);
+        return { first, latest, from, to, rows, items: fdAgg(rows, fhRange) };
+      }
+
+      function fdPeriodStats(n) {
+        const latest = fhDaily[fhDaily.length - 1]._d;
+        const from = fdPresetFrom(latest, n);
+        const rs = fhDaily.filter(r => r._d >= from);
+        let fn = 0, dn = 0, pos = 0;
+        rs.forEach(r => { const f = fdNum(r.fii?.netValue); fn += f; dn += fdNum(r.dii?.netValue); if (f > 0) pos++; });
+        return { fn, dn, pos, total: rs.length };
+      }
+
+      function fdIcon(name) {
+        const a = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+        const p = {
+          bank: '<line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/>',
+          scale: '<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+          up: '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+          down: '<polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/>',
+          bars: '<path d="M18 20V10M12 20V4M6 20v-6"/>',
+          clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+          cal: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>',
+          chev: '<polyline points="6 9 12 15 18 9"/>',
+          updown: '<path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/>',
+        };
+        return `<svg ${a}>${p[name]}</svg>`;
+      }
+
+      function fdRangeLabel(v) {
+        const sameYear = v.from.getFullYear() === v.to.getFullYear();
+        return (sameYear ? fdDay(v.from) : fdFull(v.from)) + " – " + fdFull(v.to);
+      }
+
+      function renderFhModal() {
+        if (!fhRawData || fhRawData.length === 0 || fhDaily.length === 0) {
+          fhBody.innerHTML = `<div class="fd-empty">No history data available.</div>`;
+          return;
+        }
+        fhView = fdBuildView();
+        const v = fhView, items = v.items;
+        fhSub.textContent = `${fhDaily.length} trading days • Data since ${fdFull(fhDaily[0]._d)}`;
+
+        const unitPl = fhRange === "weekly" ? "Weeks" : fhRange === "monthly" ? "Months" : "Days";
+        const grain = fhRange === "weekly" ? "Weekly" : fhRange === "monthly" ? "Monthly" : "Daily";
+
+        // KPI figures: overall -> whole window; daily/weekly/monthly -> latest bucket
+        const kr = (fhRange === "overall") ? items : items.slice(-1);
+        const S = kr.reduce((a, b) => ({ fb: a.fb + b.fb, fs: a.fs + b.fs, fn: a.fn + b.fn, db: a.db + b.db, ds: a.ds + b.ds, dn: a.dn + b.dn }),
+          { fb: 0, fs: 0, fn: 0, db: 0, ds: 0, dn: 0 });
+        const has = items.length > 0;
+        const diff = S.fn - S.dn;
+
+        const posCnt = items.filter(i => i.fn > 0).length;
+        const total = items.length;
+        const pct = total ? Math.round((posCnt / total) * 100) : 0;
+        const negCnt = total - posCnt;
+
+        const note = fhRange === "overall" ? "" :
+          `<div class="fd-period-note">Cards show the latest ${fhRange === "daily" ? "day" : fhRange === "weekly" ? "week" : "month"} in range · <b>${escHtml(kr[0]?.label || "—")}</b></div>`;
+
+        const kpis = `
+        <div class="fd-kpis">
+          <div class="fd-kpi fd-k-fii">
+            <div class="fd-kpi-ico">${fdIcon("bank")}</div>
+            <div class="fd-kpi-txt">
+              <div class="fd-kpi-lbl">FII Net Flow</div>
+              <div class="fd-kpi-val ${has ? (S.fn >= 0 ? "pos" : "neg") : "neutral"}">${has ? fdSigned(S.fn) + " Cr" : "—"}</div>
+              <div class="fd-kpi-sub">Buy: ${has ? fhFmt(S.fb) : "—"}<i>|</i>Sell: ${has ? fhFmt(S.fs) : "—"}</div>
+            </div>
+          </div>
+          <div class="fd-kpi fd-k-dii">
+            <div class="fd-kpi-ico">${fdIcon("bank")}</div>
+            <div class="fd-kpi-txt">
+              <div class="fd-kpi-lbl">DII Net Flow</div>
+              <div class="fd-kpi-val ${has ? (S.dn >= 0 ? "pos" : "neg") : "neutral"}">${has ? fdSigned(S.dn) + " Cr" : "—"}</div>
+              <div class="fd-kpi-sub">Buy: ${has ? fhFmt(S.db) : "—"}<i>|</i>Sell: ${has ? fhFmt(S.ds) : "—"}</div>
+            </div>
+          </div>
+          <div class="fd-kpi fd-k-diff">
+            <div class="fd-kpi-ico">${fdIcon("scale")}</div>
+            <div class="fd-kpi-txt">
+              <div class="fd-kpi-lbl">FII vs DII</div>
+              <div class="fd-kpi-val neutral">${has ? fdSigned(diff) + " Cr" : "—"}</div>
+              <div class="fd-kpi-sub">${has ? `(FII ${fdSigned(S.fn)} vs DII ${fdSigned(S.dn)})` : ""}</div>
+            </div>
+          </div>
+          <div class="fd-kpi fd-k-days">
+            <div class="fd-kpi-ico">${fdIcon("clock")}</div>
+            <div class="fd-kpi-txt">
+              <div class="fd-kpi-lbl">FII Positive ${unitPl}</div>
+              <div class="fd-kpi-val neutral">${posCnt} / ${total}<span class="fd-kpi-pct ${pct >= 50 ? "pos" : "neg"}">(${pct}%)</span></div>
+              <div class="fd-kpi-sub">${negCnt} negative ${unitPl.toLowerCase()}</div>
+              <div class="fd-meter"><span style="width:${pct}%"></span></div>
+            </div>
+          </div>
+        </div>`;
+
+        const presetBtn = (k, lbl) => `<button class="fd-seg-btn${fhWin.preset === k ? " active" : ""}" data-fdrange="${k}">${lbl}</button>`;
+        const legBtn = (k, cls, lbl, inner) => `<button class="fd-leg${fhSeries[k] ? "" : " off"}" data-fdseries="${k}" title="Click to show/hide">${inner}${lbl}</button>`;
+
+        const chartPanel = `
+        <div class="fd-panel">
+          <div class="fd-panel-head">
+            <div class="fd-panel-title">${fdIcon("bars")}FII &amp; DII ${grain} Flows</div>
+            <div class="fd-legend">
+              ${legBtn("fii", "", "FII Net", `<span class="fd-leg-dot" style="background:${FD_BLUE}"></span>`)}
+              ${legBtn("dii", "", "DII Net", `<span class="fd-leg-dot" style="background:${FD_ORANGE}"></span>`)}
+              ${legBtn("net", "", "FII vs DII", `<span class="fd-leg-line"></span>`)}
+            </div>
+            <div class="fd-ctrls">
+              <div class="fd-seg sm">
+                ${presetBtn("1m", "1M")}${presetBtn("3m", "3M")}${presetBtn("6m", "6M")}
+                <button class="fd-seg-btn${fhWin.preset === "custom" ? " active" : ""}" data-fdrange="custom">${fdIcon("cal")}Custom</button>
+              </div>
+              <div class="fd-datewrap${fhPopOpen ? " open" : ""}" id="fdDateWrap">
+                <button class="fd-datebtn" id="fdDateBtn" type="button">${escHtml(fdRangeLabel(v))}${fdIcon("chev")}</button>
+                <div class="fd-pop" id="fdPop">
+                  <label>From<input type="date" id="fdFrom" value="${fdIso(v.from)}" min="${fdIso(v.first)}" max="${fdIso(v.latest)}"></label>
+                  <label>To<input type="date" id="fdTo" value="${fdIso(v.to)}" min="${fdIso(v.first)}" max="${fdIso(v.latest)}"></label>
+                  <div class="fd-pop-err" id="fdPopErr"></div>
+                  <div class="fd-pop-actions">
+                    <button class="fd-pop-btn" type="button" data-fdact="all">All data</button>
+                    <button class="fd-pop-btn primary" type="button" data-fdact="apply">Apply</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fd-chart-host" id="fdChartHost"></div>
+        </div>`;
+
+        const ps = [["1m", "Last 1 Month", 1], ["3m", "Last 3 Months", 3], ["6m", "Last 6 Months", 6]].map(([k, lbl, n]) => {
+          const s = fdPeriodStats(n);
+          const pp = s.total ? Math.round((s.pos / s.total) * 100) : 0;
+          return `<tr data-fdrow="${k}" class="${fhWin.preset === k ? "active" : ""}">
+            <td>${lbl}</td>
+            <td class="${s.fn >= 0 ? "pos" : "neg"}">${fdSigned(s.fn)} Cr</td>
+            <td class="${s.dn >= 0 ? "pos" : "neg"}">${fdSigned(s.dn)} Cr</td>
+            <td>${s.pos} / ${s.total} <small>(${pp}%)</small></td>
+          </tr>`;
+        }).join("");
+
+        const bottom = `
+        <div class="fd-panel">
+          <div class="fd-panel-head" style="border-bottom:none">
+            <div class="fd-panel-title"><span style="color:#2f8dff;display:flex">${fdIcon("cal")}</span>Recent Period Summary</div>
+          </div>
+          <div class="fd-table-wrap">
+            <table class="fd-table">
+              <thead><tr><th>Period</th><th>FII Net Flow</th><th>DII Net Flow</th><th>FII Positive Days</th></tr></thead>
+              <tbody>${ps}</tbody>
+            </table>
+          </div>
+        </div>`;
+
+        fhBody.innerHTML = note + kpis + chartPanel + bottom;
+        fdDrawChart();
+      }
+
+      function fdTip() {
+        let t = document.getElementById("fdTip");
+        if (!t) { t = document.createElement("div"); t.id = "fdTip"; t.className = "fd-tip"; document.body.appendChild(t); }
+        return t;
+      }
+
+      function fdDrawChart() {
+        const host = document.getElementById("fdChartHost");
+        if (!host || !fhView) return;
+        const items = fhView.items;
+        if (!items.length) { host.innerHTML = `<div class="fd-empty sm">No trading days in the selected range.</div>`; return; }
+
+        const W = Math.max(320, host.clientWidth || 700);
+        const compact = W < 560;
+        const H = compact ? 210 : (window.innerHeight < 760 ? 230 : 260);
+        const pad = { l: compact ? 44 : 54, r: 12, t: 10, b: 26 };
+        const pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+        const n = items.length;
+
+        let lo = 0, hi = 0;
+        items.forEach(it => {
+          if (fhSeries.fii) { lo = Math.min(lo, it.fn); hi = Math.max(hi, it.fn); }
+          if (fhSeries.dii) { lo = Math.min(lo, it.dn); hi = Math.max(hi, it.dn); }
+          if (fhSeries.net) { const s = it.fn + it.dn; lo = Math.min(lo, s); hi = Math.max(hi, s); }
+        });
+        if (hi === lo) hi = lo + 1;
+        const step = fdNiceStep((hi - lo) / 5);
+        lo = Math.floor(lo / step + 1e-9) * step;
+        hi = Math.ceil(hi / step - 1e-9) * step;
+        const y = v => pad.t + ((hi - v) / (hi - lo)) * ph;
+        const slot = pw / n;
+        const cx = i => pad.l + slot * i + slot / 2;
+        const bw = Math.max(2, Math.min(28, slot * 0.62));
+
+        let grid = "", ylab = "";
+        const cnt = Math.round((hi - lo) / step);
+        for (let k = 0; k <= cnt; k++) {
+          const v = lo + k * step, yy = y(v).toFixed(1);
+          grid += `<line x1="${pad.l}" x2="${W - pad.r}" y1="${yy}" y2="${yy}" class="${Math.abs(v) < step * 1e-6 ? "fd-zero" : "fd-grid"}"/>`;
+          ylab += `<text x="${pad.l - 10}" y="${(+yy + 4.5).toFixed(1)}" text-anchor="end" class="fd-tick">${fdTick(v)}</text>`;
+        }
+
+        // x labels
+        const target = Math.max(3, Math.floor(pw / 90));
+        const stepL = Math.max(1, Math.ceil((n - 1) / (target - 1)));
+        const idxs = [];
+        for (let i = 0; i < n; i += stepL) idxs.push(i);
+        if (n - 1 - idxs[idxs.length - 1] >= stepL * 0.6) idxs.push(n - 1);
+        let xl = "", vg = "";
+        idxs.forEach(i => {
+          const x = cx(i);
+          const anchor = x > W - pad.r - 26 ? "end" : "middle";
+          vg += `<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${pad.t}" y2="${H - pad.b}" class="fd-vgrid"/>`;
+          xl += `<text x="${x.toFixed(1)}" y="${H - 7}" text-anchor="${anchor}" class="fd-tick">${escHtml(items[i].short)}</text>`;
+        });
+
+        // bars (overlaid at same x; larger magnitude drawn first so both stay visible)
+        let bars = "";
+        const y0 = y(0);
+        items.forEach((it, i) => {
+          const x = cx(i) - bw / 2;
+          const parts = [];
+          if (fhSeries.fii) parts.push({ v: it.fn, c: FD_BLUE });
+          if (fhSeries.dii) parts.push({ v: it.dn, c: FD_ORANGE });
+          parts.sort((a, b) => Math.abs(b.v) - Math.abs(a.v));
+          parts.forEach(p => {
+            const y1 = y(p.v), top = Math.min(y0, y1), h = Math.max(1, Math.abs(y1 - y0));
+            bars += `<rect x="${x.toFixed(1)}" y="${top.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="${Math.min(2.5, bw / 3).toFixed(1)}" fill="${p.c}"/>`;
+          });
+        });
+
+        // combined line
+        let line = "";
+        if (fhSeries.net) {
+          const pts = items.map((it, i) => [cx(i), y(it.fn + it.dn)]);
+          line = `<path d="${pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ")}" class="fd-line"/>`;
+          if (slot >= 7) line += pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.8" class="fd-dot"/>`).join("");
+        }
+
+        let hits = "";
+        for (let i = 0; i < n; i++) hits += `<rect class="fd-hit" data-i="${i}" x="${(pad.l + slot * i).toFixed(1)}" y="${pad.t}" width="${slot.toFixed(1)}" height="${ph}" fill="transparent"/>`;
+
+        host.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="FII and DII net flow chart">
+          ${grid}${vg}
+          <rect id="fdHl" class="fd-hl" y="${pad.t}" height="${ph}" width="${slot.toFixed(1)}" x="0" opacity="0"/>
+          ${bars}${line}${ylab}${xl}
+          <text transform="rotate(-90)" x="${-(pad.t + ph / 2)}" y="${compact ? 11 : 13}" text-anchor="middle" class="fd-axis-title">Flow (₹ Cr)</text>
+          ${hits}
+        </svg>`;
+
+        const tip = fdTip(), hl = host.querySelector("#fdHl");
+        const cls = x => x >= 0 ? "pos" : "neg";
+        host.querySelectorAll(".fd-hit").forEach(r => {
+          const i = +r.getAttribute("data-i"), it = items[i];
+          const show = e => {
+            hl.setAttribute("x", r.getAttribute("x")); hl.setAttribute("opacity", "1");
+            let h = `<div class="fd-tip-date">${escHtml(it.label)}${it.days > 1 ? ` <span style="color:#7f93b5;font-weight:500">· ${it.days} days</span>` : ""}</div>`;
+            h += `<div class="fd-tip-row"><span class="l"><span class="fd-tip-dot" style="background:${FD_BLUE}"></span>FII Net</span><b class="${cls(it.fn)}">${fdSigned(it.fn)}</b></div>
+                  <div class="fd-tip-row mut"><span>Buy</span><span>${fhFmt(it.fb, 0)}</span></div>
+                  <div class="fd-tip-row mut"><span>Sell</span><span>${fhFmt(it.fs, 0)}</span></div>
+                  <div class="fd-tip-sep"></div>
+                  <div class="fd-tip-row"><span class="l"><span class="fd-tip-dot" style="background:${FD_ORANGE}"></span>DII Net</span><b class="${cls(it.dn)}">${fdSigned(it.dn)}</b></div>
+                  <div class="fd-tip-row mut"><span>Buy</span><span>${fhFmt(it.db, 0)}</span></div>
+                  <div class="fd-tip-row mut"><span>Sell</span><span>${fhFmt(it.ds, 0)}</span></div>
+                  <div class="fd-tip-sep"></div>
+                  <div class="fd-tip-row"><span class="l"><span class="fd-tip-dot" style="background:#fff"></span>FII + DII</span><b class="${cls(it.fn + it.dn)}">${fdSigned(it.fn + it.dn)}</b></div>`;
+            tip.innerHTML = h;
+            const tw = tip.offsetWidth, th = tip.offsetHeight;
+            let lx = e.clientX + 16, ly = e.clientY + 16;
+            if (lx + tw > window.innerWidth - 8) lx = e.clientX - tw - 16;
+            if (ly + th > window.innerHeight - 8) ly = window.innerHeight - th - 8;
+            tip.style.left = Math.max(8, lx) + "px"; tip.style.top = Math.max(8, ly) + "px";
+            tip.classList.add("visible");
+          };
+          r.addEventListener("mouseenter", show);
+          r.addEventListener("mousemove", show);
+          r.addEventListener("mouseleave", () => { hl.setAttribute("opacity", "0"); tip.classList.remove("visible"); });
+        });
+      }
+
+      async function fdLoadOi() {
+        try {
+          const res = await fetch(`${API_BASE}/fii-oi-data`);
+          if (!res.ok) throw new Error("oi");
+          const data = await res.json();
+          const hist = Array.isArray(data) ? data : (Array.isArray(data.history) ? data.history : []);
+          fhOi = hist
+            .map(r => Object.assign({}, r, { _d: fdParseIso(String(r.date || "").slice(0, 10)) }))
+            .filter(r => r._d)
+            .sort((a, b) => a._d - b._d);
+          paintFpCard();
+        } catch (e) {
+          fhOi = [];
+          paintFpCard();
+        }
+      }
+
+      function paintFpCard() {
+        const rows = fpCleanRows(), last = rows[rows.length - 1];
+        const L = document.getElementById("fpCardLong"), S = document.getElementById("fpCardShort");
+        const bar = document.getElementById("fpCardBar"), dt = document.getElementById("fpCardDate");
+        if (!last) {
+          L.textContent = S.textContent = "—";
+          bar.style.width = "0%";
+          dt.textContent = "Unavailable · click to retry";
+          return;
+        }
+        L.textContent = last.l.toFixed(1) + "%";
+        S.textContent = last.s.toFixed(1) + "%";
+        bar.style.width = Math.max(0, Math.min(100, last.l)) + "%";
+        dt.textContent = "As of " + fdFull(last.d) + " · click for trend";
+      }
+
+      async function loadFhHistory() {
+        fhBody.innerHTML = `<div class="fd-loading"><div class="fd-spinner"></div>Loading flow history…</div>`;
+        try {
+          const res = await fetch(`${API_BASE}/fii-dii-history`);
+          if (!res.ok) throw new Error("Failed");
+          const data = await res.json();
+          fhRawData = Array.isArray(data) ? data : [];
+          fhDaily = fhRawData
+            .map(r => ({ r, d: parseHistDate(r.date) }))
+            .filter(x => x.d)
+            .sort((a, b) => a.d - b.d)
+            .map(x => Object.assign({}, x.r, { _d: x.d }));
+          fhLoaded = true;
+          renderFhModal();
+        } catch (e) {
+          fhBody.innerHTML = `<div class="fd-error">Could not load flow history. Please try again.</div>`;
+        }
+      }
+
+      function openFhModal() {
+        fhOverlay.classList.add("visible");
+        document.body.style.overflow = "hidden";
+        if (!fhLoaded) loadFhHistory();
+        else renderFhModal();
+      }
+      function closeFhModal() {
+        fhOverlay.classList.remove("visible");
+        document.body.style.overflow = "";
+        fhPopOpen = false;
+        const tip = document.getElementById("fdTip");
+        if (tip) tip.classList.remove("visible");
+      }
+
+      // Clicks inside the modal body (presets, legend toggles, date popover, summary rows)
+      fhBody.addEventListener("click", e => {
+        const t = e.target;
+        const rangeBtn = t.closest("[data-fdrange]");
+        if (rangeBtn) {
+          const k = rangeBtn.getAttribute("data-fdrange");
+          if (k === "custom") {
+            const wrap = document.getElementById("fdDateWrap");
+            fhPopOpen = !fhPopOpen;
+            if (wrap) wrap.classList.toggle("open", fhPopOpen);
+          } else { fhWin = { preset: k, from: null, to: null }; fhPopOpen = false; renderFhModal(); }
+          return;
+        }
+        if (t.closest("#fdDateBtn")) {
+          const wrap = document.getElementById("fdDateWrap");
+          fhPopOpen = !fhPopOpen;
+          if (wrap) wrap.classList.toggle("open", fhPopOpen);
+          return;
+        }
+        const act = t.closest("[data-fdact]");
+        if (act) {
+          if (act.getAttribute("data-fdact") === "all") {
+            fhWin = { preset: "custom", from: fhDaily[0]._d, to: fhDaily[fhDaily.length - 1]._d };
+            fhPopOpen = false; renderFhModal();
+          } else {
+            const f = fdParseIso(document.getElementById("fdFrom")?.value);
+            const to = fdParseIso(document.getElementById("fdTo")?.value);
+            const err = document.getElementById("fdPopErr");
+            if (!f || !to) { if (err) err.textContent = "Please choose both dates."; return; }
+            if (f > to) { if (err) err.textContent = "“From” must be on or before “To”."; return; }
+            fhWin = { preset: "custom", from: f, to: to };
+            fhPopOpen = false; renderFhModal();
+          }
+          return;
+        }
+        const ser = t.closest("[data-fdseries]");
+        if (ser) {
+          const k = ser.getAttribute("data-fdseries");
+          const on = Object.values(fhSeries).filter(Boolean).length;
+          if (fhSeries[k] && on === 1) return;   // keep at least one series visible
+          fhSeries[k] = !fhSeries[k];
+          ser.classList.toggle("off", !fhSeries[k]);
+          fdDrawChart();
+          return;
+        }
+        const row = t.closest("[data-fdrow]");
+        if (row) { fhWin = { preset: row.getAttribute("data-fdrow"), from: null, to: null }; fhPopOpen = false; renderFhModal(); }
+      });
+      document.addEventListener("click", e => {
+        if (!fhPopOpen || !fhOverlay.classList.contains("visible")) return;
+        if (e.target.closest("#fdDateWrap") || e.target.closest("[data-fdrange='custom']")) return;
+        fhPopOpen = false;
+        const wrap = document.getElementById("fdDateWrap");
+        if (wrap) wrap.classList.remove("open");
+      });
+      window.addEventListener("resize", () => { if (fhOverlay.classList.contains("visible")) fdDrawChart(); });
+
+      // ── FII Index Position: Long vs Short trend popup ─────────────────
+      const fpOverlay = document.getElementById("fpOverlay");
+      const fpHost = document.getElementById("fpChartHost");
+      const fpSub = document.getElementById("fpSub");
+      let fpRange = "3m";
+      let fpRows = [];
+
+      function fpCleanRows() {
+        return fhOi
+          .map(r => ({ d: r._d, l: parseFloat(r.futuresLongPercentage), s: parseFloat(r.futuresShortPercentage) }))
+          .filter(r => isFinite(r.l) && isFinite(r.s));
+      }
+      function fpWindow(rows) {
+        if (!rows.length || fpRange === "all") return rows;
+        const latest = rows[rows.length - 1].d;
+        let from;
+        if (fpRange === "1w") from = new Date(latest.getFullYear(), latest.getMonth(), latest.getDate() - 6);
+        else from = fdPresetFrom(latest, fpRange === "1m" ? 1 : fpRange === "3m" ? 3 : 6);
+        return rows.filter(r => r.d >= from);
+      }
+
+      function fpDraw() {
+        const rows = fpWindow(fpRows);
+        if (!rows.length) { fpHost.innerHTML = `<div class="fp-empty">No positioning data available for this range.</div>`; fpSub.textContent = "FII index futures positioning"; return; }
+        fpSub.textContent = `${fdFull(rows[0].d)} – ${fdFull(rows[rows.length - 1].d)} • ${rows.length} trading day${rows.length > 1 ? "s" : ""}`;
+
+        const W = Math.max(320, fpHost.clientWidth || 900);
+        const compact = W < 560;
+        const H = compact ? 260 : 340;
+        const pad = { l: compact ? 40 : 48, r: 14, t: 12, b: 28 };
+        const pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+        const n = rows.length;
+        const X = i => pad.l + (n === 1 ? pw / 2 : (i / (n - 1)) * pw);
+        const Y = v => pad.t + ph - (Math.max(0, Math.min(100, v)) / 100) * ph;
+        const base = pad.t + ph;
+
+        let g = `<defs>
+          <linearGradient id="fpGS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff5a5f" stop-opacity=".42"/><stop offset="1" stop-color="#ff5a5f" stop-opacity=".08"/></linearGradient>
+          <linearGradient id="fpGL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#19d3a0" stop-opacity=".42"/><stop offset="1" stop-color="#19d3a0" stop-opacity=".08"/></linearGradient>
+        </defs>`;
+
+        [0, 25, 50, 75, 100].forEach(v => {
+          const y = Y(v);
+          g += `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y}" y2="${y}" stroke="rgba(120,160,230,.14)" stroke-dasharray="${v === 0 ? "0" : "3 4"}"/>`;
+          g += `<text x="${pad.l - 8}" y="${y + 4}" text-anchor="end" font-size="11" fill="#9db0d0">${v}%</text>`;
+        });
+
+        const pts = k => rows.map((r, i) => `${X(i).toFixed(1)},${Y(r[k]).toFixed(1)}`);
+        const sP = pts("s"), lP = pts("l");
+        g += `<polygon points="${X(0).toFixed(1)},${base} ${sP.join(" ")} ${X(n - 1).toFixed(1)},${base}" fill="url(#fpGS)"/>`;
+        g += `<polygon points="${X(0).toFixed(1)},${base} ${lP.join(" ")} ${X(n - 1).toFixed(1)},${base}" fill="url(#fpGL)"/>`;
+        g += `<polyline points="${sP.join(" ")}" fill="none" stroke="#ff5a5f" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+        g += `<polyline points="${lP.join(" ")}" fill="none" stroke="#19d3a0" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+        // x ticks
+        const maxTicks = compact ? 4 : 8;
+        const step = Math.max(1, Math.ceil((n - 1) / (maxTicks - 1)));
+        const tickIdx = [];
+        for (let i = 0; i < n; i += step) tickIdx.push(i);
+        if (n > 1 && (n - 1 - tickIdx[tickIdx.length - 1]) < step * 0.5) tickIdx[tickIdx.length - 1] = n - 1;
+        else if (tickIdx[tickIdx.length - 1] !== n - 1) tickIdx.push(n - 1);
+        tickIdx.forEach((i, k) => {
+          const x = X(i);
+          const anchor = k === 0 && n > 1 ? "start" : (k === tickIdx.length - 1 && n > 1 ? "end" : "middle");
+          g += `<line x1="${x}" x2="${x}" y1="${base}" y2="${base + 4}" stroke="rgba(120,160,230,.4)"/>`;
+          g += `<text x="${x}" y="${base + 18}" text-anchor="${anchor}" font-size="11" fill="#9db0d0">${fdDay(rows[i].d)}</text>`;
+        });
+
+        // end-point markers
+        g += `<circle cx="${X(n - 1)}" cy="${Y(rows[n - 1].s)}" r="4" fill="#ff5a5f"/><circle cx="${X(n - 1)}" cy="${Y(rows[n - 1].l)}" r="4" fill="#19d3a0"/>`;
+
+        // hover layer
+        g += `<line id="fpHl" x1="0" x2="0" y1="${pad.t}" y2="${base}" stroke="rgba(200,220,255,.4)" stroke-dasharray="3 3" opacity="0"/>`;
+        g += `<circle id="fpHs" r="4.5" fill="#ff5a5f" stroke="#07101f" stroke-width="2" opacity="0"/><circle id="fpHL" r="4.5" fill="#19d3a0" stroke="#07101f" stroke-width="2" opacity="0"/>`;
+        g += `<rect id="fpHit" x="${pad.l}" y="${pad.t}" width="${pw}" height="${ph}" fill="transparent"/>`;
+
+        fpHost.innerHTML = `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Long vs Short percentage trend">${g}</svg><div class="fp-tip" id="fpTip"></div>`;
+
+        const hit = fpHost.querySelector("#fpHit"), hl = fpHost.querySelector("#fpHl");
+        const hs = fpHost.querySelector("#fpHs"), hL = fpHost.querySelector("#fpHL"), tip = fpHost.querySelector("#fpTip");
+        const svgEl = fpHost.querySelector("svg");
+        const move = ev => {
+          const box = svgEl.getBoundingClientRect();
+          const px = (ev.clientX - box.left) * (W / box.width);
+          const i = n === 1 ? 0 : Math.max(0, Math.min(n - 1, Math.round(((px - pad.l) / pw) * (n - 1))));
+          const r = rows[i], x = X(i);
+          hl.setAttribute("x1", x); hl.setAttribute("x2", x); hl.setAttribute("opacity", "1");
+          hs.setAttribute("cx", x); hs.setAttribute("cy", Y(r.s)); hs.setAttribute("opacity", "1");
+          hL.setAttribute("cx", x); hL.setAttribute("cy", Y(r.l)); hL.setAttribute("opacity", "1");
+          tip.innerHTML = `<div class="d">${fdFull(r.d)}</div>
+            <div class="r"><span style="color:#19d3a0">Long</span><b>${r.l.toFixed(2)}%</b></div>
+            <div class="r"><span style="color:#ff5a5f">Short</span><b>${r.s.toFixed(2)}%</b></div>`;
+          tip.classList.add("visible");
+          const scale = box.width / W, tw = tip.offsetWidth;
+          let left = x * scale + 14;
+          if (left + tw > box.width) left = x * scale - tw - 14;
+          tip.style.left = Math.max(0, left) + "px";
+          tip.style.top = (pad.t * scale + 6) + "px";
+        };
+        hit.addEventListener("mousemove", move);
+        hit.addEventListener("touchmove", e => { if (e.touches[0]) move(e.touches[0]); }, { passive: true });
+        hit.addEventListener("touchstart", e => { if (e.touches[0]) move(e.touches[0]); }, { passive: true });
+        const leave = () => { hl.setAttribute("opacity", "0"); hs.setAttribute("opacity", "0"); hL.setAttribute("opacity", "0"); tip.classList.remove("visible"); };
+        hit.addEventListener("mouseleave", leave);
+        hit.addEventListener("touchend", leave);
+      }
+
+      function fpRender() {
+        document.querySelectorAll("#fpRanges .fd-seg-btn").forEach(b => b.classList.toggle("active", b.getAttribute("data-oirange") === fpRange));
+        fpRows = fpCleanRows();
+        if (!fpRows.length) {
+          fpHost.innerHTML = `<div class="fp-empty">No index positioning history available.</div>`;
+          return;
+        }
+        fpDraw();
+      }
+
+      async function openOiModal() {
+        fpOverlay.classList.add("visible");
+        if (!fhOi.length) {
+          fpHost.innerHTML = `<div class="fd-loading"><div class="fd-spinner"></div>Loading positioning history…</div>`;
+          await fdLoadOi();
+        }
+        fpRender();
+      }
+      function closeOiModal() { fpOverlay.classList.remove("visible"); }
+
+      document.getElementById("fpRanges").addEventListener("click", e => {
+        const b = e.target.closest("[data-oirange]");
+        if (!b) return;
+        fpRange = b.getAttribute("data-oirange");
+        fpRender();
+      });
+      document.getElementById("fpCloseBtn").addEventListener("click", closeOiModal);
+      bindOutsideClose(fpOverlay, closeOiModal);
+      // capture phase so Esc closes only this popup, not the flow-history modal beneath it
+      document.addEventListener("keydown", e => {
+        if (e.key === "Escape" && fpOverlay.classList.contains("visible")) { e.stopImmediatePropagation(); closeOiModal(); }
+      }, true);
+      window.addEventListener("resize", () => { if (fpOverlay.classList.contains("visible") && fpRows.length) fpDraw(); });
+
+      // FII/DII history pop-up: close button, outside click, Esc, and the Overall/Daily/Weekly/Monthly tabs
+      fhCloseBtn.addEventListener("click", closeFhModal);
+      bindOutsideClose(fhOverlay, closeFhModal);
+      document.addEventListener("keydown", e => {
+        if (e.key === "Escape" && fhOverlay.classList.contains("visible")) closeFhModal();
+      });
+      fhFilters.addEventListener("click", e => {
+        const b = e.target.closest("[data-range]");
+        if (!b) return;
+        fhRange = b.getAttribute("data-range");
+        fhFilters.querySelectorAll(".fd-seg-btn").forEach(x => x.classList.toggle("active", x === b));
+        fhPopOpen = false;
+        renderFhModal();
+      });
+
+      const fpCard = document.getElementById("fpCard");
+      fpCard.addEventListener("click", openOiModal);
+      fpCard.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openOiModal(); } });
+
+      fiiCard.addEventListener("click", openFhModal);
+      fiiCard.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openFhModal(); } });
+
+      loadFiiData();
+      fdLoadOi();
+})();
 
 fetchIndices();
 </script>
