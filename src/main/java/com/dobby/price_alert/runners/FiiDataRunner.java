@@ -22,9 +22,16 @@ public class FiiDataRunner implements CommandLineRunner {
 
     @Autowired
     private com.dobby.price_alert.service.FiiDataService fiiDataService;
+    @Autowired
+    private RunnerExecutionSelector runnerExecutionSelector;
+
     @Override
     public void run(String... args) throws Exception {
         log.info("Starting FII/DII update...");
+        if (!runnerExecutionSelector.shouldRun("fii-data")) {
+            log.info("Skipping FII Data Runner in manual execution mode.");
+            return;
+        }
         if (!CheckTime.isAfterMarketHours()) {
             log.info("Skipping FII Data Runner. Before 6 PM IST.");
             return;

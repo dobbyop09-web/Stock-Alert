@@ -40,6 +40,7 @@ public class AlertRunner implements CommandLineRunner {
     private final MarketDataToggleService marketDataToggleService;
     private final StockConfigService stockConfigService;
     private final JsonStockConfigService jsonStockConfigService;
+    private final RunnerExecutionSelector runnerExecutionSelector;
 
     private final List<DashboardStock> dashboard = new ArrayList<>();
 
@@ -48,7 +49,7 @@ public class AlertRunner implements CommandLineRunner {
             DashboardJsonService dashboardJsonService,
             DashBoardMetaDataService dashBoardMetaDataService,
             StockAlertService stockAlertService,
-            PortfolioSnapshotService portfolioSnapshotService, KotakScripLookupService kotakScripLookupService, MarketDataToggleService marketDataToggleService, StockConfigService stockConfigService, JsonStockConfigService jsonStockConfigService
+            PortfolioSnapshotService portfolioSnapshotService, KotakScripLookupService kotakScripLookupService, MarketDataToggleService marketDataToggleService, StockConfigService stockConfigService, JsonStockConfigService jsonStockConfigService, RunnerExecutionSelector runnerExecutionSelector
     ) {
         this.csvReaderService = csvReaderService;
         this.dashboardJsonService = dashboardJsonService;
@@ -59,11 +60,16 @@ public class AlertRunner implements CommandLineRunner {
         this.marketDataToggleService = marketDataToggleService;
         this.stockConfigService = stockConfigService;
         this.jsonStockConfigService = jsonStockConfigService;
+        this.runnerExecutionSelector = runnerExecutionSelector;
     }
 
     @Override
     public void run(String... args) throws Exception {
 
+        if (!runnerExecutionSelector.shouldRun("alert")) {
+            log.info("Skipping AlertRunner in manual execution mode.");
+            return;
+        }
         log.info("========== STOCK ALERT JOB STARTED ==========");
 
         long startTime = System.currentTimeMillis();
