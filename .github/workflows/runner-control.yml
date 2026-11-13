@@ -77,4 +77,5 @@ jobs:
       - name: Run Selected Runners
         run: |
           java -jar target/*.jar \
+            --app.execution-mode=manual \
             --app.runner-selection="${RUNNER_SELECTION}"
