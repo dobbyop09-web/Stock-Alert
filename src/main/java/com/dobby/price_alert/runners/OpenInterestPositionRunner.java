@@ -32,7 +32,7 @@ public class OpenInterestPositionRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        if (!runnerExecutionSelector.shouldRun("open-interest-position")) {
+        if (!runnerExecutionSelector.shouldRun("oi-data")) {
             log.info("Skipping Open Interest Position Runner in manual execution mode.");
             return;
         }

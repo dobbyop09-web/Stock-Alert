@@ -82,6 +82,124 @@
   .btn-ghost:hover { color: #dce8f4; border-color: rgba(255,255,255,.18); }
   .btn-ghost svg { width: 13px; height: 13px; }
 
+  .topbar-actions { display: flex; align-items: center; gap: 8px; }
+  .runner-open-btn {
+    color: #2DD4BF;
+    border-color: rgba(45,212,191,.25);
+    background: rgba(45,212,191,.07);
+    font-weight: 600;
+    padding: 7px 12px;
+  }
+  .runner-open-btn:hover {
+    color: #8ff3e5;
+    border-color: rgba(45,212,191,.48);
+    background: rgba(45,212,191,.12);
+  }
+  .runner-open-btn svg { width: 14px; height: 14px; }
+
+  /* ── Manual runner control modal ── */
+  .runner-backdrop {
+    position: fixed; inset: 0; z-index: 3000; display: none;
+    align-items: center; justify-content: center; padding: 18px;
+    background: rgba(3,8,14,.76); backdrop-filter: blur(5px);
+  }
+  .runner-backdrop.open { display: flex; }
+  .runner-modal {
+    width: min(480px, 100%); max-height: 92vh; overflow-y: auto;
+    background: #0e1d2b; border: 1px solid rgba(255,255,255,.10);
+    border-radius: 13px; padding: 18px;
+    box-shadow: 0 28px 80px rgba(0,0,0,.58);
+    animation: runnerModalIn .18s ease-out;
+  }
+  @keyframes runnerModalIn {
+    from { opacity: 0; transform: translateY(8px) scale(.985); }
+    to { opacity: 1; transform: none; }
+  }
+  .runner-modal-head {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 14px;
+    padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,.07);
+  }
+  .runner-kicker {
+    color: #2DD4BF; font-size: 9px; font-weight: 700;
+    letter-spacing: .10em; text-transform: uppercase; margin-bottom: 5px;
+  }
+  .runner-modal-head h2 { color: #edf5ff; font-size: 17px; font-weight: 700; }
+  .runner-modal-head p { color: #71869b; font-size: 11px; margin-top: 4px; line-height: 1.5; }
+  .runner-close {
+    width: 29px; height: 29px; flex-shrink: 0; border-radius: 7px;
+    color: #7890a5; border: 1px solid rgba(255,255,255,.09);
+    font-size: 18px; line-height: 1;
+  }
+  .runner-close:hover { color: #fff; border-color: rgba(255,255,255,.2); }
+  .runner-selectbar {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 10px; padding: 13px 1px 9px;
+  }
+  .runner-selected-count { color: #71869b; font-size: 10px; font-weight: 600; }
+  .runner-select-all {
+    color: #2DD4BF; font-size: 10px; font-weight: 600; padding: 4px 2px;
+  }
+  .runner-select-all:hover { color: #9af5e9; }
+  .runner-list { display: flex; flex-direction: column; gap: 7px; }
+  .runner-option {
+    display: flex; align-items: center; gap: 11px; padding: 11px 12px;
+    border: 1px solid rgba(255,255,255,.07); border-radius: 8px;
+    background: rgba(255,255,255,.018); cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .runner-option:hover { border-color: rgba(45,212,191,.25); background: rgba(45,212,191,.035); }
+  .runner-option.selected { border-color: rgba(45,212,191,.38); background: rgba(45,212,191,.065); }
+  .runner-option input {
+    width: 16px; height: 16px; flex-shrink: 0;
+    accent-color: #2DD4BF; cursor: pointer;
+  }
+  .runner-option-copy { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .runner-option-name { color: #dce8f4; font-size: 12px; font-weight: 650; }
+  .runner-option-desc { color: #71869b; font-size: 10px; line-height: 1.4; }
+  .runner-status {
+    margin-top: 12px; padding: 9px 10px; border-radius: 7px;
+    font-size: 11px; line-height: 1.5; overflow-wrap: anywhere;
+  }
+  .runner-status[hidden] { display: none; }
+  .runner-status.success {
+    color: #7ce5d7; background: rgba(45,212,191,.08);
+    border: 1px solid rgba(45,212,191,.20);
+  }
+  .runner-status.error {
+    color: #ff8994; background: rgba(255,92,108,.08);
+    border: 1px solid rgba(255,92,108,.20);
+  }
+  .runner-status.info {
+    color: #a9c8e7; background: rgba(76,154,255,.07);
+    border: 1px solid rgba(76,154,255,.18);
+  }
+  .runner-modal-footer {
+    display: flex; justify-content: flex-end; align-items: center; gap: 8px;
+    margin-top: 15px; padding-top: 13px; border-top: 1px solid rgba(255,255,255,.07);
+  }
+  .runner-cancel-btn, .runner-submit-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    min-height: 33px; padding: 7px 12px; border-radius: 6px;
+    font-size: 11px; font-weight: 650; border: 1px solid;
+  }
+  .runner-cancel-btn {
+    color: #8ca0b3; border-color: rgba(255,255,255,.10); background: rgba(255,255,255,.025);
+  }
+  .runner-cancel-btn:hover { color: #e5eef8; border-color: rgba(255,255,255,.2); }
+  .runner-submit-btn {
+    color: #06201d; border-color: rgba(45,212,191,.55); background: #2DD4BF;
+  }
+  .runner-submit-btn:hover:not(:disabled) { background: #5ce4d3; }
+  .runner-submit-btn:disabled { opacity: .42; cursor: not-allowed; }
+  .runner-submit-btn svg { width: 13px; height: 13px; }
+  @media (max-width: 520px) {
+    .topbar { padding: 10px 12px; }
+    .topbar-actions { flex-shrink: 0; }
+    .runner-open-btn { padding: 7px 9px; }
+    .runner-open-btn .runner-btn-label { display: none; }
+    .runner-modal { padding: 15px; }
+  }
+
 
   .content { flex: 1; min-width: 0; overflow-y: auto; padding: 16px 20px 24px; display: flex; flex-direction: column; gap: 14px; }
   .content::-webkit-scrollbar { width: 5px; }
@@ -1607,6 +1725,15 @@
       <h1>Market Watchlist</h1>
       <p>Track and analyze major market indices</p>
     </div>
+    <div class="topbar-actions">
+      <button class="btn-ghost runner-open-btn" id="openRunnerControl" type="button" title="Run selected data runners">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 5.5v13l10-6.5-10-6.5Z"/>
+          <circle cx="12" cy="12" r="10"/>
+        </svg>
+        <span class="runner-btn-label">Runner Control</span>
+      </button>
+    </div>
   </header>
 
   <div class="content">
@@ -1871,11 +1998,220 @@
   </div>
 </div>
 
+<!-- Manual data runner control -->
+<div class="runner-backdrop" id="runnerBackdrop" aria-hidden="true">
+  <section class="runner-modal" role="dialog" aria-modal="true" aria-labelledby="runnerModalTitle">
+    <div class="runner-modal-head">
+      <div>
+        <div class="runner-kicker">Manual execution</div>
+        <h2 id="runnerModalTitle">Run Data Runners</h2>
+        <p>Select one or more data runners. They will be dispatched together through GitHub Actions.</p>
+      </div>
+      <button class="runner-close" id="closeRunnerControl" type="button" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="runner-selectbar">
+      <span class="runner-selected-count" id="runnerSelectedCount">0 of 4 selected</span>
+      <button class="runner-select-all" id="runnerSelectAll" type="button">Select all</button>
+    </div>
+
+    <div class="runner-list" id="runnerOptions">
+      <label class="runner-option">
+        <input type="checkbox" value="fii-data" data-runner-id="fii-data">
+        <span class="runner-option-copy">
+          <span class="runner-option-name">FII Data</span>
+          <span class="runner-option-desc">FII / DII participant data update</span>
+        </span>
+      </label>
+      <label class="runner-option">
+        <input type="checkbox" value="index-options" data-runner-id="index-options">
+        <span class="runner-option-copy">
+          <span class="runner-option-name">Index Options</span>
+          <span class="runner-option-desc">NIFTY option-chain snapshot</span>
+        </span>
+      </label>
+      <label class="runner-option">
+        <input type="checkbox" value="oi-data" data-runner-id="oi-data">
+        <span class="runner-option-copy">
+          <span class="runner-option-name">OI Data</span>
+          <span class="runner-option-desc">FII participant-wise open interest history</span>
+        </span>
+      </label>
+      <label class="runner-option">
+        <input type="checkbox" value="index-data" data-runner-id="index-data">
+        <span class="runner-option-copy">
+          <span class="runner-option-name">Index Data</span>
+          <span class="runner-option-desc">Market indices and India VIX history</span>
+        </span>
+      </label>
+    </div>
+
+    <div class="runner-status" id="runnerStatus" role="status" aria-live="polite" hidden></div>
+
+    <div class="runner-modal-footer">
+      <button class="runner-cancel-btn" id="cancelRunnerControl" type="button">Cancel</button>
+      <button class="runner-submit-btn" id="triggerSelectedRunners" type="button" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 5.5v13l10-6.5-10-6.5Z"/>
+        </svg>
+        <span>Trigger selected</span>
+      </button>
+    </div>
+  </section>
+</div>
+
 <script>
 const WORKER_BASE = 'https://tiny-art-8473.dobbyop09.workers.dev';
 const API_URL = WORKER_BASE + '/dashboard-indices';
 const OPTION_CHAIN_URL = WORKER_BASE + '/option-chain';
 const VIX_URL = WORKER_BASE + '/vix-history';
+const RUNNER_CONTROL_URL = WORKER_BASE + '/runner-control';
+
+// Must match the TRIGGER_KEY secret configured in Cloudflare Worker.
+// Replace the placeholder before deploying this HTML page.
+const RUNNER_TRIGGER_KEY = '97c15c54-40bf-479a-a4e2-8c470506502c';
+
+// ── Manual runner control ───────────────────────────────────────
+(() => {
+  const backdrop = document.getElementById('runnerBackdrop');
+  const openBtn = document.getElementById('openRunnerControl');
+  const closeBtn = document.getElementById('closeRunnerControl');
+  const cancelBtn = document.getElementById('cancelRunnerControl');
+  const selectAllBtn = document.getElementById('runnerSelectAll');
+  const triggerBtn = document.getElementById('triggerSelectedRunners');
+  const selectedCount = document.getElementById('runnerSelectedCount');
+  const statusBox = document.getElementById('runnerStatus');
+  const options = Array.from(document.querySelectorAll('#runnerOptions [data-runner-id]'));
+
+  let isSubmitting = false;
+
+  function getSelectedRunners() {
+    return options.filter(input => input.checked).map(input => input.dataset.runnerId);
+  }
+
+  function showRunnerStatus(message, type) {
+    statusBox.textContent = message;
+    statusBox.className = `runner-status ${type}`;
+    statusBox.hidden = false;
+  }
+
+  function clearRunnerStatus() {
+    statusBox.textContent = '';
+    statusBox.className = 'runner-status';
+    statusBox.hidden = true;
+  }
+
+  function refreshRunnerSelection() {
+    const selected = getSelectedRunners();
+    selectedCount.textContent = `${selected.length} of ${options.length} selected`;
+    selectAllBtn.textContent = selected.length === options.length ? 'Clear selection' : 'Select all';
+    triggerBtn.disabled = isSubmitting || selected.length === 0;
+
+    options.forEach(input => {
+      input.closest('.runner-option').classList.toggle('selected', input.checked);
+    });
+  }
+
+  function openRunnerModal() {
+    clearRunnerStatus();
+    backdrop.classList.add('open');
+    backdrop.setAttribute('aria-hidden', 'false');
+    refreshRunnerSelection();
+    closeBtn.focus();
+  }
+
+  function closeRunnerModal() {
+    if (isSubmitting) return;
+    backdrop.classList.remove('open');
+    backdrop.setAttribute('aria-hidden', 'true');
+    openBtn.focus();
+  }
+
+  async function dispatchSelectedRunners() {
+    const runners = getSelectedRunners();
+    if (!runners.length || isSubmitting) return;
+
+    if (!RUNNER_TRIGGER_KEY || RUNNER_TRIGGER_KEY === 'PASTE_YOUR_CLOUDFLARE_TRIGGER_KEY_HERE') {
+      showRunnerStatus('Add the same value as your Cloudflare TRIGGER_KEY to RUNNER_TRIGGER_KEY in this page before triggering.', 'error');
+      return;
+    }
+
+    isSubmitting = true;
+    triggerBtn.querySelector('span').textContent = 'Dispatching…';
+    refreshRunnerSelection();
+    clearRunnerStatus();
+
+    try {
+      const response = await fetch(RUNNER_CONTROL_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-trigger-key': RUNNER_TRIGGER_KEY
+        },
+        body: JSON.stringify({ runners })
+      });
+
+      const rawResponse = await response.text();
+      let result = {};
+      try {
+        result = rawResponse ? JSON.parse(rawResponse) : {};
+      } catch {
+        result = { error: rawResponse };
+      }
+
+      if (!response.ok) {
+        const message = result.error || result.message || `Request failed (HTTP ${response.status})`;
+        throw new Error(message);
+      }
+
+      const runnerNames = runners.map(id => ({
+        'fii-data': 'FII Data',
+        'index-options': 'Index Options',
+        'oi-data': 'OI Data',
+        'index-data': 'Index Data'
+      }[id] || id));
+
+      showRunnerStatus(
+        `GitHub Actions workflow dispatched for: ${runnerNames.join(', ')}. Check the Actions tab for execution progress.`,
+        'success'
+      );
+    } catch (error) {
+      console.error('Runner control request failed:', error);
+      showRunnerStatus(error.message || 'Unable to trigger the selected runners. Please try again.', 'error');
+    } finally {
+      isSubmitting = false;
+      triggerBtn.querySelector('span').textContent = 'Trigger selected';
+      refreshRunnerSelection();
+    }
+  }
+
+  openBtn.addEventListener('click', openRunnerModal);
+  closeBtn.addEventListener('click', closeRunnerModal);
+  cancelBtn.addEventListener('click', closeRunnerModal);
+  triggerBtn.addEventListener('click', dispatchSelectedRunners);
+
+  options.forEach(input => input.addEventListener('change', () => {
+    clearRunnerStatus();
+    refreshRunnerSelection();
+  }));
+
+  selectAllBtn.addEventListener('click', () => {
+    const selectAll = getSelectedRunners().length !== options.length;
+    options.forEach(input => { input.checked = selectAll; });
+    clearRunnerStatus();
+    refreshRunnerSelection();
+  });
+
+  backdrop.addEventListener('click', event => {
+    if (event.target === backdrop) closeRunnerModal();
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && backdrop.classList.contains('open')) closeRunnerModal();
+  });
+
+  refreshRunnerSelection();
+})();
 
 let INDICES = [];
 let selectedId = null;   // the row the user last clicked (drives card 2 + advances/sentiment/perf)
