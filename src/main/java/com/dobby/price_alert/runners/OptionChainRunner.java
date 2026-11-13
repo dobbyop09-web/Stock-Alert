@@ -43,7 +43,7 @@ public class OptionChainRunner implements CommandLineRunner {
     @Override
     public void run(String... args) {
 
-        if (!runnerExecutionSelector.shouldRun("option-chain")) {
+        if (!runnerExecutionSelector.shouldRun("index-options")) {
             log.info("Skipping NIFTY Option Chain Runner in manual execution mode.");
             return;
         }
