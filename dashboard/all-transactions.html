@@ -132,6 +132,34 @@
     .footer-note{font-size:10px;color:#2a4055;padding:4px 0;display:flex;align-items:center;gap:6px;flex-shrink:0}
     .footer-note svg{width:13px;height:13px;color:#2DD4BF;flex-shrink:0}
 
+    /* Grouped rows + count badge */
+    .trades-table tbody tr.group-row{cursor:pointer}
+    .cnt-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:16px;padding:0 6px;border-radius:10px;font-size:9.5px;font-weight:700;background:rgba(91,158,255,.14);color:#5B9EFF;border:1px solid rgba(91,158,255,.22);font-variant-numeric:tabular-nums}
+    .sub-note{display:block;font-size:9.5px;color:#4a6075;margin-top:1px}
+    .row-chev{width:12px;height:12px;color:#2a4055;vertical-align:middle}
+    .trades-table tbody tr.group-row:hover .row-chev{color:#2DD4BF}
+
+    /* Detail popup */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(3,8,14,.72);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px;z-index:2000}
+    .modal-backdrop.open{display:flex}
+    .modal{background:#0e1d2b;border:1px solid rgba(255,255,255,.1);border-radius:12px;width:min(1080px,100%);max-height:88vh;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.55);overflow:hidden}
+    .modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
+    .modal-head-left{display:flex;align-items:center;gap:12px;min-width:0}
+    .modal-head .sym-avatar{width:34px;height:34px;font-size:13px}
+    .modal-title{font-size:15px;font-weight:700;color:#edf5ff;display:flex;align-items:center;gap:8px}
+    .modal-sub{font-size:10.5px;color:#4a6075;margin-top:2px}
+    .modal-close{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#6a8299;border:1px solid rgba(255,255,255,.08);flex-shrink:0}
+    .modal-close:hover{color:#fff;border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.04)}
+    .modal-close svg{width:14px;height:14px}
+    .modal-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.05)}
+    @media(max-width:640px){.modal-stats{grid-template-columns:repeat(2,1fr)}}
+    .m-stat{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:9px 11px}
+    .m-stat .l{font-size:9.5px;color:#4a6075;text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+    .m-stat .v{font-size:14px;font-weight:700;color:#edf5ff;margin-top:3px;font-variant-numeric:tabular-nums}
+    .m-stat .v.pos{color:#2DD4BF}.m-stat .v.neg{color:#FF5C6C}
+    .modal-body{overflow:auto;flex:1}
+    .modal-body .trades-table{min-width:900px}
+    .modal-body .trades-table tbody tr{cursor:default}
     *::-webkit-scrollbar{width:4px;height:4px}
     *::-webkit-scrollbar-track{background:transparent}
     *::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:4px}
@@ -396,6 +424,19 @@
     </div><!-- /main -->
   </div><!-- /shell -->
 
+  <!-- Symbol detail popup -->
+  <div class="modal-backdrop" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="modalHeadLeft">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="modal-head-left" id="modalHeadLeft"></div>
+        <button class="modal-close" id="modalClose" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-stats" id="modalStats"></div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
   <script>
     (() => {
       const API_BASE = "https://tiny-art-8473.dobbyop09.workers.dev";
@@ -464,8 +505,41 @@
       const fmtMoney = value => Number.isFinite(Number(value)) ? Number(value).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2}) : "—";
       const fmtDate = v => { if(!v) return "—"; const d=new Date(v); if(isNaN(d)) return v; return d.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}); };
       const qty = trade => Number(trade.quantity) || 1;
-      const holdingDays = t => { const b=new Date(t.buyDate),s=new Date(t.sellDate); if(isNaN(b)||isNaN(s)) return null; return Math.max(0,Math.round((s-b)/86400000)); };
+      const holdingDays = t => { if (t.trades) return t.holdAvg; const b=new Date(t.buyDate),s=new Date(t.sellDate); if(isNaN(b)||isNaN(s)) return null; return Math.max(0,Math.round((s-b)/86400000)); };
 
+      // Club multiple trades of the same symbol into one aggregate row.
+      // The aggregate carries quantity / weighted-avg prices so tradeInfo() works unchanged.
+      function groupTrades(list) {
+        const map = new Map();
+        list.forEach(t => {
+          const key = String(t.symbol || "").trim().toUpperCase() || "—";
+          if (!map.has(key)) map.set(key, []);
+          map.get(key).push(t);
+        });
+        return Array.from(map.entries()).map(([key, trades]) => {
+          let q = 0, cost = 0, sold = 0, holdW = 0, holdQ = 0;
+          trades.forEach(t => {
+            const n = qty(t);
+            q += n; cost += Number(t.buyPrice) * n; sold += Number(t.sellPrice) * n;
+            const d = holdingDays(t);
+            if (d !== null) { holdW += d * n; holdQ += n; }
+          });
+          const times = f => trades.map(t => new Date(t[f]).getTime()).filter(x => !isNaN(x));
+          const buyT = times("buyDate"), sellT = times("sellDate");
+          return {
+            symbol: trades[0].symbol || key,
+            quantity: q,
+            buyPrice: q ? cost / q : NaN,
+            sellPrice: q ? sold / q : NaN,
+            buyDate: buyT.length ? new Date(Math.min(...buyT)).toISOString() : "",
+            sellDate: sellT.length ? new Date(Math.max(...sellT)).toISOString() : "",
+            holdAvg: holdQ ? Math.round(holdW / holdQ) : null,
+            trades,
+            key
+          };
+        });
+      }
+      let groupMap = new Map();
       function tradeInfo(t) {
         const q=qty(t), buy=Number(t.buyPrice), sell=Number(t.sellPrice);
         const cost=buy*q, sold=sell*q, pnl=sold-cost;
@@ -596,7 +670,7 @@
         if (currentPage > totalPages) currentPage = totalPages;
         const start = totalRows === 0 ? 0 : (currentPage-1)*PAGE_SIZE + 1;
         const end = Math.min(totalRows, currentPage*PAGE_SIZE);
-        footerCount.textContent = totalRows ? `Showing ${start} – ${end} of ${totalRows} closed trades` : "";
+        footerCount.textContent = totalRows ? `Showing ${start} – ${end} of ${totalRows} symbols` : "";
 
         let pageBtns = "";
         for (let p=1; p<=totalPages; p++) {
@@ -629,9 +703,12 @@
 
         const filtered = getFiltered();
         renderTotals(filtered);
-        tradesSub.textContent = filtered.length === rows.length ? "Showing all closed positions" : `Showing ${filtered.length} of ${rows.length} closed positions`;
+        const groups = groupTrades(filtered);
+        groupMap = new Map(groups.map(g => [g.key, g]));
+        const symLbl = `${groups.length} symbol${groups.length===1?"":"s"}`;
+        tradesSub.textContent = filtered.length === rows.length ? `${rows.length} closed trades across ${symLbl}` : `${filtered.length} of ${rows.length} closed trades across ${symLbl}`;
 
-        const sorted = sortRows(filtered);
+        const sorted = sortRows(groups);
 
         if (!sorted.length) {
           tradesScroll.innerHTML = `<table class="trades-table"><thead>${renderHeader()}</thead></table><div class="empty-state"><h3>No matches</h3>Try a different filter or search term.</div>`;
@@ -655,18 +732,23 @@
                 const days = holdingDays(t);
                 const color = avatarColor(t.symbol);
                 const rowNum = (currentPage-1)*PAGE_SIZE + i + 1;
-                return `<tr>
+                const n = t.trades.length;
+                const multi = n > 1;
+                const sameBuy = new Set(t.trades.map(x => x.buyDate)).size <= 1;
+                const sameSell = new Set(t.trades.map(x => x.sellDate)).size <= 1;
+                return `<tr class="group-row" data-key="${escHtml(t.key)}" title="Click to view ${n} transaction${multi?'s':''}">
                   <td class="num" style="color:#4a6075">${rowNum}</td>
                   <td><div class="sym-badge">
                     ${logoHtml(t.symbol, color)}
                     <strong style="font-size:11px">${escHtml(t.symbol||"—")}</strong>
+                    ${multi ? `<span class="cnt-badge" title="${n} transactions">×${n}</span>` : ""}
                   </div></td>
                   <td class="num">${qty(t)}</td>
-                  <td class="num">₹${fmtMoney(t.buyPrice)}</td>
-                  <td class="num">₹${fmtMoney(t.sellPrice)}</td>
-                  <td>${fmtDate(t.buyDate)}</td>
-                  <td>${fmtDate(t.sellDate)}</td>
-                  <td class="num">${days!==null?days+" Days":"—"}</td>
+                  <td class="num">₹${fmtMoney(t.buyPrice)}${multi?'<span class="sub-note">avg</span>':''}</td>
+                  <td class="num">₹${fmtMoney(t.sellPrice)}${multi?'<span class="sub-note">avg</span>':''}</td>
+                  <td>${fmtDate(t.buyDate)}${multi&&!sameBuy?'<span class="sub-note">earliest</span>':''}</td>
+                  <td>${fmtDate(t.sellDate)}${multi&&!sameSell?'<span class="sub-note">latest</span>':''}</td>
+                  <td class="num">${days!==null?days+" Days":"—"}${multi?'<span class="sub-note">avg</span>':''}</td>
                   <td class="num">₹${fmtMoney(info.cost)}</td>
                   <td class="num">₹${fmtMoney(info.sold)}</td>
                   <td class="num"><span class="badge ${cls}">${sign}₹${fmtMoney(Math.abs(info.pnl))}</span></td>
@@ -679,7 +761,77 @@
 
         renderPager(sorted.length);
         attachHeaderSort();
+        tradesScroll.querySelectorAll("tr.group-row").forEach(tr => {
+          tr.addEventListener("click", () => openDetail(tr.dataset.key));
+        });
       }
+
+      /* ---------- Detail popup ---------- */
+      const modalBackdrop = document.getElementById("detailModal");
+      const modalHead = document.getElementById("modalHeadLeft");
+      const modalStats = document.getElementById("modalStats");
+      const modalBody = document.getElementById("modalBody");
+
+      function openDetail(key) {
+        const g = groupMap.get(key);
+        if (!g) return;
+        const n = g.trades.length;
+        const gi = tradeInfo(g);
+        const cls = gi.pnl >= 0 ? "pos" : "neg";
+        const sign = gi.pnl >= 0 ? "+" : "-";
+        modalHead.innerHTML = `
+          ${logoHtml(g.symbol, avatarColor(g.symbol))}
+          <div>
+            <div class="modal-title">${escHtml(g.symbol)} <span class="cnt-badge">${n} transaction${n===1?"":"s"}</span></div>
+            <div class="modal-sub">All closed trades for this symbol</div>
+          </div>`;
+        modalStats.innerHTML = `
+          <div class="m-stat"><div class="l">Total Qty</div><div class="v">${g.quantity}</div></div>
+          <div class="m-stat"><div class="l">Invested</div><div class="v">₹${fmtMoney(gi.cost)}</div></div>
+          <div class="m-stat"><div class="l">Sold</div><div class="v">₹${fmtMoney(gi.sold)}</div></div>
+          <div class="m-stat"><div class="l">Net P&amp;L</div><div class="v ${cls}">${sign}₹${fmtMoney(Math.abs(gi.pnl))} (${sign}${Math.abs(gi.pct).toFixed(2)}%)</div></div>`;
+        const list = [...g.trades].sort((a,b) => (new Date(b.sellDate)||0) - (new Date(a.sellDate)||0));
+        modalBody.innerHTML = `
+          <table class="trades-table">
+            <thead><tr>
+              <th>#</th><th class="num">Qty</th><th class="num">Buy Price</th><th class="num">Sell Price</th>
+              <th>Buy Date</th><th>Sell Date</th><th class="num">Holding Period</th>
+              <th class="num">Invested Value</th><th class="num">Sold Value</th>
+              <th class="num">P&amp;L (₹)</th><th class="num">P&amp;L (%)</th><th>Status</th>
+            </tr></thead>
+            <tbody>
+              ${list.map((t,i) => {
+                const info = tradeInfo(t);
+                const c = info.pnl >= 0 ? "pos" : "neg";
+                const s = info.pnl >= 0 ? "+" : "-";
+                const d = holdingDays(t);
+                return `<tr>
+                  <td class="num" style="color:#4a6075">${i+1}</td>
+                  <td class="num">${qty(t)}</td>
+                  <td class="num">₹${fmtMoney(t.buyPrice)}</td>
+                  <td class="num">₹${fmtMoney(t.sellPrice)}</td>
+                  <td>${fmtDate(t.buyDate)}</td>
+                  <td>${fmtDate(t.sellDate)}</td>
+                  <td class="num">${d!==null ? d+" Days" : "—"}</td>
+                  <td class="num">₹${fmtMoney(info.cost)}</td>
+                  <td class="num">₹${fmtMoney(info.sold)}</td>
+                  <td class="num"><span class="badge ${c}">${s}₹${fmtMoney(Math.abs(info.pnl))}</span></td>
+                  <td class="num"><span class="badge ${c}">${s}${Math.abs(info.pct).toFixed(2)}%</span></td>
+                  <td><span class="badge status">Closed</span></td>
+                </tr>`;
+              }).join("")}
+            </tbody>
+          </table>`;
+        modalBackdrop.classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+      function closeDetail() {
+        modalBackdrop.classList.remove("open");
+        document.body.style.overflow = "";
+      }
+      modalBackdrop.addEventListener("click", e => { if (e.target === modalBackdrop) closeDetail(); });
+      document.getElementById("modalClose").addEventListener("click", closeDetail);
+      document.addEventListener("keydown", e => { if (e.key === "Escape") closeDetail(); });
 
       function attachHeaderSort() {
         tradesScroll.querySelectorAll("th.sortable").forEach(th => {

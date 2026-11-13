@@ -40,9 +40,16 @@ public class IndexDataRunner implements CommandLineRunner {
     @Autowired
     private VixHistoryService vixHistoryService;
 
+    @Autowired
+    private RunnerExecutionSelector runnerExecutionSelector;
+
     @Override
     public void run(String... args) throws Exception {
 
+        if (!runnerExecutionSelector.shouldRun("index-data")) {
+            log.info("Skipping Index Data Runner in manual execution mode.");
+            return;
+        }
 
         try {
 

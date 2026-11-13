@@ -27,12 +27,18 @@ public class OpenInterestPositionRunner implements CommandLineRunner {
     private final NSEClient nseClient;
     private final FiiIndexOiParser fiiIndexOiParser;
     private final FiiIndexOiHistoryService fiiIndexOiHistoryService;
+    private final RunnerExecutionSelector runnerExecutionSelector;
 
     @Override
     public void run(String... args) throws Exception {
 
+        if (!runnerExecutionSelector.shouldRun("open-interest-position")) {
+            log.info("Skipping Open Interest Position Runner in manual execution mode.");
+            return;
+        }
+
         if (!CheckTime.isAfterMarketHours()) {
-            log.info("Skipping FII Data Runner. Before 6 PM IST.");
+            log.info("Skipping Open Interest Position Runner. Before 6 PM IST.");
             return;
         }
 
@@ -44,11 +50,11 @@ public class OpenInterestPositionRunner implements CommandLineRunner {
         DayOfWeek day = date.getDayOfWeek();
 
         if (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY) {
-            log.info("Weekend detected. Skipping FII OI update for {}", date);
+            log.info("Weekend detected. Skipping Open Interest Position update for {}", date);
             return;
         }
 
-        log.info("Starting daily FII OI update for {}", date);
+        log.info("Starting daily Open Interest Position update for {}", date);
 
         FiiIndexOiDto result;
 
@@ -57,7 +63,7 @@ public class OpenInterestPositionRunner implements CommandLineRunner {
             String csv = nseClient.getParticipantWiseOiReport(date);
 
             if (csv == null || csv.isBlank()) {
-                log.warn("NSE FII OI data unavailable for {}. Skipping.", date);
+                log.warn("NSE Open Interest Position data unavailable for {}. Skipping.", date);
                 return;
             }
 

@@ -24,6 +24,7 @@ public class OptionChainRunner implements CommandLineRunner {
 
     private final OptionChainService optionChainService;
     private final OptionChainStorageService optionChainStorageService;
+    private final RunnerExecutionSelector runnerExecutionSelector;
 
     private static final String SYMBOL = "NIFTY";
 
@@ -32,15 +33,20 @@ public class OptionChainRunner implements CommandLineRunner {
 
     public OptionChainRunner(
             OptionChainService optionChainService,
-            OptionChainStorageService optionChainStorageService) {
+            OptionChainStorageService optionChainStorageService, RunnerExecutionSelector runnerExecutionSelector) {
 
         this.optionChainService = optionChainService;
         this.optionChainStorageService = optionChainStorageService;
+        this.runnerExecutionSelector = runnerExecutionSelector;
     }
 
     @Override
     public void run(String... args) {
 
+        if (!runnerExecutionSelector.shouldRun("option-chain")) {
+            log.info("Skipping NIFTY Option Chain Runner in manual execution mode.");
+            return;
+        }
         LocalDate today = LocalDate.now(ZONE);
 
         // Skip weekends
