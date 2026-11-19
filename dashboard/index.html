@@ -347,6 +347,30 @@
                     <button id="haDeleteOlderBtn" class="btn-ghost ha-delete-older-btn">🗑 Delete older alerts</button>
                 </div>
 
+                <div class="ha-pct-row" id="haPctRow">
+                    <span class="ha-pct-label">% Filter</span>
+                    <select id="haPctMetric" class="select-control" title="Which percentage to filter on">
+                        <option value="vs">Vs Alert</option>
+                        <option value="since">Since Trigger</option>
+                    </select>
+                    <label class="ha-pct-field">Above
+                        <input type="number" id="haPctAbove" step="0.1" placeholder="e.g. 5">
+                        <span>%</span>
+                    </label>
+                    <label class="ha-pct-field">Below
+                        <input type="number" id="haPctBelow" step="0.1" placeholder="e.g. -5">
+                        <span>%</span>
+                    </label>
+                    <div class="ha-pct-presets" id="haPctPresets">
+                        <button type="button" class="ha-chip" data-above="5">≥ +5%</button>
+                        <button type="button" class="ha-chip" data-above="10">≥ +10%</button>
+                        <button type="button" class="ha-chip" data-below="-5">≤ −5%</button>
+                        <button type="button" class="ha-chip" data-below="-10">≤ −10%</button>
+                    </div>
+                    <span class="ha-pct-hint">Use negative values for drops (e.g. Below -5 = fell more than 5%)</span>
+                    <button type="button" id="haToggleSummary" class="btn-ghost ha-toggle-summary">Hide summary</button>
+                </div>
+
                 <div class="ha-stats-row">
                     <div class="ha-stats" id="haStats"></div>
                     <div class="ha-group-breakdown" id="haGroupBreakdown"></div>
@@ -383,7 +407,9 @@
                     <select id="haPerPage" class="select-control">
                         <option value="10">10</option>
                         <option value="25">25</option>
-                        <option value="50">50</option>
+                        <option value="50" selected>50</option>
+                        <option value="100">100</option>
+                        <option value="200">200</option>
                     </select>
                     entries
                 </div>

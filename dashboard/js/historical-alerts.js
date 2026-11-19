@@ -42,7 +42,7 @@ const ha = {
     selected: new Set(), // key = `${symbol}__${triggeredAt}`
     sortDesc: true,
     page: 1,
-    perPage: 10,
+    perPage: 50,
     loaded: false,
     lastUpdated: null,
 };
@@ -54,7 +54,7 @@ function fmtDateTimeShort(iso) {
     if (isNaN(d.getTime())) return iso || "—";
     const date = d.toLocaleString(undefined, { day: "2-digit", month: "short", year: "numeric" });
     const time = d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit", hour12: true });
-    return `<div>${date}</div><div style="color:var(--muted);font-size:11px">${time}</div>`;
+    return `<span style="white-space:nowrap">${date} <span style="color:var(--muted);font-size:11px;margin-left:4px">${time}</span></span>`;
 }
 
 function monthKey(iso) {
@@ -135,6 +135,47 @@ function injectHaStyles() {
         .ha-sp-table .num, .ha-sp-table th.num { text-align: right; }
         .ha-sp-close { width: 34px; height: 34px; border-radius: 9px; border: 1px solid var(--border, rgba(148,163,184,.2)); background: transparent; color: inherit; cursor: pointer; font-size: 16px; }
         .ha-sp-close:hover { background: rgba(148,163,184,.12); }
+
+        /* ── % filter row ── */
+        .ha-pct-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 0 0 10px; }
+        .ha-pct-label { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--muted, #8aa0bb); }
+        .ha-pct-field { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted, #8aa0bb); background: rgba(148,163,184,.06); border: 1px solid var(--border, rgba(148,163,184,.2)); border-radius: 10px; padding: 0 10px; height: 38px; }
+        .ha-pct-field input { width: 74px; background: transparent; border: 0; outline: 0; color: var(--text, #e5edf7); font: inherit; font-weight: 600; text-align: right; }
+        .ha-pct-field:focus-within { border-color: #2dd4bf; box-shadow: 0 0 0 2px rgba(45,212,191,.2); }
+        .ha-pct-field.is-active { border-color: #2dd4bf; color: #2dd4bf; }
+        .ha-pct-presets { display: flex; gap: 6px; }
+        .ha-chip { height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--border, rgba(148,163,184,.25)); background: transparent; color: var(--muted, #8aa0bb); font-size: 12px; font-weight: 600; cursor: pointer; }
+        .ha-chip:hover { color: var(--text, #e5edf7); border-color: #2dd4bf; }
+        .ha-chip.is-active { background: #2dd4bf; border-color: #2dd4bf; color: #04201c; }
+        .ha-pct-hint { font-size: 11px; color: var(--muted, #8aa0bb); opacity: .8; }
+        .ha-toggle-summary { margin-left: auto; height: 34px; }
+
+        /* ── use the full window height so more rows are visible ── */
+        #haOverlay { padding: 0 !important; }
+        #haOverlay .ha-modal { height: 100dvh !important; max-height: 100dvh !important; border-radius: 0 !important; display: flex !important; flex-direction: column !important; }
+        #haOverlay .ha-body { flex: 1 1 auto !important; min-height: 0 !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; padding-top: 14px !important; padding-bottom: 8px !important; }
+        #haOverlay .ha-toolbar, #haOverlay .ha-pct-row, #haOverlay .ha-stats-row { flex: 0 0 auto; }
+        #haOverlay .ha-table-wrap { flex: 1 1 auto !important; min-height: 0 !important; max-height: none !important; height: auto !important; overflow: auto !important; }
+        #haOverlay .ha-table-scroll { max-height: none !important; height: auto !important; overflow: visible !important; }
+        #haOverlay .ha-table-wrap thead th { position: sticky; top: 0; z-index: 2; background: var(--panel, #0f1b2d); }
+        #haOverlay .ha-empty { flex: 0 0 auto; }
+        #haOverlay .ha-footer { flex: 0 0 auto; }
+
+        /* compact summary cards */
+        #haOverlay .ha-stats-row { margin-bottom: 10px !important; gap: 10px !important; }
+        #haStats .stat { min-height: 0 !important; height: auto !important; padding: 10px 16px !important; }
+        #haStats .stat .n { font-size: 22px !important; line-height: 1.1 !important; }
+        #haStats .stat .l { font-size: 10.5px !important; }
+        #haStats .stat-icon { width: 34px !important; height: 34px !important; }
+        #haOverlay .ha-group-breakdown { padding: 10px 14px !important; }
+        #haOverlay.ha-summary-hidden .ha-stats-row { display: none !important; }
+
+        /* compact rows */
+        #haTbody td { padding-top: 6px !important; padding-bottom: 6px !important; white-space: nowrap; }
+        #haTbody td.ha-company { overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+        #haTbody .ha-vs-badge { display: inline-flex !important; flex-direction: row !important; align-items: center; gap: 6px; padding: 3px 8px !important; }
+        #haTbody .ha-vs-badge small { display: inline !important; margin: 0 !important; }
+        #haTbody .icon-btn { width: 30px !important; height: 30px !important; }
     `;
     document.head.appendChild(style);
 }
@@ -237,6 +278,11 @@ function els() {
         status: document.getElementById("haStatus"),
         dateFrom: document.getElementById("haDateFrom"),
         dateTo: document.getElementById("haDateTo"),
+        pctMetric: document.getElementById("haPctMetric"),
+        pctAbove: document.getElementById("haPctAbove"),
+        pctBelow: document.getElementById("haPctBelow"),
+        pctPresets: document.getElementById("haPctPresets"),
+        toggleSummary: document.getElementById("haToggleSummary"),
         clearBtn: document.getElementById("haClearBtn"),
         deleteOlderBtn: document.getElementById("haDeleteOlderBtn"),
         deleteSelectedBtn: document.getElementById("haDeleteSelectedBtn"),
@@ -277,14 +323,34 @@ function populateSelects() {
         groups.map(g => `<option value="${g}">${g}</option>`).join("");
 }
 
+function syncPresetChips() {
+    const { pctAbove, pctBelow, pctPresets } = els();
+    if (!pctPresets) return;
+    pctPresets.querySelectorAll(".ha-chip").forEach(c => {
+        const a = c.dataset.above, b = c.dataset.below;
+        const on = (a !== undefined && pctAbove.value !== "" && Number(pctAbove.value) === Number(a) && pctBelow.value === "") ||
+                   (b !== undefined && pctBelow.value !== "" && Number(pctBelow.value) === Number(b) && pctAbove.value === "");
+        c.classList.toggle("is-active", on);
+    });
+}
+
 function applyHaFilters() {
-    const { search, month, group, status, dateFrom, dateTo } = els();
+    const { search, month, group, status, dateFrom, dateTo, pctMetric, pctAbove, pctBelow } = els();
     const text = search.value.trim().toUpperCase();
     const m = month.value;
     const g = group.value;
     const st = status.value; // "", "above", "below", "recovered"
     const from = dateFrom.value ? new Date(dateFrom.value + "T00:00:00") : null;
     const to = dateTo.value ? new Date(dateTo.value + "T23:59:59") : null;
+
+    // custom % filter: Above x% => value >= x, Below x% => value <= x
+    const num = el => { const v = el.value.trim(); if (v === "") return null; const n = Number(v); return Number.isFinite(n) ? n : null; };
+    const pAbove = num(pctAbove);
+    const pBelow = num(pctBelow);
+    const pctFn = pctMetric.value === "since" ? sinceTriggerPct : vsAlertPct;
+    pctAbove.parentElement.classList.toggle("is-active", pAbove !== null);
+    pctBelow.parentElement.classList.toggle("is-active", pBelow !== null);
+    syncPresetChips();
 
     const matches = (a, { skipStatus = false, skipGroup = false } = {}) => {
         const matchesText = text === "" ||
@@ -303,10 +369,15 @@ function applyHaFilters() {
                 matchesStatus = st === "above" ? vs >= 0 : vs < 0;
             }
         }
+        let matchesPct = true;
+        if (pAbove !== null || pBelow !== null) {
+            const v = pctFn(a);
+            matchesPct = v !== null && (pAbove === null || v >= pAbove) && (pBelow === null || v <= pBelow);
+        }
         const d = new Date(a.triggeredAt || a.date);
         const matchesFrom = !from || d >= from;
         const matchesTo = !to || d <= to;
-        return matchesText && matchesMonth && matchesGroup && matchesStatus && matchesFrom && matchesTo;
+        return matchesText && matchesMonth && matchesGroup && matchesStatus && matchesPct && matchesFrom && matchesTo;
     };
 
     const time = a => new Date(a.triggeredAt || a.date).getTime();
@@ -606,7 +677,8 @@ function closeHaModal() {
 
 export function initHistoricalAlerts() {
     const { openBtn, closeBtn, overlay, search, month, group, status, dateFrom, dateTo,
-        clearBtn, perPage, selectAll, deleteOlderBtn, deleteSelectedBtn } = els();
+        clearBtn, perPage, selectAll, deleteOlderBtn, deleteSelectedBtn,
+        pctMetric, pctAbove, pctBelow, pctPresets, toggleSummary } = els();
 
     injectHaStyles();
     ensureStockPopup();
@@ -667,7 +739,29 @@ export function initHistoricalAlerts() {
     dateFrom.addEventListener("change", applyHaFilters);
     dateTo.addEventListener("change", applyHaFilters);
 
+    pctMetric.addEventListener("change", applyHaFilters);
+    pctAbove.addEventListener("input", applyHaFilters);
+    pctBelow.addEventListener("input", applyHaFilters);
+    pctPresets.addEventListener("click", e => {
+        const chip = e.target.closest(".ha-chip");
+        if (!chip) return;
+        const wasActive = chip.classList.contains("is-active");
+        pctAbove.value = ""; pctBelow.value = "";
+        if (!wasActive) {
+            if (chip.dataset.above !== undefined) pctAbove.value = chip.dataset.above;
+            if (chip.dataset.below !== undefined) pctBelow.value = chip.dataset.below;
+        }
+        applyHaFilters();
+    });
+    toggleSummary.addEventListener("click", () => {
+        const hidden = overlay.classList.toggle("ha-summary-hidden");
+        toggleSummary.textContent = hidden ? "Show summary" : "Hide summary";
+    });
+
     clearBtn.addEventListener("click", () => {
+        pctAbove.value = "";
+        pctBelow.value = "";
+        pctMetric.value = "vs";
         search.value = "";
         month.value = "";
         group.value = "";
